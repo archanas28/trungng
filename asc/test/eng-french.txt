@@ -1,0 +1,3 @@
+the	de
+vocabulary	vacobulary
+file	feli
