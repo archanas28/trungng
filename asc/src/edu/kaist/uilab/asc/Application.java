@@ -24,32 +24,39 @@ public class Application {
   private static final String ENGLISH_PATTERN = ".*[^a-zA-Z].*";
   private static final String OTHER_PATTERN = ".*[0-9()<>,&;\"].*";
   String inputDir = "C:/datasets/asc/reviews";
-  String datasetName = "SmallReviews2";
-  String englishCorpus = inputDir + "/reviews_en.txt";
-  String otherCorpus = inputDir + "/reviews_other.txt";
-  String stopWordFile = inputDir + "/StopWords.txt";
-  String polarityFile = inputDir + "/Polarity.txt";
+  static final String wordcountFile = "WordCount1.csv";
+  static final String wordlistFile = "WordList1.txt";
+  static final String englishDocuments = "BagOfSentences_en1.txt";
+  static final String otherDocuments = "BagOfSentences_other1.txt";
+  // vacuum, coffee, camera
+  final String datasetName = "ElectronicsReviews1";
+  final String documentListFile = "DocumentList.txt";
+  final String englishCorpus = inputDir + "/electronics_en1.txt";
+  final String otherCorpus = inputDir + "/electronics_other1.txt";
+  final String stopWordFile = inputDir + "/StopWords.txt";
+  final String polarityFile = inputDir + "/Polarity.txt";
+  final String sentiFilePrefix = "SentiWords-";
+  final String englishWordList = "WordList_en.txt";
+  final String dictionaryFile = "C:/datasets/asc/dict/en-fr.txt";
+  final String similarityGraphFile = "graph.txt";
+
   int minWordLength = 3;
   int maxWordLength = 30;
   int minSentenceLength = 4;
   int maxSentenceLength = 50;
   int minWordOccur = 3;
-  int minDocLength = 15; // used 20
+  int minDocLength = 20; // used 20
 
-  int numTopics = 10;
+  int numTopics = 15;
   int numSenti = 2;
   double alpha = 0.1;
   double[] gammas = new double[] { 1, 1 };
-  int numIterations = 2000;
-  int savingInterval = 500;
+  int numIterations = 1000;
+  int savingInterval = 200;
   int optimizationInterval = 100; // how often should we update y
-  int burnIn = 500;
+  int burnIn = 400;
   int numThreads = 1;
   int numEnglishDocuments;
-  String sentiFilePrefix = "SentiWords-";
-  String englishWordList = "WordList_en.txt";
-  String dictionaryFile = "C:/datasets/asc/dict/en-fr.txt";
-  String similarityGraphFile = "graph.txt";
 
   public static void main(String[] args) throws Exception {
     Application app = new Application();
@@ -70,14 +77,16 @@ public class Application {
         + "quite|even|that|as|as much|a|the|to|really)[\\s]+", " not_");
     parser.addReplacePattern("(not|n't|without|never|no)[\\s]+", " not_");
     parser.addReplacePattern("(pas|ne|non|jamais|sans|n'est)[\\s]+", " pas_");
-    parser.addReplacePattern("(pas|ne|non|jamais|sans|n'est)[\\s]+(très|si|trop|beaucoup|"
-        + "assez|si|que|ausi|vraiment)[\\s]+", " pas_");
+    parser.addReplacePattern(
+        "(pas|ne|non|jamais|sans|n'est)[\\s]+(très|si|trop|beaucoup|"
+            + "assez|si|que|ausi|vraiment)[\\s]+", " pas_");
     // TODO(trung): add negation patterns for other languages
     parser.setStopWords(stopWordFile);
     ArrayList<String> ratings = new ArrayList<String>();
     parser.setWordReplacePattern(new String[] { ENGLISH_PATTERN, null });
     int fromDocIdx = parseCorpus(true, englishCorpus, parser, ratings, 0);
-    parser.writeWordList(inputDir + "/" + englishWordList, parser.getWordList());
+    parser
+        .writeWordList(inputDir + "/" + englishWordList, parser.getWordList());
     parser.setWordReplacePattern(new String[] { OTHER_PATTERN, null });
     parseCorpus(false, otherCorpus, parser, ratings, fromDocIdx);
     parser.filterWords();
@@ -114,13 +123,11 @@ public class Application {
   }
 
   public void runModel() throws IOException {
-    Vector<String> wordList = readWordList(inputDir + "/"
-        + DocumentParser.WORD_LIST_FILE);
+    Vector<String> wordList = readWordList(inputDir + "/" + wordlistFile);
     Vector<OrderedDocument> documents = readDocuments(inputDir + "/"
-        + DocumentParser.ENGLISH_DOCUMENTS);
+        + englishDocuments);
     numEnglishDocuments = documents.size();
-    documents.addAll(readDocuments(inputDir + "/"
-        + DocumentParser.OTHER_DOCUMENTS));
+    documents.addAll(readDocuments(inputDir + "/" + otherDocuments));
     ArrayList<TreeSet<String>> sentiWordsStrList = new ArrayList<TreeSet<String>>();
     for (int s = 0; s < numSenti; s++) {
       sentiWordsStrList.add(Utils.makeSetOfWordsFromFile(inputDir + "/"
@@ -137,7 +144,7 @@ public class Application {
     }
     printConfiguration(documents.size(), wordList.size());
     GraphInputProducer graphProducer = new GraphInputProducer(inputDir + "/"
-        + DocumentParser.WORD_LIST_FILE, dictionaryFile);
+        + wordlistFile, dictionaryFile);
     graphProducer.write(inputDir + "/" + similarityGraphFile);
     ASC model = new ASC(numTopics, numSenti, wordList, documents,
         numEnglishDocuments, sentiWordsList, alpha, gammas,

@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.StringTokenizer;
 
 /**
@@ -82,9 +83,9 @@ public class GraphInputProducer {
   }
 
   /**
-   * Reads a language pair file and creates an edge for each pair of words.
+   * Reads a language pair file and creates an edge for each unique pair of words.
    * <p>
-   * Also writes this edge to the specified writer <code>out</code>.
+   * Also writes the edges to the specified writer <code>out</code>.
    * 
    * @param pairFile
    *          the language pair file
@@ -97,12 +98,19 @@ public class GraphInputProducer {
     String pair;
     String[] word = new String[2];
     Integer idx1, idx2;
+    HashSet<String> set = new HashSet<String>();
+    String s;
     while ((pair = in.readLine()) != null) {
       toWordPair(pair, word);
       idx1 = map.get(word[0]);
       idx2 = map.get(word[1]);
-      if (idx1 != null && idx2 != null) {
-        out.printf("%d %d\n", idx1, idx2);
+      if (idx1 != null && idx2 != null && !idx1.equals(idx2)) {
+        s = idx1 < idx2 ? String.format("%d,%d", idx1, idx2) : String.format(
+            "%d,%d", idx2, idx1);
+        if (set.add(s)) {
+          out.printf("%d %d\n", idx1, idx2);
+          System.out.println(word[0] + "\t" + word[1]);
+        }  
       }
     }
     in.close();

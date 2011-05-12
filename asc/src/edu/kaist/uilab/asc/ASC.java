@@ -33,7 +33,7 @@ import edu.kaist.uilab.asc.util.InvalidArgumentException;
  */
 public class ASC {
   private Model model;
-  private double optimizationAccuracy = 1.7;
+  private double optimizationAccuracy = 10;
   private double[][] probTable;
   ObjectiveFunction func;
   private int startingIteration;
@@ -264,24 +264,27 @@ public class ASC {
     } else {
       iter = startingIteration;
     }
-    System.out.printf("Gibbs sampling started (Iterations: %d)", numIters);
+    System.out.printf("Gibbs sampling started (Iterations: %d)\n", numIters);
     double startTime = System.currentTimeMillis();
+    int realIter;
     for (; iter < numIters; iter++) {
+      realIter = iter + 1;
       // sampling over english documents in the first half of iterations
       int maxDocNo = iter <= numIters / 2 ? model.numEnglishDocuments
           : model.numDocuments;
       for (int docNo = 0; docNo < maxDocNo; docNo++) {
         sampleForDoc(model.documents.get(docNo));
       }
-      if (iter % 50 == 0) {
+      if (realIter % 50 == 0) {
         System.out.println();
       }
       System.out.printf(" %d ", iter);
-      if (savingInterval > 0 && (iter + 1) % savingInterval == 0) {
-        saveModel(iter + 1);
-        writeModelOutput(iter + 1);
+      if (realIter > burnIn && savingInterval > 0
+          && realIter % savingInterval == 0) {
+        saveModel(realIter);
+        writeModelOutput(realIter);
       }
-      if (iter + 1 >= burnIn && (iter + 1) % optimizationInterval == 0) {
+      if (realIter >= burnIn && realIter % optimizationInterval == 0) {
         optimizeBeta();
       }
     }
@@ -472,12 +475,12 @@ public class ASC {
   // Check to see if the sentence contains one sentiment (seed) word
   private boolean trim(Map<Word, Integer> wordCnt, int si) {
     // TODO(trung): uncomment if see worse behavior
-    for (Word sWord : wordCnt.keySet()) {
-      SentiWord word = (SentiWord) sWord;
-      if (word.lexicon != null && word.lexicon != si) {
-        return true;
-      }
-    }
+//    for (Word sWord : wordCnt.keySet()) {
+//      SentiWord word = (SentiWord) sWord;
+//      if (word.lexicon != null && word.lexicon != si) {
+//        return true;
+//      }
+//    }
     return false;
   }
 

@@ -35,7 +35,7 @@ public class STO2Core {
   private int numRealIterations;
   private int numDocuments;
   private List<String> wordList = null;
-  private int numProbWords = 100;
+  private int numProbWords = 1000;
 
   public String inputDir = null;
   public String outputDir = null;
@@ -69,97 +69,22 @@ public class STO2Core {
   final private int maxSentenceLength = 50;
 
   public static void main(String[] args) throws Exception {
-    int numTopics = 10;
-    int numIterations = 100;
+    int numTopics = 15;
+    int numIterations = 2000;
     int numSenti = 2;
     int numThreads = 1;
-    String inputDir = null;
-    String outputDir = null;
-    String dicDir = null;
-    double alpha = -1;
-    double[] betas = null;
-    double[] gammas = null;
-    String[] betasStr = null;
-    String[] gammasStr = null;
+    String inputDir = "C:/datasets/asc/reviews";
+    String outputDir = "C:/datasets/asc/reviews/ASUM";
+    String dicDir = inputDir;
+    double alpha = 0.1;
+    double[] betas = new double[] {0.001, 0.001, 0.000001 };
+    double[] gammas = new double[] {1.0, 1.0};
     boolean randomInit = false;
 
     String sentiFilePrefix = "SentiWords-";
     String wordListFileName = "WordList.txt";
-    String wordDocFileName = "BagOfSentences.txt";
-
-    /*** Options ***/
-    for (int i = 0; i < args.length / 2; i++) {
-      String option = args[2 * i];
-      String value = args[2 * i + 1];
-      if (option.equals("-t"))
-        numTopics = Integer.valueOf(value);
-      else if (option.equals("-s"))
-        numSenti = Integer.valueOf(value);
-      else if (option.equals("-i"))
-        numIterations = Integer.valueOf(value);
-      else if (option.equals("-th"))
-        numThreads = Integer.valueOf(value);
-      else if (option.equals("-d"))
-        inputDir = value.replaceAll("\\\\", "/").replaceAll("/$", "");
-      else if (option.equals("-o"))
-        outputDir = value.replaceAll("\\\\", "/").replaceAll("/$", "");
-      else if (option.equals("-dic"))
-        dicDir = value.replaceAll("\\\\", "/").replaceAll("/$", "");
-      else if (option.equals("-a"))
-        alpha = Double.valueOf(value);
-      else if (option.equals("-b"))
-        betasStr = value.split("/");
-      else if (option.equals("-g"))
-        gammasStr = value.split("/");
-      else if (option.equals("-r"))
-        randomInit = value.toLowerCase().equals("true") ? true : false;
-    }
-    if (inputDir == null)
-      inputDir = ".";
-    if (outputDir == null)
-      outputDir = new String(inputDir);
-    if (dicDir == null)
-      dicDir = new String(inputDir);
-
-    // Exceptions
-    if (!new File(inputDir).exists())
-      throw new Exception("There's no such an input directory as " + inputDir);
-    if (!new File(outputDir).exists())
-      throw new Exception("There's no such an output directory as " + outputDir);
-    if (!new File(dicDir).exists())
-      throw new Exception("Tehre's no such a dictionary directory as " + dicDir);
-
-    if (alpha <= 0)
-      throw new Exception(
-          "Alpha should be specified as a positive real number.");
-    if (betasStr == null)
-      throw new Exception("Beta should be specified as positive real numbers.");
-    else {
-      betas = new double[3];
-      if (betasStr.length != 3)
-        throw new Exception(
-            "Betas should be length of 3: Common / Lexicon / Rest");
-      else
-        for (int i = 0; i < betas.length; i++)
-          betas[i] = Double.valueOf(betasStr[i]);
-    }
-    if (gammasStr == null)
-      throw new Exception("Gamma should be specified as positive real numbers.");
-    else {
-      gammas = new double[numSenti];
-      if (gammasStr.length == 1)
-        for (int i = 0; i < gammas.length; i++)
-          gammas[i] = Double.valueOf(gammasStr[0]);
-      else if (gammasStr.length == numSenti)
-        for (int i = 0; i < gammas.length; i++)
-          gammas[i] = Double.valueOf(gammasStr[i]);
-      else
-        throw new Exception(
-            "Gammas have a different size than the number of sentiments");
-    }
-
+    String wordDocFileName = "BagOfSentences_en.txt";
     String line;
-
     Vector<String> wordList = new Vector<String>();
     BufferedReader wordListFile = new BufferedReader(new FileReader(new File(
         inputDir + "/" + wordListFileName)));
@@ -205,13 +130,6 @@ public class STO2Core {
     System.out.println("Sentiments: " + numSenti + " (dictionary: "
         + sentiWordsList.size() + ")");
     System.out.println("Alpha: " + alpha);
-    System.out.println("Beta: ");
-    for (String betaStr : betasStr)
-      System.out.print(betaStr + " ");
-    System.out.println();
-    System.out.print("Gamma: ");
-    for (String gammaStr : gammasStr)
-      System.out.print(gammaStr + " ");
     System.out.println();
     System.out.println("Iterations: " + numIterations);
     System.out.println("Threads: " + numThreads);
@@ -600,7 +518,37 @@ public class STO2Core {
       out.println();
     }
     out.close();
-
+    
+    // Most probable words by term-score
+    System.out.println("Writing the most probable words by termscores...");
+    out = new PrintWriter(new FileWriter(new File(dir + "/" + prefix
+        + "-ProbWordsByTermScore.csv")));
+    for (int s = 0; s < this.numSenti; s++)
+      for (int t = 0; t < this.numTopics; t++)
+        out.print("S" + s + "-T" + t + ",");
+    out.println();
+    wordIndices = new int[this.numSenti][this.numTopics][this.numProbWords];
+    DoubleMatrix[] ts = buildTermScoreMatrix(this.Phi);
+    for (int s = 0; s < numSenti; s++) {
+      for (int t = 0; t < numTopics; t++) {
+        Vector<Integer> sortedIndexList = ts[s].getSortedColIndex(t,
+            numProbWords);
+        for (int w = 0; w < sortedIndexList.size(); w++)
+          wordIndices[s][t][w] = sortedIndexList.get(w);
+      }
+    }
+    for (int w = 0; w < this.numProbWords; w++) {
+      for (int s = 0; s < this.numSenti; s++) {
+        for (int t = 0; t < this.numTopics; t++) {
+          int index = wordIndices[s][t][w];
+          out.print(this.wordList.get(index) + " ("
+              + String.format("%.3f", ts[s].getValue(index, t)) + "),");
+        }
+      }
+      out.println();
+    }
+    out.close();
+    
     /*
      * // Result reviews System.out.println("Visualizing reviews..."); String []
      * sentiColors = {"green","red","black"}; out = new PrintWriter(new
@@ -645,4 +593,40 @@ public class STO2Core {
      * out.println(); } out.close();
      */
   }
+
+  /**
+   * Builds the term-score matrix from the inferred values of Phi.
+   * 
+   * @return
+   */
+  private DoubleMatrix[] buildTermScoreMatrix(DoubleMatrix[] phi) {
+    DoubleMatrix[] termScore = new DoubleMatrix[phi.length];
+    double sumOfLogs[] = new double[numUniqueWords];
+    // compute the sum of logs for each word
+    for (int w = 0; w < numUniqueWords; w++) {
+      sumOfLogs[w] = 0.0;
+      for (int s = 0; s < numSenti; s++) {
+        for (int t = 0; t < numTopics; t++) {
+          sumOfLogs[w] += Math.log(phi[s].getValue(w, t));
+        }
+      }
+    }
+    double score, prob;
+    // int topics = numTopics * numSenti;
+    // TODO(trung): this is a different from the term-score formula (with the
+    // assumption that a senti-word has only one senti -> only numTopics)
+    int topics = numTopics;
+    for (int s = 0; s < numSenti; s++) {
+      termScore[s] = new DoubleMatrix(numUniqueWords, numTopics);
+      for (int t = 0; t < numTopics; t++) {
+        for (int w = 0; w < numUniqueWords; w++) {
+          prob = phi[s].getValue(w, t);
+          score = prob * (Math.log(prob) - sumOfLogs[w] / topics);
+          termScore[s].setValue(w, t, score);
+        }
+      }
+    }
+    return termScore;
+  }
+  
 }

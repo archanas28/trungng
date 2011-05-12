@@ -17,12 +17,6 @@ import java.util.regex.Pattern;
  * Parse the datasets into bag of sentences.
  */
 public class DocumentParser {
-  public static final String WORDCOUNT_FILE = "WordCount.csv";
-  public static final String DOCUMENT_LIST_FILE = "DocumentList.txt";
-  public static final String ENGLISH_DOCUMENTS = "BagOfSentences_en.txt";
-  public static final String OTHER_DOCUMENTS = "BagOfSentences_other.txt";
-  public static final String WORD_LIST_FILE = "WordList.txt";
-
   private static final String sentenceDelimiter = "[.!?\\n]";
   private static final String wordDelimiter = "[\\s]+";
   private static final String UTF_8 = "utf-8";
@@ -445,10 +439,10 @@ public class DocumentParser {
    */
   public void writeOutFiles(String outDir) throws IOException {
     String[] wordList = getWordList();
-    writeWordCount(outDir + "/" + WORDCOUNT_FILE, wordList);
-    writeWordList(outDir + "/" + WORD_LIST_FILE, wordList);
-    writeBagOfSentences(englishBag, outDir + "/" + ENGLISH_DOCUMENTS);
-    writeBagOfSentences(otherBag, outDir + "/" + OTHER_DOCUMENTS);
+    writeWordCount(outDir + "/" + Application.wordcountFile, wordList);
+    writeWordList(outDir + "/" + Application.wordlistFile, wordList);
+    writeBagOfSentences(englishBag, outDir + "/" + Application.englishDocuments);
+    writeBagOfSentences(otherBag, outDir + "/" + Application.otherDocuments);
   }
 
   public String toString() {

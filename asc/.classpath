@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="tests"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="lib" path="D:/java-libs/stanford-postagger-2010-05-26/stanford-postagger.jar"/>
+	<classpathentry kind="lib" path="C:/workspace/asc/lib/filterbuilder.jar"/>
+	<classpathentry kind="lib" path="C:/workspace/asc/lib/htmllexer.jar"/>
+	<classpathentry kind="lib" path="C:/workspace/asc/lib/htmlparser.jar"/>
+	<classpathentry kind="lib" path="C:/workspace/asc/lib/sitecapturer.jar"/>
+	<classpathentry kind="lib" path="C:/workspace/asc/lib/thumbelina.jar"/>
+	<classpathentry kind="lib" path="C:/workspace/asc/lib/apache-mime4j-0.6.jar"/>
+	<classpathentry kind="lib" path="C:/workspace/asc/lib/commons-codec-1.3.jar"/>
+	<classpathentry kind="lib" path="C:/workspace/asc/lib/commons-logging-1.1.1.jar"/>
+	<classpathentry kind="lib" path="C:/workspace/asc/lib/httpclient-4.0.1.jar"/>
+	<classpathentry kind="lib" path="C:/workspace/asc/lib/httpcore-4.0.1.jar"/>
+	<classpathentry kind="lib" path="C:/workspace/asc/lib/httpmime-4.0.1.jar"/>
+	<classpathentry kind="lib" path="D:/java-libs/lingpipe-4.0.1/lingpipe-4.0.1.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/optimization"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
