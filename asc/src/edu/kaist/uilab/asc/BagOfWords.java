@@ -15,7 +15,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import edu.kaist.uilab.asc.asum.StanfordPOSTagger;
-import edu.kaist.uilab.asc.util.PorterStemmer;
+import edu.kaist.uilab.asc.stemmer.EnglishStemmer;
 
 public class BagOfWords {
 	private Object keyToBag = new Object(); // For synchronization
@@ -212,7 +212,7 @@ public class BagOfWords {
 
 		
 		// Filter
-		PorterStemmer stemmer = new PorterStemmer();
+		EnglishStemmer stemmer = new EnglishStemmer();
 		for (Word word : tmpWordList) {
 			boolean invalidWord = false;
 			
@@ -224,7 +224,7 @@ public class BagOfWords {
 			
 			// Stemming
 			if (this.useStemmer) {
-				word.value = stemmer.stemming(word.value);
+				word.value = stemmer.getStem(word.value);
 			}
 
 			// Stop POS

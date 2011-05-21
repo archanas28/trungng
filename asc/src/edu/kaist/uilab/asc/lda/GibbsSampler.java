@@ -12,14 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import optimization.gradientBasedMethods.Objective;
-import optimization.gradientBasedMethods.stats.OptimizerStats;
-import optimization.linesearch.GenericPickFirstStep;
-import optimization.linesearch.LineSearchMethod;
-import optimization.linesearch.WolfRuleLineSearch;
-import optimization.stopCriteria.GradientL2Norm;
-import optimization.stopCriteria.StopingCriteria;
-
 import com.aliasi.util.ObjectToCounterMap;
 
 import edu.kaist.uilab.asc.opt.LBFGS;
@@ -34,7 +26,7 @@ import edu.kaist.uilab.asc.util.InvalidArgumentException;
  * 
  * @author trung nguyen (trung.ngvan@gmail.com)
  */
-public class GibbsSampler {
+public class GibbsSampler implements ObjectiveFunction {
   private int numTopics; // T = numTopics
   private int vocabularySize; // V = vocabularySize
   private int numDocuments; // D = number of documents
@@ -53,8 +45,6 @@ public class GibbsSampler {
   double[][] y; // y[topic][word]
   double[] yWord; // y[word]
   double[] vars;
-  ObjectiveFunction func;
-  LdaObjective obj;
   SimilarityGraph graph;
 
   private int cwtsum[]; // cwtsum[k] = # words assigned to topic k
@@ -185,8 +175,6 @@ public class GibbsSampler {
     yWord = new double[vocabularySize];
     int numVariables = numTopics * vocabularySize + vocabularySize;
     vars = new double[numVariables];
-    func = new LdaObjectiveFunction(numVariables);
-    obj = new LdaObjective(numVariables);
   }
 
   /**
@@ -275,7 +263,7 @@ public class GibbsSampler {
 
     return topic;
   }
-  
+
   /**
    * Returns the estimated theta values of this sampler.
    * <p>
@@ -460,13 +448,12 @@ public class GibbsSampler {
     return topic;
   }
 
-
   /**
    * Optimizes beta over y.
-   * 
-   * <p> In this optimization, we replace b_kv = exp(y_kv + y_v), hence the
-   * solution obtained are the values of y. But the function and gradient depend
-   * are computed using beta so we have to update beta whenever we change y. 
+   * <p>
+   * In this optimization, we replace b_kv = exp(y_kv + y_v), hence the solution
+   * obtained are the values of y. But the function and gradient depend are
+   * computed using beta so we have to update beta whenever we change y.
    */
   private void optimizeBeta() {
     System.out.println("\nOptimizing beta over y...\n");
@@ -494,14 +481,14 @@ public class GibbsSampler {
     boolean supplyDiag = false;
     double machinePrecision = 1e-32;
     // starting point
-    double[] diag = new double[func.getNumVariables()];
+    double[] diag = new double[vars.length];
     // iprint[0] = output every iprint[0] iterations
     // iprint[1] = 0~3 : least to most detailed output
     int[] iprint = new int[] { 50, 0 };
     do {
       try {
-        LBFGS.lbfgs(func.getNumVariables(), numCorrections, vars,
-            func.computeFunction(null), func.computeGradient(null), supplyDiag,
+        LBFGS.lbfgs(vars.length, numCorrections, vars,
+            computeFunction(vars), computeGradient(vars), supplyDiag,
             diag, iprint, accuracy, machinePrecision, iflag);
         variablesToY(vars);
         updateBeta();
@@ -514,8 +501,8 @@ public class GibbsSampler {
 
   /**
    * Updates betas and their sums.
-   * 
-   * <p> This method should be called whenever y_kv and y_word v are changed.
+   * <p>
+   * This method should be called whenever y_kv and y_word v are changed.
    */
   private void updateBeta() {
     for (int t = 0; t < numTopics; t++) {
@@ -541,214 +528,82 @@ public class GibbsSampler {
       yWord[w] = vars[idx++];
     }
   }
-  
-  /**
-   * The objective function of this model for MAP of betas.
-   */
-  class LdaObjectiveFunction extends ObjectiveFunction {
-    public LdaObjectiveFunction(int numVariables) {
-      super(numVariables);
+
+  @Override
+  public double computeFunction(double[] vars) throws InvalidArgumentException {
+    // compute L_B = - log likelihood = -log p(w,z,s|alpha, beta)
+    double negLogLikelihood = 0.0;
+    for (int k = 0; k < numTopics; k++) {
+      negLogLikelihood += MathUtils.logGamma(cwtsum[k] + sumBeta[k])
+          - MathUtils.logGamma(sumBeta[k]);
+      for (int i = 0; i < vocabularySize; i++) {
+        if (cwt[i][k] > 0) {
+          negLogLikelihood += MathUtils.logGamma(beta[k][i])
+              - MathUtils.logGamma(beta[k][i] + cwt[i][k]);
+        }
+      }
     }
-
-    @Override
-    public double computeFunction(double[] vars)
-        throws InvalidArgumentException {
-      // compute L_B = - log likelihood = -log p(w,z,s|alpha, beta)
-      double negLogLikelihood = 0.0;
-      for (int k = 0; k < numTopics; k++) {
-        negLogLikelihood += MathUtils.logGamma(cwtsum[k] + sumBeta[k])
-            - MathUtils.logGamma(sumBeta[k]);
-        for (int i = 0; i < vocabularySize; i++) {
-          if (cwt[i][k] > 0) {
-            negLogLikelihood += MathUtils.logGamma(beta[k][i])
-                - MathUtils.logGamma(beta[k][i] + cwt[i][k]);
-          }
-        }
-      }
-      // compute log p(beta)
-      double logPrior = 0;
-      double term = 0.0;
-      for (int i = 0; i < vocabularySize; i++) {
-        ArrayList<Integer> neighbors = graph.getNeighbors(i);
-        // phi(i, iprime) = 1
-        for (int iprime : neighbors) {
-          for (int k = 0; k < numTopics; k++) {
-            term = y[k][i] - y[k][iprime];
-            logPrior += term * term;
-          }
-        }
-      }
-      logPrior /= 2; // each edge can be used only once
-      for (int i = 0; i < vocabularySize; i++) {
-        logPrior += yWord[i] * yWord[i];
-      }
-      logPrior *= -0.5; // 0.5lamda^2 where lamda = 1
-      return negLogLikelihood - logPrior;
-    }
-
-    public double[] computeGradient(double[] vars)
-        throws InvalidArgumentException {
-      double[] grads = new double[getNumVariables()];
-      double tmp;
-      double[][] betaKi = new double[numTopics][vocabularySize];
-      // common beta terms for both y_ki and y_word i
-      for (int k = 0; k < numTopics; k++) {
-        for (int i = 0; i < vocabularySize; i++) {
-          tmp = MathUtils.digamma(cwtsum[k] + sumBeta[k])
-              - MathUtils.digamma(sumBeta[k]);
-          if (cwt[i][k] > 0) {
-            tmp += MathUtils.digamma(beta[k][i])
-                - MathUtils.digamma(beta[k][i] + cwt[i][k]);
-          }
-          betaKi[k][i] = beta[k][i] * tmp;
-        }
-      }
-
-      // gradients of y_ki
-      int idx = 0;
-      ArrayList<Integer> neighbors;
-      for (int k = 0; k < numTopics; k++) {
-        for (int i = 0; i < vocabularySize; i++) {
-          grads[idx] = betaKi[k][i];
-          neighbors = graph.getNeighbors(i);
-          for (int iprime : neighbors) {
-            grads[idx] += y[k][i] - y[k][iprime];
-          }
-          idx++;
-        }
-      }
-      // gradients of y_word i
-      for (int i = 0; i < vocabularySize; i++) {
-        grads[idx] = yWord[i];
+    // compute log p(beta)
+    double logPrior = 0;
+    double term = 0.0;
+    for (int i = 0; i < vocabularySize; i++) {
+      ArrayList<Integer> neighbors = graph.getNeighbors(i);
+      // phi(i, iprime) = 1
+      for (int iprime : neighbors) {
         for (int k = 0; k < numTopics; k++) {
-          grads[idx] += betaKi[k][i];
+          term = y[k][i] - y[k][iprime];
+          logPrior += term * term;
+        }
+      }
+    }
+    logPrior /= 2; // each edge can be used only once
+    for (int i = 0; i < vocabularySize; i++) {
+      logPrior += yWord[i] * yWord[i];
+    }
+    logPrior *= -0.5; // 0.5lamda^2 where lamda = 1
+    return negLogLikelihood - logPrior;
+  }
+
+  public double[] computeGradient(double[] vars)
+      throws InvalidArgumentException {
+    double[] grads = new double[vars.length];
+    double tmp;
+    double[][] betaKi = new double[numTopics][vocabularySize];
+    // common beta terms for both y_ki and y_word i
+    for (int k = 0; k < numTopics; k++) {
+      for (int i = 0; i < vocabularySize; i++) {
+        tmp = MathUtils.digamma(cwtsum[k] + sumBeta[k])
+            - MathUtils.digamma(sumBeta[k]);
+        if (cwt[i][k] > 0) {
+          tmp += MathUtils.digamma(beta[k][i])
+              - MathUtils.digamma(beta[k][i] + cwt[i][k]);
+        }
+        betaKi[k][i] = beta[k][i] * tmp;
+      }
+    }
+
+    // gradients of y_ki
+    int idx = 0;
+    ArrayList<Integer> neighbors;
+    for (int k = 0; k < numTopics; k++) {
+      for (int i = 0; i < vocabularySize; i++) {
+        grads[idx] = betaKi[k][i];
+        neighbors = graph.getNeighbors(i);
+        for (int iprime : neighbors) {
+          grads[idx] += y[k][i] - y[k][iprime];
         }
         idx++;
       }
-      return grads;
     }
+    // gradients of y_word i
+    for (int i = 0; i < vocabularySize; i++) {
+      grads[idx] = yWord[i];
+      for (int k = 0; k < numTopics; k++) {
+        grads[idx] += betaKi[k][i];
+      }
+      idx++;
+    }
+    return grads;
   }
 
-  double[] doLbfgs2() {
-    // TODO(trung): test if this can improve the speed of line search
-    double precision = 1.E-6;
-    int maxIter = 4;
-    LineSearchMethod wolfe = new WolfRuleLineSearch(
-        new GenericPickFirstStep(1), 0.00001, 0.9, 100);
-    wolfe.setDebugLevel(2);
-    OptimizerStats stats = new OptimizerStats();
-    optimization.gradientBasedMethods.LBFGS optimizer = new optimization.gradientBasedMethods.LBFGS(
-        wolfe, 10);
-    StopingCriteria stop = new GradientL2Norm(precision);
-    optimizer.setMaxIterations(maxIter);
-    boolean succed = optimizer.optimize(obj, stats, stop);
-    System.out.println("Ended optimzation LBFGS\n" + stats.prettyPrint(1));
-    System.out.println("Solution: " + obj.toString());
-    if (succed) {
-      System.out.println("Ended optimization in "
-          + optimizer.getCurrentIteration());
-      return obj.getParameters();
-    } else {
-      System.out.println("Failed to optimize");
-      return null;
-    }
-  }
-  
-  /**
-   * The objective function for using another Optimization package.
-   */
-  class LdaObjective extends Objective {
-    public LdaObjective(int numVariables) {
-      parameters = new double[numVariables];
-      for (int i = 0; i < numVariables; i++) {
-        parameters[i] = 0;
-      }
-      gradient = new double[numVariables];
-    }
-
-    @Override
-    public double[] getGradient() {
-      gradientCalls++;
-      double tmp;
-      double[][] betaKi = new double[numTopics][vocabularySize];
-      // common beta terms for both y_ki and y_word i
-      for (int k = 0; k < numTopics; k++) {
-        for (int i = 0; i < vocabularySize; i++) {
-          tmp = MathUtils.digamma(cwtsum[k] + sumBeta[k])
-              - MathUtils.digamma(sumBeta[k]);
-          if (cwt[i][k] > 0) {
-            tmp += MathUtils.digamma(beta[k][i])
-                - MathUtils.digamma(beta[k][i] + cwt[i][k]);
-          }
-          betaKi[k][i] = beta[k][i] * tmp;
-        }
-      }
-
-      // gradients of y_ki
-      int idx = 0;
-      ArrayList<Integer> neighbors;
-      for (int k = 0; k < numTopics; k++) {
-        for (int i = 0; i < vocabularySize; i++) {
-          gradient[idx] = betaKi[k][i];
-          neighbors = graph.getNeighbors(i);
-          for (int iprime : neighbors) {
-            gradient[idx] += y[k][i] - y[k][iprime];
-          }
-          idx++;
-        }
-      }
-      // gradients of y_word i
-      for (int i = 0; i < vocabularySize; i++) {
-        gradient[idx] = yWord[i];
-        for (int k = 0; k < numTopics; k++) {
-          gradient[idx] += betaKi[k][i];
-        }
-        idx++;
-      }
-
-      return gradient;
-    }
-
-    @Override
-    public double getValue() {
-      functionCalls++;
-      double negLogLikelihood = 0.0;
-      for (int k = 0; k < numTopics; k++) {
-        negLogLikelihood += MathUtils.logGamma(cwtsum[k] + sumBeta[k])
-            - MathUtils.logGamma(sumBeta[k]);
-        for (int i = 0; i < vocabularySize; i++) {
-          if (cwt[i][k] > 0) {
-            negLogLikelihood += MathUtils.logGamma(beta[k][i])
-                - MathUtils.logGamma(beta[k][i] + cwt[i][k]);
-          }
-        }
-      }
-      // compute log p(beta)
-      double logPrior = 0;
-      double term = 0.0;
-      for (int i = 0; i < vocabularySize; i++) {
-        ArrayList<Integer> neighbors = graph.getNeighbors(i);
-        // phi(i, iprime) = 1
-        for (int iprime : neighbors) {
-          for (int k = 0; k < numTopics; k++) {
-            term = y[k][i] - y[k][iprime];
-            logPrior += term * term;
-          }
-        }
-      }
-      logPrior /= 2; // each edge can be used only once
-      for (int i = 0; i < vocabularySize; i++) {
-        logPrior += yWord[i] * yWord[i];
-      }
-      logPrior *= -0.5; // 0.5lamda^2 where lamda = 1
-      return negLogLikelihood - logPrior;
-    }
-
-    @Override
-    public String toString() {
-
-      return null;
-    }
-  }
-  
 }

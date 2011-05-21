@@ -109,8 +109,7 @@ public class GraphInputProducer {
             "%d,%d", idx2, idx1);
         if (set.add(s)) {
           out.printf("%d %d\n", idx1, idx2);
-          System.out.println(word[0] + "\t" + word[1]);
-        }  
+        }
       }
     }
     in.close();

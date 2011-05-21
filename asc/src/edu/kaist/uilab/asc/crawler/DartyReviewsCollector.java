@@ -177,7 +177,7 @@ public class DartyReviewsCollector {
 
     @Override
     public void run() {
-      DartyReviewsCollector collector = new DartyReviewsCollector("reviews/"
+      DartyReviewsCollector collector = new DartyReviewsCollector("reviews/darty/"
           + mProduct);
       collector.crawl(OUTPUT_DIR + "/" + mProduct);
     }

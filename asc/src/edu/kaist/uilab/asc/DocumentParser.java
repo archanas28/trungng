@@ -8,15 +8,21 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.Vector;
 import java.util.regex.Pattern;
 
+import edu.kaist.uilab.asc.stemmer.SnowballStemmer;
+
 /**
- * Parse the datasets into bag of sentences.
+ * Parse the datasets into bag of sentences. TODO(trung): use local lowercase
+ * for each language
  */
 public class DocumentParser {
+
   private static final String sentenceDelimiter = "[.!?\\n]";
   private static final String wordDelimiter = "[\\s]+";
   private static final String UTF_8 = "utf-8";
@@ -25,13 +31,16 @@ public class DocumentParser {
   private Vector<String[]> replacePatternList = new Vector<String[]>();
   private String[] wordReplacePattern;
   private TreeSet<Word> stopWords = new TreeSet<Word>();
+  private HashMap<String, String> stemMap;
 
+  private Locale locale = Locale.ENGLISH;
   private int minWordLength = 2;
   private int maxWordLength = 40;
   private int minSentenceLength = 1;
   private int maxSentenceLength = 50;
   private int minWordOccur = 1;
   private int minDocLength = 1;
+  private SnowballStemmer stemmer = null;
 
   private Vector<Vector<Vector<Integer>>> englishBag;
   // bag for documents in other languages
@@ -78,6 +87,15 @@ public class DocumentParser {
   }
 
   /**
+   * Sets the language of the corpus being processed.
+   * 
+   * @param lang
+   */
+  public void setLocale(Locale locale) {
+    this.locale = locale;
+  }
+
+  /**
    * Sets stop words as the list of words from the specified file.
    * 
    * @param path
@@ -92,6 +110,16 @@ public class DocumentParser {
       stopWords.add(new Word(line, null));
     }
     in.close();
+  }
+
+  /**
+   * Sets the stemmer to use for parsing the current corpus.
+   * 
+   * @param stemmer
+   */
+  public void setStemmer(SnowballStemmer stemmer) {
+    this.stemmer = stemmer;
+    stemMap = new HashMap<String, String>();
   }
 
   private String replacePattern(String document) {
@@ -118,7 +146,7 @@ public class DocumentParser {
       Vector<Word> wordList = new Vector<Word>();
       String[] words = sentence.split(wordDelimiter);
       for (String word : words) {
-        wordList.add(new Word(word));
+        wordList.add(new Word(word.toLowerCase(locale)));
       }
       list.add(wordList);
     }
@@ -136,7 +164,6 @@ public class DocumentParser {
     for (Word word : unprocessedSentence) {
       if (word.value.length() >= minWordLength
           && word.value.length() <= maxWordLength) {
-        word.value = word.value.toLowerCase();
         boolean invalidWord = false;
         String pattern = wordReplacePattern[0];
         String replace = wordReplacePattern[1];
@@ -148,8 +175,15 @@ public class DocumentParser {
                 .matcher(word.value).replaceAll(replace);
           }
         }
-        if (!invalidWord && !stopWords.contains(word)) {
-          ret.add(word);
+        if (!invalidWord) {
+          if (stemmer != null) {
+            String stem = stemmer.getStem(word.value);
+            stemMap.put(word.value, stem);
+            word.value = stem;
+          }
+          if (!stopWords.contains(word)) {
+            ret.add(word);
+          }
         }
       }
     }
@@ -164,8 +198,8 @@ public class DocumentParser {
    * @param documentName
    * @return
    */
-  private void storeIntoBag(boolean isEnglishDocument,
-      Vector<Vector<Word>> sentenceList, String documentName) {
+  private void storeIntoBag(Vector<Vector<Word>> sentenceList,
+      String documentName) {
     Vector<Vector<Integer>> indexSentenceList = new Vector<Vector<Integer>>();
     synchronized (keyToBag) {
       for (Vector<Word> wordList : sentenceList) {
@@ -180,7 +214,7 @@ public class DocumentParser {
         }
         indexSentenceList.add(sentence);
       }
-      if (isEnglishDocument) {
+      if (locale.equals(Locale.ENGLISH)) {
         englishBag.add(indexSentenceList);
       } else {
         otherBag.add(indexSentenceList);
@@ -196,8 +230,7 @@ public class DocumentParser {
    * @return
    * @throws Exception
    */
-  public void build(boolean isEnglishDocument, String document,
-      String documentName) {
+  public void build(String document, String documentName) {
     document = replacePattern(document);
     if (document != null) {
       Vector<Vector<Word>> list = documentToSentences(document);
@@ -212,9 +245,9 @@ public class DocumentParser {
         }
       }
       if (numWords >= minDocLength) {
-        storeIntoBag(isEnglishDocument, sentenceList, documentName);
+        storeIntoBag(sentenceList, documentName);
       }
-    }  
+    }
   }
 
   /**
@@ -441,8 +474,24 @@ public class DocumentParser {
     String[] wordList = getWordList();
     writeWordCount(outDir + "/" + Application.wordcountFile, wordList);
     writeWordList(outDir + "/" + Application.wordlistFile, wordList);
-    writeBagOfSentences(englishBag, outDir + "/" + Application.englishDocuments);
+    writeBagOfSentences(englishBag, outDir + "/" + Application.enDocuments);
     writeBagOfSentences(otherBag, outDir + "/" + Application.otherDocuments);
+  }
+
+  /**
+   * Writes the map of the original words and their stems to the specified file.
+   * <p>
+   * The stem map is clear after the writing process so that it can be used with
+   * other lingual corpus.
+   */
+  public void writeAndClearsStemMap(String file) throws IOException {
+    PrintWriter out = new PrintWriter(new OutputStreamWriter(
+        new FileOutputStream(file), UTF_8));
+    for (Entry<String, String> entry : stemMap.entrySet()) {
+      out.printf("%s %s\n", entry.getKey(), entry.getValue());
+    }
+    out.close();
+    stemMap.clear();
   }
 
   public String toString() {

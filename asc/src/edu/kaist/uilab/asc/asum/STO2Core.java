@@ -35,7 +35,7 @@ public class STO2Core {
   private int numRealIterations;
   private int numDocuments;
   private List<String> wordList = null;
-  private int numProbWords = 1000;
+  private int numProbWords = 100;
 
   public String inputDir = null;
   public String outputDir = null;
@@ -69,11 +69,11 @@ public class STO2Core {
   final private int maxSentenceLength = 50;
 
   public static void main(String[] args) throws Exception {
-    int numTopics = 15;
-    int numIterations = 2000;
+    int numTopics = 50;
+    int numIterations = 1500;
     int numSenti = 2;
     int numThreads = 1;
-    String inputDir = "C:/datasets/asc/reviews";
+    String inputDir = "C:/datasets/asc/reviews/ASUM";
     String outputDir = "C:/datasets/asc/reviews/ASUM";
     String dicDir = inputDir;
     double alpha = 0.1;
@@ -110,7 +110,7 @@ public class STO2Core {
     for (int s = 0; s < numSenti; s++) {
       String dicFilePath = dicDir + "/" + sentiFilePrefix + s + ".txt";
       if (new File(dicFilePath).exists()) {
-        sentiWordsStrList.add(Utils.makeSetOfWordsFromFile(dicFilePath));
+        sentiWordsStrList.add(Utils.readWords(dicFilePath, "utf-8"));
       }
     }
 

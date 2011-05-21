@@ -1,3 +1,3831 @@
-act
-stability
-preparation
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html>
+<head>
+
+
+
+
+
+<title>Amazon.fr&nbsp;: Commentaires en ligne&#160;: Canon - EOS 550D - Kit Reflex - 18 Mpix + Objectif EF-S 18-55 mm f/3,5-5,6 IS - Noir</title>
+
+
+
+
+
+
+
+
+
+
+
+<script type="text/javascript">
+  var loader = new Image();
+  loader.src = "http://g-ecx.images-amazon.com/images/G/08/common/sprites/sprite-site-wide._V181116225_.png";
+
+
+</script>
+
+
+
+
+
+<script language="Javascript1.1" type="text/javascript">
+<!--
+function amz_js_PopWin(url,name,options){
+  var ContextWindow = window.open(url,name,options);
+  ContextWindow.focus();
+  return false;
+}
+//-->
+</script>
+
+
+
+
+
+
+
+
+
+
+<style type="text/css"><!--
+
+body { background-color: #FFFFFF; } 
+* html body { margin-top: 0px; }
+.serif { font-family: times,serif; font-size: medium; } 
+.sans { font-family: verdana,arial,helvetica,sans-serif; font-size: medium; }
+
+.small { font-family: verdana,arial,helvetica,sans-serif; font-size: small; }
+
+.h1 { font-family: verdana,arial,helvetica,sans-serif; color: #E47911; font-size: medium; } 
+.h3color { font-family: verdana,arial,helvetica,sans-serif; color: #E47911; font-size: small; } 
+h2.small {margin-bottom: 0em; }
+h2.h1 { margin-bottom: 0em; }
+h2.h3color { margin-bottom: 0em; }
+.tiny { font-family: verdana,arial,helvetica,sans-serif; font-size: x-small; } 
+.listprice { font-family: arial,verdana,helvetica,sans-serif; text-decoration: line-through; } 
+.attention { background-color: #FFFFD5; } 
+.price { font-family: verdana,arial,helvetica,sans-serif; color: #990000; } 
+.tinyprice { font-family: verdana,arial,helvetica,sans-serif; color: #990000; font-size: x-small; } 
+.highlight { font-family: verdana,arial,helvetica,sans-serif; color: #990000; font-size: small; } 
+.alertgreen { color: #009900; font-weight: bold; } 
+.active-nav { background-color: #000000; color: #FFFFFF; } 
+.inactive-nav { background-color: #FFFFFF; color: #000000; } 
+.tigerBox .head { border: 1px solid #CCCC99; border-bottom-width: 0px; background-color: #EEEECC; } 
+.tigerBox .body { border: 1px solid #CCCC99; } 
+.tigerBoxWithEyebrow .head { border-width: 0px; } 
+.tigerBoxWithEyebrow .body { border: 1px solid #CCCC99; } 
+.detailPageTigerBox .head { border-width: 0px; } 
+.detailPageTigerBox .body { border: 1px solid #CCCC99; } 
+.detailPageTigerBox .darkCell { background-color: #EEEECC; } 
+.eyebrow { font-family: verdana,arial,helvetica,sans-serif; font-size: 10px; font-weight: bold; text-transform: uppercase; text-decoration: none; color: #FFFFFF; } 
+div#page-wrap { min-width: 980px; }
+div#leftcol, div#leftcolhidden { float: left; width: 180px; margin:5px 0px 0px 5px; display: inline; }
+
+div#rightcol, div#rightcolhidden { float: right; width: 300px; margin-top:5px;}
+
+div#leftcolhidden { clear:left;}
+div#rightcolhidden { clear:right;}div#center1, div#centercol, div#centerrightspancol { overflow: hidden; }
+* html div#center1 { width: 100%; }
+* html div#centercol { width:100%; }
+* html div#centerrightspancol { width: 100%; }
+div#page-footer { clear: both; }
+* html div#page-wrap { border-right: 980px solid #fff; width: 100%; margin-right: 25px;}
+* html div#content { float: left; position:relative; margin-right: -980px; }
+a:active { font-family: verdana,arial,helvetica,sans-serif; color: #FF9933; } 
+a:visited { font-family: verdana,arial,helvetica,sans-serif; color: #996633; } 
+a:link { font-family: verdana,arial,helvetica,sans-serif; color: #004B91; } 
+a.noclick, a.noclick:visited { color: #000000; }
+.noLinkDecoration a { text-decoration: none; border-bottom: none; }
+.noLinkDecoration a:hover { text-decoration: underline; }
+.noLinkDecoration a.dynamic:hover { text-decoration: none; border-bottom: 1px dashed; }
+.noLinkDecoration a.noclick:hover { color: #000000; text-decoration: none; border-bottom: 1px dashed; }
+
+.amabot_right .h1 { color: #E47911; font-size: .92em; } 
+.amabot_right .amabot_widget .headline, .amabot_left .amabot_widget .headline { color: #E47911; font-size: .92em; display: block; font-weight: bold; } 
+.amabot_widget .headline { color: #E47911; font-size: medium; display: block; font-weight: bold; } 
+.amabot_right .amabot_widget { padding-top: 8px;  padding-bottom: 8px; padding-left: 8px;  padding-right: 8px; border-bottom: 1px solid #C9E1F4; border-left: 1px solid #C9E1F4; border-right: 1px solid #C9E1F4; border-top: 1px solid #C9E1F4; } 
+.amabot_left .h1 { color: #E47911; font-size: .92em; } 
+.amabot_left .amabot_widget { padding-top: 8px;  padding-bottom: 8px;  padding-left: 8px;  padding-right: 8px; border-bottom: 1px solid #C9E1F4; border-left: 1px solid #C9E1F4; border-right: 1px solid #C9E1F4;  border-top: 1px solid #C9E1F4; }
+ 
+.amabot_center div.unified_widget, .amabot_center .amabot_widget { font-size: 12px; }
+.amabot_right div.unified_widget, .amabot_right .amabot_widget { font-size: 12px; }
+.amabot_left div.unified_widget, .amabot_left .amabot_widget { font-size: 12px; }
+
+.nobullet { list-style-type: none; } 
+.homepageTitle { font-size: 28pt; font-family: 'Arial Bold', Arial, sans-serif; font-weight: 800; font-variant: normal; color: #80B6CE; line-height:1em; } 
+.tigerbox { padding-top: 8px;  padding-bottom: 8px;  padding-left: 8px;  padding-right: 8px;  border-bottom: 1px solid #C9E1F4; border-left: 1px solid #C9E1F4;  border-right: 1px solid #C9E1F4;  border-top: 1px solid #C9E1F4; } 
+.hr-leftbrowse { border-top-width: 1px;	border-right-width: 1px;	border-bottom-width: 1px; border-left-width: 1px; border-top-style: dashed; border-right-style: none; border-bottom-style: none; border-left-style: none; border-top-color: #999999; border-right-color: #999999; border-bottom-color: #999999; border-left-color: #999999; margin-top: 10px; margin-right: 5px; margin-bottom: 0px; margin-left: 5px; } 
+div.unified_widget p { margin:0 0 0.5em 0; line-height:1.4em; }
+
+div.unified_widget h2 { color:#E47911; padding:0; }
+
+.amabot_right div.unified_widget .headline, .amabot_left div.unified_widget .headline { color: #E47911; font-size: .92em; display: block; font-weight: bold; }
+div.unified_widget .headline { color: #E47911; font-size: medium; display: block; font-weight: bold;}
+div.unified_widget sup { font-weight:normal; font-size: 75%; } 
+div.unified_widget h2 sup { font-size: 50%; }
+
+td.amabot_left div.unified_widget h2, td.amabot_right div.unified_widget h2, div.amabot_left div.unified_widget h2, div.amabot_right div.unified_widget h2 { font-size:100%; margin:0 0 0.5em 0; } 
+td.amabot_center div.unified_widget h2, div.amabot_Center div.unified_widget h2 { font-size:135%; font-weight:bold; margin:0 0 0.35em 0px; } 
+td.amabot_center, div.amabot_center { padding:5px 15px 5px 10px; }
+div.unified_widget ul { margin: 1em 0; padding: 0 0 0 15px; list-style-position:inside; }
+
+div.unified_widget ol { margin:0; padding:0 0 0 2.5em; }
+
+div.unified_widget a:link, div.unified_widget a:visited { text-decoration:underline; }
+div.unified_widget a:hover { text-decoration:underline; }
+div.unified_widget p.seeMore { clear:both; font-family:verdana,arial,helvetica,sans-serif; margin:0; padding-left:1.15em; text-indent: -1.15em; font-size:100%; font-weight:normal; } 
+div.unified_widget p.seeMore a:link, div.unified_widget p.seeMore a:visited { text-decoration:underline; } 
+div.unified_widget p.seeMore a:hover { text-decoration: underline; } 
+div.unified_widget .carat, div.left_nav .carat { font-weight:bold; font-size:120%; font-family:verdana,arial,helvetica,sans-serif; color:#E47911; margin-right:0.20em; } 
+div.unified_widget a img { border:0; }
+ 
+div.h_rule { clear:both; } 
+div#centerrightspancol div.h_rule { clear:right; }
+div.unified_widget { margin-bottom:2em; clear:both; } 
+div.unified_widget div.col1 { width: 100%; } 
+div.unified_widget div.col2 { width: 49%; } 
+div.unified_widget div.col3 { width: 32%; } 
+div.unified_widget div.col4 { width: 24%; } 
+div.unified_widget div.col5 { width: 19%; } 
+div.unified_widget table { border:0; border-collapse:collapse; width:100%; } 
+div.unified_widget td { padding:0 8px 8px 0; vertical-align:top; } 
+div.unified_widget table.col1 td { width:100%; } 
+div.unified_widget table.col2 td { width:49%; } 
+div.unified_widget table.col3 td { width:32%; } 
+div.unified_widget table.col4 td { width:24%; } 
+div.unified_widget table.col5 td { width:19%; } 
+div.unified_widget td.bottom { vertical-align:baseline; } 
+div.unified_widget table h4, div.unified_widget h4 { color:#000; font-size:100%; font-weight:normal; margin:0; padding:0; } 
+div.rcmBody div.prodImage, amabot_widget div.prodImage {float:left; margin:0px 0.5em 0.25em 0px;}
+
+td.amabot_right div.unified_widget, td.amabot_left div.unified_widget, div.amabot_right div.unified_widget, div.amabot_left div.unified_widget { border:1px solid #C9E1F4; padding:8px; margin-bottom:20px; }
+
+* html td.amabot_right div.unified_widget, * html div.amabot_right div.unified_widget { height:100%; }
+* html td.amabot_left div.unified_widget, * html div.amabot_left div.unified_widget { height:100%; }
+
+div.rcmBody, amabot_widget div.rcmBody { line-height:1.4em; }
+div.rcmBody a:link, div.rcmBody a:visited { text-decoration: underline; }
+
+div.rcmBody p.seeMore, amabot_widget div.rcmBody p.seeMore { margin-top:0.5em; }
+div.rcmBody div.bannerImage { text-align:center; }
+div.rcmBody h2 span.homepageTitle { display:block; margin-bottom:-0.3em; margin-top:-0.12em; line-height:1em; }
+div.rcmBody h2 img { float:none; }
+table.coopTable div.rcmBody .headline { font-size: 110%; }
+table.coopTable div.rcmBody h2 { font-size: 110%; font-weight:bold; }
+table.promo div.rcmBody h2 { font-size: 100%; font-weight:bold; }
+div.blurb div.title { font-weight:bold; padding-top:5px; padding-bottom:2px; }
+
+div.left_nav { font-family: Arial, sans-serif; font-size:100%; margin:0; line-height:1.05em; width:100%; border:1px solid #C9E1F4; padding-bottom:10px; } 
+div.left_nav h2 { margin:0 0 0 0; color:#000000; font-weight:bold; line-height:1.25em; font-size:100%; font-family:verdana,arial,helvetica,sans-serif; padding: 3px 6px; background-color:#EAF3FE; } 
+div.left_nav h3 { font-family:verdana,arial,helvetica,sans-serif; margin:0.5em 0 0.4em 0.5em; color:#E47911; font-weight:bold; line-height:1em; font-size:100%; padding-right:0.5em; } 
+div.left_nav ul { margin:0; padding:0; } 
+div.left_nav li, div.left_nav p { list-style:none; margin:0.5em 0.5em 0 1em; line-height:1.2em;}
+ 
+div.left_nav hr { margin:1em 0.5em; border-top:0; border-left:0; border-right:0; border-bottom:1px dashed #cccccc; }
+
+div.left_nav a:link, div.left_nav a:visited { color:#003399; text-decoration:none; font-family:Arial, sans-serif; } 
+div.left_nav a:hover { color:#2a70fc; text-decoration:underline; } 
+div.left_nav p.seeMore { padding-left:0.9em; text-indent:-0.9em; margin-top:0.35em; margin-bottom:1em; }
+ 
+div.left_nav p.seeMore a:link, div.left_nav p.seeMore a:visited { text-decoration:none; } 
+div.left_nav p.seeMore a:hover { text-decoration:underline; } 
+div.asinItem { float:left; margin-bottom:1em; width:32%; } 
+div.asinTextBlock { padding:0 8px 8px 0; } 
+div.asinItem div.prodImage { height:121px; display:table-cell; vertical-align:bottom; } 
+div.asinItem div.localImage { display:table-cell; vertical-align:bottom; }
+
+div.asinItem span { margin: 0.5em 0 0.25em 0; } 
+div.asinItem ul { margin:0; padding:0 0 0.5em 1.3em; text-indent:-1.3em; font-size:90%; }
+ 
+div.asinTitle {padding-top:3px; padding-bottom:2px;}
+div.row { clear:both; }
+body.dp {}
+body.dp div.h_rule { clear:none; }
+body.dp div.unified_widget { clear:none; } 
+div.asinCoop div.asinItem { float:none; width:100%;}
+div.asinCoop_header {}
+div.asinCoop_footer {}
+
+div.newAndFuture div.asinItem ul { font-size:100%; }
+div.newAndFuture div.asinItem li { list-style-position: outside; margin:0 0 0.35em 20px; padding:0; text-indent: 0; }
+div.newAndFuture h3 { font-size:100%; margin:1em 0 ; }
+div.newAndFuture a:link, div.newAndFuture a:visited { text-decoration:underline; }
+div.newAndFuture a:hover { text-decoration:underline; }
+div.newAndFuture p.seeMore { margin:-0.75em 0 0 35px; }
+
+div.unified_widget ol.topList { margin: 0; padding: 0; list-style: none; }
+div.unified_widget ol.topList li { list-style: none; clear: both; display: list-item; padding-top: 6px; }
+div.unified_widget ol.topList .productImage { display: block; float: left;vertical-align: top;text-align: center;width:60px; }
+div.unified_widget ol.topList .productText { display: block; float: left; padding-left:10px; vertical-align: top; }
+:root div.unified_widget span.productImage { display: table-cell; float: none; }
+:root div.unified_widget span.productText { display: table-cell; float: none; }
+div.unified_widget dl.priceBlock {margin:0 0 0.45em 0;}
+div.unified_widget dl.priceBlock dt {clear:left; font-weight:bold; float:left; margin:0 0.3em 0 0;}
+div.unified_widget dl.priceBlock dd {margin:0 0 0.2em 0;}
+div.unified_widget .bold {font-weight:bold;}
+div.unified_widget .byline {font-size: 95%; font-weight: normal;}
+table.thirdLvlNavContent div.blurb {margin:10px;}
+
+div.pageBanner h1 { font-family:Arial, Helvetica, sans-serif; font-weight:normal; font-size:225%; color: #e47911; letter-spacing:-0.03em; margin:0; }
+div.pageBanner p { font-size:90%; color:#888888; margin: 0; }
+
+div.pageBanner h1.bkgnd { background-repeat:no-repeat; background-color:#FFFFFF; overflow:hidden; text-indent:-100em; }
+INPUT { font-family: fixed; }
+BODY { font-family: verdana,arial,helvetica,sans-serif; font-size: small; }
+TD { font-family: verdana,arial,helvetica,sans-serif; font-size: small; }
+TH { font-family: verdana,arial,helvetica,sans-serif; font-size: small; }
+
+.sBox .sBoxT,
+.sBox .sBoxB,
+.sBox .sBoxTL,
+.sBox .sBoxTR,
+.sBox .sBoxBL,
+.sBox .sBoxBR
+{
+    background-image: url(http://g-ecx.images-amazon.com/images/G/08/categoryWidget/sBox1._V186818477_.png);
+    background-repeat: no-repeat;
+}
+
+.sBox .sBoxL
+{
+    background-image: url(http://g-ecx.images-amazon.com/images/G/08/categoryWidget/sBoxL._V186818479_.png);
+    background-position: top left;
+}
+.sBox .sBoxR
+{
+    background-image: url(http://g-ecx.images-amazon.com/images/G/08/categoryWidget/sBoxR._V186818478_.png);
+    background-position: top right;
+}
+--></style>
+
+
+<style type="text/css"><!--
+
+.crAuthorInfo {
+  font-family:               verdana;
+  font-size:                 0.86em;
+  margin-left:               80px;
+}
+
+.crAuthorInfoCredibility {
+  font-family:               verdana;
+  font-size:                 0.86em;
+}
+
+.crBlue-bevel {
+  background:                url(http://g-ecx.images-amazon.com/images/G/08/x-locale/communities/reviews/sliced-box-tbevel.jpg) repeat-x top;
+  height:                    1.45em;
+}
+
+.crBlueBorder-tl {
+  background:                url(http://g-ecx.images-amazon.com/images/G/08/x-locale/communities/reviews/border-box-tl._V192553893_.gif) no-repeat top left;
+  width:                     1em;
+}
+                                                                                                                                                             
+.crBlueBorder-tc {
+  background:                url(http://g-ecx.images-amazon.com/images/G/08/x-locale/communities/reviews/border-box-tc._V192553898_.gif) repeat-x top;
+}
+                                                                                                                                                             
+.crBlueBorder-tr {
+  background:                url(http://g-ecx.images-amazon.com/images/G/08/x-locale/communities/reviews/border-box-tr._V192553893_.gif) no-repeat top right;
+  width:                     1em;
+}
+                                                                                                                                                             
+.crBlueBorder-bl {
+  background:                url(http://g-ecx.images-amazon.com/images/G/08/x-locale/communities/reviews/border-box-bl._V192553898_.gif) no-repeat bottom left;
+}
+                                                                                                                                                             
+.crBlueBorder-bc {
+  background:                url(http://g-ecx.images-amazon.com/images/G/08/x-locale/communities/reviews/border-box-bc._V192553898_.gif) repeat-x bottom;
+}
+                                                                                                                                                             
+.crBlueBorder-br {
+  background:                url(http://g-ecx.images-amazon.com/images/G/08/x-locale/communities/reviews/border-box-br._V192553898_.gif) no-repeat bottom right;
+}
+
+.crBox {
+  background:                #DFEDF7;
+  padding:                   0.2em 1.5em 0.2em 1.5em;
+}
+
+.crBox-tl {
+  background:                #DFEDF7 url(http://g-ecx.images-amazon.com/images/G/08/x-locale/communities/reviews/box-tl._V192553892_.gif) no-repeat top left;
+}
+
+.crBox-tc {
+  background:                url(http://g-ecx.images-amazon.com/images/G/08/x-locale/communities/reviews/box-tc._V192553892_.gif) repeat-x top;
+}
+
+.crBox-tr {
+  background:                url(http://g-ecx.images-amazon.com/images/G/08/x-locale/communities/reviews/box-tr._V192553892_.gif) no-repeat top right;
+}
+
+.crBox-bl {
+  background:                #DFEDF7 url(http://g-ecx.images-amazon.com/images/G/08/x-locale/communities/reviews/box-bl._V192553893_.gif) no-repeat bottom left;
+}
+
+.crBox-bc {
+  background:                url(http://g-ecx.images-amazon.com/images/G/08/x-locale/communities/reviews/box-bc._V192553893_.gif) repeat-x bottom;
+}
+
+.crBox-br {
+  background:                url(http://g-ecx.images-amazon.com/images/G/08/x-locale/communities/reviews/box-br._V192553892_.gif) no-repeat bottom right;
+}
+
+.crColumnEndMarker {
+  clear:                     both;
+  height:                    13px;
+  background-image:          url(http://g-ecx.images-amazon.com/images/G/08/x-locale/communities/people/column-bottom-edge._V192553923_.gif);
+  background-repeat:         no-repeat;
+}
+
+.crColumnEndMarker .rightEdge {
+  float:                     right;
+  background-image:          url(http://g-ecx.images-amazon.com/images/G/08/x-locale/communities/people/column-bottom-edge-right._V192553920_.gif);
+  background-position:       right top;
+  background-repeat:         no-repeat;
+  width:                     13px;
+  height:                    13px;
+}
+
+
+.crCdDotsBottom {
+  clear:                     both;
+  padding:                   1px;;
+  font-size:                 0.0625em;
+  margin:                    0 0 5px 0;
+  background-image:          url(http://g-ecx.images-amazon.com/images/G/08/x-locale/communities/people/dotborder.jpg);
+  background-repeat:         repeat-x;
+  background-position:       center;
+}
+
+.crDescription {
+  font-family:               verdana;
+  margin-left:               80px;
+}
+
+
+.crErrorMsg {
+  color:                     red;
+  font-weight:               bold;
+}
+
+.crFanlink {
+  text-decoration: 	     none; 
+  border-top-width:          0; 
+  border-right-width:        0; 
+  border-bottom-width:       1px;
+  border-left-width:         0;
+  border-top-color:          #146EB4;
+  border-right-color:        #146EB4;
+  border-bottom-color:       #146EB4;
+  border-left-color:         #146EB4;
+  border-top-style:          none;
+  border-right-style:        none;
+  border-bottom-style:       dashed;
+  border-left-style:         none;
+  color:                     #003399; 
+}
+
+.crFinePrint {
+  font-size:                 0.7em;
+  margin-top:                0.7em;
+}
+
+.crForm {
+  width:                     100%;
+  display:                   block;
+}
+
+.crHeaderText {
+  color:                     #CC6600;
+  padding-left:              0;
+  padding-bottom:            5px;
+  font-family:               helvetica,
+  font-size:                 13px;
+  font-weight:               bold;
+  float:                     top;
+  float:                     left;
+}
+
+h2.crHeading {
+  color:                     #E47911;
+  font-family:               Verdana,Helvetica,sans-serif;
+  font-size:                 130%;
+  margin:                    0 0 3px;
+  padding-left:              0px;
+}
+
+h3.crHeading {
+  color:                     #E47911;
+  font-family:               Verdana,Helvetica,sans-serif;
+  font-size:                 100%;
+  margin:                    0 0 10px;
+}
+
+.crHeading {
+  color:                     #c60;
+  font-family:               sans-serif;
+  font-size:                 1.5em;
+  font-weight:               bold;
+  padding-bottom:            0.5em;
+  padding-left:              0.5em;
+}
+
+.crInnerBox {
+  padding:                   0.6em 2em 0.6em 2em;
+  background:                #EFF5F9;
+  clear:                     both;
+}
+
+.crInnerBox-tl {
+  background:                #EFF5F9 url(http://g-ecx.images-amazon.com/images/G/08/x-locale/communities/reviews/innerbox-tl._V192553916_.gif) no-repeat top left;
+  clear: both;
+}
+
+.crInnerBox-tr {
+  background:                #EFF5F9 url(http://g-ecx.images-amazon.com/images/G/08/x-locale/communities/reviews/innerbox-tr._V192553888_.gif) no-repeat top right;
+  clear: both;
+}
+
+.crInnerBox-bl {
+  background:                #EFF5F9 url(http://g-ecx.images-amazon.com/images/G/08/x-locale/communities/reviews/innerbox-bl._V192553916_.gif) no-repeat bottom left;
+}
+
+.crInnerBox-br {
+  background:                url(http://g-ecx.images-amazon.com/images/G/08/x-locale/communities/reviews/innerbox-br._V192553916_.gif) no-repeat bottom right;
+}
+
+.crInputTitle {
+  font-weight:               bold;
+  vertical-align:            middle; 
+}
+
+.crInputFinePrint {
+  color:                     #6E6E6E; 
+  font-size:                 0.7em;
+  padding-bottom:            1.5em; 
+}
+
+.crInput {
+  padding:                   0em 0em 1.5em 0em;
+  vertical-align:            middle;
+}
+
+.crInputFormField {
+  font-family:               arial, helvetica, sans-serif;
+}
+
+.crInstruction {
+  padding-bottom:            0.4em;
+  float:                     left;
+}
+
+.crProductLinks {
+  padding-bottom:            0.4em;
+  float:                     right;
+  vertical-align:            top;  
+}
+
+.crLargerTitle {
+  font-family:               verdana, arial, helvetica, sans-serif;
+  font-size:                 1.6em;
+  color:                     #c60;
+  padding-bottom:            5px;
+  padding-top:               10px;
+}
+
+.crLine {
+  clear:                     both;
+  border:                    0;
+  height:                    2px;
+  color:                     #CADFE9;
+  background-color:          #CADFE9;
+  noshade:                   noshade;
+}
+
+.crPrevLeftButton {
+  padding-left:              15px; 
+  margin-bottom:             0px;
+}
+
+.crPrevRightButton {
+  margin-bottom:             0px;
+}
+
+.crPicture {
+  clear:                     both;
+  float:                     left;
+  text-align:                center;
+  width:                     80px;
+  overflow:                  hidden;
+  padding-top:               0.2em;
+}
+
+.crReviewHeader  {
+  font-family:               Verdana, Arial, Helvetica, sans-serif;
+  font-size:                 1.5em;
+  font-weight:               bold;
+  color:                     #e47911;
+  margin-top:                5px;
+}
+
+.crReviewSumBox {
+  height:                    36px;
+  background-image:          url(http://g-ecx.images-amazon.com/images/G/08/x-locale/communities/people/column-eyebrow-visitor._V192553920_.gif);
+  background-repeat:         no-repeat;
+  font-family:               verdana;
+  font-size:                 36px;
+}
+
+.crReviewSumBox .titleText {
+  float:                     left;
+  font-weight:               bold;
+  padding-left:              10px;
+  padding-top:               10px;
+  font-size:                 13px;
+  font-family:               verdana;
+  color:                     #000000;
+  white-space:               nowrap;
+}
+
+.crReviewSumBox .rightEdge {
+  background-image:          url(http://g-ecx.images-amazon.com/images/G/08/x-locale/communities/people/column-eyebrow-visitor-right._V192553920_.gif);
+  width:                     12px;
+  height:                    36px;
+  background-repeat:         no-repeat;
+  padding:                   0;
+  float:                     right;
+}
+
+.crSectionTitle {
+  color:                     #E57310;
+  font-size:                 16px;
+  font-weight:               bold;
+  margin-top:                5px;
+  margin-bottom:             5px;
+}
+
+.crProductReviewsSummary .crSolicitation {
+  margin-top:               -20px;
+}
+
+.crSideHeading {
+  color:                     #c60;
+  font-weight:               bold;
+  text-align:                center;
+  padding-top:               0.4em;
+}
+
+.crStepNum {
+  vertical-align:            top;
+  padding:                   0em 0.6em 1.5em 0em;
+}
+
+
+.crTanBorder-tl {
+  background:                url(http://g-ecx.images-amazon.com/images/G/08/x-locale/communities/boxes/boxfill/innerbox-tl._V192553956_.gif) no-repeat top left;
+  width:                     1em;
+}
+                                                                                                                                                             
+.crTanBorder-tc {
+  background:                url(http://g-ecx.images-amazon.com/images/G/08/x-locale/communities/boxes/boxfill/innerbox-tc._V192553957_.gif) repeat-x top;
+}
+                                                                                                                                                             
+.crTanBorder-tr {
+  background:                url(http://g-ecx.images-amazon.com/images/G/08/x-locale/communities/boxes/boxfill/innerbox-tr._V192553962_.gif) no-repeat top right;
+  width:                     1em;
+}
+                                                                                                                                                             
+.crTanBorder-bl {
+  background:                url(http://g-ecx.images-amazon.com/images/G/08/x-locale/communities/boxes/boxfill/innerbox-bl._V192553956_.gif) no-repeat bottom left;
+}
+                                                                                                                                                             
+.crTanBorder-bc {
+  background:                url(http://g-ecx.images-amazon.com/images/G/08/x-locale/communities/boxes/boxfill/innerbox-bc._V192553959_.gif) repeat-x bottom;
+}
+                                                                                                                                                             
+.crTanBorder-br {
+  background:                url(http://g-ecx.images-amazon.com/images/G/08/x-locale/communities/boxes/boxfill/innerbox-br._V192553959_.gif) no-repeat bottom right;
+}
+
+.crTextAreaHeader {
+  background:                #B6CFE5;
+  padding:                   0.4em 0em 0.4em 0em;
+  width:                     620px;
+}
+
+.crTextTab {
+  width:                     30%;
+  float:                     left;
+  white-space:               nowrap;
+}
+
+.crTextTabHeading {
+  padding:                   0.3em 0 0.7em 0.6em;
+}
+
+.crThreadHeader {
+  color:                     #CC6600;
+  font-weight:               bold;
+  float:                     left;
+}
+
+.crTipsBoxHeader {
+  font-size:                 0.90em;
+  font-weight:               bold;
+  margin-bottom:             10px;
+  margin-top:                10px;
+}
+
+.crTipsBoxTitle {
+  color:                     #CC6600;
+  font-size:                 1.1em;
+  font-weight:               bold;
+  margin-bottom:             10px;
+}
+
+h1.crTitle {
+  color:                     #E47911;
+  font-family:               Arial, Helvetica, sans-serif;
+  font-size:                 218%;
+  letter-spacing:            -0.03em;
+  margin:                    0;
+  padding:                   0;
+}
+
+.crTitle {
+  font-family:               verdana, arial, helvetica, sans-serif;
+  font-size:                 1.4em;
+  font-weight:               bold;
+}
+
+.crTab-tl {
+  background:                #EFF5F9 url(http://g-ecx.images-amazon.com/images/G/08/x-locale/communities/reviews/innerbox-tl._V192553916_.gif) no-repeat top left;
+}
+
+.crTab-tr {
+  background:                url(http://g-ecx.images-amazon.com/images/G/08/x-locale/communities/reviews/innerbox-tr._V192553888_.gif) no-repeat top right;
+}
+
+.crVideoUpload {
+  background:                #FFFFFF;
+  border:                    0.1em solid #7F9DB9;
+  text-align:                center;
+  padding:                   0.4em;
+}
+
+.crVidTab {
+  width:                     70%;
+  float:                     left;
+  white-space:               nowrap;
+}
+
+.crVidTabHeading {
+  padding:                   0.3em 0 0.7em 0.6em;
+}
+
+table.crDataGrid th {
+  background-color:          #EEEEEE;
+  font-weight:               normal;
+  font-size:                 70%;
+  text-align:                left;
+  color:                     #666666;
+}
+
+table.crDataGrid td {
+  border-bottom:            1px solid #CCCCCC;
+}
+
+table.crDataGrid .img {
+  height:                   92px;
+}
+
+table.crDataGrid .crNum {
+  text-align:               right;
+}
+
+table.crDataGrid .crNumPercentHelpful {
+  text-align:               right;
+  padding-right:20px;
+}
+
+table.crDataGrid .crNumFanVoters {
+  text-align:               right;
+  border-left: solid 1px #cccccc;
+}
+
+ul.crBigBullet {
+  margin:                    0em;
+  padding:                   0em;
+  list-style-image:          url(http://g-ecx.images-amazon.com/images/G/08/x-locale/communities/reviews/big-bullet._V192553898_.gif);
+}
+
+ul.crSmallBullet {
+
+  padding-left:              0;
+  margin:                    0.4em 0em 0.6em 1.5em;
+  list-style-image:          url(http://g-ecx.images-amazon.com/images/G/08/x-locale/communities/reviews/small-bullet._V192553891_.gif);
+}
+
+
+.srCreateReview td.name {
+  padding-left: 9px;
+}
+
+.srCreateReview .srPopoverList table.srList td a {
+  margin-left: 0px;
+}
+
+.srCreateReview .srPopoverList table.srList td.name span.newAttribute {
+  margin-left: 0px;
+  color:       #000000;
+}
+
+.srCreateReview .srPopoverFooter {
+  padding-left: 9px;
+  padding-top:  9px;
+}
+
+.srCreateReview .srPopoverContentSection .heading {
+  font-weight: normal;
+}
+
+#structuredRatingsList .cBox {
+  width: 375px;
+}
+
+.structuredRatingsVisibilityLink {
+  line-height: 2.5em;
+  font-size: 0.86em;
+}
+
+.structuredRatingsVisibilityLinkText {
+  margin-left: 5px;
+}
+
+#structuredRatingsListHelp {
+  font-size: 0.86em;
+  font-weight: normal;
+}
+
+#structuredRatingsList .srpopover .scrollSection {
+  height: 210px;
+}
+
+.crVerifiedNew {
+  font-size: 0.86em;
+  font-weight: bold;
+  color: #009900;
+  margin-right: 0.5em;
+} 
+
+.crVerifyLearnMore {
+  margin-left: 0.5em;
+}
+
+.crVerifiedPurchaseInputs {
+  display: block;
+  margin-bottom: 1em;
+}
+
+.crVerifiedBackfillSuboption {
+  display: block;
+  margin-left: 2em;
+}
+
+div.crCommentThread .cmPage {
+  margin-left: 5px;
+}
+
+div#cdNonReplyPostBoxButton {
+  margin-bottom: 40px;
+}
+
+#rdpItemInfo .crAvgStars {
+  font-size: 10px;
+}
+
+.crIneligibleHeader {
+  padding: 15px 9px 0 6px;
+  color:                     #E47911;
+  font-weight: 	             bold;
+  font-size:                 218%;
+  margin:                    0;
+}
+
+.crIneligibleMessage {
+  font-size: 12px;
+  border: solid 1px #0071B5;
+  position: relative;
+  background-color: #ffffdd;
+  border-color: #E47911;
+  padding: 18px 50px 18px 20px;
+  margin: 10px 0 40px 10px;
+}
+.crIneligibleMessageImage {
+  position: absolute;
+}
+.crIneligibleMessageHeader {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0 0 4px 45px;
+  padding: 0;
+}
+.crIneligibleMessageText {
+  font-size:13px;
+  margin: 0 0 6px 45px;
+  width: 100%;
+}
+
+
+.crIFrame {
+  margin: 10px;
+}
+
+.crIFrameLogo {
+  margin-bottom: 20px;
+}
+
+.crIFrameHeaderLeftColumn {
+  float: left;
+  margin-right: 20px;
+}
+
+.crIFrameHeaderTitle {
+  font-size:      24px;
+  letter-spacing: -1px;
+}
+
+.crIFrameHeaderHistogram {
+  float: left;
+}
+
+.crIFrameError {
+  border-top:    1px solid #D1E6F7;
+  border-bottom: 1px solid #D1E6F7;
+
+  text-align:          center;
+  line-height:         24px;
+  width:               360px;
+  padding:             20px;
+  margin-top:          20px;
+}
+
+.crIFrameErrorText {
+  font-size:  14px;
+  font-weight: bold;
+}
+
+.crIFrameCreateReview {
+  margin-bottom:   3px;
+  white-space:     nowrap;
+}
+
+.crIFrameCreateReviewButton {
+  vertical-align:  middle;
+}
+
+.crIFrameAverageReviewText {
+  align: left;
+  font-weight: bold;
+}
+
+.crIFrameNumCustReviews {
+   white-space: nowrap;
+}
+
+.crIFrameReviewList {
+  width: 100%;
+  clear: left;
+}
+
+
+.CMheadingBar {
+  background:url(http://g-ecx.images-amazon.com/images/G/08/nav2/images/gui/tile-blue-bg._V45688972_.gif) repeat-x;
+  border-top:1px solid #BADAE8;
+  border-bottom:1px solid #BADAE8;
+  padding:6px;
+}
+
+.CMpaginate {
+  color:#666;
+}
+
+.CMpaginate .on {
+  border:1px solid #CC6600;
+  padding:3px;
+  background-color:white;
+  color:#CC6600;
+  text-decoration:none;
+}
+
+.CMpaginate a:link,
+.CMpaginate a:visited {
+  padding:4px;
+  text-decoration:none;
+}
+
+.CMpaginate a:hover {
+  padding:3px;
+  background-color:white;
+  border:1px solid #CC6600;
+  color:#CC6600;
+}
+
+a.areaLink, a.areaLink:visited {
+  text-decoration: none;
+  color: black;
+  display: block;
+}
+
+.areaLink .innerLink {
+  white-space: nowrap;
+  text-decoration: underline;
+  color: #039;
+}
+
+div.crVS {
+  width:       46%;
+  text-align:  center;
+  white-space: nowrap;
+}
+
+.crClear { clear: both; }
+.crLeft { float: left; }
+.crRight { float: right; }
+--></style>
+
+
+
+
+
+
+
+
+<link rel="stylesheet" type="text/css" href="http://z-ecx.images-amazon.com/images/G/01/browser-scripts/fruitCSS/FR-combined-1529710406.css._V181124582_.css" />
+
+
+
+
+
+
+
+ 
+ 
+
+
+
+<link type='text/css' href='http://z-ecx.images-amazon.com/images/G/01/browser-scripts/fr-site-wide-1.4.2/site-wide-6627816817.css._V180746284_.css' rel='stylesheet'>
+
+  <script type="text/javascript">
+
+    window.jQueryPatchIPadOffset = false;
+    window.jQuery126PatchDelay = 13;
+    var amznJQ = {
+        addLogical: function() {},
+        addStyle: function() {},
+        declareAvailable: function() {},
+        available: function() {},
+        onReady: function() {},
+        onCompletion: function() {},
+        completedStage: function() {},
+        strings: {},
+        chars: {
+            EOL: String.fromCharCode(0x0A),
+            SQUOTE: String.fromCharCode(0x27),
+            DQUOTE: String.fromCharCode(0x22),
+            BACKSLASH: String.fromCharCode(0x5C),
+            YEN: String.fromCharCode(0xA5)
+        }
+    }
+
+
+</script>
+
+
+
+</head>
+<body>
+<!-- BeginNav --><style type="text/css"><!--
+
+
+.navSprite,
+.navSaJs li.navSaMenuItem {
+  background-image: url(http://g-ecx.images-amazon.com/images/G/08/gno/images/orangeBlue/navPackedSprites-FR-15._V202471902_.png);
+}
+
+.navSpritePopoverH {
+  background-image: url(http://g-ecx.images-amazon.com/images/G/08/gno/popover/sprites-h2._V172306001_.gif);
+}
+
+.navSpritePopoverV {
+  background-image: url(http://g-ecx.images-amazon.com/images/G/08/gno/popover/sprites-v2._V172306001_.gif);
+}
+
+.nav_popover .header .l {
+  background: url(http://g-ecx.images-amazon.com/images/G/08/gno/popover/sprites-v2._V172306001_.gif) -14px 0px no-repeat;
+}
+
+.nav_popover .header .r {
+  background: url(http://g-ecx.images-amazon.com/images/G/08/gno/popover/sprites-h2._V172306001_.gif) 0px -14px no-repeat;
+}
+
+.nav_popover .header .c {
+  background: url(http://g-ecx.images-amazon.com/images/G/08/gno/popover/sprites-h2._V172306001_.gif) 0px 0px repeat-x;
+}
+
+.nav_popover .footer .l {
+  background: url(http://g-ecx.images-amazon.com/images/G/08/gno/popover/sprites-h2._V172306001_.gif) 0px -21px no-repeat;
+}
+
+.nav_popover .footer .r {
+  background: url(http://g-ecx.images-amazon.com/images/G/08/gno/popover/sprites-v2._V172306001_.gif) -21px 0px no-repeat;
+}
+
+.nav_popover .footer .c {
+  background: url(http://g-ecx.images-amazon.com/images/G/08/gno/popover/sprites-h2._V172306001_.gif) 0px -7px repeat-x;
+}
+
+.nav_popover .body .l {
+  background: url(http://g-ecx.images-amazon.com/images/G/08/gno/popover/sprites-v2._V172306001_.gif) 0px 0px repeat-y;
+}
+
+.nav_popover .body .r {
+  background: url(http://g-ecx.images-amazon.com/images/G/08/gno/popover/sprites-v2._V172306001_.gif) -7px 0px repeat-y;
+}
+
+#navCartButton a.count {
+  background: url(http://g-ecx.images-amazon.com/images/G/08/x-locale/common/transparent-pixel._V192553961_.gif) 0px 0px no-repeat;
+}
+
+
+.suggest_link {
+  background-color: #FFF;
+  padding: 2px 6px 2px 6px;
+}
+
+.suggest_nm {
+  display: block;
+}
+
+.suggest_link_over {
+  background-color: #146EB4;
+  color: #FFF;
+  padding: 2px 6px 2px 6px;
+}
+
+.suggest_link .suggest_category {
+  color: #039;
+} 
+
+.suggest_link_over .suggest_category {
+  color: #FFF;
+}
+
+#srch_sggst {
+  background-color: #FFF;
+  border: 1px solid #5C8295;
+  color: #000;
+  position: absolute;
+  text-align: left;
+  z-index: 130;
+}
+
+#sugdivhdr {
+  color: #888;
+  font-size: 10px;
+  line-height: 12px;
+  padding-right: 4px;
+  text-align: right;
+}
+
+
+
+--></style>
+
+
+
+
+
+
+
+
+<img src="http://g-ecx.images-amazon.com/images/G/08/gno/images/orangeBlue/navPackedSprites-FR-15._V202471902_.png" style="display:none" alt=""/>
+<img src="http://g-ecx.images-amazon.com/images/G/08/x-locale/common/transparent-pixel._V192553961_.gif" style="display:none" alt=""/>
+<script type="text/javascript"><!--
+  window._navbarSpriteUrl = "http://g-ecx.images-amazon.com/images/G/08/gno/images/orangeBlue/navPackedSprites-FR-15._V202471902_.png";
+--></script>
+
+
+
+
+
+
+
+
+<!--Pilu -->
+<script type='text/javascript'><!--
+  if (typeof window.Navbar == 'undefined') {
+    window.Navbar = function(options) {
+      options = options || {};
+
+      this._loadedCount = 0;
+      this._hasUedata = (typeof uet == 'function');
+      this._finishLoadQuota = options['finishLoadQuota'] || 2;
+      this._startedLoading = false;
+
+      this._btfFlyoutContents = [];
+    
+      this._saFlyoutHorizOffset = -20;
+      this._saMaskHorizOffset = -21;
+
+      this.addToBtfFlyoutContents = function(content, callback) {
+        this._btfFlyoutContents.push({content: content, callback: callback});
+      }
+
+      this.getBtfFlyoutContents = function() {
+        return this._btfFlyoutContents;
+      }
+
+      this.loading = function() {
+        if (!this._startedLoading && this._isReportingEvents()) {
+          uet('ns');
+        }
+
+        this._startedLoading = true;
+      }
+
+      this.componentLoaded = function() {
+        this._loadedCount++;
+        if (this._startedLoading && this._isReportingEvents() && (this._loadedCount == this._finishLoadQuota)) {
+          uet('ne');
+        }
+      }
+
+      this._isReportingEvents = function() {
+        return this._hasUedata;
+      }
+    }
+
+    window._navbar = new Navbar({ finishLoadQuota: 1});
+    _navbar.loading();
+
+    amznJQ.available('jQuery', function() {
+      _navbar._navPopoverBorderSpriteImage_h = new Image();
+      _navbar._navPopoverBorderSpriteImage_h.src = 'http://g-ecx.images-amazon.com/images/G/08/gno/popover/sprites-h2._V172306001_.gif';
+      _navbar._navPopoverBorderSpriteImage_v = new Image();
+      _navbar._navPopoverBorderSpriteImage_v.src = 'http://g-ecx.images-amazon.com/images/G/08/gno/popover/sprites-v2._V172306001_.gif';
+    });
+
+    window.navSAFlyoutDelay = 0;
+
+  }
+--></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <!-- navp-sZ9cgcU5lzpHflwkqfHM+f6HAsVnRVZEthzREjXW0OE= rid-1X9JXPAQS3VT3QJEC4NN -->
+
+
+
+
+
+
+
+
+<div id="navbar" style="padding:0;" class="navbar">
+
+
+<table border="0" cellspacing="0" cellpadding="0" width="100%">
+
+<tr>
+    <td rowspan="2" align='left' width="180" valign="bottom"><a id="navLogo" class="nonGateway" href="/ref=gno_logo">
+  <span id="navLogoPrimary" class="navSprite"><span>amazon.fr</span></span>
+  <span id="navLogoSecondary" class="navSprite nonPrime"></span>
+</a></td>
+    <td width="100%" align='left' height="26">
+      <table width="100%" id="welcomeRowTable" cellspacing="0" cellpadding="0" border="0"><tr>
+        <td align="left" valign="bottom" class="navGreetingBkg"><div id="navidWelcomeMsg" style="white-space: normal;">
+  <span class="navGreeting">Bonjour.</span>
+  <span class="navMessage" style="white-space: nowrap;">Identifiez-vous pour découvrir <a href="https://www.amazon.fr/ap/signin?_encoding=UTF8&amp;openid.assoc_handle=frflex&amp;openid.return_to=https%3A%2F%2Fwww.amazon.fr%2Fgp%2Fyourstore%3Fie%3DUTF8%26ref_%3Dpd_irl_gw&amp;openid.mode=checkid_setup&amp;openid.ns=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0&amp;openid.claimed_id=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select&amp;openid.pape.max_auth_age=0&amp;openid.ns.pape=http%3A%2F%2Fspecs.openid.net%2Fextensions%2Fpape%2F1.0&amp;openid.identity=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select" rel="nofollow">nos conseils personnalisés</a>.</span>
+  <span class="navMessage" style="white-space: nowrap;">Nouveau client&#160;? <a href="https://www.amazon.fr/ap/signin?_encoding=UTF8&amp;openid.assoc_handle=frflex&amp;openid.return_to=https%3A%2F%2Fwww.amazon.fr%2Fgp%2Fyourstore%3Fie%3DUTF8%26ref_%3Dpd_irl_gw_r&amp;openid.mode=checkid_setup&amp;openid.ns=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0&amp;openid.claimed_id=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select&amp;openid.pape.max_auth_age=0&amp;openid.ns.pape=http%3A%2F%2Fspecs.openid.net%2Fextensions%2Fpape%2F1.0&amp;openid.identity=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select" rel="nofollow">Commencez ici</a>.</span>
+</div></td>
+        <td align="left">&nbsp;</td>
+        <td id="navSwmSlot" align="right" valign="center" height="26">
+<table id="navSwmSkedPop" border='0' cellspacing='0' cellpadding='0' height="100%" width="100%">
+  <tr>
+    <td align="right" valign="bottom">
+      <div id="navSwmMainHdgDiv" style="padding-bottom: 3px;">
+          <a id="navSwmMainHeading" href="/gp/subs/primeclub/signup/main.html//ref=nav_swm_prime-24h-2010?pf_rd_p=216281747&pf_rd_s=nav-sitewide-msg&pf_rd_t=4201&pf_rd_i=navbar-4201&pf_rd_m=A1X6FK5RDHNB96&pf_rd_r=1X9JXPAQS3VT3QJEC4NN" style="color: #146fb5">
+            Livraison en 24h gratuite à volonté
+          </a>
+      </div>
+    </td>
+    <td align="left" valign="bottom" width="5" rowspan="1"><div id="navSwmFlyoutTrigger" style="display:none; height:13px; width:13px; margin:2px 3px 3px 3px;">
+      <a name="navSwmSkedPop|he|navSwmSkedPop_content"><img src="http://g-ecx.images-amazon.com/images/G/08/x-locale/common/transparent-pixel._V192553961_.gif" width="1" alt="" class="default navSprite" id="navSwmFlyoutImage" height="1" border="0" /></a>
+      </div>
+    </td>
+  </tr>
+</table>        </td>
+      </tr></table>
+    </td>
+</tr>
+
+<tr>
+  <td>
+<table id="navCrossshop" border="0" cellpadding="0" cellspacing="0" height="22" width="100%">
+      <tr>
+        <td>
+        <a href='/gp/yourstore/home/ref=topnav_ys' class='navCrossshopLink'>Chez vous</a>
+        <span class="navCrossshopBar">&nbsp;|&nbsp;</span>
+        <a href='/Bonnes-affaires/b/ref=topnav_nba?ie=UTF8&node=51375011' class='navCrossshopLink'>Nos bonnes affaires</a>
+        <span class="navCrossshopBar">&nbsp;|&nbsp;</span>
+        <a href='/gp/gc/ref=topnav_ccad' class='navCrossshopLink'>Chèques-cadeaux</a>
+        <span class="navCrossshopBar">&nbsp;|&nbsp;</span>
+        <a href='/gp/gift-central/ref=topnav_odc' class='navCrossshopLink'>Listes et idées cadeaux</a>
+      </td>
+      <td width="100%">&nbsp;</td>
+      <td>
+        <a href='/gp/css/homepage.html/ref=topnav_ya' class='navCrossshopYALink'>Votre compte</a>
+        <span class="navCrossshopBar">&nbsp;|&nbsp;</span>
+        <a href='/Aide/b/ref=topnav_help?ie=UTF8&node=559912' class='navCrossshopYALink'>Aide</a>
+     </td>
+        
+      </tr>
+</table>
+  </td>
+</tr>
+
+<tr class="navShopSearch" align="left" width="100%">
+  <td width="180"><div id="navShopAllButton" class="navSprite navButton navShopAllButtonSubnav">
+  <a class="destination" href="/gp/site-directory/ref=topnav_sad"><span class="text">Toutes nos boutiques</span></a>
+  <a class="flyoutAnchor"><span class="navSprite downArrow"></span></a>
+</div></td>
+  <td width="100%"><table width="100%" border="0" cellpadding="0" cellspacing="0"><tr>
+  <td width="100%"><form style="width:100%; margin:0 0 0 0; border:0; padding:0 0 0 0;" method="get" action="/s/ref=nb_sb_noss" name="site-search">
+    <input type="hidden" name="__mk_fr_FR" value="ÅMÅZÕÑ" />
+    <table width="100%" border="0" cellpadding="0" cellspacing="0">
+      <tr>
+        <td class="navSearchStart"></td>
+        <td id="navSearchBar" class="navSearchBar"><label for="twotabsearchtextbox">Rechercher</label></td>
+
+
+
+
+
+ <td class="dropdownNavbar" >  <table id="subDropdownTable" width="100%" border="0" cellpadding="0" cellspacing="0" > <tr>   <td id="navSearchDropdown" width="190px" > <select name="url" id="searchDropdownBox" class="searchSelect" title="Rechercher dans"  style='min-width:190px;' ><option value="search-alias=aps">Toutes nos boutiques</option><option value="search-alias=jewelry">Bijoux</option><option value="search-alias=blu-ray">Blu-ray</option><option value="search-alias=baby">Bébés et Puériculture</option><option value="search-alias=shoes">Chaussures et accessoires</option><option value="search-alias=kitchen">Cuisine & Maison</option><option value="search-alias=dvd">DVD</option><option value="search-alias=office-products">Fournitures de bureau</option><option value="search-alias=computers">Informatique</option><option value="search-alias=mi">Instruments de musique et Sono</option><option value="search-alias=toys">Jeux et Jouets</option><option value="search-alias=videogames">Jeux vidéo</option><option value="search-alias=english-books">Livres anglais et étrangers</option><option value="search-alias=stripbooks">Livres en français</option><option value="search-alias=software">Logiciels</option><option value="search-alias=lighting">Luminaires et Eclairage</option><option value="search-alias=watches">Montres</option><option value="search-alias=popular">Musique</option><option value="search-alias=classical">Musique classique</option><option value="search-alias=beauty">Parfum et Beauté</option><option value="search-alias=electronics" selected="selected">Photo, Image, Son et GPS</option><option value="search-alias=hpc">Santé et Soins du corps</option><option value="search-alias=sports">Sports et Loisirs</option><option value="search-alias=digital-music">Téléchargements MP3</option><option value="search-alias=clothing">Vêtements et accessoires</option></select></div> </td>  <td align='left' width="3px" >&nbsp;</td>  <td align='left'> 
+
+							
+            <input type="text" id="twotabsearchtextbox"  class="searchSelect" name="field-keywords" value="" size="50" title="Rechercher" style="width:100%; background-color: #FFF;" />
+
+</td></tr></table></td>          <td align="right" width="3px" class="navSearchBar">&nbsp;</td>
+          <td width="25" align="left">
+            <div id="navGoButton" class="navSprite"><input type="image" src="http://g-ecx.images-amazon.com/images/G/08/x-locale/common/transparent-pixel._V192553961_.gif" alt="Aller" /></div>
+          </td>
+      </tr>
+    </table>
+  </form></td>
+  <td align="right" style="padding-right:1px;"><div id="navCartButton" class="navButton navBlueButton">
+    <div class="navSprite left"></div>
+    <div class="navSprite right"></div>
+    <div id="navCartEmpty">
+      <div class="navSprite icon"></div>
+      <a class="destination" href="/gp/cart/view.html/ref=gno_cart" rel="nofollow"><span class="text">Panier</span></a>
+    </div>
+    <div id="navCartFull" style="display:none">
+      <div class="iconLeft navSprite"></div>
+      <div class="iconMiddle navSprite"></div>
+      <div class="iconRight navSprite"></div>
+      <div id="navCartCount" class="iconText"></div>
+      <a class="destination count" href="/gp/cart/view.html/ref=gno_cart" rel="nofollow"><span class="text">Panier</span></a>
+    </div>
+  </div></td>
+  <td align="right" style="padding-right:0px;"><div id="navWishListButton" class="navButton navBlueButton">
+  <div class="navSprite left"></div>
+  <div class="navSprite right"></div>
+  <a class="destination" href="/gp/registry/wishlist/ref=wish_list"><span class="text">Liste d'envies</span></a>
+</div></td>
+  <td class="navSprite navSearchEnd"></td>
+  </tr></table></td>
+</tr>
+
+
+  <tr id="navSubnavRowTR" width="100%" height="23">
+    <td colspan="2" width="100%">
+      <table id="navCatSubnav" cellspacing="0">
+  <tbody><tr>
+  	<td class="navCatLeft navSprite" width="7"><div class="navCatLeftSpc"></div></td>
+  	<td class="navCat"><div class="navCatSpc"><a class="navCatA" href="/photo-TV-mp3-Hifi-GPS/b/ref=topnav_storetab_ce?ie=UTF8&node=13921051">Photo, Image, Son et GPS</a></div></td>
+  	<td class="navSubLeft" width="1"><div class="navSubLeftSpc"></div></td>
+          <td class="navSubItem">
+            <a class="navSubA" href="/marques-photo-tv-gps-Hifi/b/ref=sv_ce_0?ie=UTF8&node=14011581">Par marques</a>
+          </td>
+          <td class="navSubMid navSprite" width="3"><div class="navSubMidSpc"></div></td>
+          <td class="navSubItem">
+            <a class="navSubA" href="/gp/bestsellers/electronics/ref=sv_ce_1">Meilleures ventes</a>
+          </td>
+          <td class="navSubMid navSprite" width="3"><div class="navSubMidSpc"></div></td>
+          <td class="navSubItem">
+            <a class="navSubA" href="/appareils-photo-num%C3%A9riques-canon-camescopes/b/ref=sv_ce_2?ie=UTF8&node=13910691">Photo&nbsp;et Caméscopes</a>
+          </td>
+          <td class="navSubMid navSprite" width="3"><div class="navSubMidSpc"></div></td>
+          <td class="navSubItem">
+            <a class="navSubA" href="/lecteurs-MP3-accessoires-audio-casque/b/ref=sv_ce_3?ie=UTF8&node=13910701">Lecteurs MP3&nbsp;et&nbsp;Audio</a>
+          </td>
+          <td class="navSubMid navSprite" width="3"><div class="navSubMidSpc"></div></td>
+          <td class="navSubItem">
+            <a class="navSubA" href="/televiseur-lcd-lecteur-dvd-bluray/b/ref=sv_ce_4?ie=UTF8&node=13910681">TV&nbsp;et Vidéo</a>
+          </td>
+          <td class="navSubMid navSprite" width="3"><div class="navSubMidSpc"></div></td>
+          <td class="navSubItem">
+            <a class="navSubA" href="/gps-accessoires-radar-TomTom-Garmin/b/ref=sv_ce_5?ie=UTF8&node=13910721">GPS&nbsp;et Auto</a>
+          </td>
+          <td class="navSubMid navSprite" width="3"><div class="navSubMidSpc"></div></td>
+          <td class="navSubItem">
+            <a class="navSubA" href="/t%C3%A9l%C3%A9phonie-t%C3%A9l%C3%A9phone-portable-smartphone/b/ref=sv_ce_6?ie=UTF8&node=13910711">Téléphonie</a>
+          </td>
+          <td class="navSubMid navSprite" width="3"><div class="navSubMidSpc"></div></td>
+          <td class="navSubItem">
+            <a class="navSubA" href="/b/ref=sv_ce_7?ie=UTF8&node=406585031">Sono,&nbsp;DJ et&nbsp;MAO</a>
+          </td>
+          <td class="navSubMid navSprite" width="3"><div class="navSubMidSpc"></div></td>
+          <td class="navSubItem">
+            <a class="navSubA" href="/informatique-ordinateurs-imprimantes-composants-peripheriques/b/ref=sv_ce_8?ie=UTF8&node=340858031">Informatique</a>
+          </td>
+  	<td class="navSubRight navSprite" width="6"><div class="navSubRightSpc"></div></td>
+  </tr></tbody>
+</table>
+    </td>
+  </tr>
+  <tr id="navSubnavBorderTR">
+    <td colspan="2" width="100%" height="2" style="background-color:#146eb4"></td>
+  </tr>
+
+</table>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+<script type="text/javascript"><!--
+  if (typeof _navbar._navEndRun == 'undefined') {
+    _navbar._navEndRun = true;
+
+
+    _navbar._endSpriteImage = new Image();
+    _navbar._endSpriteImage.onload = function() {_navbar.componentLoaded(); };
+    _navbar._endSpriteImage.src = window._navbarSpriteUrl;
+  }
+
+--></script>
+<!-- Tilu -->
+
+<!-- EndNav -->
+<table width="100%" border="0" cellpadding="10" cellspacing="0">
+<tr>
+<td valign="top">
+  
+
+
+
+
+
+
+
+
+
+
+
+    
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h1 class="sans-serif" style="margin:2px 0 0 0; font-size:140%;">
+  <div style="color:#CC6600;">
+    Commentaires en ligne&#160;
+  </div>
+  <div style="font-size:80%;text-decoration:underline;">
+    
+
+
+
+
+<a href="http://www.amazon.fr/Canon-550D-Reflex-Objectif-18-55/dp/B0037KM2IS/ref=cm_cr_pr_product_top/280-7845724-6013244">Canon - EOS 550D - Kit Reflex - 18 Mpix + Objectif EF-S 18-55 mm f/3,5-5,6 IS - Noir</a>
+
+  </div>
+</h1>
+<br />
+<table id="productSummary" border="0" cellspacing="0" cellpadding="0" width="100%">
+  <tr>
+    <td width="160">
+      <div style="width:160px;">
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div style="display:block; text-align:center; padding-bottom: 5px;" class="tiny">
+  <b>77 évaluations</b>
+</div>
+<table border="0" cellspacing="1" cellpadding="0" align="left">
+<tr>
+<td align="left" class="tiny" style="padding-right:0.5em;padding-bottom:1px;white-space:nowrap;">
+  <a href="http://www.amazon.fr/product-reviews/B0037KM2IS/ref=cm_cr_pr_hist_5/280-7845724-6013244?ie=UTF8&showViewpoints=0&filterBy=addFiveStar" >5 étoiles</a>:
+</td>
+<td style="min-width:60; background-color: #eeeecc" width="60" align="left" class="tiny" title="80%"><div style="background-color:#FFCC66; height:13px; width:80%;"></div></td>
+<td align="right" class="tiny">&nbsp;(62)</td>
+</tr>
+<tr>
+<td align="left" class="tiny" style="padding-right:0.5em;padding-bottom:1px;white-space:nowrap;">
+  <a href="http://www.amazon.fr/product-reviews/B0037KM2IS/ref=cm_cr_pr_hist_4/280-7845724-6013244?ie=UTF8&showViewpoints=0&filterBy=addFourStar" >4 étoiles</a>:
+</td>
+<td style="min-width:60; background-color: #eeeecc" width="60" align="left" class="tiny" title="16%"><div style="background-color:#FFCC66; height:13px; width:16%;"></div></td>
+<td align="right" class="tiny">&nbsp;(13)</td>
+</tr>
+<tr>
+<td align="left" class="tiny" style="padding-right:0.5em;padding-bottom:1px;white-space:nowrap;">
+  <a href="http://www.amazon.fr/product-reviews/B0037KM2IS/ref=cm_cr_pr_hist_3/280-7845724-6013244?ie=UTF8&showViewpoints=0&filterBy=addThreeStar" >3 étoiles</a>:
+</td>
+<td style="min-width:60; background-color: #eeeecc" width="60" align="left" class="tiny" title="1%"><div style="background-color:#FFCC66; height:13px; width:1%;"></div></td>
+<td align="right" class="tiny">&nbsp;(1)</td>
+</tr>
+<tr>
+<td align="left" class="tiny" style="padding-right:0.5em;padding-bottom:1px;white-space:nowrap;">
+  <a href="http://www.amazon.fr/product-reviews/B0037KM2IS/ref=cm_cr_pr_hist_2/280-7845724-6013244?ie=UTF8&showViewpoints=0&filterBy=addTwoStar" >2 étoiles</a>:
+</td>
+<td style="min-width:60; background-color: #eeeecc" width="60" align="left" class="tiny" title="1%"><div style="background-color:#FFCC66; height:13px; width:1%;"></div></td>
+<td align="right" class="tiny">&nbsp;(1)</td>
+</tr>
+<tr>
+<td align="left" class="tiny" style="padding-right:0.5em;padding-bottom:1px;white-space:nowrap;">
+  <span style="color: #666666;">1 étoile</span>:
+</td>
+<td width="60" align="left" style="background-color: #eeeecc" class="tiny" title="0%">&nbsp;</td>
+<td align="right" class="tiny" style="color: #666666;">&nbsp;(0)</td>
+</tr>
+<tr><td>&nbsp;</td><td><div style="width:60px;">&nbsp;</div></td><td>&nbsp;</td></tr>
+</table>
+
+      </div>
+    </td>
+    <td width="20"><div style="width:20px;">&nbsp;</div>&nbsp;</td>
+    <td valign="top" align="center">
+      <div class="tiny" align="left">
+        <div>
+          <b>Moyenne des commentaires client</b>
+        </div>
+        <div style="white-space:nowrap;">
+          <span class="crAvgStars" style="white-space:no-wrap;"><span class="asinReviewsSummary" name="B0037KM2IS" ref="pr_all_summary_cm_cr_acr_pop_" >
+              <a href="http://www.amazon.fr/product-reviews/B0037KM2IS/ref=pr_all_summary_cm_cr_acr_img/280-7845724-6013244?ie=UTF8&showViewpoints=1" ><span class="swSprite s_star_5_0 " title="4.8 étoiles sur 5" ><span>4.8 étoiles sur 5</span></span></a>&nbsp;</span>(<a href="http://www.amazon.fr/product-reviews/B0037KM2IS/ref=pr_all_summary_cm_cr_acr_txt/280-7845724-6013244?ie=UTF8&showViewpoints=1" >77 commentaires client</a>)</span>
+        </div>
+        <div style="margin-top:10px;">
+          <div style="margin-bottom:5px;">
+            Partagez votre opinion avec les autres clients
+          </div>
+          <a href="http://www.amazon.fr/review/create-review/ref=cm_cr_pr_wr_but_top/280-7845724-6013244?ie=UTF8&amp;nodeID=&amp;asin=B0037KM2IS"><span class="cmtySprite s_createYourOwnReviewTan " ><span>Créer votre propre commentaire</span></span></a>
+        </div>
+      </div>
+    </td>
+    <td><div style="width:20px;">&nbsp;</div>&nbsp;</td>
+    <td valign="top" align="right">
+      
+
+
+    
+
+
+
+
+
+
+
+    
+
+
+
+  <FORM method="GET" action="/gp/community-content-search/results/ref=cm_srch_q_rtr/" style="padding:0; margin:0;"> 
+    <table border="0" cellpadding="0" cellspacing="0" style="" width="250">
+        <tr>
+            <td colspan="2" nowrap="nowrap">
+                <label for="search_rtr"><b class="tiny">Rechercher des commentaires</b></label>
+            </td>
+        </tr>
+        <tr>
+                <td style="width: 100%">
+                <input id="search_rtr" class="small" style="width: 100%;" type="text" name="query" value=""/>
+                <input type="hidden" name="search-alias" value="community-reviews"/>
+             <input type="hidden" name="__mk_fr_FR" value="ÅMÅZÕÑ" />
+            </td>
+            <td style="padding-left: 5px;"><input type="image" title="Aller" alt="Aller" border="0" class="swSprite s_goTan " id="" value="" name="Aller" src="http://g-ecx.images-amazon.com/images/G/08/x-locale/common/transparent-pixel._V192553961_.gif" /></td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <input type="checkbox" name="idx.asin" value="B0037KM2IS" checked> <span class="tiny">Rechercher uniquement parmi les commentaires portant sur ce produit</span>
+	  </td>
+	</tr>
+    </table>
+  </FORM>
+
+
+
+
+
+
+    </td>
+  </tr>
+</table>
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="cBox secEyebrow">
+  <span class="cBoxTL"><!-- &nbsp; --></span>
+  <span class="cBoxTR"><!-- &nbsp; --></span>
+  <span class="cBoxR"><!-- &nbsp; --></span>
+  <span class="cBoxBL"><!-- &nbsp; --></span>
+  <span class="cBoxBR"><!-- &nbsp; --></span>
+  <span class="cBoxB"><!-- &nbsp; --></span>
+  <h2>
+        <div class="crVS crLeft">
+          Le commentaire favorable le plus utile
+        </div>
+        <div class="crVS crRight">
+          Le commentaire critique le plus utile
+        </div>
+        <br class="crClear" />
+      </h2>
+  <div class="cBoxInner">
+      <table class="viewpointBox" cellspacing="0" cellpadding="0" border="0" style="margin-top: -8px;">
+        <tr>
+          <td width="46%" valign="top">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- BOUNDARY -->
+<a name="RD1YRCUV4SUKM"></a><br />
+
+
+
+
+<div>
+
+      <div style="margin-bottom:0.5em;">
+        <div class="tiny">134 internautes sur&nbsp;135 ont trouv&eacute; ce commentaire utile&nbsp;:</div>
+      </div>
+
+        <div>
+          <span><span class="swSprite s_star_5_0 " title="5.0 étoiles sur 5" ><span>5.0 étoiles sur 5</span></span> </span>
+          <b>Un vrai boitier pour tout faire!</b><br />
+          Je suis un passionn&eacute; de la photo, j'ai d&eacute;j&agrave; eu plusieurs boitiers canon tel que 1D 5D 4xxD pour l'usage pro ou personnel. La gamme 1Ds/5D &eacute;tait bien sup&eacute;rieur aux 4xx/5xxD mais cette fois ci canon a fait un grand coup avec le 550D. J'ai seulement environ 300 clich&eacute;s avec ce boitier mais les premiers r&eacute;sultats sont...
+          <div> <a href="http://www.amazon.fr/review/RD1YRCUV4SUKM/ref=cm_cr_pr_viewpnt/280-7845724-6013244#RD1YRCUV4SUKM" title="Lire toute l'évaluation de Anh LUU" ><b>Lire toute l'évaluation&nbsp;&rsaquo;</b></a> </div>
+        </div>
+        <div class="tiny" style="margin-top:5px; clear: both;">
+          Publié il y a 12 mois par Anh LUU
+        </div>
+
+</div>
+
+
+
+
+  
+<br/><b class="h3color">&rsaquo;&nbsp;</b>Voir plus de commentaires <a href="http://www.amazon.fr/product-reviews/B0037KM2IS/ref=cm_cr_pr_viewpnt_sr_5/280-7845724-6013244?ie=UTF8&showViewpoints=0&filterBy=addFiveStar" ><b>5 étoiles</b></a>, <a href="http://www.amazon.fr/product-reviews/B0037KM2IS/ref=cm_cr_pr_viewpnt_sr_4/280-7845724-6013244?ie=UTF8&showViewpoints=0&filterBy=addFourStar" ><b>4 étoiles</b></a></td>
+          <td width="8%" align="center" valign="middle" style="font-size: 200%; font-weight: bold;
+            background: transparent url(http://g-ecx.images-amazon.com/images/G/08/x-locale/communities/reviews/tile-vline._V192553890_.gif) repeat-y scroll
+            center;"><img src="http://g-ecx.images-amazon.com/images/G/08/x-locale/communities/reviews/tile-vline-vs._V192553917_.gif" width="33" alt="versus" height="39" border="0" /></td>
+          <td width="46%" valign="top">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- BOUNDARY -->
+<a name="R1WAS3KN9LMDHB"></a><br />
+
+
+
+
+<div>
+
+      <div style="margin-bottom:0.5em;">
+        <div class="tiny">23 internautes sur&nbsp;31 ont trouv&eacute; ce commentaire utile&nbsp;:</div>
+      </div>
+
+        <div>
+          <span><span class="swSprite s_star_2_0 " title="2.0 étoiles sur 5" ><span>2.0 étoiles sur 5</span></span> </span>
+          <b>bof !!</b><br />
+          bonjour ;<br />je doit avoir un probleme quelque part ; soit moi , soit l'appareil .<br />s'il est vrai que cet appareil fait de tres bonnes photos en eclairage normal (en particulier des portraits vraiment tres beaux)<br />en faible lumiere (sous bois) avec un 24-105 L , en mode AV (f 4, 1/125) l'iso monte &agrave; 1600 , 2000 et contrairement &agrave; ce que disent...
+          <div> <a href="http://www.amazon.fr/review/R1WAS3KN9LMDHB/ref=cm_cr_pr_viewpnt/280-7845724-6013244#R1WAS3KN9LMDHB" title="Lire toute l'évaluation de Chenavier Jean Claude" ><b>Lire toute l'évaluation&nbsp;&rsaquo;</b></a> </div>
+        </div>
+        <div class="tiny" style="margin-top:5px; clear: both;">
+          Publié il y a 8 mois par Chenavier Jean Claude
+        </div>
+
+</div>
+
+
+
+
+  
+<br/><b class="h3color">&rsaquo;&nbsp;</b>Voir plus de commentaires <a href="http://www.amazon.fr/product-reviews/B0037KM2IS/ref=cm_cr_pr_viewpnt_sr_3/280-7845724-6013244?ie=UTF8&showViewpoints=0&filterBy=addThreeStar" ><b>3 étoiles</b></a>, <a href="http://www.amazon.fr/product-reviews/B0037KM2IS/ref=cm_cr_pr_viewpnt_sr_2/280-7845724-6013244?ie=UTF8&showViewpoints=0&filterBy=addTwoStar" ><b>2 étoiles</b></a>, <span style="color: rgb(102, 102, 102);">1 étoile</span></td>
+        </tr>
+      </table></div>
+</div>  
+
+
+<br/>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table class="CMheadingBar" border="0" cellpadding="0" cellspacing="0" width="100%">
+  <tr>
+    <td height="16" align="left" style="padding-left:4px;padding-right:4px;">
+      <div class="CMpaginate" style="white-space:nowrap;">
+        <span class="paging">&lsaquo; Précédent |    <span class="on">1</span> <a href="http://www.amazon.fr/product-reviews/B0037KM2IS/ref=cm_cr_pr_top_link_2/280-7845724-6013244?ie=UTF8&showViewpoints=0&pageNumber=2" >2</a> &hellip; <a href="http://www.amazon.fr/product-reviews/B0037KM2IS/ref=cm_cr_pr_top_link_8/280-7845724-6013244?ie=UTF8&showViewpoints=0&pageNumber=8" >8</a>| <a href="http://www.amazon.fr/product-reviews/B0037KM2IS/ref=cm_cr_pr_top_link_next_2/280-7845724-6013244?ie=UTF8&showViewpoints=0&pageNumber=2" >Suivant &rsaquo;</a> </span>
+      </div>
+    </td>
+    <td height="16" align="right" style="padding-right:4px;">
+      <div class="" style="white-space:nowrap;">
+        <b class="on">Du plus utile au moins utile</b> | <a href="http://www.amazon.fr/product-reviews/B0037KM2IS/ref=cm_cr_pr_top_recent/280-7845724-6013244?ie=UTF8&showViewpoints=0&sortBy=bySubmissionDateDescending" >Du plus r&eacute;cent au plus ancien</a>
+      </div>
+    </td>
+  </tr>
+</table>
+
+
+<table id="productReviews" width="100%" cellspacing="0" cellpadding="0">
+<tr>
+  <td width="90%">
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- BOUNDARY -->
+<a name="RD1YRCUV4SUKM"></a><br />
+
+
+<div style="margin-left:0.5em;">
+    
+      <div style="margin-bottom:0.5em;">
+        134 internautes sur&nbsp;135 ont trouv&eacute; ce commentaire utile&nbsp;:
+      </div>
+      <div style="margin-bottom:0.5em;">
+        <span style="margin-right:5px;"><span class="swSprite s_star_5_0 " title="5.0 étoiles sur 5" ><span>5.0 étoiles sur 5</span></span> </span>
+        <span style="vertical-align:middle;"><b>Un vrai boitier pour tout faire!</b>, <nobr>27 avril 2010</nobr></span>
+      </div>
+      <div style="margin-bottom:0.5em;">
+        <div><div style="float:left;">Par&nbsp;</div><div style="float:left;"><a  href="http://www.amazon.fr/gp/pdp/profile/AVCLDH8HORLRK/ref=cm_cr_pr_pdp/280-7845724-6013244" ><span style = "font-weight: bold;">Anh LUU</span></a>  - <a href="http://www.amazon.fr/gp/cdp/member-reviews/AVCLDH8HORLRK/ref=cm_cr_pr_auth_rev/280-7845724-6013244?ie=UTF8&amp;sort_by=MostRecentReview">Voir tous mes commentaires</a></div></div><div style="clear:both;"></div>
+      </div>
+      <div class="tiny" style="margin-bottom:0.5em;">
+        <b><span class="h3color tiny">Ce commentaire fait référence à cette édition&nbsp;: </span>Canon - EOS 550D - Kit Reflex - 18 Mpix + Objectif EF-S 18-55 mm f/3,5-5,6 IS - Noir (Appareils électroniques)</b>
+      </div>
+
+Je suis un passionn&eacute; de la photo, j'ai d&eacute;j&agrave; eu plusieurs boitiers canon tel que 1D 5D 4xxD pour l'usage pro ou personnel. La gamme 1Ds/5D &eacute;tait bien sup&eacute;rieur aux 4xx/5xxD mais cette fois ci canon a fait un grand coup avec le 550D. J'ai seulement environ 300 clich&eacute;s avec ce boitier mais les premiers r&eacute;sultats sont tr&egrave;s positifs. <br /><br />La qualit&eacute; d'image est en net progr&egrave;s: 18Mpx permet d'un recadrage important, la plage dynamique du capteur est un poil meilleur que celui du 5D même si la taille de ce dernier est bien plus grande. La sensibilit&eacute; est bluffant, le 5D &eacute;tait le champion du domaine il y a 2-3 ans, mais compar&eacute; au 550D, l'image issue du 5D est tr&egrave;s bruit&eacute;e &agrave; partir d'iso 800. Images &agrave; iso 1600/3200 du 550D sont bien plus propres mais le plus impressionnant c'est la dynamique. Sur les boitiers de g&eacute;n&eacute;ration pr&eacute;c&eacute;dentes, quand on monte en Iso, même &agrave; iso800, on constate une perte tr&egrave;s visible de la dynamique des image qui les rendre un peu "dull". Sur le 550D, même &agrave; iso 3200 cette perte est visiblement tr&egrave;s faible. L'objectif livr&eacute; avec le boitier - 18-55 IS est tr&egrave;s bon qui est capable de faire des tirages de grande qualit&eacute; &agrave; la fois de d&eacute;finition ou de restitution de couleurs (il ne faut pas le comparer aux objectifs L quand même).<br /><br />L'option vid&eacute;o HD est un grand plus sur ce boitier, la qualit&eacute; vid&eacute;o HD est aussi bien que celle sur le 5D mark 2 ou 7D mais plus accessible avec un bouton d&eacute;di&eacute;. La vid&eacute;o HD est d'une qualit&eacute; exceptionnelle si coupl&eacute; avec de bons objectifs, type fixes ou L. Attention, il vous faut une carte SDHC class 6 minimum pour une fluidit&eacute; de l'enregistrement/lecture des vid&eacute;os sinon l'op&eacute;ration s'arrete tout seul lorsque le buffer est plein.<br /><br />L'&eacute;cran LCD est tr&egrave;s lumineux et reste visible même sous le soleil. Sa qualit&eacute; d'affichage est stup&eacute;fiante, sous cet &eacute;cran tout est beau, tout est parfait. Je me demande quand mes &eacute;crans PC arrivent &agrave; cette qualit&eacute; et &agrave; quel prix.<br /><br />Le Syst&egrave;me autofocus est bon pour l'usage quotidien mais pas tr&egrave;s fiable dans les conditions difficiles. Par contre, la mise au point par l'&eacute;cran (AF de phase ?) est tr&egrave;s bon en toutes circonstances. <br /><br />Points faibles:<br /><br />-L'AF pendant l'enregistrement vid&eacute;o est lent et bruyant. <br />-Construction un peu l&eacute;ger, la trappe de batterie semble fragile.<br />-AF de la g&eacute;n&eacute;ration pr&eacute;c&eacute;dente (500D/450D/400D donc ?)<br />-QC de canon perfectible - mon boitier sort de sa boite avec plein de poussi&egrave;res dans son viseur.<br /><br />Pour moi le 550D est un boitier qui peut tout faire tout en restant l&eacute;ger et discret. Je me vois bien partir en vacances avec ce boitier et 1 ou 2 objectifs pr&eacute;f&eacute;r&eacute;s. Sans doute ce sera le boitier de l'ann&eacute;e, le best seller comme le Rebel 300D et s'il a AF du 7D, il sera un boitier parfait. C'est du bonheur, je ne regrette jamais mon achat.<br /><br />Voici quelques vid&eacute;os que j'ai r&eacute;alis&eacute; avec ce boitier: (N'oubliez pas d'activer le mode HD)<br />http://www.youtube.com/watch?v=twZ1wzb-6WE <br />http://www.youtube.com/watch?v=LJhDHSCpxO0<br /><br />Happy shooting!<br />
+      <div style="padding-top: 10px; clear: both; width: 100%;">
+
+        <div style="float:left; padding-right:15px; border-right:1px solid #CCCCCC"><div style="padding-bottom:5px;"><b class="tiny" style="color:#666666;white-space:nowrap;">Aidez d'autres clients à trouver les commentaires les plus utiles</b>&nbsp;</div><div style="width:300px;">
+
+
+
+
+
+
+
+
+
+<a name="RD1YRCUV4SUKM.2115.Helpful.Reviews" style="font-size:1px;"> </a><span
+class="crVotingButtons"><nobr><span class="votingPrompt">Avez-vous trouv&eacute; ce commentaire utile&nbsp;?&nbsp;</span><a rel="nofollow" class="votingButtonReviews" href="http://www.amazon.fr/gp/voting/cast/Reviews/2115/RD1YRCUV4SUKM/Helpful/1/ref=cm_cr_prvoteyn/280-7845724-6013244?ie=UTF8&token=3C6F105D5E61FB38944635097A70210FBCD132D7&target=aHR0cDovL3d3dy5hbWF6b24uZnIvcmV2aWV3L0IwMDM3S00ySVMvcmVmPWNtX2NyX3Bydm90ZXJkci8yODAtNzg0NTcyNC02MDEzMjQ0&voteAnchorName=RD1YRCUV4SUKM.2115.Helpful.Reviews&voteSessionID=280-7845724-6013244"><span class="cmtySprite s_largeYes " ><span>Oui</span></span></a>
+<a rel="nofollow" class="votingButtonReviews" href="http://www.amazon.fr/gp/voting/cast/Reviews/2115/RD1YRCUV4SUKM/Helpful/-1/ref=cm_cr_prvoteyn/280-7845724-6013244?ie=UTF8&token=94479BE5BBD8151E28DDDC0A8CF0BC10E6FA5121&target=aHR0cDovL3d3dy5hbWF6b24uZnIvcmV2aWV3L0IwMDM3S00ySVMvcmVmPWNtX2NyX3Bydm90ZXJkci8yODAtNzg0NTcyNC02MDEzMjQ0&voteAnchorName=RD1YRCUV4SUKM.2115.Helpful.Reviews&voteSessionID=280-7845724-6013244"><span class="cmtySprite s_largeNo " ><span>Non</span></span></a></nobr> <span class="votingMessage"></span></span>
+
+</div></div><div style="float:left;"><div style="padding-left:15px;"><div style="white-space:nowrap;"><span class='tiny'>
+
+
+
+
+<a name="RD1YRCUV4SUKM.2115.Inappropriate.Reviews" style="font-size:1px;"> </a><span class="reportingButton"><nobr><a rel="nofollow" class="reportingButton" href="http://www.amazon.fr/gp/voting/cast/Reviews/2115/RD1YRCUV4SUKM/Inappropriate/1/ref=cm_cr_prvoteyn/280-7845724-6013244?ie=UTF8&token=37B1A5E3C778FFBDC32A7A30D0A41627F15A79F2&target=aHR0cDovL3d3dy5hbWF6b24uZnIvcmV2aWV3L0IwMDM3S00ySVMvcmVmPWNtX2NyX3Bydm90ZXJkci8yODAtNzg0NTcyNC02MDEzMjQ0&voteAnchorName=RD1YRCUV4SUKM.2115.Inappropriate.Reviews&voteSessionID=280-7845724-6013244"
+>Signaler un abus</a></nobr></span>
+</span> <span style="color:#CCCCCC;">|</span> <span class="tiny"><a href="http://www.amazon.fr/review/RD1YRCUV4SUKM/ref=cm_cr_pr_perm/?ie=UTF8&ASIN=B0037KM2IS&nodeID=&tag=&linkCode=" >Permalien</a></span></div><div style="white-space:nowrap;padding-left:-5px;padding-top:5px;"><a href="http://www.amazon.fr/review/RD1YRCUV4SUKM/ref=cm_cr_pr_cmt/280-7845724-6013244?ie=UTF8&ASIN=B0037KM2IS&nodeID=&tag=&linkCode=#wasThisHelpful" ><span class="swSprite s_comment " ><span>Remarque sur ce commentaire</span></span></a>&nbsp;<a href="http://www.amazon.fr/review/RD1YRCUV4SUKM/ref=cm_cr_pr_cmt/280-7845724-6013244?ie=UTF8&ASIN=B0037KM2IS&nodeID=&tag=&linkCode=#wasThisHelpful" >Remarques sur ce commentaire (5)</a></div></div></div><div style="clear:both;"></div>
+      </div>
+      <br />
+
+</div>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- BOUNDARY -->
+<a name="R1K5BC2QNZBQCM"></a><br />
+
+
+<div style="margin-left:0.5em;">
+    
+      <div style="margin-bottom:0.5em;">
+        54 internautes sur&nbsp;56 ont trouv&eacute; ce commentaire utile&nbsp;:
+      </div>
+      <div style="margin-bottom:0.5em;">
+        <span style="margin-right:5px;"><span class="swSprite s_star_5_0 " title="5.0 étoiles sur 5" ><span>5.0 étoiles sur 5</span></span> </span>
+        <span style="vertical-align:middle;"><b>Pour d&eacute;butants motiv&eacute;s et amateurs &eacute;clair&eacute;s !</b>, <nobr>18 juillet 2010</nobr></span>
+      </div>
+      <div style="margin-bottom:0.5em;">
+        <div><div style="float:left;">Par&nbsp;</div><div style="float:left;"><a  href="http://www.amazon.fr/gp/pdp/profile/A34795P4OS9EUJ/ref=cm_cr_pr_pdp/280-7845724-6013244" ><span style = "font-weight: bold;">Bruno Bartolotta</span></a> (Nice, France)  - <a href="http://www.amazon.fr/gp/cdp/member-reviews/A34795P4OS9EUJ/ref=cm_cr_pr_auth_rev/280-7845724-6013244?ie=UTF8&amp;sort_by=MostRecentReview">Voir tous mes commentaires</a><br />
+<span class="cmtySprite s_BadgeTop500 " ><span>(TOP 500 COMMENTATEURS)</span></span>
+&nbsp;&nbsp;
+<span class="cmtySprite s_BadgeRealName " ><span>(VRAI NOM)</span></span>
+&nbsp;&nbsp;
+
+
+</div></div><div style="clear:both;"></div>
+      </div>
+      <div class="tiny" style="margin-bottom:0.5em;">
+        <b><span class="h3color tiny">Ce commentaire fait référence à cette édition&nbsp;: </span>Canon - EOS 550D - Kit Reflex - 18 Mpix + Objectif EF-S 18-55 mm f/3,5-5,6 IS - Noir (Appareils électroniques)</b>
+      </div>
+
+D&eacute;cid&eacute; &agrave; me mettre &agrave; la photographie, j'&eacute;tais alors d&eacute;tenteur d'un Bridge Lumix que j'imaginais suffisant pour m'amuser. Plusieurs bouquins plus tard et suite &agrave; de nombreux essais j'ai vite compris qu'il me fallait un autre boitier. C'est attir&eacute; par le ph&eacute;nom&egrave;re de la Photo HDR et la possibilit&eacute; sur cet appareil de corriger l'exposition dans un rayon de +/- 5IL que je me suis d&eacute;cid&eacute; pour le Canon Eos 550D.<br /><br />Je n'imaginais pas &agrave; quel point ce boitier &eacute;tait un excellent choix !!! Je ne pourrais certainement pas vous apporter autant de d&eacute;tails que d'autres plus exp&eacute;riment&eacute;s que moi mais si vous êtes d&eacute;butant en photo, peut être mon commentaire vous sera utile.<br /><br />Pour commencer, ce que j'appr&eacute;cie sur ce boitier, c'est la clart&eacute; de l'&eacute;cran dans les diff&eacute;rents modes de prise de vue. A tout instant que ce soit sur l'&eacute;cran ou dans le viseur, toutes les infos essentielles sont affich&eacute;es clairement. Sensibilit&eacute; Iso, vitesse d'obturation, ouverture, balance des blancs, mode d'acquisition, niveau d'exposition, auto focus etc ... tout est v&eacute;rifiable d'un simple coup d'oeil, clair.<br /><br />L'acc&egrave;s au param&eacute;trage des diff&eacute;rentes fonctions est tr&egrave;s intuitif, un coup de molette et un ou deux boutons et le r&eacute;glage de l'appareil est relativement simple, tant et si bien que la prise en main est tr&egrave;s intuitive on passe tr&egrave;s vite &agrave; l'exp&eacute;rience terrain. Bien que d&eacute;butant je n'ai presque pas ouvert le mode d'emploi.<br /><br />Un autre aspect appr&eacute;ciable : bien que l'appareil permet de r&eacute;gler manuellement la totalit&eacute; des param&egrave;tres, on peut y aller par phases en choisissant de se concentrer sur la vitesse ou l'ouverture et laisser l'appareil figer le reste. Cela reste tr&egrave;s utile lorsque l'on apprend comme dans mon cas.<br /><br />Le rendu des image est excellent et j'ai pu le tester en cas de forte lumi&egrave;res ou en cas de basses lumi&egrave;res. Même avec une sensibilit&eacute; Iso tr&egrave;s haute, le bruit est extrêmement faible, ce qui est appr&eacute;ciable quand on aime jouer avec la lumi&egrave;re ou prendre des photos la nuit. Cet appareil permet de tr&egrave;s bon r&eacute;sultats pour tout type de photos. Habitant un appartement plutôt sombre (orient&eacute; Nord) mais tr&egrave;s color&eacute;, j'arrive pourtant en soir&eacute;e &agrave; prendre de tr&egrave;s belles photos sans flash et en restituant relativement fid&egrave;lement les couleurs.<br /><br />L'affichage des photos apr&egrave;s la prise est aussi int&eacute;ressante. Si elles peuvent s'afficher de façon tr&egrave;s classique, on a la possibilit&eacute; aussi, pour chacune d'afficher toutes les infos de prise de vue, de choix de balance des blancs avec l'histogramme d'exposition. Un troisi&egrave;me mode d'affichage permet aussi d'afficher les histogrammes de couleur. Des infos super pratiques quand on est d&eacute;butant car on arrive parfois &agrave; de tr&egrave;s bons r&eacute;sultats "sans trop l'avoir fait expr&egrave;s" ou que l'on apprend en faisant de nombreux test ! Et tout le côt&eacute; agr&eacute;able de la chose est que toutes ces infos sont facilement accessibles, presque intuitivement d'un simple clic sans avoir &agrave; rechercher dans toutes sortes de menus d&eacute;roulants.<br /><br />Enfin, autre d&eacute;tail qui peut avoir son importance pour certains, est la possibilit&eacute; de varier l'exposition dans un ordre allant de +&agrave;- 5Il. Fonction utile pour ceux qui veulent s'essayer &agrave; la HDR. Toutefois l'option Braketing de l'appareil ne peut prendre automatiquement que trois photos. En mode libre le bracket est limit&eacute; &agrave; un rayon de +/-2, il faudra changer ce mode et accepter que l'appareil g&egrave;re automatiquement une partie des r&eacute;glages pour arriver &agrave; prendre des photos sur toute la gamme.  Perso &agrave; mon niveau c'est tr&egrave;s largement suffisant !<br /><br />Bref un appareil grand public mais qui s'adresse &agrave; des personnes qui ont un minimum de notions. Si vous ne savez pas ce qu'est une vitesse d'obturation, l'ouverture du diaphragme ou une balance de blancs, ce n'est pas le bon appareil, les modes sc&egrave;nes sont ici limit&eacute;s &agrave; leurs plus simples expressions. <br /><br />Un appareil intuitif qu'il est plaisant et facile de d&eacute;couvrir peu &agrave; peu ; un appareil encore tr&egrave;s performants dans de nombreuses conditions d'utilisation et de nombreux type de photos mais &agrave; r&eacute;server &agrave; des d&eacute;butants motiv&eacute;s (mon cas) ou &agrave; des amateurs &eacute;clair&eacute;s qui verront ici tout le potentiel de ce boitier. <br /><br />Voil&agrave; &agrave; chaud apr&egrave;s deux semaines mes premi&egrave;res impressions sur ce super appareil qui, je pense, me suffira tr&egrave;s amplement pendant encore longtemps.
+      <div style="padding-top: 10px; clear: both; width: 100%;">
+
+        <div style="float:left; padding-right:15px; border-right:1px solid #CCCCCC"><div style="padding-bottom:5px;"><b class="tiny" style="color:#666666;white-space:nowrap;">Aidez d'autres clients à trouver les commentaires les plus utiles</b>&nbsp;</div><div style="width:300px;">
+
+
+
+
+
+
+
+
+
+<a name="R1K5BC2QNZBQCM.2115.Helpful.Reviews" style="font-size:1px;"> </a><span
+class="crVotingButtons"><nobr><span class="votingPrompt">Avez-vous trouv&eacute; ce commentaire utile&nbsp;?&nbsp;</span><a rel="nofollow" class="votingButtonReviews" href="http://www.amazon.fr/gp/voting/cast/Reviews/2115/R1K5BC2QNZBQCM/Helpful/1/ref=cm_cr_prvoteyn/280-7845724-6013244?ie=UTF8&token=D3CF2D9D4E65B0770C5A97A6EADEA04FB97F664E&target=aHR0cDovL3d3dy5hbWF6b24uZnIvcmV2aWV3L0IwMDM3S00ySVMvcmVmPWNtX2NyX3Bydm90ZXJkci8yODAtNzg0NTcyNC02MDEzMjQ0&voteAnchorName=R1K5BC2QNZBQCM.2115.Helpful.Reviews&voteSessionID=280-7845724-6013244"><span class="cmtySprite s_largeYes " ><span>Oui</span></span></a>
+<a rel="nofollow" class="votingButtonReviews" href="http://www.amazon.fr/gp/voting/cast/Reviews/2115/R1K5BC2QNZBQCM/Helpful/-1/ref=cm_cr_prvoteyn/280-7845724-6013244?ie=UTF8&token=A1EF7ECCCE51DCB7454D1B8184498FF6F1532D08&target=aHR0cDovL3d3dy5hbWF6b24uZnIvcmV2aWV3L0IwMDM3S00ySVMvcmVmPWNtX2NyX3Bydm90ZXJkci8yODAtNzg0NTcyNC02MDEzMjQ0&voteAnchorName=R1K5BC2QNZBQCM.2115.Helpful.Reviews&voteSessionID=280-7845724-6013244"><span class="cmtySprite s_largeNo " ><span>Non</span></span></a></nobr> <span class="votingMessage"></span></span>
+
+</div></div><div style="float:left;"><div style="padding-left:15px;"><div style="white-space:nowrap;"><span class='tiny'>
+
+
+
+
+<a name="R1K5BC2QNZBQCM.2115.Inappropriate.Reviews" style="font-size:1px;"> </a><span class="reportingButton"><nobr><a rel="nofollow" class="reportingButton" href="http://www.amazon.fr/gp/voting/cast/Reviews/2115/R1K5BC2QNZBQCM/Inappropriate/1/ref=cm_cr_prvoteyn/280-7845724-6013244?ie=UTF8&token=2638D1FF2A7BD25EB98715E7465A26857A3AB626&target=aHR0cDovL3d3dy5hbWF6b24uZnIvcmV2aWV3L0IwMDM3S00ySVMvcmVmPWNtX2NyX3Bydm90ZXJkci8yODAtNzg0NTcyNC02MDEzMjQ0&voteAnchorName=R1K5BC2QNZBQCM.2115.Inappropriate.Reviews&voteSessionID=280-7845724-6013244"
+>Signaler un abus</a></nobr></span>
+</span> <span style="color:#CCCCCC;">|</span> <span class="tiny"><a href="http://www.amazon.fr/review/R1K5BC2QNZBQCM/ref=cm_cr_pr_perm/?ie=UTF8&ASIN=B0037KM2IS&nodeID=&tag=&linkCode=" >Permalien</a></span></div><div style="white-space:nowrap;padding-left:-5px;padding-top:5px;"><a href="http://www.amazon.fr/review/R1K5BC2QNZBQCM/ref=cm_cr_pr_cmt/280-7845724-6013244?ie=UTF8&ASIN=B0037KM2IS&nodeID=&tag=&linkCode=#wasThisHelpful" ><span class="swSprite s_comment " ><span>Remarque sur ce commentaire</span></span></a>&nbsp;<a href="http://www.amazon.fr/review/R1K5BC2QNZBQCM/ref=cm_cr_pr_cmt/280-7845724-6013244?ie=UTF8&ASIN=B0037KM2IS&nodeID=&tag=&linkCode=#wasThisHelpful" >Remarques sur ce commentaire (2)</a></div></div></div><div style="clear:both;"></div>
+      </div>
+      <br />
+
+</div>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- BOUNDARY -->
+<a name="RIX3T7F166O0G"></a><br />
+
+
+<div style="margin-left:0.5em;">
+    
+      <div style="margin-bottom:0.5em;">
+        32 internautes sur&nbsp;34 ont trouv&eacute; ce commentaire utile&nbsp;:
+      </div>
+      <div style="margin-bottom:0.5em;">
+        <span style="margin-right:5px;"><span class="swSprite s_star_5_0 " title="5.0 étoiles sur 5" ><span>5.0 étoiles sur 5</span></span> </span>
+        <span style="vertical-align:middle;"><b>Pour d&eacute;butant exigeant et pro qui veulent un bon boitier l&eacute;ger de secours</b>, <nobr>4 décembre 2010</nobr></span>
+      </div>
+      <div style="margin-bottom:0.5em;">
+        <div><div style="float:left;">Par&nbsp;</div><div style="float:left;"><a  href="http://www.amazon.fr/gp/pdp/profile/A16I2Q0E5AEDS4/ref=cm_cr_pr_pdp/280-7845724-6013244" ><span style = "font-weight: bold;">Alexandre GODARD "Hasgarn"</span></a> (France)  - <a href="http://www.amazon.fr/gp/cdp/member-reviews/A16I2Q0E5AEDS4/ref=cm_cr_pr_auth_rev/280-7845724-6013244?ie=UTF8&amp;sort_by=MostRecentReview">Voir tous mes commentaires</a><br />
+<span class="cmtySprite s_BadgeTop500 " ><span>(TOP 500 COMMENTATEURS)</span></span>
+&nbsp;&nbsp;
+<span class="cmtySprite s_BadgeVineVoice " ><span>(TESTEURS)</span></span>
+&nbsp;&nbsp;
+<span class="cmtySprite s_BadgeRealName " ><span>(VRAI NOM)</span></span>
+&nbsp;&nbsp;
+
+
+</div></div><div style="clear:both;"></div>
+      </div>
+      <div class="tiny" style="margin-bottom:0.5em;">
+        <b><span class="h3color tiny">Ce commentaire fait référence à cette édition&nbsp;: </span><a href="http://www.amazon.fr/Canon-550D-Reflex-Mpix-Bo%C3%AEtier/dp/B0037KM2II/ref=cm_cr_pr_orig_subj/280-7845724-6013244">Canon - EOS 550D - Reflex 18 Mpix - Full HD - Noir - Boîtier nu (Appareils électroniques)</a></b>
+      </div>
+
+Je me situe dans la cat&eacute;gorie des d&eacute;butants exigeants (apr&egrave;s presque 4 ans de pratique).<br />J'ai pratiqu&eacute; la photo &agrave; mon travail pendant 3 ans et demi sur un Nikon D80 et un D60. Je ne comprenais pas pourquoi je prenais parfois de bonnes photos, parfois des mauvaises.<br />Ce qui me rebutait sur ces appareils, c'est l'accessibilit&eacute; des r&eacute;glages (tout par le menu). Tr&egrave;s peu ergonomique.<br />La "r&eacute;v&eacute;lation", je la dois &agrave; 2 amis : l'un est un amateur qui s'est form&eacute; tout seul jusqu'&agrave; devenir un excellent technicien et un photographe tr&egrave;s comp&eacute;tent. L'autre est une amie et ancienne coll&egrave;gue de travail qui a fait des &eacute;tudes en photographie et pratique aujourd'hui ce m&eacute;tier malheureusement plus pour arrondir ses fins de mois. &Agrave; eux deux, ils m'ont permis de franchir le cap. Au d&eacute;part int&eacute;ress&eacute; par les bridges, j'ai r&eacute;alis&eacute; que j'avais de hautes exigences qui ne pourraient être satisfaites par ce biais. Mon ami "technicien" s'est achet&eacute; un Canon EOS 40D, un vieux mod&egrave;le qui a encore de beaux jours devant lui. L'ergonomie mode Canon m'a tout de suite s&eacute;duite, et pendant ce temps, mon amie et ancienne coll&egrave;gue m'expliquait &agrave; quoi sert telle ou telle option (priorit&eacute; ouverture, priorit&eacute; vitesse, focale'').<br />D&eacute;but août, je franchis le cap et je m'ach&egrave;te le 550D nu (car le kit 18/55 IS n'&eacute;tait pas dispo) et je lui ajoute un <a href="http://www.amazon.fr/gp/product/B002OED6ZQ/ref=cm_cr_asin_lnk/280-7845724-6013244">Tamron - Objectif lumineux SP AF 17-50mm / 2,8 XR Di II VC pour Canon</a>. <br /><br />Apr&egrave;s 2600 photos en 4 mois, avec ce couple, je fais :<br />- des photos de nuit : pose longue - faible iso et pose courte - iso &eacute;lev&eacute;. NO SOUCIS<br />- des photos de d&eacute;fil&eacute;s. J'ai une amis styliste pour qui je travaille et je suis bluff&eacute; de voir des clich&eacute;s aussi clean &agrave; 400 iso avec flash, et 800 iso sans flash. Les seules probl&egrave;mes qu'on trouve sur mes photos sont derri&egrave;res l'appareil ^^<br />- des photos urbaines avec de forts contrastes,<br />- des portraits<br /><br />Bref, je d&eacute;couvre encore beaucoup, mais c'est avec un plaisir incomparable.<br /><br />Pourquoi ce mod&egrave;le plus qu'un autre.<br /><br />18 MILLIONS DE PIXELS : pour imprimer des grands formats, plus il y a de pixel et mieux c'est, car il y aura (si besoin d'agrandir) moins de pertes par extrapolation. &Agrave; 300 DPI de r&eacute;solution ou PPP ce qui signifie Point Par Pouce, il est possible d'imprimer des photos dans un format de 44 cm par 30 cm SANS PERTE. 300 DPI corresponde au standard des imprimeries, c'est donc une qualit&eacute; plus que correcte, sachant que de base, le minimum requis est plutôt 240 DPI. &Agrave; cette r&eacute;solution, la photo mesure 54 cm par 36,5 cm. Le point d'impression est &agrave; peine plus visible, d&eacute;j&agrave; qu'il ne l'est pas tant &agrave; 300 DPI. Les Nikon que j'utilisais disposaient de capteur 10 millions de pixel. Ça correspond d&eacute;j&agrave; &agrave; une feuille A4 &agrave; 300 DPI, ce qui n'est pas si mal. Mais pas assez pour moi ^^ <br />Le capteur APS-C 18Mpx de Canon dispose d'une plage dynamique (nombre de valeurs de gris d&eacute;tect&eacute;es) tr&egrave;s profonde pour cette gamme de prix. Les appareils photos qui font mieux ne sont gu&egrave;re nombreux (7D, 5D, 60D, D7000 de Nikon et d'autres haut de gamme).<br />&Eacute;tant graphiste PAO de formation et sp&eacute;cialis&eacute; dans l'&eacute;dition et l'imprimerie, ce crit&egrave;re est pr&eacute;pond&eacute;rant &agrave; mes yeux.<br /><br />ERGONOMIE : toutes les touches n&eacute;cessaires sont sous les doigts. Ni trop ni pas assez, les ISO sont accessibles en une touche tout comme la balance des blancs, mode rafale, autofocus sujet fixe ou mobile, collimateurs' et j'en passe. Les mod&egrave;les Canon, dispose d'un menu rapide int&eacute;gralement param&eacute;trable : on a pas tous les r&eacute;glages pointus sous la main, certains sont dans les menus. N&eacute;anmoins, ils peuvent demeurer indispensables en fonction de vos habitudes. Prenantes souvent  des photos de nuit et de jour avec fortes lumi&egrave;res, j'ai mis en menu rapide la "r&eacute;duction du bruit en fort ISO" et "Priorit&eacute; Haute lumi&egrave;re". Je peux donc basculer tr&egrave;s vite sur ces param&egrave;tres sans avoir &agrave; faire d&eacute;filer longuement le menu. Bref, tr&egrave;s rapide et facile.<br />De plus, ce boitier est tr&egrave;s compact, et malgr&eacute; mes grandes paluches, il tiens tr&egrave;s bien en main. En revanche, la position portrait est tr&egrave;s inconfortable (comme sur de nombreux autres). J'envisage l'achat prochain d'un grip pour soulager mon &eacute;paule lors de longues sessions.<br /><br />OBJECTIFS : Canon a 2 gammes d'objectifs : les EF d&eacute;dier aux Full frame et APS-H (grands capteurs qu'on trouve sur les mod&egrave;les haut de gamme pro 5D mk2, 1D mk4 et 1DS mk3) et les EF-S d&eacute;dier aux gammes du 1000 D au 7D. Le 550D prend les 2. Son capteur APS-C grossira in&eacute;vitablement les distances indiqu&eacute;es, mais c'est sans incidence. On pourra donc coller sur son 550D un GROS objectif de gamme L et sortir de superbes clich&eacute;s. De plus, des marques sp&eacute;cialis&eacute;es r&eacute;alisent de tr&egrave;s bons objectifs pour Canon. Ceci veut aussi dire que par anticipation, les objectifs EF que j'aurai sur mon 550D seront r&eacute;utilisable sur un Full Frame quand je changerai de boitier. Sans chercher &agrave; casser Nikon, c'est le gros probl&egrave;me, il y a trop de gammes diff&eacute;rentes parmi les objectifs avec des incidences peu agr&eacute;ables en cas de non compatibilit&eacute;s : objectif non d&eacute;tect&eacute; dans le pire des cas mais plutôt des autofocus qui ne marchent pas ou des stabilisations inop&eacute;rantes. Pas de soucis comme ça chez Canon. C'est EF-S sur 1000D, EF et EF-S sur 550D, 60D et 7D, EF sur les 5D mk2, 1D mk4 et 1DS mk3. Facile.<br />D'ailleurs, mon prochain achat sera un 70-200 F4 L IS USM, que je r&eacute;utiliserai sur le successeur du 5D mk2 (ou un autre encore plus haut de gamme ^^) que je m'ach&egrave;terai dans 3-4 ans.<br /><br /><br />VID&Eacute;O : il fait de la Full HD 1080p en 24 image secondes. C'est la même chose que le 7D. Reste que c'est un appareil photo, non une cam&eacute;ra. Donc, certains trouveront r&eacute;dhibitoires la qualit&eacute; du son ou l'ergonomie globale (mise au point et zoom manuels). Cela dit, j'ai scotch&eacute; un pote en lui montrant comment gagner une journ&eacute;e de travail en faisant une mise au point manuelle, plutôt que de devoir faire des d&eacute;tourage de partout dans After Effects pour obtenir des flous en arri&egrave;re plan et premier plan. Les vid&eacute;astes en quête de qualit&eacute; seront combl&eacute; de pouvoir jouer si simplement avec des optiques d'appareil photo qui ont les mêmes qualit&eacute;s que les objectifs de cam&eacute;ra, sans le prix. Reste que l'amateur qui veut filmer sa petite fille sera certainement gên&eacute; aux entournures tant cela r&eacute;clame du doigt&eacute;. Je crois que la vid&eacute;o via les appareils photos trouveront leur bonheur sur un cr&eacute;neau semi-pro voir pro. Pour l'anecdote, un &eacute;pisode de la s&eacute;rie Docteur House a &eacute;t&eacute; tourn&eacute; avec le Canon EOS 5D mk2, preuve que c'est possible dans un cadre professionnel avec des r&eacute;sultats de qualit&eacute;s (l'&eacute;pisode dont je ne me souvient plus du titre est un mod&egrave;le d'esth&eacute;tique). D'ailleurs, il est impossible de tourner des plans d'une dur&eacute;e sup&eacute;rieure &agrave; 4 minutes.<br />Le talon d'Achille de la bête reste donc le son, et une mise au point assez difficile &agrave; mettre en œuvre sans entrainement, alors que sa grande qualit&eacute; est de pouvoir profiter d'un parc d'optique tr&egrave;s cons&eacute;quent (60 objectifs en gamme Canon).<br /><br />7D ou 550D ? : le 550D est un "petit" 7D, avec d'&eacute;normes qualit&eacute;s, mais moins complet que son grand fr&egrave;re. Le budget et vos besoins r&eacute;els d&eacute;termineront le meilleur choix. Le 60D dispose lui aussi de quelques arguments et se place entre les 2 mod&egrave;les. Son r&eacute;el plus est l'&eacute;cran orientable. Le 7D lui reste le meilleur en vitesse (11 clich&eacute;s/seconde) avec une carte compact flash, l&agrave; ou une SDHC reste en deç&agrave;. SDHC de classe 4 minimum (j'ai fait des petits films avec, ça passe). Classe 6 recommand&eacute;.<br /><br />PRIX : tr&egrave;s comp&eacute;titif pour les options qu'il apporte.<br /><br />FORMAT RAW : le CR2 de Canon est g&eacute;r&eacute; par de nombreux bons logiciels comme Lightroom, Aperture (mon pr&eacute;f&eacute;r&eacute; et celui avec lequel je travaille), DXO, Bibble 5, Capture ONE etc.<br /><br />CONSTRUCTION : tr&egrave;s correct. On sent que l'appareil n'est pas un haut de gamme, mais tout de même, c'est du solide. Pas de jeu, et de petits d&eacute;fauts : trappe carte SDHC un peu moyenne et certains trouvent &agrave; redire &agrave; la trappe batterie. Pas moi. Le boitier ne p&egrave;se pas lourd (530g), et c'est une qualit&eacute;.<br /><br />CONCLUSION<br />Un boitier tout seul ne veut pas dire grand chose. Il fournit une base qualit&eacute;, mais ne fera pas de bonnes photos si vous ne lui collez pas le bon objectif, ne traitez pas vos photos avec le bon logiciel (non, Photoshop ne d&eacute;veloppe pas les RAW et ce dernier fait de la retouche destructive, même s'il s'agit d'un calque de correction) et si vous n'apprenez pas &agrave; vous en servir. Le mode automatique est super mauvais (d'ailleurs il n'y a pour ainsi dire aucun r&eacute;glage possible en menu dans ce mode), apprenez plutôt &agrave; utiliser les modes priorit&eacute; vitesse (Tv) et priorit&eacute; ouverture (Av). Ces derniers vont vites devenir des mines d'informations. Cela fait 500 photos que mon appareil est en mode manuel int&eacute;gral (M) : plus aucun r&eacute;glage automatique, je g&egrave;re tout. <br /><br />Et c'est formidable.<br /><br />PS : ici, vous trouverez mes photos avec le 550D : http://www.flickr.com/photos/54033982@N08/
+      <div style="padding-top: 10px; clear: both; width: 100%;">
+
+        <div style="float:left; padding-right:15px; border-right:1px solid #CCCCCC"><div style="padding-bottom:5px;"><b class="tiny" style="color:#666666;white-space:nowrap;">Aidez d'autres clients à trouver les commentaires les plus utiles</b>&nbsp;</div><div style="width:300px;">
+
+
+
+
+
+
+
+
+
+<a name="RIX3T7F166O0G.2115.Helpful.Reviews" style="font-size:1px;"> </a><span
+class="crVotingButtons"><nobr><span class="votingPrompt">Avez-vous trouv&eacute; ce commentaire utile&nbsp;?&nbsp;</span><a rel="nofollow" class="votingButtonReviews" href="http://www.amazon.fr/gp/voting/cast/Reviews/2115/RIX3T7F166O0G/Helpful/1/ref=cm_cr_prvoteyn/280-7845724-6013244?ie=UTF8&token=5890B1F31A7A05FEB7204CAE27A6E4397124A4F3&target=aHR0cDovL3d3dy5hbWF6b24uZnIvcmV2aWV3L0IwMDM3S00ySVMvcmVmPWNtX2NyX3Bydm90ZXJkci8yODAtNzg0NTcyNC02MDEzMjQ0&voteAnchorName=RIX3T7F166O0G.2115.Helpful.Reviews&voteSessionID=280-7845724-6013244"><span class="cmtySprite s_largeYes " ><span>Oui</span></span></a>
+<a rel="nofollow" class="votingButtonReviews" href="http://www.amazon.fr/gp/voting/cast/Reviews/2115/RIX3T7F166O0G/Helpful/-1/ref=cm_cr_prvoteyn/280-7845724-6013244?ie=UTF8&token=D8C8198F5C72799C15604C0D0AF781A661938464&target=aHR0cDovL3d3dy5hbWF6b24uZnIvcmV2aWV3L0IwMDM3S00ySVMvcmVmPWNtX2NyX3Bydm90ZXJkci8yODAtNzg0NTcyNC02MDEzMjQ0&voteAnchorName=RIX3T7F166O0G.2115.Helpful.Reviews&voteSessionID=280-7845724-6013244"><span class="cmtySprite s_largeNo " ><span>Non</span></span></a></nobr> <span class="votingMessage"></span></span>
+
+</div></div><div style="float:left;"><div style="padding-left:15px;"><div style="white-space:nowrap;"><span class='tiny'>
+
+
+
+
+<a name="RIX3T7F166O0G.2115.Inappropriate.Reviews" style="font-size:1px;"> </a><span class="reportingButton"><nobr><a rel="nofollow" class="reportingButton" href="http://www.amazon.fr/gp/voting/cast/Reviews/2115/RIX3T7F166O0G/Inappropriate/1/ref=cm_cr_prvoteyn/280-7845724-6013244?ie=UTF8&token=C45846BF3F073504A053B595434A65F73C0FE25E&target=aHR0cDovL3d3dy5hbWF6b24uZnIvcmV2aWV3L0IwMDM3S00ySVMvcmVmPWNtX2NyX3Bydm90ZXJkci8yODAtNzg0NTcyNC02MDEzMjQ0&voteAnchorName=RIX3T7F166O0G.2115.Inappropriate.Reviews&voteSessionID=280-7845724-6013244"
+>Signaler un abus</a></nobr></span>
+</span> <span style="color:#CCCCCC;">|</span> <span class="tiny"><a href="http://www.amazon.fr/review/RIX3T7F166O0G/ref=cm_cr_pr_perm/?ie=UTF8&ASIN=B0037KM2II&nodeID=&tag=&linkCode=" >Permalien</a></span></div><div style="white-space:nowrap;padding-left:-5px;padding-top:5px;"><a href="http://www.amazon.fr/review/RIX3T7F166O0G/ref=cm_cr_pr_cmt/280-7845724-6013244?ie=UTF8&ASIN=B0037KM2II&nodeID=&tag=&linkCode=#wasThisHelpful" ><span class="swSprite s_comment " ><span>Remarque sur ce commentaire</span></span></a>&nbsp;<a href="http://www.amazon.fr/review/RIX3T7F166O0G/ref=cm_cr_pr_cmt/280-7845724-6013244?ie=UTF8&ASIN=B0037KM2II&nodeID=&tag=&linkCode=#wasThisHelpful" >Remarques sur ce commentaire (5)</a></div></div></div><div style="clear:both;"></div>
+      </div>
+      <br />
+
+</div>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- BOUNDARY -->
+<a name="RNHEO87X9VPCQ"></a><br />
+
+
+<div style="margin-left:0.5em;">
+    
+      <div style="margin-bottom:0.5em;">
+        18 internautes sur&nbsp;19 ont trouv&eacute; ce commentaire utile&nbsp;:
+      </div>
+      <div style="margin-bottom:0.5em;">
+        <span style="margin-right:5px;"><span class="swSprite s_star_5_0 " title="5.0 étoiles sur 5" ><span>5.0 étoiles sur 5</span></span> </span>
+        <span style="vertical-align:middle;"><b>Excellent appareil</b>, <nobr>22 août 2010</nobr></span>
+      </div>
+      <div style="margin-bottom:0.5em;">
+        <div><div style="float:left;">Par&nbsp;</div><div style="float:left;"><a  href="http://www.amazon.fr/gp/pdp/profile/A27VYUGUFKZRK4/ref=cm_cr_pr_pdp/280-7845724-6013244" ><span style = "font-weight: bold;">marinfleuri</span></a>  - <a href="http://www.amazon.fr/gp/cdp/member-reviews/A27VYUGUFKZRK4/ref=cm_cr_pr_auth_rev/280-7845724-6013244?ie=UTF8&amp;sort_by=MostRecentReview">Voir tous mes commentaires</a></div></div><div style="clear:both;"></div>
+      </div>
+      <div class="tiny" style="margin-bottom:0.5em;">
+        <b><span class="h3color tiny">Ce commentaire fait référence à cette édition&nbsp;: </span><a href="http://www.amazon.fr/Canon-num%C3%A9rique-m%C3%A9gapixels-stabilisateur-Allemagne/dp/B0037KM2J2/ref=cm_cr_pr_orig_subj/280-7845724-6013244">Canon - EOS 550D - Appareil photo reflex numérique -18 mégapixels / LiveView - Kit incl. objectif EF-S 18-135mm 1:3,5-5,6 IS (stabilisateur d'image) (Import Allemagne) (Appareils électroniques)</a></b>
+      </div>
+
+J'ai achet&eacute; ce CANON EOS 550D avec un objectif 18-135mm IS <br />Il fait suite &agrave; un bridge Lumix tr&egrave;s agr&eacute;able par son zoom mais d&eacute;cevant par son piqu&eacute; et surtout le niveau de bruit tr&egrave;s important d&egrave;s 200 ISO et encore plus en faible lumi&egrave;re<br />Je voulais donc un appareil &agrave; tr&egrave;s bonne d&eacute;finition, avec peu ou pas de bruit en lumi&egrave;re faible et susceptible d'être emport&eacute; tout le temps et notamment en voyage<br />Je suis tr&egrave;s satisfait. La qualit&eacute; d'image est sans comparaison avec mon Lumix, la possibilit&eacute; de prendre des photos non bruit&eacute;es jusqu'&agrave; 3200 ISO, l'usage possible d'un objectif unique  en voyage (le 18-135mm) r&eacute;pondent exactement &agrave; ce que je recherchais. L'appareil est assez l&eacute;ger et peu encombrant, ce qui est encore, pour moi, une qualit&eacute; tr&egrave;s agr&eacute;able. Enfin, le logiciel est tr&egrave;s bien fait et permet un usage intuitif de l'appareil; ceci est compl&eacute;t&eacute; par un mode d'emploi pratique, bien fait et tr&egrave;s clair.<br />La d&eacute;finition des images permet un recadrage sur ordinateur sans perte de qualit&eacute; y compris quand on isole une petite partie de l'image enregistr&eacute;e, ce qui donne en fait de meilleurs r&eacute;sultats que l'utilisation d'un zoom tr&egrave;s puissant (X15 pour mon Lumix par exemple) car en recadrant les images obtenues avec les 18 Megapixels, on conserve des images excellentes.<br />J'avais lu qu'on reprochait &agrave; cet appareil une fabrication "l&eacute;g&egrave;re": c'est vrai que ce n'est pas un appareil &agrave; traiter sans soin mais il est tr&egrave;s bien construit, bien fini et largement assez solide du moins pour moi qui ne suis pas un "baroudeur"...<br />Je suis tr&egrave;s tr&egrave;s satisfait de mon achat.
+      <div style="padding-top: 10px; clear: both; width: 100%;">
+
+        <div style="float:left; padding-right:15px; border-right:1px solid #CCCCCC"><div style="padding-bottom:5px;"><b class="tiny" style="color:#666666;white-space:nowrap;">Aidez d'autres clients à trouver les commentaires les plus utiles</b>&nbsp;</div><div style="width:300px;">
+
+
+
+
+
+
+
+
+
+<a name="RNHEO87X9VPCQ.2115.Helpful.Reviews" style="font-size:1px;"> </a><span
+class="crVotingButtons"><nobr><span class="votingPrompt">Avez-vous trouv&eacute; ce commentaire utile&nbsp;?&nbsp;</span><a rel="nofollow" class="votingButtonReviews" href="http://www.amazon.fr/gp/voting/cast/Reviews/2115/RNHEO87X9VPCQ/Helpful/1/ref=cm_cr_prvoteyn/280-7845724-6013244?ie=UTF8&token=7B8ADB8F09FDD908D1A3558A266FD355C1DBC4EB&target=aHR0cDovL3d3dy5hbWF6b24uZnIvcmV2aWV3L0IwMDM3S00ySVMvcmVmPWNtX2NyX3Bydm90ZXJkci8yODAtNzg0NTcyNC02MDEzMjQ0&voteAnchorName=RNHEO87X9VPCQ.2115.Helpful.Reviews&voteSessionID=280-7845724-6013244"><span class="cmtySprite s_largeYes " ><span>Oui</span></span></a>
+<a rel="nofollow" class="votingButtonReviews" href="http://www.amazon.fr/gp/voting/cast/Reviews/2115/RNHEO87X9VPCQ/Helpful/-1/ref=cm_cr_prvoteyn/280-7845724-6013244?ie=UTF8&token=67B7967EA46953B4CDBB19CAF1993A23DF121FC6&target=aHR0cDovL3d3dy5hbWF6b24uZnIvcmV2aWV3L0IwMDM3S00ySVMvcmVmPWNtX2NyX3Bydm90ZXJkci8yODAtNzg0NTcyNC02MDEzMjQ0&voteAnchorName=RNHEO87X9VPCQ.2115.Helpful.Reviews&voteSessionID=280-7845724-6013244"><span class="cmtySprite s_largeNo " ><span>Non</span></span></a></nobr> <span class="votingMessage"></span></span>
+
+</div></div><div style="float:left;"><div style="padding-left:15px;"><div style="white-space:nowrap;"><span class='tiny'>
+
+
+
+
+<a name="RNHEO87X9VPCQ.2115.Inappropriate.Reviews" style="font-size:1px;"> </a><span class="reportingButton"><nobr><a rel="nofollow" class="reportingButton" href="http://www.amazon.fr/gp/voting/cast/Reviews/2115/RNHEO87X9VPCQ/Inappropriate/1/ref=cm_cr_prvoteyn/280-7845724-6013244?ie=UTF8&token=062949EF7246A61D22E66E339D3C3DBACB4C29E0&target=aHR0cDovL3d3dy5hbWF6b24uZnIvcmV2aWV3L0IwMDM3S00ySVMvcmVmPWNtX2NyX3Bydm90ZXJkci8yODAtNzg0NTcyNC02MDEzMjQ0&voteAnchorName=RNHEO87X9VPCQ.2115.Inappropriate.Reviews&voteSessionID=280-7845724-6013244"
+>Signaler un abus</a></nobr></span>
+</span> <span style="color:#CCCCCC;">|</span> <span class="tiny"><a href="http://www.amazon.fr/review/RNHEO87X9VPCQ/ref=cm_cr_pr_perm/?ie=UTF8&ASIN=B0037KM2J2&nodeID=&tag=&linkCode=" >Permalien</a></span></div><div style="white-space:nowrap;padding-left:-5px;padding-top:5px;"><a href="http://www.amazon.fr/review/RNHEO87X9VPCQ/ref=cm_cr_pr_cmt/280-7845724-6013244?ie=UTF8&ASIN=B0037KM2J2&nodeID=&tag=&linkCode=#wasThisHelpful" ><span class="swSprite s_comment " ><span>Remarque sur ce commentaire</span></span></a>&nbsp;<a href="http://www.amazon.fr/review/RNHEO87X9VPCQ/ref=cm_cr_pr_cmt/280-7845724-6013244?ie=UTF8&ASIN=B0037KM2J2&nodeID=&tag=&linkCode=#wasThisHelpful" >Remarque sur ce commentaire</a></div></div></div><div style="clear:both;"></div>
+      </div>
+      <br />
+
+</div>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- BOUNDARY -->
+<a name="R1LWKHI832LTQS"></a><br />
+
+
+<div style="margin-left:0.5em;">
+    
+      <div style="margin-bottom:0.5em;">
+        17 internautes sur&nbsp;18 ont trouv&eacute; ce commentaire utile&nbsp;:
+      </div>
+      <div style="margin-bottom:0.5em;">
+        <span style="margin-right:5px;"><span class="swSprite s_star_5_0 " title="5.0 étoiles sur 5" ><span>5.0 étoiles sur 5</span></span> </span>
+        <span style="vertical-align:middle;"><b>Superbe outil pour s'amuser... et aller plus loin!</b>, <nobr>1 août 2010</nobr></span>
+      </div>
+      <div style="margin-bottom:0.5em;">
+        <div><div style="float:left;">Par&nbsp;</div><div style="float:left;"><a  href="http://www.amazon.fr/gp/pdp/profile/A2OTRUCHE1O75I/ref=cm_cr_pr_pdp/280-7845724-6013244" ><span style = "font-weight: bold;">Vincent Verger "Vynz100"</span></a>  - <a href="http://www.amazon.fr/gp/cdp/member-reviews/A2OTRUCHE1O75I/ref=cm_cr_pr_auth_rev/280-7845724-6013244?ie=UTF8&amp;sort_by=MostRecentReview">Voir tous mes commentaires</a><br />
+<span class="cmtySprite s_BadgeRealName " ><span>(VRAI NOM)</span></span>
+&nbsp;&nbsp;
+
+
+</div></div><div style="clear:both;"></div>
+      </div>
+      <div class="tiny" style="margin-bottom:0.5em;">
+        <b><span class="h3color tiny">Ce commentaire fait référence à cette édition&nbsp;: </span>Canon - EOS 550D - Kit Reflex - 18 Mpix + Objectif EF-S 18-55 mm f/3,5-5,6 IS - Noir (Appareils électroniques)</b>
+      </div>
+
+Photographe d&eacute;butant, je suis pass&eacute; d'un compact correct il y a quelques ann&eacute;es (Pentax) &agrave; ce r&eacute;flex Canon "d'entr&eacute;e de gamme", avec les objectifs de la même marque, les "basiques" 18-55 IS, 55-250 IS et le petit 50mm 1.8 (focale fixe)...<br /><br />A pr&egrave;s quelques tâtonnements dus &agrave; la prise en main, les photos qui sortent de ce joujou pour grands enfants sont d'une qualit&eacute; exceptionnelle, avec ces trois objectifs... pour les portraits, mention sp&eacute;ciale au petit 50mm 1.8, superbe de piqu&eacute;, et d'un prix tout petit: moins de 100€!<br /><br />Possibilit&eacute; de shooter en Raw ou en jpeg, les 18 Mpixels permettent les recadrages sans perte de qualit&eacute;, il faut n&eacute;anmoins prendre une carte SD suffisamment grosse (8Go au minimum).<br /><br />Les plus:<br />- prix relativement accessible<br />- prise en main, l&eacute;geret&eacute;<br />- simplicit&eacute; des menus<br />- possibilit&eacute; de tout personnaliser<br />- qualit&eacute; des images (et de la vid&eacute;o)<br />- tr&egrave;s bonne qualit&eacute; quand on monte dans les ISO<br />- ça donne envie de progresser et de prendre des objectifs meilleurs encore!<br /><br />Les moins:<br />- autonomie de la batterie assez quelconque (400 images)<br />- vis&eacute;e pas toujours &eacute;vidente avec des lunettes<br />- &eacute;cran fixe (mais de superbe qualit&eacute;)<br /><br /><br />Bref, un achat que je recommande chaudement, tant pour les d&eacute;butants que pour les utilisateurs plus confirm&eacute;s!
+      <div style="padding-top: 10px; clear: both; width: 100%;">
+
+        <div style="float:left; padding-right:15px; border-right:1px solid #CCCCCC"><div style="padding-bottom:5px;"><b class="tiny" style="color:#666666;white-space:nowrap;">Aidez d'autres clients à trouver les commentaires les plus utiles</b>&nbsp;</div><div style="width:300px;">
+
+
+
+
+
+
+
+
+
+<a name="R1LWKHI832LTQS.2115.Helpful.Reviews" style="font-size:1px;"> </a><span
+class="crVotingButtons"><nobr><span class="votingPrompt">Avez-vous trouv&eacute; ce commentaire utile&nbsp;?&nbsp;</span><a rel="nofollow" class="votingButtonReviews" href="http://www.amazon.fr/gp/voting/cast/Reviews/2115/R1LWKHI832LTQS/Helpful/1/ref=cm_cr_prvoteyn/280-7845724-6013244?ie=UTF8&token=D2CE3A454EA75522750ACA9DFB56E02D4C43E652&target=aHR0cDovL3d3dy5hbWF6b24uZnIvcmV2aWV3L0IwMDM3S00ySVMvcmVmPWNtX2NyX3Bydm90ZXJkci8yODAtNzg0NTcyNC02MDEzMjQ0&voteAnchorName=R1LWKHI832LTQS.2115.Helpful.Reviews&voteSessionID=280-7845724-6013244"><span class="cmtySprite s_largeYes " ><span>Oui</span></span></a>
+<a rel="nofollow" class="votingButtonReviews" href="http://www.amazon.fr/gp/voting/cast/Reviews/2115/R1LWKHI832LTQS/Helpful/-1/ref=cm_cr_prvoteyn/280-7845724-6013244?ie=UTF8&token=536DC393CA7141AB42C7638704AC6BB2DA5A6C7A&target=aHR0cDovL3d3dy5hbWF6b24uZnIvcmV2aWV3L0IwMDM3S00ySVMvcmVmPWNtX2NyX3Bydm90ZXJkci8yODAtNzg0NTcyNC02MDEzMjQ0&voteAnchorName=R1LWKHI832LTQS.2115.Helpful.Reviews&voteSessionID=280-7845724-6013244"><span class="cmtySprite s_largeNo " ><span>Non</span></span></a></nobr> <span class="votingMessage"></span></span>
+
+</div></div><div style="float:left;"><div style="padding-left:15px;"><div style="white-space:nowrap;"><span class='tiny'>
+
+
+
+
+<a name="R1LWKHI832LTQS.2115.Inappropriate.Reviews" style="font-size:1px;"> </a><span class="reportingButton"><nobr><a rel="nofollow" class="reportingButton" href="http://www.amazon.fr/gp/voting/cast/Reviews/2115/R1LWKHI832LTQS/Inappropriate/1/ref=cm_cr_prvoteyn/280-7845724-6013244?ie=UTF8&token=4C5D38A13478146BAC1D39EFDA1EDA0B772B0084&target=aHR0cDovL3d3dy5hbWF6b24uZnIvcmV2aWV3L0IwMDM3S00ySVMvcmVmPWNtX2NyX3Bydm90ZXJkci8yODAtNzg0NTcyNC02MDEzMjQ0&voteAnchorName=R1LWKHI832LTQS.2115.Inappropriate.Reviews&voteSessionID=280-7845724-6013244"
+>Signaler un abus</a></nobr></span>
+</span> <span style="color:#CCCCCC;">|</span> <span class="tiny"><a href="http://www.amazon.fr/review/R1LWKHI832LTQS/ref=cm_cr_pr_perm/?ie=UTF8&ASIN=B0037KM2IS&nodeID=&tag=&linkCode=" >Permalien</a></span></div><div style="white-space:nowrap;padding-left:-5px;padding-top:5px;"><a href="http://www.amazon.fr/review/R1LWKHI832LTQS/ref=cm_cr_pr_cmt/280-7845724-6013244?ie=UTF8&ASIN=B0037KM2IS&nodeID=&tag=&linkCode=#wasThisHelpful" ><span class="swSprite s_comment " ><span>Remarque sur ce commentaire</span></span></a>&nbsp;<a href="http://www.amazon.fr/review/R1LWKHI832LTQS/ref=cm_cr_pr_cmt/280-7845724-6013244?ie=UTF8&ASIN=B0037KM2IS&nodeID=&tag=&linkCode=#wasThisHelpful" >Remarque sur ce commentaire</a></div></div></div><div style="clear:both;"></div>
+      </div>
+      <br />
+
+</div>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- BOUNDARY -->
+<a name="R28IV8R2PDDLDM"></a><br />
+
+
+<div style="margin-left:0.5em;">
+    
+      <div style="margin-bottom:0.5em;">
+        11 internautes sur&nbsp;12 ont trouv&eacute; ce commentaire utile&nbsp;:
+      </div>
+      <div style="margin-bottom:0.5em;">
+        <span style="margin-right:5px;"><span class="swSprite s_star_4_0 " title="4.0 étoiles sur 5" ><span>4.0 étoiles sur 5</span></span> </span>
+        <span style="vertical-align:middle;"><b>Apareil vraiment sympa &agrave; utiliser</b>, <nobr>24 août 2010</nobr></span>
+      </div>
+      <div style="margin-bottom:0.5em;">
+        <div><div style="float:left;">Par&nbsp;</div><div style="float:left;"><a  href="http://www.amazon.fr/gp/pdp/profile/A1XJ8X98XAA64X/ref=cm_cr_pr_pdp/280-7845724-6013244" ><span style = "font-weight: bold;">coyote</span></a> (France)  - <a href="http://www.amazon.fr/gp/cdp/member-reviews/A1XJ8X98XAA64X/ref=cm_cr_pr_auth_rev/280-7845724-6013244?ie=UTF8&amp;sort_by=MostRecentReview">Voir tous mes commentaires</a></div></div><div style="clear:both;"></div>
+      </div>
+      <div class="tiny" style="margin-bottom:0.5em;">
+        <b><span class="h3color tiny">Ce commentaire fait référence à cette édition&nbsp;: </span><a href="http://www.amazon.fr/Canon-num%C3%A9rique-m%C3%A9gapixels-stabilisateur-Allemagne/dp/B0037KM2J2/ref=cm_cr_pr_orig_subj/280-7845724-6013244">Canon - EOS 550D - Appareil photo reflex numérique -18 mégapixels / LiveView - Kit incl. objectif EF-S 18-135mm 1:3,5-5,6 IS (stabilisateur d'image) (Import Allemagne) (Appareils électroniques)</a></b>
+      </div>
+
+Appareil et optique vraiment sympas &agrave; utiliser pour le simple amateur que je suis, j'ai retrouv&eacute; le plaisir de photographier, moi qui en avait un peu marre de l'aspect "plat" pris par mon compact. Parmi les choses que j'ai appr&eacute;ci&eacute;es, par rapport &agrave; mon ancien reflex d'une autre marque, la facilit&eacute; &agrave; utiliser l'appareil, c'est assez intuitif et simple, et donne vraiment l'envie de shooter, et reshooter, le syst&egrave;me est vraiment r&eacute;actif. La gestion du bruit est vraiment bonne, voire impressionnante par moment. J'ai shoot&eacute; le Vieux Lyon en pleine nuit depuis la Fourvi&egrave;re, sans trepied &agrave; 6400 iso, et c'est vraiment pas mal du tout. Pour une impression en 10/15, ça va parfaitement. C'est sûr qu'il faut s'y reprendre &agrave; deux - trois fois pour avoir le moins de flou de boug&eacute; possible, mais le r&eacute;sultat est exploitable. Et l'&eacute;cran, wow, il est superbe, donc gare &agrave; vous, si votre &eacute;cran d'ordinateur n'a pas la même qualit&eacute;, vous trouverez les photos plus fades. La batterie fournie tient bien la route, j'ai même &eacute;t&eacute; surpris qu'elle tienne aussi longtemps.<br />Pour l'optique, elle est pas mal mais sans plus je dirais. Je trouve que le ph&eacute;nom&egrave;ne de distortion est "parfois" assez visible sur des images d'immeubles ou d'arbres. En tout cas, c'est le point n&eacute;gatif qui m'a le plus marqu&eacute;. Le 18-135 est un bon compromis, mais je me demande sinc&egrave;rement si le 18-200 n'aurait pas &eacute;t&eacute; mieux, car il me semble d'apr&egrave;s tous les tests que j'ai pu lire, qu'il a une qualit&eacute; comparable &agrave; ce 18-135.<br />Concernant la vid&eacute;o, c'est agr&eacute;able d'y voir de la profondeur. Je ne trouve pas que la qualit&eacute; en 1080p soit si excellente que cela, il faut utiliser un tr&eacute;pied alors. Il n'y a pas d'autofocus exploitable, et il a vraiment du mal &agrave; se faire. Bref, je me mets en mode photo, je fais la mise au point, puis je repasse en mode vid&eacute;o. D'ailleurs, j'aurais pr&eacute;f&eacute;r&eacute; un bouton vid&eacute;o direct, comme on peut le voir sur les panasonic tz7. L&agrave;, il faut tourner la mollette, et faire le grand tour, pour passer de la photo en mode manuel &agrave; la vid&eacute;o. Mais ce mode vid&eacute;o n'est pas gadget, c'est assez bien utile, mais limit&eacute; par l'AF (&agrave; faire en manuel). (Pour ceux ayant un mac, c'est lourd que la derni&egrave;re version d'imovie ne voit pas les vid&eacute;os du canon quand celui-ci y est branch&eacute; directement par usb... donc achat d'un lecteur de carte sdhc, merci Apple...)<br />En tout cas, voil&agrave; un achat que je ne regrette en rien. Son gros plus &eacute;tant la gestion du bruit en faible luminosit&eacute;, et son mode vid&eacute;o. Sinon, je n'aurais pas changer d'appareil, car c'est bien l'optique qui fait la photo, et pas vraiment le boitier.<br />Et merci &agrave; Amazon qui, pour l'instant, g&egrave;re bien la visibilit&eacute; de son stock et peut avoir de tr&egrave;s bon prix parfois, car je l'avais command&eacute; sur un autre site, et malheureusement, je me suis bien fait avoir... De plus, j'ai achet&eacute; une batterie et un filtre polarisant &agrave; des vendeurs list&eacute;s sur le site Amazon, et bien la qualit&eacute; n'a rien &agrave; voir, et je mettrais même des doutes sur ce qui est vendu. Du coup, je n'ach&egrave;terai plus chez ces vendeurs tierces.
+      <div style="padding-top: 10px; clear: both; width: 100%;">
+
+        <div style="float:left; padding-right:15px; border-right:1px solid #CCCCCC"><div style="padding-bottom:5px;"><b class="tiny" style="color:#666666;white-space:nowrap;">Aidez d'autres clients à trouver les commentaires les plus utiles</b>&nbsp;</div><div style="width:300px;">
+
+
+
+
+
+
+
+
+
+<a name="R28IV8R2PDDLDM.2115.Helpful.Reviews" style="font-size:1px;"> </a><span
+class="crVotingButtons"><nobr><span class="votingPrompt">Avez-vous trouv&eacute; ce commentaire utile&nbsp;?&nbsp;</span><a rel="nofollow" class="votingButtonReviews" href="http://www.amazon.fr/gp/voting/cast/Reviews/2115/R28IV8R2PDDLDM/Helpful/1/ref=cm_cr_prvoteyn/280-7845724-6013244?ie=UTF8&token=FB1C911658910D300F188517C622B3E6DBF3A06A&target=aHR0cDovL3d3dy5hbWF6b24uZnIvcmV2aWV3L0IwMDM3S00ySVMvcmVmPWNtX2NyX3Bydm90ZXJkci8yODAtNzg0NTcyNC02MDEzMjQ0&voteAnchorName=R28IV8R2PDDLDM.2115.Helpful.Reviews&voteSessionID=280-7845724-6013244"><span class="cmtySprite s_largeYes " ><span>Oui</span></span></a>
+<a rel="nofollow" class="votingButtonReviews" href="http://www.amazon.fr/gp/voting/cast/Reviews/2115/R28IV8R2PDDLDM/Helpful/-1/ref=cm_cr_prvoteyn/280-7845724-6013244?ie=UTF8&token=5BF4C59AB8F9D095E2391BB98F871B80EA59FDA9&target=aHR0cDovL3d3dy5hbWF6b24uZnIvcmV2aWV3L0IwMDM3S00ySVMvcmVmPWNtX2NyX3Bydm90ZXJkci8yODAtNzg0NTcyNC02MDEzMjQ0&voteAnchorName=R28IV8R2PDDLDM.2115.Helpful.Reviews&voteSessionID=280-7845724-6013244"><span class="cmtySprite s_largeNo " ><span>Non</span></span></a></nobr> <span class="votingMessage"></span></span>
+
+</div></div><div style="float:left;"><div style="padding-left:15px;"><div style="white-space:nowrap;"><span class='tiny'>
+
+
+
+
+<a name="R28IV8R2PDDLDM.2115.Inappropriate.Reviews" style="font-size:1px;"> </a><span class="reportingButton"><nobr><a rel="nofollow" class="reportingButton" href="http://www.amazon.fr/gp/voting/cast/Reviews/2115/R28IV8R2PDDLDM/Inappropriate/1/ref=cm_cr_prvoteyn/280-7845724-6013244?ie=UTF8&token=4725EB9D58A2050028F3F1C8D02B9FF3E95793E6&target=aHR0cDovL3d3dy5hbWF6b24uZnIvcmV2aWV3L0IwMDM3S00ySVMvcmVmPWNtX2NyX3Bydm90ZXJkci8yODAtNzg0NTcyNC02MDEzMjQ0&voteAnchorName=R28IV8R2PDDLDM.2115.Inappropriate.Reviews&voteSessionID=280-7845724-6013244"
+>Signaler un abus</a></nobr></span>
+</span> <span style="color:#CCCCCC;">|</span> <span class="tiny"><a href="http://www.amazon.fr/review/R28IV8R2PDDLDM/ref=cm_cr_pr_perm/?ie=UTF8&ASIN=B0037KM2J2&nodeID=&tag=&linkCode=" >Permalien</a></span></div><div style="white-space:nowrap;padding-left:-5px;padding-top:5px;"><a href="http://www.amazon.fr/review/R28IV8R2PDDLDM/ref=cm_cr_pr_cmt/280-7845724-6013244?ie=UTF8&ASIN=B0037KM2J2&nodeID=&tag=&linkCode=#wasThisHelpful" ><span class="swSprite s_comment " ><span>Remarque sur ce commentaire</span></span></a>&nbsp;<a href="http://www.amazon.fr/review/R28IV8R2PDDLDM/ref=cm_cr_pr_cmt/280-7845724-6013244?ie=UTF8&ASIN=B0037KM2J2&nodeID=&tag=&linkCode=#wasThisHelpful" >Remarque sur ce commentaire (1)</a></div></div></div><div style="clear:both;"></div>
+      </div>
+      <br />
+
+</div>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- BOUNDARY -->
+<a name="R30WLEIJUFCSK5"></a><br />
+
+
+<div style="margin-left:0.5em;">
+    
+      <div style="margin-bottom:0.5em;">
+        3 internautes sur&nbsp;3 ont trouv&eacute; ce commentaire utile&nbsp;:
+      </div>
+      <div style="margin-bottom:0.5em;">
+        <span style="margin-right:5px;"><span class="swSprite s_star_4_0 " title="4.0 étoiles sur 5" ><span>4.0 étoiles sur 5</span></span> </span>
+        <span style="vertical-align:middle;"><b>un bon rapport qualit&eacute;-prix</b>, <nobr>17 février 2011</nobr></span>
+      </div>
+      <div style="margin-bottom:0.5em;">
+        <div><div style="float:left;">Par&nbsp;</div><div style="float:left;"><a  href="http://www.amazon.fr/gp/pdp/profile/A3GZLBMXJ43PUB/ref=cm_cr_pr_pdp/280-7845724-6013244" ><span style = "font-weight: bold;">jlj1952</span></a>  - <a href="http://www.amazon.fr/gp/cdp/member-reviews/A3GZLBMXJ43PUB/ref=cm_cr_pr_auth_rev/280-7845724-6013244?ie=UTF8&amp;sort_by=MostRecentReview">Voir tous mes commentaires</a></div></div><div style="clear:both;"></div>
+      </div>
+      <div class="tiny" style="margin-bottom:0.5em;">
+        <b><span class="h3color tiny">Ce commentaire fait référence à cette édition&nbsp;: </span><a href="http://www.amazon.fr/Canon-num%C3%A9rique-m%C3%A9gapixels-stabilisateur-Allemagne/dp/B0037KM2J2/ref=cm_cr_pr_orig_subj/280-7845724-6013244">Canon - EOS 550D - Appareil photo reflex numérique -18 mégapixels / LiveView - Kit incl. objectif EF-S 18-135mm 1:3,5-5,6 IS (stabilisateur d'image) (Import Allemagne) (Appareils électroniques)</a></b>
+      </div>
+
+J'ai command&eacute; cet appareil photo apr&egrave;s avoir consult&eacute; pas mal d'autres avis, et je dois dire que mon opinion refl&egrave;te bien la tendance g&eacute;n&eacute;rale.<br /><br />La fabrication est s&eacute;rieuse, mais on sent un peu de l&eacute;g&egrave;ret&eacute; dans la finition. C'est vrai que les trappes permettant d'acc&eacute;der &agrave; l'accus ou &agrave; la carte m&eacute;moire paraissent assez fragiles. On comprend mal cette n&eacute;gligence de finition de la part du fabricant (une &eacute;toile en moins).<br /><br />La prise en main est correcte (attention cet appareil est lourd quand il est &eacute;quip&eacute; du zoom 18-135 et encore plus avec un 70-300). Il est pr&eacute;f&eacute;rable d'avoir de petites mains (mais ça on choisit pas) pour tenir l'appareil avec sa main droite, car la poign&eacute;e est petite et proche de l'objectif. <br /><br />En ce qui concerne les menus et l'ergonomie g&eacute;n&eacute;rale, il n'y a rien &agrave; dire, c'est propre et efficace, les commandes sont &agrave; la bonne place et les menus tr&egrave;s clairs. Tout est possible, depuis le tout automatique, jusqu'au tout manuel.<br /><br />L'&eacute;cran de contrôle est lui tr&egrave;s agr&eacute;able et tr&egrave;s lumineux (trop peut être, mais ça se r&egrave;gle). La vis&eacute;e reflex me parait assez en retrait par rapport &agrave; celle des appareils argentiques et la mise au point manuelle n'est pas facilit&eacute;e par l'absence sur le miroir d'un stigmom&egrave;tre ou d'un champ coup&eacute; (on peut trouver des miroirs de remplacement pour EOS dans le commerce qui ont cette fonction). Toutefois, avec l'appareil sur pied, il est possible de faire une vis&eacute;e &agrave; partir de l'&eacute;cran de contrôle avec un grossissement x5 ou x10, tr&egrave;s utile avec un gros zoom pour faire des photos de la lune par exemple.<br /><br />Le capteur de 18M pixels fait bien son travail et pour le prix, les images obtenues avec le zoom 18-135 sont de bonnes facture, avec un syst&egrave;me de mise au point automatique (visualisation de la zone de mise au point dans le viseur) et une stabilisation efficaces. Le flash parait un peu faible et pour obtenir de bons r&eacute;sultats &agrave; distance, il faut monter la sensibilit&eacute;. Toutefois, même &agrave; 3200 ISO, on obtient des images peu bruit&eacute;es (voir les tests techniques)<br /><br />Il est int&eacute;ressant d'investir dans une t&eacute;l&eacute;commande infra rouge, et il est dommage que cet accessoire ne soit pas fourni en s&eacute;rie.<br /><br />En conclusion, un bon appareil qui revient 2 &agrave; 3 fois moins cher que son grand fr&egrave;re 5D, avec des performances techniques identiques, mais au prix de quelques b&eacute;mols dans la finition. A ne pas utiliser pour aller barouder dans le d&eacute;sert.
+      <div style="padding-top: 10px; clear: both; width: 100%;">
+
+        <div style="float:left; padding-right:15px; border-right:1px solid #CCCCCC"><div style="padding-bottom:5px;"><b class="tiny" style="color:#666666;white-space:nowrap;">Aidez d'autres clients à trouver les commentaires les plus utiles</b>&nbsp;</div><div style="width:300px;">
+
+
+
+
+
+
+
+
+
+<a name="R30WLEIJUFCSK5.2115.Helpful.Reviews" style="font-size:1px;"> </a><span
+class="crVotingButtons"><nobr><span class="votingPrompt">Avez-vous trouv&eacute; ce commentaire utile&nbsp;?&nbsp;</span><a rel="nofollow" class="votingButtonReviews" href="http://www.amazon.fr/gp/voting/cast/Reviews/2115/R30WLEIJUFCSK5/Helpful/1/ref=cm_cr_prvoteyn/280-7845724-6013244?ie=UTF8&token=FAB075F9B6B73C861A3C9EBA9DD26F0F612744B5&target=aHR0cDovL3d3dy5hbWF6b24uZnIvcmV2aWV3L0IwMDM3S00ySVMvcmVmPWNtX2NyX3Bydm90ZXJkci8yODAtNzg0NTcyNC02MDEzMjQ0&voteAnchorName=R30WLEIJUFCSK5.2115.Helpful.Reviews&voteSessionID=280-7845724-6013244"><span class="cmtySprite s_largeYes " ><span>Oui</span></span></a>
+<a rel="nofollow" class="votingButtonReviews" href="http://www.amazon.fr/gp/voting/cast/Reviews/2115/R30WLEIJUFCSK5/Helpful/-1/ref=cm_cr_prvoteyn/280-7845724-6013244?ie=UTF8&token=BD8EB01E0B2861C6E158E470F3B43FB4AE634E76&target=aHR0cDovL3d3dy5hbWF6b24uZnIvcmV2aWV3L0IwMDM3S00ySVMvcmVmPWNtX2NyX3Bydm90ZXJkci8yODAtNzg0NTcyNC02MDEzMjQ0&voteAnchorName=R30WLEIJUFCSK5.2115.Helpful.Reviews&voteSessionID=280-7845724-6013244"><span class="cmtySprite s_largeNo " ><span>Non</span></span></a></nobr> <span class="votingMessage"></span></span>
+
+</div></div><div style="float:left;"><div style="padding-left:15px;"><div style="white-space:nowrap;"><span class='tiny'>
+
+
+
+
+<a name="R30WLEIJUFCSK5.2115.Inappropriate.Reviews" style="font-size:1px;"> </a><span class="reportingButton"><nobr><a rel="nofollow" class="reportingButton" href="http://www.amazon.fr/gp/voting/cast/Reviews/2115/R30WLEIJUFCSK5/Inappropriate/1/ref=cm_cr_prvoteyn/280-7845724-6013244?ie=UTF8&token=EBCDEF14C127B721C8774BF7C173FD8F1008118C&target=aHR0cDovL3d3dy5hbWF6b24uZnIvcmV2aWV3L0IwMDM3S00ySVMvcmVmPWNtX2NyX3Bydm90ZXJkci8yODAtNzg0NTcyNC02MDEzMjQ0&voteAnchorName=R30WLEIJUFCSK5.2115.Inappropriate.Reviews&voteSessionID=280-7845724-6013244"
+>Signaler un abus</a></nobr></span>
+</span> <span style="color:#CCCCCC;">|</span> <span class="tiny"><a href="http://www.amazon.fr/review/R30WLEIJUFCSK5/ref=cm_cr_pr_perm/?ie=UTF8&ASIN=B0037KM2J2&nodeID=&tag=&linkCode=" >Permalien</a></span></div><div style="white-space:nowrap;padding-left:-5px;padding-top:5px;"><a href="http://www.amazon.fr/review/R30WLEIJUFCSK5/ref=cm_cr_pr_cmt/280-7845724-6013244?ie=UTF8&ASIN=B0037KM2J2&nodeID=&tag=&linkCode=#wasThisHelpful" ><span class="swSprite s_comment " ><span>Remarque sur ce commentaire</span></span></a>&nbsp;<a href="http://www.amazon.fr/review/R30WLEIJUFCSK5/ref=cm_cr_pr_cmt/280-7845724-6013244?ie=UTF8&ASIN=B0037KM2J2&nodeID=&tag=&linkCode=#wasThisHelpful" >Remarque sur ce commentaire</a></div></div></div><div style="clear:both;"></div>
+      </div>
+      <br />
+
+</div>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- BOUNDARY -->
+<a name="R1GT4WN40KWY04"></a><br />
+
+
+<div style="margin-left:0.5em;">
+    
+      <div style="margin-bottom:0.5em;">
+        2 internautes sur&nbsp;2 ont trouv&eacute; ce commentaire utile&nbsp;:
+      </div>
+      <div style="margin-bottom:0.5em;">
+        <span style="margin-right:5px;"><span class="swSprite s_star_5_0 " title="5.0 étoiles sur 5" ><span>5.0 étoiles sur 5</span></span> </span>
+        <span style="vertical-align:middle;"><b>Le num&eacute;rique absolu</b>, <nobr>5 février 2011</nobr></span>
+      </div>
+      <div style="margin-bottom:0.5em;">
+        <div><div style="float:left;">Par&nbsp;</div><div style="float:left;"><a  href="http://www.amazon.fr/gp/pdp/profile/AWQU3FCAY1TXV/ref=cm_cr_pr_pdp/280-7845724-6013244" ><span style = "font-weight: bold;">ALBA</span></a>  - <a href="http://www.amazon.fr/gp/cdp/member-reviews/AWQU3FCAY1TXV/ref=cm_cr_pr_auth_rev/280-7845724-6013244?ie=UTF8&amp;sort_by=MostRecentReview">Voir tous mes commentaires</a></div></div><div style="clear:both;"></div>
+      </div>
+      <div class="tiny" style="margin-bottom:0.5em;">
+        <b><span class="h3color tiny">Ce commentaire fait référence à cette édition&nbsp;: </span><a href="http://www.amazon.fr/Canon-num%C3%A9rique-m%C3%A9gapixels-stabilisateur-Allemagne/dp/B0037KM2J2/ref=cm_cr_pr_orig_subj/280-7845724-6013244">Canon - EOS 550D - Appareil photo reflex numérique -18 mégapixels / LiveView - Kit incl. objectif EF-S 18-135mm 1:3,5-5,6 IS (stabilisateur d'image) (Import Allemagne) (Appareils électroniques)</a></b>
+      </div>
+
+Le canon EOS 550 D, que je viens d'acqu&eacute;rir avec un objectif de la marque 18-135, est un appareil tr&egrave;s complet. Les r&eacute;glages permettent de satisfaire l'amateur (il utilisera des cat&eacute;gories pr&eacute;-d&eacute;finies qui sont s&eacute;lectionnables par un molette directement &agrave; port&eacute;e de main) aussi bien que le pro (tout est d&eacute;brayable). Mais c'est de la qualit&eacute; des photos qu'il faut parler : si les bridges donnent de bons clich&eacute;s (j'ai aussi un Panasonic Lumix), &agrave; y regarder de pr&egrave;s, le rendu n'est pas aussi fid&egrave;le et pr&eacute;cis qu'avec le Canon. Je me suis surpris &agrave; prendre des photos de nuit en ville qui ont &eacute;t&eacute; une formidable surprise. Tr&egrave;s facile &agrave; recharger avec sa batterie, il n'est pas trop lourd et finalement il n'est pas tr&egrave;s diff&eacute;rent sous cet aspect d'un bridge. Tout est question de coût : pour faire de la macro, il faudra un autre objectif et ceux de la marque sont chers. En conclusion : si vous h&eacute;sitez entre un bridge et le Canon, prenez ce reflex que vous garderez longtemps vu sa polyvalence. 5/2/2011
+      <div style="padding-top: 10px; clear: both; width: 100%;">
+
+        <div style="float:left; padding-right:15px; border-right:1px solid #CCCCCC"><div style="padding-bottom:5px;"><b class="tiny" style="color:#666666;white-space:nowrap;">Aidez d'autres clients à trouver les commentaires les plus utiles</b>&nbsp;</div><div style="width:300px;">
+
+
+
+
+
+
+
+
+
+<a name="R1GT4WN40KWY04.2115.Helpful.Reviews" style="font-size:1px;"> </a><span
+class="crVotingButtons"><nobr><span class="votingPrompt">Avez-vous trouv&eacute; ce commentaire utile&nbsp;?&nbsp;</span><a rel="nofollow" class="votingButtonReviews" href="http://www.amazon.fr/gp/voting/cast/Reviews/2115/R1GT4WN40KWY04/Helpful/1/ref=cm_cr_prvoteyn/280-7845724-6013244?ie=UTF8&token=C5BD7FAC94AF087FE2A5830AA99E55687CB20B47&target=aHR0cDovL3d3dy5hbWF6b24uZnIvcmV2aWV3L0IwMDM3S00ySVMvcmVmPWNtX2NyX3Bydm90ZXJkci8yODAtNzg0NTcyNC02MDEzMjQ0&voteAnchorName=R1GT4WN40KWY04.2115.Helpful.Reviews&voteSessionID=280-7845724-6013244"><span class="cmtySprite s_largeYes " ><span>Oui</span></span></a>
+<a rel="nofollow" class="votingButtonReviews" href="http://www.amazon.fr/gp/voting/cast/Reviews/2115/R1GT4WN40KWY04/Helpful/-1/ref=cm_cr_prvoteyn/280-7845724-6013244?ie=UTF8&token=9EADC80B9761CB26E1E8D3973F0751A14F49996C&target=aHR0cDovL3d3dy5hbWF6b24uZnIvcmV2aWV3L0IwMDM3S00ySVMvcmVmPWNtX2NyX3Bydm90ZXJkci8yODAtNzg0NTcyNC02MDEzMjQ0&voteAnchorName=R1GT4WN40KWY04.2115.Helpful.Reviews&voteSessionID=280-7845724-6013244"><span class="cmtySprite s_largeNo " ><span>Non</span></span></a></nobr> <span class="votingMessage"></span></span>
+
+</div></div><div style="float:left;"><div style="padding-left:15px;"><div style="white-space:nowrap;"><span class='tiny'>
+
+
+
+
+<a name="R1GT4WN40KWY04.2115.Inappropriate.Reviews" style="font-size:1px;"> </a><span class="reportingButton"><nobr><a rel="nofollow" class="reportingButton" href="http://www.amazon.fr/gp/voting/cast/Reviews/2115/R1GT4WN40KWY04/Inappropriate/1/ref=cm_cr_prvoteyn/280-7845724-6013244?ie=UTF8&token=88779A36ED727278704CC84ADA65BD53434915B4&target=aHR0cDovL3d3dy5hbWF6b24uZnIvcmV2aWV3L0IwMDM3S00ySVMvcmVmPWNtX2NyX3Bydm90ZXJkci8yODAtNzg0NTcyNC02MDEzMjQ0&voteAnchorName=R1GT4WN40KWY04.2115.Inappropriate.Reviews&voteSessionID=280-7845724-6013244"
+>Signaler un abus</a></nobr></span>
+</span> <span style="color:#CCCCCC;">|</span> <span class="tiny"><a href="http://www.amazon.fr/review/R1GT4WN40KWY04/ref=cm_cr_pr_perm/?ie=UTF8&ASIN=B0037KM2J2&nodeID=&tag=&linkCode=" >Permalien</a></span></div><div style="white-space:nowrap;padding-left:-5px;padding-top:5px;"><a href="http://www.amazon.fr/review/R1GT4WN40KWY04/ref=cm_cr_pr_cmt/280-7845724-6013244?ie=UTF8&ASIN=B0037KM2J2&nodeID=&tag=&linkCode=#wasThisHelpful" ><span class="swSprite s_comment " ><span>Remarque sur ce commentaire</span></span></a>&nbsp;<a href="http://www.amazon.fr/review/R1GT4WN40KWY04/ref=cm_cr_pr_cmt/280-7845724-6013244?ie=UTF8&ASIN=B0037KM2J2&nodeID=&tag=&linkCode=#wasThisHelpful" >Remarque sur ce commentaire</a></div></div></div><div style="clear:both;"></div>
+      </div>
+      <br />
+
+</div>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- BOUNDARY -->
+<a name="R2627F63D5RKAY"></a><br />
+
+
+<div style="margin-left:0.5em;">
+    
+      <div style="margin-bottom:0.5em;">
+        26 internautes sur&nbsp;32 ont trouv&eacute; ce commentaire utile&nbsp;:
+      </div>
+      <div style="margin-bottom:0.5em;">
+        <span style="margin-right:5px;"><span class="swSprite s_star_5_0 " title="5.0 étoiles sur 5" ><span>5.0 étoiles sur 5</span></span> </span>
+        <span style="vertical-align:middle;"><b>Le must grand public</b>, <nobr>21 avril 2010</nobr></span>
+      </div>
+      <div style="margin-bottom:0.5em;">
+        <div><div style="float:left;">Par&nbsp;</div><div style="float:left;"><a  href="http://www.amazon.fr/gp/pdp/profile/A23WDOOOL47L1U/ref=cm_cr_pr_pdp/280-7845724-6013244" ><span style = "font-weight: bold;">H. Frederic</span></a> (Antibes, France)  - <a href="http://www.amazon.fr/gp/cdp/member-reviews/A23WDOOOL47L1U/ref=cm_cr_pr_auth_rev/280-7845724-6013244?ie=UTF8&amp;sort_by=MostRecentReview">Voir tous mes commentaires</a><br />
+<span class="cmtySprite s_BadgeRealName " ><span>(VRAI NOM)</span></span>
+&nbsp;&nbsp;
+
+
+</div></div><div style="clear:both;"></div>
+      </div>
+      <div class="tiny" style="margin-bottom:0.5em;">
+        <b><span class="h3color tiny">Ce commentaire fait référence à cette édition&nbsp;: </span>Canon - EOS 550D - Kit Reflex - 18 Mpix + Objectif EF-S 18-55 mm f/3,5-5,6 IS - Noir (Appareils électroniques)</b>
+      </div>
+
+Canon donne ici un bon coup de fouet &agrave; son boitier culte "grand public"<br />Exit les 450 et 500D qui prennent un bon coup de vieux !<br />18 megapixels, un &eacute;cran ultra lumineux et de tr&egrave;s grande qualit&eacute; (on peut zoomer sur la photo sans d&eacute;gradation !) et une tr&egrave;s bonne ergonomie.<br />A voir : le test sur virusphoto.com
+      <div style="padding-top: 10px; clear: both; width: 100%;">
+
+        <div style="float:left; padding-right:15px; border-right:1px solid #CCCCCC"><div style="padding-bottom:5px;"><b class="tiny" style="color:#666666;white-space:nowrap;">Aidez d'autres clients à trouver les commentaires les plus utiles</b>&nbsp;</div><div style="width:300px;">
+
+
+
+
+
+
+
+
+
+<a name="R2627F63D5RKAY.2115.Helpful.Reviews" style="font-size:1px;"> </a><span
+class="crVotingButtons"><nobr><span class="votingPrompt">Avez-vous trouv&eacute; ce commentaire utile&nbsp;?&nbsp;</span><a rel="nofollow" class="votingButtonReviews" href="http://www.amazon.fr/gp/voting/cast/Reviews/2115/R2627F63D5RKAY/Helpful/1/ref=cm_cr_prvoteyn/280-7845724-6013244?ie=UTF8&token=17F9CC39C9952B3B4A69BD701E3B0610747524EB&target=aHR0cDovL3d3dy5hbWF6b24uZnIvcmV2aWV3L0IwMDM3S00ySVMvcmVmPWNtX2NyX3Bydm90ZXJkci8yODAtNzg0NTcyNC02MDEzMjQ0&voteAnchorName=R2627F63D5RKAY.2115.Helpful.Reviews&voteSessionID=280-7845724-6013244"><span class="cmtySprite s_largeYes " ><span>Oui</span></span></a>
+<a rel="nofollow" class="votingButtonReviews" href="http://www.amazon.fr/gp/voting/cast/Reviews/2115/R2627F63D5RKAY/Helpful/-1/ref=cm_cr_prvoteyn/280-7845724-6013244?ie=UTF8&token=42EE956B2D779CB30D4F8729FBBFDA1D0074E1B7&target=aHR0cDovL3d3dy5hbWF6b24uZnIvcmV2aWV3L0IwMDM3S00ySVMvcmVmPWNtX2NyX3Bydm90ZXJkci8yODAtNzg0NTcyNC02MDEzMjQ0&voteAnchorName=R2627F63D5RKAY.2115.Helpful.Reviews&voteSessionID=280-7845724-6013244"><span class="cmtySprite s_largeNo " ><span>Non</span></span></a></nobr> <span class="votingMessage"></span></span>
+
+</div></div><div style="float:left;"><div style="padding-left:15px;"><div style="white-space:nowrap;"><span class='tiny'>
+
+
+
+
+<a name="R2627F63D5RKAY.2115.Inappropriate.Reviews" style="font-size:1px;"> </a><span class="reportingButton"><nobr><a rel="nofollow" class="reportingButton" href="http://www.amazon.fr/gp/voting/cast/Reviews/2115/R2627F63D5RKAY/Inappropriate/1/ref=cm_cr_prvoteyn/280-7845724-6013244?ie=UTF8&token=92EFF8845DCCF2EC406B215ADED058B5393D4661&target=aHR0cDovL3d3dy5hbWF6b24uZnIvcmV2aWV3L0IwMDM3S00ySVMvcmVmPWNtX2NyX3Bydm90ZXJkci8yODAtNzg0NTcyNC02MDEzMjQ0&voteAnchorName=R2627F63D5RKAY.2115.Inappropriate.Reviews&voteSessionID=280-7845724-6013244"
+>Signaler un abus</a></nobr></span>
+</span> <span style="color:#CCCCCC;">|</span> <span class="tiny"><a href="http://www.amazon.fr/review/R2627F63D5RKAY/ref=cm_cr_pr_perm/?ie=UTF8&ASIN=B0037KM2IS&nodeID=&tag=&linkCode=" >Permalien</a></span></div><div style="white-space:nowrap;padding-left:-5px;padding-top:5px;"><a href="http://www.amazon.fr/review/R2627F63D5RKAY/ref=cm_cr_pr_cmt/280-7845724-6013244?ie=UTF8&ASIN=B0037KM2IS&nodeID=&tag=&linkCode=#wasThisHelpful" ><span class="swSprite s_comment " ><span>Remarque sur ce commentaire</span></span></a>&nbsp;<a href="http://www.amazon.fr/review/R2627F63D5RKAY/ref=cm_cr_pr_cmt/280-7845724-6013244?ie=UTF8&ASIN=B0037KM2IS&nodeID=&tag=&linkCode=#wasThisHelpful" >Remarque sur ce commentaire</a></div></div></div><div style="clear:both;"></div>
+      </div>
+      <br />
+
+</div>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- BOUNDARY -->
+<a name="R339GLXB0F3ENP"></a><br />
+
+
+<div style="margin-left:0.5em;">
+    
+      <div style="margin-bottom:0.5em;">
+        1 internaute sur&nbsp;1 a trouv&eacute; ce commentaire utile&nbsp;:
+      </div>
+      <div style="margin-bottom:0.5em;">
+        <span style="margin-right:5px;"><span class="swSprite s_star_5_0 " title="5.0 étoiles sur 5" ><span>5.0 étoiles sur 5</span></span> </span>
+        <span style="vertical-align:middle;"><b>Un boitier qui a r&eacute;volutionn&eacute; le monde Reflex!</b>, <nobr>20 janvier 2011</nobr></span>
+      </div>
+      <div style="margin-bottom:0.5em;">
+        <div><div style="float:left;">Par&nbsp;</div><div style="float:left;"><a  href="http://www.amazon.fr/gp/pdp/profile/A6JACKJOIUFKA/ref=cm_cr_pr_pdp/280-7845724-6013244" ><span style = "font-weight: bold;">Made In Photo</span></a>  - <a href="http://www.amazon.fr/gp/cdp/member-reviews/A6JACKJOIUFKA/ref=cm_cr_pr_auth_rev/280-7845724-6013244?ie=UTF8&amp;sort_by=MostRecentReview">Voir tous mes commentaires</a><br />
+<span class="cmtySprite s_BadgeTop500 " ><span>(TOP 500 COMMENTATEURS)</span></span>
+&nbsp;&nbsp;
+
+
+</div></div><div style="clear:both;"></div>
+      </div>
+      <div class="tiny" style="margin-bottom:0.5em;">
+        <b><span class="h3color tiny">Ce commentaire fait référence à cette édition&nbsp;: </span>Canon - EOS 550D - Kit Reflex - 18 Mpix + Objectif EF-S 18-55 mm f/3,5-5,6 IS - Noir (Appareils électroniques)</b>
+      </div>
+
+La course au nombre de pixel seule ne voulait rien dire: Canon lui a donner sens en permettant de grand tirage avec un bruit quasi-absent dans la plupart des situations!<br />Le mode vid&eacute;o &eacute;tait consid&eacute;r&eacute; comme gadget: maintenant des &eacute;missions t&eacute;l&eacute;, et des documentaires full-HD sont tourn&eacute;s avec les boitiers Canon et non avec des cam&eacute;scopes!<br />Le grand d&eacute;faut du 500D: pas de prise jack 3.5 pour le micro, a &eacute;t&eacute; corrig&eacute; et va dans ce sens!<br />La polyvalence et les performances de ce boitier marqueront l'histoire de la photo reflex comme un virage d&eacute;cisif. On sait maintenant que ce sont les reflex qui vont englober le monde des cam&eacute;ras car il permettent au plus grand nombre d'acc&eacute;der &agrave; des objectifs interchangeables correspondant &agrave; toutes les situations, privil&egrave;ge r&eacute;serv&eacute; avant qu'au cam&eacute;ra pro.<br />Mais n'oublions pas que c'est avant tout pour la photo que ce boitier a &eacute;t&eacute; conçu! Et il fait preuve d'une ergonomie formidable, la touche Q est formidable, sans compter les boutons d'acc&egrave;s direct aux r&eacute;glages: une vraie merveille!!!<br />Je poss&eacute;dais un 350D que je comptais garder pour d&eacute;panner et le trimbaler sans risque un peu partout. Au final, je me suis aperçu que j'emmenais toujours les 2 mais que je me servais plus que du 550D car il permet beaucoup plus de prises de vue. Un exemple que je trouve parlant: R&eacute;ussir &agrave; capter la multitude de couleur des grains de poussi&egrave;res dans un rayon de soleil p&eacute;n&eacute;trant dans une pi&egrave;ce sombre... Avant c'&eacute;tait possible mais rarement aussi rapide et ais&eacute;!<br />J'ai donc fini par vendre mon nostalgique 350D pour m'acheter, t&eacute;l&eacute;commande, et flash externe, pour le 550D! Je suis ravi de mon achat r&eacute;alis&eacute; en juillet 2010.<br />Depuis le 60D est sorti, je l'ai essay&eacute;, l'&eacute;cran orientable est vraiment un plus mais l'ergonomie des touches du 60D ne m'a pas convaincu, je pr&eacute;f&egrave;re mon 550D, le rapport qualit&eacute;-prix est meilleur. Je pense que le 60D est comme le 500D un mod&egrave;le sorti un peu trop vite, et il feront une version corrig&eacute; comme le 550D pour le 500D...
+      <div style="padding-top: 10px; clear: both; width: 100%;">
+
+        <div style="float:left; padding-right:15px; border-right:1px solid #CCCCCC"><div style="padding-bottom:5px;"><b class="tiny" style="color:#666666;white-space:nowrap;">Aidez d'autres clients à trouver les commentaires les plus utiles</b>&nbsp;</div><div style="width:300px;">
+
+
+
+
+
+
+
+
+
+<a name="R339GLXB0F3ENP.2115.Helpful.Reviews" style="font-size:1px;"> </a><span
+class="crVotingButtons"><nobr><span class="votingPrompt">Avez-vous trouv&eacute; ce commentaire utile&nbsp;?&nbsp;</span><a rel="nofollow" class="votingButtonReviews" href="http://www.amazon.fr/gp/voting/cast/Reviews/2115/R339GLXB0F3ENP/Helpful/1/ref=cm_cr_prvoteyn/280-7845724-6013244?ie=UTF8&token=03538FE21DDECF163821B2074770ADDDA383A463&target=aHR0cDovL3d3dy5hbWF6b24uZnIvcmV2aWV3L0IwMDM3S00ySVMvcmVmPWNtX2NyX3Bydm90ZXJkci8yODAtNzg0NTcyNC02MDEzMjQ0&voteAnchorName=R339GLXB0F3ENP.2115.Helpful.Reviews&voteSessionID=280-7845724-6013244"><span class="cmtySprite s_largeYes " ><span>Oui</span></span></a>
+<a rel="nofollow" class="votingButtonReviews" href="http://www.amazon.fr/gp/voting/cast/Reviews/2115/R339GLXB0F3ENP/Helpful/-1/ref=cm_cr_prvoteyn/280-7845724-6013244?ie=UTF8&token=DFEBEFBFA493CB7A82C6D7FAC060FD85970A4171&target=aHR0cDovL3d3dy5hbWF6b24uZnIvcmV2aWV3L0IwMDM3S00ySVMvcmVmPWNtX2NyX3Bydm90ZXJkci8yODAtNzg0NTcyNC02MDEzMjQ0&voteAnchorName=R339GLXB0F3ENP.2115.Helpful.Reviews&voteSessionID=280-7845724-6013244"><span class="cmtySprite s_largeNo " ><span>Non</span></span></a></nobr> <span class="votingMessage"></span></span>
+
+</div></div><div style="float:left;"><div style="padding-left:15px;"><div style="white-space:nowrap;"><span class='tiny'>
+
+
+
+
+<a name="R339GLXB0F3ENP.2115.Inappropriate.Reviews" style="font-size:1px;"> </a><span class="reportingButton"><nobr><a rel="nofollow" class="reportingButton" href="http://www.amazon.fr/gp/voting/cast/Reviews/2115/R339GLXB0F3ENP/Inappropriate/1/ref=cm_cr_prvoteyn/280-7845724-6013244?ie=UTF8&token=1E6BBC204F380D89411A615C213427C4EDB375B7&target=aHR0cDovL3d3dy5hbWF6b24uZnIvcmV2aWV3L0IwMDM3S00ySVMvcmVmPWNtX2NyX3Bydm90ZXJkci8yODAtNzg0NTcyNC02MDEzMjQ0&voteAnchorName=R339GLXB0F3ENP.2115.Inappropriate.Reviews&voteSessionID=280-7845724-6013244"
+>Signaler un abus</a></nobr></span>
+</span> <span style="color:#CCCCCC;">|</span> <span class="tiny"><a href="http://www.amazon.fr/review/R339GLXB0F3ENP/ref=cm_cr_pr_perm/?ie=UTF8&ASIN=B0037KM2IS&nodeID=&tag=&linkCode=" >Permalien</a></span></div><div style="white-space:nowrap;padding-left:-5px;padding-top:5px;"><a href="http://www.amazon.fr/review/R339GLXB0F3ENP/ref=cm_cr_pr_cmt/280-7845724-6013244?ie=UTF8&ASIN=B0037KM2IS&nodeID=&tag=&linkCode=#wasThisHelpful" ><span class="swSprite s_comment " ><span>Remarque sur ce commentaire</span></span></a>&nbsp;<a href="http://www.amazon.fr/review/R339GLXB0F3ENP/ref=cm_cr_pr_cmt/280-7845724-6013244?ie=UTF8&ASIN=B0037KM2IS&nodeID=&tag=&linkCode=#wasThisHelpful" >Remarque sur ce commentaire</a></div></div></div><div style="clear:both;"></div>
+      </div>
+      <br />
+
+</div>
+
+  
+
+
+  
+
+  </td>
+  <td width="10%">
+  </td>
+</tr>
+</table>
+<br />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table class="CMheadingBar" border="0" cellpadding="0" cellspacing="0" width="100%">
+  <tr>
+    <td height="16" align="left" style="padding-left:4px;padding-right:4px;">
+      <div class="CMpaginate" style="white-space:nowrap;">
+        <span class="paging">&lsaquo; Précédent |    <span class="on">1</span> <a href="http://www.amazon.fr/product-reviews/B0037KM2IS/ref=cm_cr_pr_btm_link_2/280-7845724-6013244?ie=UTF8&showViewpoints=0&pageNumber=2" >2</a> &hellip; <a href="http://www.amazon.fr/product-reviews/B0037KM2IS/ref=cm_cr_pr_btm_link_8/280-7845724-6013244?ie=UTF8&showViewpoints=0&pageNumber=8" >8</a>| <a href="http://www.amazon.fr/product-reviews/B0037KM2IS/ref=cm_cr_pr_btm_link_next_2/280-7845724-6013244?ie=UTF8&showViewpoints=0&pageNumber=2" >Suivant &rsaquo;</a> </span>
+      </div>
+    </td>
+    <td height="16" align="right" style="padding-right:4px;">
+      <div class="" style="white-space:nowrap;">
+        <b class="on">Du plus utile au moins utile</b> | <a href="http://www.amazon.fr/product-reviews/B0037KM2IS/ref=cm_cr_pr_btm_recent/280-7845724-6013244?ie=UTF8&showViewpoints=0&sortBy=bySubmissionDateDescending" >Du plus r&eacute;cent au plus ancien</a>
+      </div>
+    </td>
+  </tr>
+</table>
+
+
+
+
+
+
+
+
+
+
+<img onload="if (typeof uet =='function') { uet('cf');}" src="http://g-ecx.images-amazon.com/images/G/08/common/sprites/sprite-site-wide._V181116225_.png" width="1" height="1" border="0" />
+
+
+
+
+
+
+
+
+  <!--AMZNJQSECTION-->
+
+
+
+
+
+
+
+
+
+
+
+<script>
+  amznJQ.onReady('lazyLoadLib', function () { 
+    jQuery('#product-discussion_divID').lazyLoadContent({
+      url: '/review/dynamic/product-discussion/280-7845724-6013244?ie=UTF8&asin=B0037KM2IS',
+      metrics : true,
+      name : 'product-discussion',
+      cache : true
+    });
+  });
+</script>
+
+<div id=product-discussion_divID>
+</div>
+
+
+
+
+
+
+
+<script>
+  amznJQ.onReady('lazyLoadLib', function () { 
+    jQuery('#gallery-sponsored-links_divID').lazyLoadContent({
+      url: '/review/dynamic/gallery-sponsored-links/280-7845724-6013244?ie=UTF8&viewID=product&asin=B0037KM2IS',
+      metrics : true,
+      name : 'gallery-sponsored-links',
+      cache : true
+    });
+  });
+</script>
+
+<div id=gallery-sponsored-links_divID>
+  <div id='cdLazyLoadThreadBTFNotLoaded' class='cdLazyLoadingIndicator'>
+    <img src="http://g-ecx.images-amazon.com/images/G/08/ui/loadIndicators/loadIndicator-large._V192553114_.gif" width="100" height="124" border="0" />
+  </div>
+</div>
+
+  <br />
+</td>
+<td valign="top" width="300px">
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+  
+  
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div><img src="http://g-ecx.images-amazon.com/images/G/08/nav2/images/transp._V192238846_.gif" width="300" alt="" height="1" border="0" /></div>
+
+
+<div class="cBox secEyebrow">
+  <span class="cBoxTL"><!-- &nbsp; --></span>
+  <span class="cBoxTR"><!-- &nbsp; --></span>
+  <span class="cBoxR"><!-- &nbsp; --></span>
+  <span class="cBoxBL"><!-- &nbsp; --></span>
+  <span class="cBoxBR"><!-- &nbsp; --></span>
+  <span class="cBoxB"><!-- &nbsp; --></span>
+  <h2>Ce produit</h2>
+  <div class="cBoxInner">
+<style>
+  .crProductInfo .imageBlock {
+    text-align:center;
+    padding:13px 0 4px 0;
+  }
+  .crProductInfo .imageBlock img {
+    border:0px;
+  }
+  .crProductInfo .headerBlock a {
+    color:#039;
+  }
+  .crProductInfo a {
+    text-decoration:underline;
+    color:#963;
+  }
+  .crProductInfo .reviewSummaryLink {
+    text-decoration:none;
+  }
+  .crProductInfo a:hover {
+    color:#c60;
+  }
+  .crProductInfo .buyBlock a {
+    text-decoration:underline;
+  }
+  .crProductInfo .buyBlock .buttonsBlock {
+    margin-bottom: 5px;
+  }
+  .crProductInfo .buyBlock .price {
+    font-weight:bold;
+  }
+  .crProductInfo .used .price {
+    font-weight:normal;
+  }
+  .crProductInfo .avail
+  {
+    font-size:9px;
+  }
+</style>
+<div class="crProductInfo">
+<table><tr><td style="vertical-align:top;padding-top:5px;width:100px;">
+   <div class="imageBlock" style="padding: 0 0 10px 0;">
+    <a href="http://www.amazon.fr/Canon-550D-Reflex-Objectif-18-55/dp/B0037KM2IS/ref=cm_cr_pr_pb_i/280-7845724-6013244"><img src="http://ecx.images-amazon.com/images/I/4124zJ0ydkL._SL160_SL90_.jpg" width="90" alt="Canon - EOS 550D - Kit Reflex - 18 Mpix + Objectif EF-S 18-55 mm f/3,5-5,6 IS - Noir" height="68" border="0" /></a>
+  </div>
+  </td>
+  <td style="vertical-align:top;padding-top:5px;padding-left:10px">
+
+  <div class="description"><a href="http://www.amazon.fr/Canon-550D-Reflex-Objectif-18-55/dp/B0037KM2IS/ref=cm_cr_pr_pb_t/280-7845724-6013244">Canon - EOS 550D - Kit Reflex - 18 Mpix + Objectif EF-S 18-55 mm f/3,5-5,6 IS - Noir</a> de Canon</div>
+
+
+  <div class="buyBlock">
+
+    <div class="pricing">
+      <span class="price">EUR 666,99</span>
+      
+      <br />
+      
+<span class="avail">En stock</span>
+
+      <br />
+    </div>
+
+</td></tr><tr><td colspan="2">
+        <div class="buttonsBlock">
+          <span style="padding-right:2px"><a href="http://www.amazon.fr/gp/item-dispatch/ref=cm_cr_pr_pb_atc/280-7845724-6013244?ie=UTF8&amp;asin.1=B0037KM2IS&amp;submit.addToCart=addToCart&amp;offering-id.UkNO5BphJdcIRyHa97D%252BC71j2DfuII1DcXynHXk%252BVcLK0wtvQC%252FbJbVT0i7rMyRNz%252BPStTafpaXMVAPUY%252FcBnnJnS9no5zhtR19p1cRb9Zc%253D=1&amp;session-id=280-7845724-6013244"><img src="http://g-ecx.images-amazon.com/images/G/08/x-locale/communities/richpub/addtocart_med._V192553918_.gif" width="129" vspace="2" alt="Ajouter au panier" height="22" border="0" /></a></span> <span><a href="http://www.amazon.fr/gp/item-dispatch/ref=cm_cr_pr_pb_awl/280-7845724-6013244?ie=UTF8&amp;asin.1=B0037KM2IS&amp;type=wishlist&amp;sid=280-7845724-6013244&amp;offeringID.1=UkNO5BphJdcIRyHa97D%252BC71j2DfuII1DcXynHXk%252BVcLK0wtvQC%252FbJbVT0i7rMyRNz%252BPStTafpaXMVAPUY%252FcBnnJnS9no5zhtR19p1cRb9Zc%253D&amp;submit.add-to-registry=addToRegistry"><img src="http://g-ecx.images-amazon.com/images/G/08/x-locale/communities/richpub/addtowl_med._V199187690_.gif" width="170" vspace="2" alt="Ajouter à votre liste d'envies" height="22" border="0" /></a></span>
+        </div>
+  </td><td>
+</div>
+</td></tr></table>
+</div></div>
+</div>  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  
+  
+
+  
+
+
+
+
+<div id="dc-display-right-ad-1" style="padding: 8px 0 0 0;"><script type="text/javascript">
+if (typeof window.d16g === "undefined") { 
+window.d16g = {}; d16g.adDebug = false; d16g.features = {}; d16g.features.isReady = {}; d16g.features.amznJQAvailable = (typeof amznJQ !== "undefined") ? true : false; d16g.features.jQueryAvailable = (typeof jQuery !== "undefined") ? true : false; d16g.features.runSafely = function (callback) { try { if (typeof callback === "function") { callback(); } } catch (msg) { } }; d16g.features.handleWithJQuery = function (funcName, callback) { if (d16g.features.jQueryAvailable === true) { if (d16g.features.isReady[funcName] === true) { d16g.features.runSafely(callback); } else { jQuery(document).bind(funcName, callback); } } else { d16g.features.runSafely(callback); } }; d16g.features.declareAvailable = function (funcName) { if (d16g.features.amznJQAvailable === true) { amznJQ.declareAvailable(funcName); } else if (d16g.features.jQueryAvailable === true) { d16g.features.isReady[funcName] = true; jQuery(document).trigger(funcName); } }; d16g.features.available = function (funcName, callback) { if (d16g.features.amznJQAvailable === true) { amznJQ.available(funcName, callback); } else { d16g.features.handleWithJQuery(funcName, callback); } }; d16g.features.onReady = function (funcName, callback) { if (d16g.features.amznJQAvailable === true) { amznJQ.onReady(funcName, callback); } else { d16g.features.handleWithJQuery(funcName, callback); } }; d16g.features.onCompletion = function (funcName, callback) { if (d16g.features.amznJQAvailable === true) { amznJQ.onCompletion(funcName, callback); } else { d16g.features.handleWithJQuery(funcName, callback); } }; d16g.features.onWindowLoad = function (callback) { if (d16g.features.amznJQAvailable === true) { amznJQ.onReady("d16g_pageLoaded", callback); } else { d16g.features.handleWithJQuery("d16g_pageLoaded", callback); } }; d16g.windowLoaded = function () { if (d16g.savedOnLoadEvent) { d16g.features.runSafely(d16g.savedOnLoadEvent); } d16g.features.declareAvailable("d16g_pageLoaded"); }; if (window.attachEvent) { window.attachEvent("onload", d16g.windowLoaded); } else if (window.addEventListener) { window.addEventListener("load", d16g.windowLoaded, false); } else { d16g.savedOnLoadEvent = window.onload; window.onload = d16g.windowLoaded; } d16g.loadJs=function(c){var a=document,b=a.createElement("script");b.src=c;a.getElementsByTagName("head")[0].appendChild(b)};        d16g.features.onWindowLoad(function() {
+        d16g.loadJs('http://z-ecx.images-amazon.com/images/G/01/browser-scripts/d16gJSLibNL/d16gJSLibNL-231958691.js._V179711208_.js');
+    });
+}
+</script>
+<div id="cachebust_207093_adcontent" style="display:block; margin-top: 0px; margin-bottom:16px; padding:0px; width:303px; ">
+      <div style="text-align:center; padding-bottom:4px;"><img src="http://g-ecx.images-amazon.com/images/G/08/gateway/iab/advertisement-sm-head._V192560866_.gif" height="7" width="123" border="0"/></div>
+<script type="text/javascript">
+</script>
+    <script type="text/javascript">
+        d16g.features.onWindowLoad(function() {
+    d16g.features.onReady("d16g", function() {
+        d16g.iframes.createIFrame('cachebust_207093_adcontent', 'cachebust_207093', '/gp/advertising/iframeproxy#dclick=amzn.fr.cr.default;sz%3D300x250;u%3Dbbda86caeef94a72aad3611295d12ee7;ord%3D1X9JXPAQS3VT3QJEC4NN;s%3Di0;s%3Di2;s%3Di3;s%3Di4;s%3Di5;s%3Di6;s%3Di7;s%3Di8;s%3Di9;s%3Du4;s%3Du3;s%3Du2;s%3Dm1;s%3Dm4;s%3Du1;z%3D1715;tile%3D1%3F',
+            '303', '270', true, '', '', '<a href="http://www.amazon.fr/gp/browse.html/ref=rd_baby_hp/?node=165796011" target="_blank"><img src="http://g-ecx.images-amazon.com/images/G/08/x-locale/common/transparent-pixel._V192553961_.gif" height="1" alt="Baby" width="1" border="0"/></a>');
+    });
+    });
+    </script>
+    <noscript><iframe id="cachebust_207093" name="cachebust_207093" src="http://ad.fr.doubleclick.net/adi/amzn.fr.cr.default;sz=300x250;u=bbda86caeef94a72aad3611295d12ee7;ord=1X9JXPAQS3VT3QJEC4NN;s=i0;s=i2;s=i3;s=i4;s=i5;s=i6;s=i7;s=i8;s=i9;s=u4;s=u3;s=u2;s=m1;s=m4;s=u1;z=1715;tile=1?" title="Ad" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" topmargin="0" leftmargin="0" allowtransparency="true" style="" width="303" height="270"></iframe></noscript>
+        <script type="text/javascript" >
+        d16g.features.onReady('d16g', function () {
+            d16g.adFeedback.setupAdFeedbackForIab(207093, "545", "/gp/advertising/remoterender?impressionId=bbda86caeef94a72aad3611295d12ee7&randomId=207093&questionGroupId=6&slotName=right-ad-1&pageType=CustomerReviews&pageSubType=ReadAll&adContentId=171&templateName=ad-feedback-remote-content-5col", "Faites nous part de votre avis sur cette publicité.", 
+                "Fermer", "middle", ['left','centered','auto'], true, 20, "bbda86caeef94a72aad3611295d12ee7", "6",
+                "right-ad-1", "CustomerReviews", "ReadAll", "171", "Votre avis", "", 0);
+        });
+        </script>
+</div></div>
+
+
+
+
+
+
+
+<script>
+  amznJQ.onReady('lazyLoadLib', function () { 
+    jQuery('#customers-mention_divID').lazyLoadContent({
+      url: '/review/dynamic/customers-mention/280-7845724-6013244?ie=UTF8&asin=B0037KM2IS',
+      metrics : true,
+      name : 'customers-mention',
+      cache : true
+    });
+  });
+</script>
+
+<div id=customers-mention_divID>
+</div>
+
+
+
+
+
+
+
+<script>
+  amznJQ.onReady('lazyLoadLib', function () { 
+    jQuery('#sims-box_divID').lazyLoadContent({
+      url: '/review/dynamic/sims-box/280-7845724-6013244?ie=UTF8&asin=B0037KM2IS',
+      metrics : true,
+      name : 'sims-box',
+      cache : true
+    });
+  });
+</script>
+
+<div id=sims-box_divID>
+  <div id='cdLazyLoadThreadBTFNotLoaded' class='cdLazyLoadingIndicator'>
+    <img src="http://g-ecx.images-amazon.com/images/G/08/ui/loadIndicators/loadIndicator-large._V192553114_.gif" width="100" height="124" border="0" />
+  </div>
+</div>
+
+
+
+
+
+
+
+<script>
+  amznJQ.onReady('lazyLoadLib', function () { 
+    jQuery('#accessories-box_divID').lazyLoadContent({
+      url: '/review/dynamic/accessories-box/280-7845724-6013244?ie=UTF8&asin=B0037KM2IS',
+      metrics : true,
+      name : 'accessories-box',
+      cache : true
+    });
+  });
+</script>
+
+<div id=accessories-box_divID>
+</div>
+
+  <br />
+</td>
+</tr>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+.rhf-box-corner-sprite {
+    background-image: url('http://g-ecx.images-amazon.com/images/G/08/x-locale/personalization/yourstore/bluebox/bluebox-corners._V192553504_.gif');
+}
+.rhf-box-sides-sprite {
+    background-image: url('http://g-ecx.images-amazon.com/images/G/08/x-locale/personalization/yourstore/bluebox/bluebox-sides._V192553507_.gif');
+}
+.rhf-box-tl {
+    background-position: 0px 0px;
+    background-repeat:no-repeat;
+}
+.rhf-box-tc {
+    background-position: 0px -41px;
+    background-repeat:repeat-x;
+}
+.rhf-box-tr {
+    background-position: 0px -81px;
+    background-repeat:no-repeat;
+}
+.rhf-box-l {
+    background-position: -7px 0px;
+    background-repeat:repeat-y;
+}
+.rhf-box-r {
+    background-position: 9px 0px;
+    background-repeat:repeat-y;
+}
+.rhf-box-br {
+    background-position: 0px -123px;
+    background-repeat:no-repeat;
+}
+.rhf-box-bc {
+    background-position: 0px -139px;
+    background-repeat:repeat-x;
+}
+.rhf-box-bl {
+    background-position: 0px -158px;
+    background-repeat:no-repeat;
+}
+.rhfHistoryWrapper {
+    padding: 0 10px;
+}
+
+</style>
+       <br />
+       <div id="rhf" style="clear:both">
+<table id="rhf_table" align="center" width="100%" cellpadding="0" cellspacing="0">
+    <tr>
+        <td class="rhf-box-corner-sprite rhf-box-tl" width="10"></td>
+        <td class="rhf-box-corner-sprite rhf-box-tc">
+        <div style="text-align:left; padding:10px 10px 0 10px;"><h2 class="h1" style="margin: 0; display: inline"><span id="rhfMainHeading">Votre historique récent</span></h2>&nbsp;<span class="tiny" id="rhfLearnMore">(<a href="/gp/yourstore/cc/ref=pd_rhf_lm/280-7845724-6013244">Qu'est-ce ?</a>)</span></div>
+        </td>
+        <td class="rhf-box-corner-sprite rhf-box-tr" width="10"></td>
+    </tr>
+    <tr>
+        <td class="rhf-box-sides-sprite rhf-box-l" width="10">&nbsp;</td>
+        <td>
+       
+
+
+
+
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top: 10px">
+    <tr valign="top">
+        <td valign="top">
+            <div class="rhfHistoryWrapper">
+    <p>Après avoir visualisé des pages détaillées produit ou des résultats de recherche, regardez ici pour trouver une façon simple de poursuivre votre navigation sur des pages qui vous intéressent.</p>
+            </div>
+        </td>
+    </tr>
+    <tr><td>
+    <div style="padding:10px 10px 0 10px; text-align:left;">
+        <b><span style="color: rgb(204, 153, 0); font-weight: bold; font-size: 13px;"> &#8250; </span>
+        <a href="/gp/yourstore/pym/ref=pd_pyml_rhf/280-7845724-6013244">Visitez la Page Que Vous Avez Créée</a>
+        </b></div>
+    </td></tr>
+</table>
+
+        </td>
+        <td class="rhf-box-sides-sprite rhf-box-r" width="10"></td>
+    </tr>
+    <tr>
+        <td class="rhf-box-corner-sprite rhf-box-bl" width="10">&nbsp;</td>
+        <td class="rhf-box-corner-sprite rhf-box-bc">&nbsp;</td>
+        <td class="rhf-box-corner-sprite rhf-box-br" width="10">&nbsp;</td>
+    </tr>
+</table>
+       </div>
+        <br />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div id="navFooter">
+  <table cellspacing="0">
+    <tr>
+      <td>
+        <table class="navFooterThreeColumn" cellspacing="0">
+          <tr>
+            <td class="navFooterColSpacerOuter"></td>
+            <td class="navFooterLinkCol">
+<div class="navFooterColHead">Pour mieux nous connaître</div>
+<ul>
+<li><a href="/b/ref=gw_m_b_careers/280-7845724-6013244?_encoding=UTF8&node=202589011">Carrières</a></li>
+<li><a href="/gp/press/info/home/ref=cs_nav_bn_ab/280-7845724-6013244">Qui sommes-nous ?</a></li>
+<li><a href="/gp/press/home/ref=footer_press/280-7845724-6013244">Communiqués de presse</a></li>
+<li><a href="/b/ref=footer_corpres/280-7845724-6013244?_encoding=UTF8&node=323594031">Amazon et notre planète</a></li>
+</ul>
+</td>
+<td class="navFooterColSpacerInner"></td>
+<td class="navFooterLinkCol">
+<div class="navFooterColHead">Gagnez de l'argent</div>
+<ul>
+<li><a href="http://services.amazon.fr/services/vendre-sur-amazon/comment-ca-marche/?ld=AZFRSOAFooter">Vendez sur Amazon</a></li>
+<li><a href="https://partenaires.amazon.fr">Devenez Partenaire</a></li>
+<li><a href="/gp/seller-account/mm-product-page.html/280-7845724-6013244?ie=UTF8&topic=200403920">Devenez notre fournisseur via Avantage</a></li>
+<li><span class="navFooterRightArrowBullet">&rsaquo;</span> <a href="/gp/seller-account/mm-landing.html/ref=footer_seeall/280-7845724-6013244?ie=UTF8&topic=200327870">Tous nos programmes</a></li>
+</ul>
+</td>
+<td class="navFooterColSpacerInner"></td>
+<td class="navFooterLinkCol">
+<div class="navFooterColHead">Besoin d'aide ?</div>
+<ul>
+<li><a href="/gp/help/customer/display.html/ref=footer_shiprates/280-7845724-6013244?ie=UTF8&nodeId=548566">Tarifs et options de livraison</a></li>
+<li><a href="/gp/subs/primeclub/signup/main.html/ref=footer_prime/280-7845724-6013244">Amazon Premium</a></li>
+<li><a href="/gp/css/returns/homepage.html/ref=hy_f_4/280-7845724-6013244">Retourner un article</a></li>
+<li><a href="/gp/help/customer/display.html/ref=gw_m_b_he/280-7845724-6013244?ie=UTF8&nodeId=559912">Aide</a></li>
+</ul>
+</td>
+
+            <td class="navFooterColSpacerOuter"></td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div class="navFooterLine navFooterLogoLine">
+          <a href="/ref=footer_logo/280-7845724-6013244"><img src="http://g-ecx.images-amazon.com/images/G/08/gno/images/general/navAmazonLogoFooter._V169459217_.gif" width="100" alt="amazon.fr" height="28" border="0" /></a>
+        </div>
+        <div class="navFooterLine navFooterLinkLine">
+          <a href="http://www.amazon.de">Allemagne</a> |
+<a href="http://www.amazon.ca">Canada</a> |
+<a href="http://www.amazon.cn">Chine</a> |
+<a href="http://www.amazon.com">États-Unis</a> |
+<a href="http://www.amazon.it">Italie</a> |
+<a href="http://www.amazon.co.jp">Japon</a> |
+<a href="http://www.amazon.co.uk">Royaume-Uni</a>
+
+          <span>
+            &nbsp;Et aussi&#160;:
+<a href="http://www.abebooks.fr">AbeBooks</a> |
+<a href="http://www.audible.fr">Audible</a> |
+<a href="http://www.javari.fr">Javari</a> |
+<a href="http://www.shopbop.com/fr/welcome">Shopbop</a>
+
+          </span>
+        </div>
+        <div class="navFooterLine navFooterLinkLine">
+          <a href="/gp/help/customer/display.html/ref=footer_cou/280-7845724-6013244?ie=UTF8&nodeId=548524">Conditions générales de vente</a> |
+<a href="/gp/help/customer/display.html/ref=footer_privacy/280-7845724-6013244?ie=UTF8&nodeId=3329781">Vos informations personnelles</a> |
+<a href="/gp/help/customer/display.html/ref=footer_legalinfo/280-7845724-6013244?ie=UTF8&nodeId=548526">Informations légales</a>
+<span>
+&nbsp;© 1996-2011, Amazon.com, Inc. ou ses filiales.
+</span>
+
+        </div>
+        
+
+      </td>
+    </tr>
+    
+
+  </table>
+</div>
+<!-- whfh-Vx5GeK+6GQbFn7hasJQ0yAxCIJiDP5LT4y11hlRTUY0= rid-1X9JXPAQS3VT3QJEC4NN -->
+
+
+
+
+
+
+
+
+  <!--AMZNJQFINAL-->
+
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

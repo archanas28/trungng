@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
@@ -17,26 +18,39 @@ import edu.kaist.uilab.asc.data.Sentence;
 import edu.kaist.uilab.asc.data.SentiWord;
 import edu.kaist.uilab.asc.prior.GraphInputProducer;
 import edu.kaist.uilab.asc.prior.SimilarityGraph;
+import edu.kaist.uilab.asc.stemmer.EnglishStemmer;
+import edu.kaist.uilab.asc.stemmer.FrenchStemmer;
 import edu.kaist.uilab.asc.util.Utils;
 
+/**
+ * Main application.
+ * 
+ * @author trung nguyen (trung.ngvan@gmail.com)
+ */
 public class Application {
-  private static final String UTF_8 = "utf-8";
-  private static final String ENGLISH_PATTERN = ".*[^a-zA-Z].*";
-  private static final String OTHER_PATTERN = ".*[0-9()<>,&;\"].*";
-  String inputDir = "C:/datasets/asc/reviews";
-  static final String wordcountFile = "WordCount1.csv";
-  static final String wordlistFile = "WordList1.txt";
-  static final String englishDocuments = "BagOfSentences_en1.txt";
-  static final String otherDocuments = "BagOfSentences_other1.txt";
+  private static final String UTF8 = "utf-8";
+  private static final String EN_PATTERN = ".*[^a-zA-Z].*";
+  private static final String FR_PATTERN = ".*[0-9()<>,&;\"].*";
+  String inputDir = "C:/datasets/asc/reviews/ElectronicsReviews2";
+  // String inputDir = "C:/datasets/asc/reviews/MovieReviews";
+  static final String wordcountFile = "WordCount.csv";
+  static final String wordlistFile = "WordList.txt";
+  static final String enDocuments = "BagOfSentences_en.txt";
+  static final String otherDocuments = "BagOfSentences_other.txt";
+  // String datasetName = "MovieReviews-Stemmed-InitY0";
   // vacuum, coffee, camera
-  final String datasetName = "ElectronicsReviews1";
+  // String datasetName = "ElectronicsReviews1-Stemmed-InitY0";
+  String datasetName = "ElectronicsReviews2-Stemmed-InitOld";
   final String documentListFile = "DocumentList.txt";
-  final String englishCorpus = inputDir + "/electronics_en1.txt";
-  final String otherCorpus = inputDir + "/electronics_other1.txt";
+  final String englishCorpus = inputDir + "/docs_en.txt";
+  final String frCorpus = inputDir + "/docs_other.txt";
   final String stopWordFile = inputDir + "/StopWords.txt";
+  final String enStopWordFile = inputDir + "/StopStems_en.txt";
+  final String frStopWordFile = inputDir + "/StopStems_fr.txt";
   final String polarityFile = inputDir + "/Polarity.txt";
-  final String sentiFilePrefix = "SentiWords-";
-  final String englishWordList = "WordList_en.txt";
+  // final String sentiFilePrefix = "SentiWords-";
+  final String sentiFilePrefix = "SentiStems-";
+  final String enWordList = "WordList_en.txt";
   final String dictionaryFile = "C:/datasets/asc/dict/en-fr.txt";
   final String similarityGraphFile = "graph.txt";
 
@@ -47,21 +61,21 @@ public class Application {
   int minWordOccur = 3;
   int minDocLength = 20; // used 20
 
-  int numTopics = 15;
+  int numTopics = 20;
   int numSenti = 2;
   double alpha = 0.1;
   double[] gammas = new double[] { 1, 1 };
-  int numIterations = 1000;
+  int numIterations = 2000;
   int savingInterval = 200;
-  int optimizationInterval = 100; // how often should we update y
-  int burnIn = 400;
+  int optimizationInterval = 100;
+  int burnIn = 500;
   int numThreads = 1;
   int numEnglishDocuments;
 
   public static void main(String[] args) throws Exception {
     Application app = new Application();
     app.parseDocuments();
-    app.runModel();
+    app.runModel(3);
   }
 
   /**
@@ -80,29 +94,38 @@ public class Application {
     parser.addReplacePattern(
         "(pas|ne|non|jamais|sans|n'est)[\\s]+(très|si|trop|beaucoup|"
             + "assez|si|que|ausi|vraiment)[\\s]+", " pas_");
-    // TODO(trung): add negation patterns for other languages
-    parser.setStopWords(stopWordFile);
     ArrayList<String> ratings = new ArrayList<String>();
-    parser.setWordReplacePattern(new String[] { ENGLISH_PATTERN, null });
-    int fromDocIdx = parseCorpus(true, englishCorpus, parser, ratings, 0);
-    parser
-        .writeWordList(inputDir + "/" + englishWordList, parser.getWordList());
-    parser.setWordReplacePattern(new String[] { OTHER_PATTERN, null });
-    parseCorpus(false, otherCorpus, parser, ratings, fromDocIdx);
+
+    // English corpus
+    parser.setLocale(Locale.ENGLISH);
+    parser.setWordReplacePattern(new String[] { EN_PATTERN, null });
+    parser.setStopWords(enStopWordFile);
+    parser.setStemmer(new EnglishStemmer());
+    int fromDocIdx = parseCorpus(englishCorpus, parser, ratings, 0);
+    parser.writeWordList(inputDir + "/" + enWordList, parser.getWordList());
+    parser.writeAndClearsStemMap(inputDir + "/Stem_en.txt");
+
+    // French corpus
+    parser.setLocale(Locale.FRENCH);
+    parser.setWordReplacePattern(new String[] { FR_PATTERN, null });
+    parser.setStopWords(frStopWordFile);
+    parser.setStemmer(new FrenchStemmer());
+    parseCorpus(frCorpus, parser, ratings, fromDocIdx);
+    parser.writeAndClearsStemMap(inputDir + "/Stem_fr.txt");
+
     parser.filterWords();
     parser.writeOutFiles(inputDir);
     writePolarity(ratings);
     System.out.println(parser);
   }
 
-  int parseCorpus(boolean isEnglishCorpus, String corpus,
-      DocumentParser parser, ArrayList<String> ratings, int fromDocIdx)
-      throws IOException {
+  int parseCorpus(String corpus, DocumentParser parser,
+      ArrayList<String> ratings, int fromDocIdx) throws IOException {
     BufferedReader in = new BufferedReader(new InputStreamReader(
-        new FileInputStream(corpus), UTF_8));
+        new FileInputStream(corpus), UTF8));
     while (in.readLine() != null) {
       ratings.add(in.readLine());
-      parser.build(isEnglishCorpus, in.readLine(), "doc" + fromDocIdx++);
+      parser.build(in.readLine(), "doc" + fromDocIdx++);
     }
     in.close();
     return fromDocIdx;
@@ -122,42 +145,64 @@ public class Application {
     out.close();
   }
 
-  public void runModel() throws IOException {
+  public void runModel(int version) throws IOException {
     Vector<String> wordList = readWordList(inputDir + "/" + wordlistFile);
     Vector<OrderedDocument> documents = readDocuments(inputDir + "/"
-        + englishDocuments);
+        + enDocuments);
     numEnglishDocuments = documents.size();
     documents.addAll(readDocuments(inputDir + "/" + otherDocuments));
-    ArrayList<TreeSet<String>> sentiWordsStrList = new ArrayList<TreeSet<String>>();
+    ArrayList<TreeSet<String>> list = new ArrayList<TreeSet<String>>(numSenti);
     for (int s = 0; s < numSenti; s++) {
-      sentiWordsStrList.add(Utils.makeSetOfWordsFromFile(inputDir + "/"
-          + sentiFilePrefix + s + ".txt"));
+      list.add(Utils.readWords(
+          inputDir + "/" + sentiFilePrefix + s + "_en.txt", UTF8));
+      list.get(s).addAll(
+          Utils.readWords(inputDir + "/" + sentiFilePrefix + s + "_fr.txt",
+              UTF8));
     }
-    ArrayList<TreeSet<Integer>> sentiWordsList = new ArrayList<TreeSet<Integer>>(
-        sentiWordsStrList.size());
-    for (Set<String> sentiWordsStr : sentiWordsStrList) {
-      TreeSet<Integer> sentiWords = new TreeSet<Integer>();
+    ArrayList<TreeSet<Integer>> sentiClasses = new ArrayList<TreeSet<Integer>>(
+        list.size());
+    for (Set<String> sentiWordsStr : list) {
+      TreeSet<Integer> sentiClass = new TreeSet<Integer>();
       for (String word : sentiWordsStr) {
-        sentiWords.add(wordList.indexOf(word));
+        sentiClass.add(wordList.indexOf(word));
       }
-      sentiWordsList.add(sentiWords);
+      sentiClasses.add(sentiClass);
     }
     printConfiguration(documents.size(), wordList.size());
     GraphInputProducer graphProducer = new GraphInputProducer(inputDir + "/"
         + wordlistFile, dictionaryFile);
     graphProducer.write(inputDir + "/" + similarityGraphFile);
-    ASC model = new ASC(numTopics, numSenti, wordList, documents,
-        numEnglishDocuments, sentiWordsList, alpha, gammas,
-        new SimilarityGraph(wordList.size(), inputDir + "/"
-            + similarityGraphFile));
-    model.setOutputDir(String.format("%s/%s-T%d-S%d-A%.2f-G%.2f,%f-I%d",
-        inputDir, datasetName, numTopics, numSenti, alpha, gammas[0],
-        gammas[1], numIterations));
+    AbstractAsc model = null;
+    switch (version) {
+    case 1:
+      model = new Asc1(numTopics, numSenti, wordList, documents,
+          numEnglishDocuments, sentiClasses, alpha, gammas,
+          new SimilarityGraph(wordList.size(), inputDir + "/"
+              + similarityGraphFile));
+      break;
+    case 2:
+      model = new Asc2(numTopics, numSenti, wordList, documents,
+          numEnglishDocuments, sentiClasses, alpha, gammas,
+          new SimilarityGraph(wordList.size(), inputDir + "/"
+              + similarityGraphFile));
+      break;
+    case 3:
+      model = new Asc3(numTopics, numSenti, wordList, documents,
+          numEnglishDocuments, sentiClasses, alpha, gammas,
+          new SimilarityGraph(wordList.size(), inputDir + "/"
+              + similarityGraphFile));
+      break;
+    default:
+      break;
+    }
+    model.setOutputDir(String.format("%s/%s(V%d)-T%d-S%d-A%.2f-I%d", inputDir,
+        datasetName, version, numTopics, numSenti, alpha, numIterations));
     model.gibbsSampling(numIterations, savingInterval, burnIn,
         optimizationInterval, numThreads);
   }
 
   void printConfiguration(int numDocuments, int vocabSize) {
+    System.out.println("Dataset name: " + datasetName);
     System.out.println("Input Dir: " + inputDir);
     System.out.printf("Documents: %d (en = %d)\n", numDocuments,
         numEnglishDocuments);
@@ -184,7 +229,7 @@ public class Application {
   public static Vector<String> readWordList(String file) throws IOException {
     Vector<String> wordList = new Vector<String>();
     BufferedReader in = new BufferedReader(new InputStreamReader(
-        new FileInputStream(file), UTF_8));
+        new FileInputStream(file), UTF8));
     String line;
     while ((line = in.readLine()) != null) {
       if (line != "") {

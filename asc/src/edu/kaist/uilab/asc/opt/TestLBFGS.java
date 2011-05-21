@@ -26,7 +26,7 @@ public class TestLBFGS {
     ObjectiveFunction func = new TestFunc1(numVariables);
     do {
       try {
-        LBFGS.lbfgs(func.getNumVariables(), numCorrections, x,
+        LBFGS.lbfgs(numVariables, numCorrections, x,
             func.computeFunction(x), func.computeGradient(x), supplyDiag,
             diag, iprint, accuracy, machinePrecision, iflag);
       } catch (ExceptionWithIflag e) {
@@ -45,10 +45,11 @@ public class TestLBFGS {
    * df/dx = 400x^3 - 400xy + 2x - 2
    * df/dy = 200(y-x^2)
    */
-  public static class TestFunc1 extends ObjectiveFunction {
-
+  public static class TestFunc1 implements ObjectiveFunction {
+    int numVariables;
+    
     public TestFunc1(int numVariables) {
-      super(numVariables);
+      this.numVariables = numVariables;
     }
 
     @Override
@@ -76,10 +77,11 @@ public class TestLBFGS {
    * df/dx = 2x
    * df/dy = 2y
    */
-  public static class TestFunc2 extends ObjectiveFunction {
-
+  public static class TestFunc2 implements ObjectiveFunction {
+    int numVars;
+    
     public TestFunc2(int numVariables) {
-      super(numVariables);
+      numVars = numVariables;
     }
 
     @Override

@@ -3,9 +3,12 @@ package edu.kaist.uilab.asc.util;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -15,10 +18,49 @@ import java.util.StringTokenizer;
 import java.util.TreeSet;
 import java.util.Vector;
 
+import edu.kaist.uilab.asc.stemmer.EnglishStemmer;
+import edu.kaist.uilab.asc.stemmer.SnowballStemmer;
+
+/**
+ * Utility class.
+ */
 public class Utils {
 
-  private static PorterStemmer stemmer = new PorterStemmer();
+  private static EnglishStemmer stemmer = new EnglishStemmer();
 
+  /**
+   * Converts a text file of words into a text file of stems.
+   *  
+   * @param wordFile
+   *          the text file that must contain each word per line
+   * @param stemFile
+   *          the output file to store stems
+   * @param encoding
+   *          encoding of the <code>wordFile</code>
+   * @param stemmer
+   *          a stemmer (specific to the language in text file)
+   * @throws IOException
+   */
+  public static void wordsToStems(String wordFile, String stemFile,
+      String encoding, SnowballStemmer stemmer) throws IOException {
+    BufferedReader in;
+    if (encoding != null) {
+      in = new BufferedReader(new InputStreamReader(new FileInputStream(
+          wordFile), encoding));
+    } else {
+      in = new BufferedReader(new InputStreamReader(new FileInputStream(
+          wordFile)));
+    }
+    PrintWriter out = new PrintWriter(new OutputStreamWriter(
+        new FileOutputStream(stemFile), "utf-8"));
+    String line;
+    while ((line = in.readLine()) != null) {
+      out.println(stemmer.getStem(line));
+    }
+    in.close();
+    out.close();
+  }
+  
   public static double calculateCosineSimilarity(List<Double> set1,
       List<Double> set2) {
     double ret = 0;
@@ -300,7 +342,7 @@ public class Utils {
 
     while ((line = reader.readLine()) != null) {
       if (usingStemmer == true)
-        list.add(stemmer.stemming(line.toLowerCase()));
+        list.add(stemmer.getStem(line.toLowerCase()));
       else
         list.add(line.toLowerCase());
     }
@@ -324,7 +366,7 @@ public class Utils {
        */
 
       if (usingStemmer == true)
-        list.add(stemmer.stemming(line.toLowerCase()));
+        list.add(stemmer.getStem(line.toLowerCase()));
       else
         list.add(line.toLowerCase());
     }
@@ -333,12 +375,23 @@ public class Utils {
     return list;
   }
 
-  public static TreeSet<String> makeSetOfWordsFromFile(String path)
+  /**
+   * Reads the content of the specified file as a set of words where each line
+   * corresponds to a word.
+   * 
+   * @param file
+   *          the input file
+   * @param charset
+   *          the charset of the file
+   * @return
+   * @throws IOException
+   */
+  public static TreeSet<String> readWords(String file, String charset)
       throws IOException {
     TreeSet<String> words = new TreeSet<String>();
     String line;
     BufferedReader reader = new BufferedReader(new InputStreamReader(
-        new FileInputStream(path), "utf-8"));
+        new FileInputStream(file), charset));
     while ((line = reader.readLine()) != null) {
       words.add(line);
     }

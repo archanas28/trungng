@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -18,6 +19,9 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
 
+import edu.kaist.uilab.asc.stemmer.EnglishStemmer;
+import edu.kaist.uilab.asc.stemmer.FrenchStemmer;
+
 /**
  * Dictionary.
  * 
@@ -28,7 +32,7 @@ public class Dictionary {
   static final String EN = "en";
   static final String FR = "fr";
   static final String GOOGLE_TRANSLATE = "https://www.googleapis.com/language/translate/v2?"
-      + "key=AIzaSyBfYp3qsYicVnVZSxxfX22sFfN9GHkDN24&q=";
+      + "key=AIzaSyDK00YAqjrlyeJfQ4DRBD5av-fmX-AjI5M&q=";
   private static final String UTF8 = "utf-8";
 
   /**
@@ -39,23 +43,21 @@ public class Dictionary {
    * @param newFile
    * @throws IOException
    */
-  public static void removeDuplication(String file, String newFile)
-      throws IOException {
+  public static void removeDuplication(String file) throws IOException {
     HashMap<String, String> map = new HashMap<String, String>();
     BufferedReader in = new BufferedReader(new InputStreamReader(
         new FileInputStream(file), UTF8));
-    String line, word1, word2;
+    String line;
     StringTokenizer tokenizer;
     while ((line = in.readLine()) != null) {
       tokenizer = new StringTokenizer(line, "\t");
-      word1 = tokenizer.nextToken().trim();
-      word2 = tokenizer.nextToken().replace("(m)", " ").replace("(f)", " ")
-          .trim();
-      map.put(word1, word2);
+      if (tokenizer.countTokens() == 2) {
+        map.put(tokenizer.nextToken(), tokenizer.nextToken());
+      }
     }
     in.close();
     PrintWriter out = new PrintWriter(new OutputStreamWriter(
-        new FileOutputStream(newFile), UTF8));
+        new FileOutputStream(file), UTF8));
     for (Map.Entry<String, String> entry : map.entrySet()) {
       out.printf("%s\t%s\n", entry.getKey(), entry.getValue());
     }
@@ -93,16 +95,14 @@ public class Dictionary {
           // always write english word first
           if (EN.equals(srcLang)) {
             out.printf("%s\t%s\n", word, translatedWord);
-            System.out.printf("%s\t%s\n", word, translatedWord);
           } else {
             out.printf("%s\t%s\n", translatedWord, word);
-            System.out.printf("%s\t%s\n", translatedWord, word);
           }
         }
       }
       httpClient.getConnectionManager().shutdown();
       in.close();
-    } catch (IOException e) {
+    } catch (Exception e) {
       System.out.println(e.getMessage());
       e.printStackTrace();
     } finally {
@@ -110,6 +110,105 @@ public class Dictionary {
         out.close();
       }
     }
+  }
+
+  /**
+   * Makes a dictionary for the pair of words.
+   * <p>
+   * New pair of words will be appended to the provided dictionary file.
+   * 
+   * @param enStemFile
+   *          the stem file (english language) as produced by the parser. Each
+   *          line of this file must contains two words separated by space, an
+   *          original word and a stemmed word.
+   * @param secondStemFile
+   *          the stem file (target language) with same format as the
+   *          <code>enStemFile</code>
+   * @param secondLanguage
+   *          language of the second stem file
+   * @param dictFile
+   *          the dictionary file.
+   */
+  public static void make(String enStemFile, String secondStemFile,
+      String secondLanguage, String dictFile) throws IOException {
+    BufferedReader in;
+    PrintWriter out = new PrintWriter(new OutputStreamWriter(
+        new FileOutputStream(dictFile, true), UTF8));
+    EnglishStemmer enStemmer = new EnglishStemmer();
+    FrenchStemmer frStemmer = new FrenchStemmer();
+    // english stem file
+    String line, word, translatedWord;
+    HttpClient httpClient = new DefaultHttpClient();
+    int pos;
+    in = new BufferedReader(new InputStreamReader(new FileInputStream(
+        enStemFile), UTF8));
+    while ((line = in.readLine()) != null) {
+      line = line.trim();
+      pos = line.indexOf(" ");
+      if (pos >= 0) {
+        word = line.substring(0, pos);
+        try {
+          translatedWord = translatesWord(word, EN, secondLanguage, httpClient);
+          if (translatedWord != null) {
+            out.printf("%s\t%s\n", enStemmer.getStem(word),
+                frStemmer.getStem(translatedWord));
+            System.out.printf("%s\t%s\n", enStemmer.getStem(word),
+                frStemmer.getStem(translatedWord));
+          }
+        } catch (Exception e) {
+          // do nothing
+        }
+      }
+    }
+    in.close();
+
+    // french stem file
+    // TODO(trung): duplicated code
+//    in = new BufferedReader(new InputStreamReader(new FileInputStream(
+//        secondStemFile), UTF8));
+//    while ((line = in.readLine()) != null) {
+//      line = line.trim();
+//      pos = line.indexOf(" ");
+//      if (pos >= 0) {
+//        word = line.substring(0, pos);
+//        try {
+//          translatedWord = translatesWord(word, secondLanguage, EN, httpClient);
+//          if (translatedWord != null) {
+//            out.printf("%s\t%s\n", enStemmer.getStem(translatedWord),
+//                frStemmer.getStem(word));
+//            System.out.printf("%s\t%s\n", enStemmer.getStem(translatedWord),
+//                frStemmer.getStem(word));
+//          }
+//        } catch (Exception e) {
+//          // do nothing
+//        }
+//      }
+//    }
+    httpClient.getConnectionManager().shutdown();
+    in.close();
+    out.close();
+  }
+
+  /**
+   * Returns a map between words and their stems from the specified file.
+   * 
+   * @param stemFile
+   * @return
+   * @throws IOException
+   */
+  private static HashMap<String, String> getStemMap(String stemFile)
+      throws IOException {
+    HashMap<String, String> map = new HashMap<String, String>();
+    BufferedReader in = new BufferedReader(new InputStreamReader(
+        new FileInputStream(stemFile), UTF8));
+    String line;
+    int pos;
+    while ((line = in.readLine()) != null) {
+      pos = line.indexOf(" ");
+      map.put(line.substring(0, pos), line.substring(pos + 1));
+    }
+    in.close();
+    return map;
   }
 
   /**
@@ -157,7 +256,7 @@ public class Dictionary {
    * @return
    */
   private static String translatesWord(String word, String src, String target,
-      HttpClient client) {
+      HttpClient client) throws URISyntaxException {
     HttpGet httpget = new HttpGet(GOOGLE_TRANSLATE + word + "&source=" + src
         + "&target=" + target);
     ResponseHandler<String> responseHandler = new BasicResponseHandler();
@@ -170,7 +269,7 @@ public class Dictionary {
       int end = response.indexOf("\"", start + 1);
       translatedWord = response.substring(start + 1, end);
     } catch (Exception e) {
-
+      System.err.println(e.getMessage());
     }
     if (translatedWord != null && !translatedWord.contains(" ")) {
       return translatedWord;
@@ -206,12 +305,15 @@ public class Dictionary {
   }
 
   public static void main(String args[]) throws Exception {
-    Dictionary.langToLang("C:/datasets/asc/reviews/WordList_en.txt", EN, FR,
-        DIRECTORY + "/en-fr.txt");
-    getWordsInOtherLanguages();
-    Dictionary.langToLang("C:/datasets/asc/reviews/WordList_other.txt", FR, EN,
-        DIRECTORY + "/en-fr.txt");
-    // Dictionary.removeDuplication(DIRECTORY + "/english-french.txt", DIRECTORY
-    // + "/en-fr.txt");
+    // Dictionary.langToLang("C:/datasets/asc/reviews/WordList_en.txt", EN, FR,
+    // DIRECTORY + "/en-fr.txt");
+    // getWordsInOtherLanguages();
+    // Dictionary.langToLang("C:/datasets/asc/reviews/WordList_other.txt", FR,
+    // EN,
+    // DIRECTORY + "/en-fr.txt");
+//    Dictionary.make("C:/datasets/asc/reviews/ElectronicsReviews1/Stem_en.txt",
+//        "C:/datasets/asc/reviews/ElectronicsReviews1/Stem_fr.txt", FR,
+//        DIRECTORY + "/en-fr2.txt");
+    Dictionary.removeDuplication(DIRECTORY + "/en-fr.txt");
   }
 }

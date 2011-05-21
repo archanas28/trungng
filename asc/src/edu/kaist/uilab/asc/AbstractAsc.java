@@ -1,15 +1,11 @@
 package edu.kaist.uilab.asc;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
@@ -20,76 +16,43 @@ import edu.kaist.uilab.asc.data.Sentence;
 import edu.kaist.uilab.asc.data.SentiWord;
 import edu.kaist.uilab.asc.data.Word;
 import edu.kaist.uilab.asc.opt.LBFGS;
-import edu.kaist.uilab.asc.opt.MathUtils;
 import edu.kaist.uilab.asc.opt.ObjectiveFunction;
 import edu.kaist.uilab.asc.prior.SimilarityGraph;
 import edu.kaist.uilab.asc.util.DoubleMatrix;
 import edu.kaist.uilab.asc.util.IntegerMatrix;
-import edu.kaist.uilab.asc.util.InvalidArgumentException;
 
 /**
- * ASC implementation. TODO(trung): eng-french is not sufficient (lack of words
- * for the current corpus)
+ * A base implementation of the ASC model.
+ * <p>
+ * All sub-classes share the same Gibbs sampling implementation (hence the
+ * internal data such as hyper-parameters). Each class must provide its own
+ * implementation for the optimization of priors (beta and y).
+ * 
+ * @author trung nguyen (trung.ngvan@gmail.com)
  */
-public class ASC {
-  private Model model;
-  private double optimizationAccuracy = 10;
-  private double[][] probTable;
-  ObjectiveFunction func;
-  private int startingIteration;
-
-  static class Model implements Serializable {
-    private static final long serialVersionUID = 1L;
-    boolean isExisting = false;
-    String outputDir = ".";
-
-    int numUniqueWords; // vocabulary size
-    int numTopics; // K
-    int numSenti; // S
-    int numDocuments;
-    int numEnglishDocuments;
-    List<OrderedDocument> documents;
-    List<String> wordList;
-    SimilarityGraph graph;
-
-    int numProbWords = 100;
-    double alpha;
-    double sumAlpha;
-    double[] gammas;
-    double sumGamma;
-    double[][][] beta; // beta[senti][topic][word]
-    double[][][] y; // y[s][topic][word]
-    double[] yWord; // y[word]
-    double[] vars;
-    double[][] sumBeta; // sumBeta[senti][topic]
-
-    List<TreeSet<Integer>> sentiWordsList;
-    IntegerMatrix[] matrixSWT;
-    IntegerMatrix[] matrixSDT;
-    IntegerMatrix matrixDS;
-    int[][] sumSTW; // sumSTW[S][T]
-    int[][] sumDST; // sumDST[D][S]
-    int[] sumDS; // sumDS[D]
-  }
+public abstract class AbstractAsc implements ObjectiveFunction {
+  AscModel model;
+  double optimizationAccuracy = 0.5;
+  double[][] probTable;
+  int startingIteration;
 
   /**
-   * Creates a new ASC model.
+   * Creates a base asc implementation with provided parameters.
    * 
    * @param numTopics
    * @param numSenti
    * @param wordList
    * @param documents
+   * @param numEnglishDocuments
    * @param sentiWordsList
    * @param alpha
    * @param gammas
    * @param graph
    */
-  public ASC(int numTopics, int numSenti, List<String> wordList,
+  public AbstractAsc(int numTopics, int numSenti, List<String> wordList,
       List<OrderedDocument> documents, int numEnglishDocuments,
       List<TreeSet<Integer>> sentiWordsList, double alpha, double[] gammas,
       SimilarityGraph graph) {
-    model = new Model();
-    probTable = new double[numTopics][numSenti];
     model.numTopics = numTopics;
     model.numSenti = numSenti;
     model.numUniqueWords = wordList.size();
@@ -101,34 +64,35 @@ public class ASC {
     model.alpha = alpha;
     model.gammas = gammas;
     model.graph = graph;
-    initHyperParameters();
-    func = new AscObjectiveFunction(model.numSenti * model.numTopics
-        * model.numUniqueWords + model.numUniqueWords);
   }
 
   /**
-   * Creates an existing model from the specified file, continuing the sampling
-   * from the <code>iter</code> iteration.
-   * 
-   * @param savedModel
+   * Default constructor
    */
-  public ASC(String savedModel, int iter) {
-    startingIteration = iter + 1;
-    ObjectInputStream in = null;
-    try {
-      in = new ObjectInputStream(new FileInputStream(savedModel));
-      model = (Model) in.readObject();
-      model.isExisting = true;
-      in.close();
-    } catch (ClassNotFoundException e) {
-      e.printStackTrace();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    probTable = new double[model.numTopics][model.numSenti];
-    func = new AscObjectiveFunction(model.numSenti * model.numTopics
-        * model.numUniqueWords + model.numUniqueWords);
+  public AbstractAsc() {
   }
+
+  /**
+   * Converts the variables used in optimization to the specific internal
+   * representation of the extending class.
+   */
+  abstract void variablesToY();
+
+  /**
+   * Updates betas and their sums.
+   * <p>
+   * This method must be called whenever the internal variables y (which beta
+   * depends on change).
+   */
+  abstract void updateBeta();
+
+  /**
+   * Writes out some values of y.
+   * 
+   * @param file
+   * @throws IOException
+   */
+  abstract void writeSampleY(String file) throws IOException;
 
   /**
    * Sets the output dir for this model.
@@ -144,7 +108,7 @@ public class ASC {
   }
 
   /**
-   * Initializes hyper parameters and related quantities.
+   * Initializes hyper parameters and related quantities for Gibbs sampling.
    */
   void initHyperParameters() {
     model.sumAlpha = model.alpha * model.numTopics;
@@ -152,33 +116,8 @@ public class ASC {
     for (double gamma : model.gammas) {
       model.sumGamma += gamma;
     }
-    model.y = new double[model.numSenti][][];
-    model.yWord = new double[model.numUniqueWords];
-    for (int s = 0; s < model.numSenti; s++) {
-      model.y[s] = new double[model.numTopics][model.numUniqueWords];
-    }
     model.beta = new double[model.numSenti][][];
     model.sumBeta = new double[model.numSenti][model.numTopics];
-    for (int s = 0; s < model.numSenti; s++) {
-      model.beta[s] = new double[model.numTopics][model.numUniqueWords];
-      for (int t = 0; t < model.numTopics; t++) {
-        model.sumBeta[s][t] = 0;
-        for (int w = 0; w < model.numUniqueWords; w++) {
-          // asymmetric beta
-          if ((s == 0 && model.sentiWordsList.get(1).contains(w))
-              || (s == 1 && model.sentiWordsList.get(0).contains(w))) {
-            model.beta[s][t][w] = 0.0000001;
-          } else {
-            model.beta[s][t][w] = 0.001;
-          }
-          // make beta[s][t][w] = exp(y(stw) + y(w) where y(w) = 0
-          model.y[s][t][w] = Math.log(model.beta[s][t][w]);
-          model.sumBeta[s][t] += model.beta[s][t][w];
-        }
-      }
-    }
-    model.vars = new double[model.numSenti * model.numTopics
-        * model.numUniqueWords + model.numUniqueWords];
   }
 
   /**
@@ -218,7 +157,7 @@ public class ASC {
           }
         }
         sentence.numSenti = numSentenceSenti;
-        // if sentiment of the sentence is not clear, get random sentiment
+        // if sentiment of the sentence is not determined, get random sentiment
         if (randomInit || sentence.numSenti != 1) {
           newSenti = (int) (Math.random() * model.numSenti);
         }
@@ -323,15 +262,16 @@ public class ASC {
     boolean supplyDiag = false;
     double machinePrecision = 1e-32;
     // starting point
-    double[] diag = new double[func.getNumVariables()];
+    double[] diag = new double[model.vars.length];
     // iprint[0] = output every iprint[0] iterations
     // iprint[1] = 0~3 : least to most detailed output
     int[] iprint = new int[] { 50, 0 };
     do {
       try {
-        LBFGS.lbfgs(func.getNumVariables(), numCorrections, model.vars,
-            func.computeFunction(null), func.computeGradient(null), supplyDiag,
-            diag, iprint, optimizationAccuracy, machinePrecision, iflag);
+        LBFGS.lbfgs(model.vars.length, numCorrections, model.vars,
+            computeFunction(model.vars), computeGradient(model.vars),
+            supplyDiag, diag, iprint, optimizationAccuracy, machinePrecision,
+            iflag);
         variablesToY();
         updateBeta();
       } catch (Exception e) {
@@ -339,40 +279,6 @@ public class ASC {
       }
     } while (iflag[0] == 1);
     return (iflag[0] == 0);
-  }
-
-  /**
-   * Converts the variables (used in optimization function) to y.
-   */
-  void variablesToY() {
-    int idx = 0;
-    for (int s = 0; s < model.numSenti; s++) {
-      for (int t = 0; t < model.numTopics; t++) {
-        for (int w = 0; w < model.numUniqueWords; w++) {
-          model.y[s][t][w] = model.vars[idx++];
-        }
-      }
-    }
-    for (int w = 0; w < model.numUniqueWords; w++) {
-      model.yWord[w] = model.vars[idx++];
-    }
-  }
-
-  /**
-   * Updates betas and their sums.
-   * <p>
-   * This method should be called whenever y_kv and y_word v are changed.
-   */
-  void updateBeta() {
-    for (int s = 0; s < model.numSenti; s++) {
-      for (int t = 0; t < model.numTopics; t++) {
-        model.sumBeta[s][t] = 0;
-        for (int w = 0; w < model.numUniqueWords; w++) {
-          model.beta[s][t][w] = Math.exp(model.y[s][t][w] + model.yWord[w]);
-          model.sumBeta[s][t] += model.beta[s][t][w];
-        }
-      }
-    }
   }
 
   /**
@@ -475,12 +381,12 @@ public class ASC {
   // Check to see if the sentence contains one sentiment (seed) word
   private boolean trim(Map<Word, Integer> wordCnt, int si) {
     // TODO(trung): uncomment if see worse behavior
-//    for (Word sWord : wordCnt.keySet()) {
-//      SentiWord word = (SentiWord) sWord;
-//      if (word.lexicon != null && word.lexicon != si) {
-//        return true;
-//      }
-//    }
+    for (Word sWord : wordCnt.keySet()) {
+      SentiWord word = (SentiWord) sWord;
+      if (word.lexicon != null && word.lexicon != si) {
+        return true;
+      }
+    }
     return false;
   }
 
@@ -513,8 +419,13 @@ public class ASC {
       DoubleMatrix[] phi = Inference.calculatePhi(model.matrixSWT,
           model.sumSTW, model.beta, model.sumBeta);
       writePhi(phi, dir + "/Phi.csv");
-      printTopWords(phi, dir, true);
-      printTopWords(phi, dir, false);
+      writeSampleY(dir + "/y.txt");
+      printTopWords(phi, dir + "/TopWords.csv");
+      printTopWords(
+          buildTermScoreMatrix(phi, model.numTopics * model.numSenti), dir
+              + "/TopWordsByTermScore.csv");
+      printTopWords(buildTermScoreMatrix(phi, model.numTopics), dir
+          + "/TopWordsByHalfTermScore.csv");
       writeTheta(Inference.calculateTheta(model.matrixSDT, model.sumDST,
           model.alpha, model.sumAlpha), dir + "/Theta.csv");
       Inference.calculatePi(model.matrixDS, model.sumDS, model.gammas,
@@ -565,24 +476,12 @@ public class ASC {
    * Prints top words.
    * 
    * @param dir
-   * @param useTermScore
-   *          true to print top words ranked by term-score
    */
-  void printTopWords(DoubleMatrix[] phi, String dir, boolean useTermScore)
-      throws IOException {
-    String fileName;
-    DoubleMatrix[] matrix;
-    if (useTermScore) {
-      matrix = buildTermScoreMatrix(phi);
-      fileName = "TopWordsByTermScore.csv";
-    } else {
-      matrix = phi;
-      fileName = "TopWords.csv";
-    }
+  void printTopWords(DoubleMatrix[] matrix, String file) throws IOException {
     PrintWriter out = new PrintWriter(new OutputStreamWriter(
-        new FileOutputStream(dir + "/" + fileName), "utf-8"));
-    for (int s = 0; s < this.model.numSenti; s++) {
-      for (int t = 0; t < this.model.numTopics; t++) {
+        new FileOutputStream(file), "utf-8"));
+    for (int s = 0; s < model.numSenti; s++) {
+      for (int t = 0; t < model.numTopics; t++) {
         out.print("S" + s + "-T" + t + ",");
       }
     }
@@ -607,7 +506,7 @@ public class ASC {
    * 
    * @return
    */
-  private DoubleMatrix[] buildTermScoreMatrix(DoubleMatrix[] phi) {
+  private DoubleMatrix[] buildTermScoreMatrix(DoubleMatrix[] phi, int topics) {
     DoubleMatrix[] termScore = new DoubleMatrix[phi.length];
     double sumOfLogs[] = new double[model.numUniqueWords];
     // compute the sum of logs for each word
@@ -620,10 +519,6 @@ public class ASC {
       }
     }
     double score, prob;
-    // int topics = numTopics * numSenti;
-    // TODO(trung): this is a different from the term-score formula (with the
-    // assumption that a senti-word has only one senti -> only numTopics)
-    int topics = model.numTopics;
     for (int s = 0; s < model.numSenti; s++) {
       termScore[s] = new DoubleMatrix(model.numUniqueWords, model.numTopics);
       for (int t = 0; t < model.numTopics; t++) {
@@ -654,107 +549,5 @@ public class ASC {
       }
     }
     return indices;
-  }
-
-  /**
-   * The objective function of this model for MAP of betas.
-   */
-  class AscObjectiveFunction extends ObjectiveFunction {
-    public AscObjectiveFunction(int numVariables) {
-      super(numVariables);
-    }
-
-    @Override
-    public double computeFunction(double[] vars)
-        throws InvalidArgumentException {
-      // compute L_B = - log likelihood = -log p(w,z,s|alpha, beta)
-      double negLogLikelihood = 0.0;
-      for (int j = 0; j < model.numSenti; j++) {
-        for (int k = 0; k < model.numTopics; k++) {
-          negLogLikelihood += MathUtils.logGamma(model.sumSTW[j][k]
-              + model.sumBeta[j][k])
-              - MathUtils.logGamma(model.sumBeta[j][k]);
-          for (int i = 0; i < model.numUniqueWords; i++) {
-            if (model.matrixSWT[j].getValue(i, k) > 0) {
-              negLogLikelihood += MathUtils.logGamma(model.beta[j][k][i])
-                  - MathUtils.logGamma(model.beta[j][k][i]
-                      + model.matrixSWT[j].getValue(i, k));
-            }
-          }
-        }
-      }
-      // compute log p(beta)
-      double logPrior = 0;
-      double term = 0.0;
-      for (int i = 0; i < model.numUniqueWords; i++) {
-        ArrayList<Integer> neighbors = model.graph.getNeighbors(i);
-        // phi(i, iprime) = 1
-        for (int iprime : neighbors) {
-          for (int j = 0; j < model.numSenti; j++) {
-            for (int k = 0; k < model.numTopics; k++) {
-              term = model.y[j][k][i] - model.y[j][k][iprime];
-              logPrior += term * term;
-            }
-          }
-        }
-      }
-      // each edge can be used only once
-      logPrior /= 2;
-      for (int i = 0; i < model.numUniqueWords; i++) {
-        logPrior += model.yWord[i] * model.yWord[i];
-      }
-      logPrior *= -0.5; // 0.5lamda^2 where lamda = 1
-      return negLogLikelihood - logPrior;
-    }
-
-    @Override
-    public double[] computeGradient(double[] vars)
-        throws InvalidArgumentException {
-      double[] grads = new double[getNumVariables()];
-      double tmp;
-      double[][][] betaJki = new double[model.numSenti][model.numTopics][model.numUniqueWords];
-      // common beta terms for both y_jki and y_word i
-      for (int j = 0; j < model.numSenti; j++) {
-        for (int k = 0; k < model.numTopics; k++) {
-          for (int i = 0; i < model.numUniqueWords; i++) {
-            tmp = MathUtils.digamma(model.sumSTW[j][k] + model.sumBeta[j][k])
-                - MathUtils.digamma(model.sumBeta[j][k]);
-            if (model.matrixSWT[j].getValue(i, k) > 0) {
-              tmp += MathUtils.digamma(model.beta[j][k][i])
-                  - MathUtils.digamma(model.beta[j][k][i]
-                      + model.matrixSWT[j].getValue(i, k));
-            }
-            betaJki[j][k][i] = model.beta[j][k][i] * tmp;
-          }
-        }
-      }
-
-      // gradients of y_jki
-      int idx = 0;
-      ArrayList<Integer> neighbors;
-      for (int j = 0; j < model.numSenti; j++) {
-        for (int k = 0; k < model.numTopics; k++) {
-          for (int i = 0; i < model.numUniqueWords; i++) {
-            grads[idx] = betaJki[j][k][i];
-            neighbors = model.graph.getNeighbors(i);
-            for (int iprime : neighbors) {
-              grads[idx] += model.y[j][k][i] - model.y[j][k][iprime];
-            }
-            idx++;
-          }
-        }
-      }
-      // gradients of y_word i
-      for (int i = 0; i < model.numUniqueWords; i++) {
-        grads[idx] = -model.yWord[i];
-        for (int j = 0; j < model.numSenti; j++) {
-          for (int k = 0; k < model.numTopics; k++) {
-            grads[idx] += betaJki[j][k][i];
-          }
-        }
-        idx++;
-      }
-      return grads;
-    }
   }
 }
