@@ -22,6 +22,8 @@ import com.aliasi.util.Counter;
 import com.aliasi.util.ObjectToCounterMap;
 import com.aliasi.util.Strings;
 
+import edu.kaist.uilab.asc.util.TextFiles;
+
 public class LdaTest {
   static String[] stopWords = {
     "i",
