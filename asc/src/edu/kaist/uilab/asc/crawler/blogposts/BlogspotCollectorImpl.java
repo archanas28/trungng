@@ -8,10 +8,10 @@ import org.htmlparser.util.NodeList;
 
 /**
  * Collector for getting posts from blogspot.com.
- * @author trung
- *
+ * 
+ * @author trung nguyen (trung.ngvan@gmail.com)
  */
-public class BlogspotCollectorImpl implements PostCollectorInterface {
+public class BlogspotCollectorImpl extends PostCollectorAbstract {
 
   @Override
   public String getPost(String url) {
@@ -36,11 +36,10 @@ public class BlogspotCollectorImpl implements PostCollectorInterface {
             }
           }
         }
-        content = builder.toString().replaceAll("[\\t\\f]+", " ")
-            .replaceAll("&#[\\d]+;", "").replaceAll("[http|ftp]://[\\S]*", " ");
+        content = PostCollectorAbstract.regularize(content);
       }
     } catch (Exception e) {
-      // do nothing
+      e.printStackTrace();
     }
     
     return content;

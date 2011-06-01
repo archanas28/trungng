@@ -18,7 +18,7 @@ import org.htmlparser.filters.TagNameFilter;
 import org.htmlparser.nodes.TagNode;
 import org.htmlparser.util.NodeList;
 
-import edu.kaist.uilab.asc.crawler.TextFiles;
+import edu.kaist.uilab.asc.util.TextFiles;
 
 /**
  * Class for collecting blog posts. TODO(trung): filter "opinionated" documents
@@ -46,7 +46,7 @@ public class PostCollector {
     }
   }
 
-  static String toFrench(String text) {
+  public static String toFrench(String text) {
     for (int i = 0; i < patterns.size(); i++) {
       text = text.replaceAll(patterns.get(i), replaces.get(i));
     }
@@ -141,10 +141,10 @@ public class PostCollector {
   static class PostCrawler extends Thread {
     private String urlFile;
     private String outputDir;
-    private PostCollectorInterface collector;
+    private PostCollectorAbstract collector;
 
     public PostCrawler(String urlFile, String outputDir,
-        PostCollectorInterface collector) {
+        PostCollectorAbstract collector) {
       this.urlFile = urlFile;
       this.outputDir = outputDir;
       this.collector = collector;
@@ -169,7 +169,7 @@ public class PostCollector {
             out = new PrintWriter(new OutputStreamWriter(new FileOutputStream(
                 outputDir + "/" + idx++ + subname), "utf-8"));
             out.printf("URL: %s\n", line);
-            content = removeShortParagraphs(content);
+            content = toFrench(removeShortParagraphs(content));
             out.print(content);
             out.close();
           }
@@ -215,7 +215,7 @@ public class PostCollector {
   }
 
   /* Gets a blogpost collector for the specified domain. */
-  static PostCollectorInterface getCollector(String domain) {
+  static PostCollectorAbstract getCollector(String domain) {
     if ("blogspot.com".equals(domain)) {
       return new BlogspotCollectorImpl();
     }
@@ -243,6 +243,7 @@ public class PostCollector {
 
   public static void main(String args[]) throws Exception {
 //    getUrls();
-     getBlogposts();
+//     getBlogposts();
+    
   }
 }

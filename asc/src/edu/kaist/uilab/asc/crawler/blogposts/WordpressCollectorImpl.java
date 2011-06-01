@@ -12,7 +12,7 @@ import org.htmlparser.util.NodeList;
  * 
  * @author trung nguyen (trung.ngvan@gmail.com)
  */
-public class WordpressCollectorImpl implements PostCollectorInterface {
+public class WordpressCollectorImpl extends PostCollectorAbstract {
 
   @Override
   public String getPost(String url) {
@@ -33,10 +33,8 @@ public class WordpressCollectorImpl implements PostCollectorInterface {
         builder.append(PostCollector.removeFooter(content));
       }
     } catch (Exception e) {
-      // do nothing
+      e.printStackTrace();
     }
-    String result = builder.toString().replaceAll("[\\t|\\f]+", " ")
-        .replaceAll("&#[\\d]+;", "").replaceAll("[http|ftp]://[\\S]*", " ");
-    return result;
+    return regularize(builder.toString());
   }
 }

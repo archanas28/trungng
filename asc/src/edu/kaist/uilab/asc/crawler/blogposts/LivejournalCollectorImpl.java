@@ -13,7 +13,7 @@ import org.htmlparser.util.NodeList;
  * 
  * @author trung
  */
-public class LivejournalCollectorImpl implements PostCollectorInterface {
+public class LivejournalCollectorImpl extends PostCollectorAbstract {
 
   @Override
   public String getPost(String url) {
@@ -42,12 +42,10 @@ public class LivejournalCollectorImpl implements PostCollectorInterface {
             }
           }
         }
-        content = PostCollector.removeFooter(builder.toString())
-            .replaceAll("[\\t|\\f]", " ").replaceAll("&#[\\d]+;", "")
-            .replaceAll("[http|ftp]://[\\S]*", " ");
+        content = regularize(PostCollector.removeFooter(builder.toString()));
       }
     } catch (Exception e) {
-      // do nothing
+      e.printStackTrace();
     }
     return content;
   }
