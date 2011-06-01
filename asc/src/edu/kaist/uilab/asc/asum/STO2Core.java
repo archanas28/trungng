@@ -69,7 +69,7 @@ public class STO2Core {
   final private int maxSentenceLength = 50;
 
   public static void main(String[] args) throws Exception {
-    int numTopics = 50;
+    int numTopics = 15;
     int numIterations = 1500;
     int numSenti = 2;
     int numThreads = 1;
