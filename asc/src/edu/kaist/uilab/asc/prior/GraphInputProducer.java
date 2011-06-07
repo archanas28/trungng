@@ -77,9 +77,8 @@ public class GraphInputProducer {
    */
   void toWordPair(String pair, String[] word) {
     StringTokenizer tokenizer = new StringTokenizer(pair, "\t");
-    word[0] = tokenizer.nextToken().trim();
-    word[1] = tokenizer.nextToken().replace("(m)", " ").replace("(f)", " ")
-        .trim();
+    word[0] = tokenizer.nextToken();
+    word[1] = tokenizer.nextToken();
   }
 
   /**

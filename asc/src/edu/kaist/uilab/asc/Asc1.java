@@ -7,10 +7,10 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeSet;
+import java.util.Vector;
 
-import edu.kaist.uilab.asc.data.OrderedDocument;
+import edu.kaist.uilab.asc.data.Document;
 import edu.kaist.uilab.asc.opt.MathUtils;
-import edu.kaist.uilab.asc.prior.SimilarityGraph;
 import edu.kaist.uilab.asc.util.InvalidArgumentException;
 
 /**
@@ -30,7 +30,9 @@ public class Asc1 extends AbstractAsc {
     double[][][] y; // y[s][topic][word]
     double[] yWord; // y[word]
   }
-
+  
+  double optimizationAccuracy = 0.5;
+  
   /**
    * Creates a new ASC model.
    * 
@@ -41,15 +43,14 @@ public class Asc1 extends AbstractAsc {
    * @param sentiWordsList
    * @param alpha
    * @param gammas
-   * @param graph
+   * @param graphFile
    */
-  public Asc1(int numTopics, int numSenti, List<String> wordList,
-      List<OrderedDocument> documents, int numEnglishDocuments,
+  public Asc1(int numTopics, int numSenti, Vector<LocaleWord> wordList,
+      List<Document> documents, int numEnglishDocuments,
       List<TreeSet<Integer>> sentiWordsList, double alpha, double[] gammas,
-      SimilarityGraph graph) {
-    super(numTopics, numSenti, wordList, documents, numEnglishDocuments,
-        sentiWordsList, alpha, gammas, graph);
-    model = new Asc1Model();
+      String graphFile) {
+    super(new Asc1Model(), numTopics, numSenti, wordList, documents, numEnglishDocuments,
+        sentiWordsList, alpha, gammas, graphFile);
     probTable = new double[numTopics][numSenti];
     model.vars = new double[model.numSenti * model.numTopics
         * model.numUniqueWords + model.numUniqueWords];
@@ -97,9 +98,9 @@ public class Asc1 extends AbstractAsc {
           // asymmetric beta
           if ((s == 0 && model.sentiWordsList.get(1).contains(w))
               || (s == 1 && model.sentiWordsList.get(0).contains(w))) {
-            model.beta[s][t][w] = 0.0000001;
+            model.beta[s][t][w] = 0.01;
           } else {
-            model.beta[s][t][w] = 0.001;
+            model.beta[s][t][w] = 3;
           }
           // make beta[s][t][w] = exp(y(stw) + y(w) where y(w) = 0
           model.y[s][t][w] = Math.log(model.beta[s][t][w]);
@@ -148,12 +149,12 @@ public class Asc1 extends AbstractAsc {
   /**
    * Writes out some values of y.
    * 
-   * @param file
+   * @param dir
    * @throws IOException
    */
-  void writeSampleY(String file) throws IOException {
+  void writeSampleY(String dir) throws IOException {
     Asc1Model model = (Asc1Model) this.model;
-    PrintWriter out = new PrintWriter(file);
+    PrintWriter out = new PrintWriter(dir + "/y.txt");
     for (int i = 0; i < 100; i++) {
       int w = (int) (Math.random() * model.numUniqueWords);
       out.printf("\nWord no: %d", w);
@@ -261,5 +262,10 @@ public class Asc1 extends AbstractAsc {
       idx++;
     }
     return grads;
+  }
+
+  @Override
+  double getOptimizationAccuracy() {
+    return optimizationAccuracy;
   }
 }

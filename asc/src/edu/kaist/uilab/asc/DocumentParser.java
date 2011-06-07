@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map.Entry;
@@ -30,7 +31,7 @@ public class DocumentParser {
   private Object keyToBag = new Object(); // For synchronization
   private Vector<String[]> replacePatternList = new Vector<String[]>();
   private String[] wordReplacePattern;
-  private TreeSet<Word> stopWords = new TreeSet<Word>();
+  private TreeSet<String> stopStems = new TreeSet<String>();
   private HashMap<String, String> stemMap;
 
   private Locale locale = Locale.ENGLISH;
@@ -43,9 +44,11 @@ public class DocumentParser {
   private SnowballStemmer stemmer = null;
 
   private Vector<Vector<Vector<Integer>>> englishBag;
+  private ArrayList<Double> englishRatings;
+  private ArrayList<Double> otherRatings;
   // bag for documents in other languages
   private Vector<Vector<Vector<Integer>>> otherBag;
-  private TreeMap<Word, Integer> wordIndex;
+  private TreeMap<LocaleWord, Integer> wordIndex;
 
   /**
    * Constructor
@@ -68,7 +71,9 @@ public class DocumentParser {
     this.minDocLength = minDocumentLength;
     englishBag = new Vector<Vector<Vector<Integer>>>();
     otherBag = new Vector<Vector<Vector<Integer>>>();
-    wordIndex = new TreeMap<Word, Integer>();
+    englishRatings = new ArrayList<Double>();
+    otherRatings = new ArrayList<Double>();
+    wordIndex = new TreeMap<LocaleWord, Integer>();
   }
 
   public void addReplacePattern(String pattern, String replace) {
@@ -102,12 +107,12 @@ public class DocumentParser {
    * @throws IOException
    */
   public void setStopWords(String path) throws IOException {
-    stopWords.clear();
+    stopStems.clear();
     BufferedReader in = new BufferedReader(new InputStreamReader(
         new FileInputStream(path), UTF_8));
     String line;
     while ((line = in.readLine()) != null) {
-      stopWords.add(new Word(line, null));
+      stopStems.add(line);
     }
     in.close();
   }
@@ -139,14 +144,14 @@ public class DocumentParser {
    * @param document
    * @return
    */
-  private Vector<Vector<Word>> documentToSentences(String document) {
-    Vector<Vector<Word>> list = new Vector<Vector<Word>>();
+  private Vector<Vector<LocaleWord>> documentToSentences(String document) {
+    Vector<Vector<LocaleWord>> list = new Vector<Vector<LocaleWord>>();
     String[] sentences = document.split(sentenceDelimiter);
     for (String sentence : sentences) {
-      Vector<Word> wordList = new Vector<Word>();
+      Vector<LocaleWord> wordList = new Vector<LocaleWord>();
       String[] words = sentence.split(wordDelimiter);
       for (String word : words) {
-        wordList.add(new Word(word.toLowerCase(locale)));
+        wordList.add(new LocaleWord(word.toLowerCase(locale), locale));
       }
       list.add(wordList);
     }
@@ -159,29 +164,30 @@ public class DocumentParser {
    * @param unprocessedSentence
    * @return
    */
-  private Vector<Word> processSentence(Vector<Word> unprocessedSentence) {
-    Vector<Word> ret = new Vector<Word>();
-    for (Word word : unprocessedSentence) {
-      if (word.value.length() >= minWordLength
-          && word.value.length() <= maxWordLength) {
+  private Vector<LocaleWord> processSentence(
+      Vector<LocaleWord> unprocessedSentence) {
+    Vector<LocaleWord> ret = new Vector<LocaleWord>();
+    for (LocaleWord word : unprocessedSentence) {
+      if (word.mValue.length() >= minWordLength
+          && word.mValue.length() <= maxWordLength) {
         boolean invalidWord = false;
         String pattern = wordReplacePattern[0];
         String replace = wordReplacePattern[1];
-        if (Pattern.matches("^" + pattern + "$", word.value)) {
+        if (Pattern.matches("^" + pattern + "$", word.mValue)) {
           if (replace == null) {
             invalidWord = true;
           } else {
-            word.value = Pattern.compile("^" + pattern + "$")
-                .matcher(word.value).replaceAll(replace);
+            word.mValue = Pattern.compile("^" + pattern + "$")
+                .matcher(word.mValue).replaceAll(replace);
           }
         }
         if (!invalidWord) {
           if (stemmer != null) {
-            String stem = stemmer.getStem(word.value);
-            stemMap.put(word.value, stem);
-            word.value = stem;
+            String stem = stemmer.getStem(word.mValue);
+            stemMap.put(word.mValue, stem);
+            word.mValue = stem;
           }
-          if (!stopWords.contains(word)) {
+          if (!stopStems.contains(word.mValue)) {
             ret.add(word);
           }
         }
@@ -195,16 +201,14 @@ public class DocumentParser {
    * Stores the sentences list into the bag.
    * 
    * @param sentenceList
-   * @param documentName
    * @return
    */
-  private void storeIntoBag(Vector<Vector<Word>> sentenceList,
-      String documentName) {
+  private void storeIntoBag(Vector<Vector<LocaleWord>> sentenceList) {
     Vector<Vector<Integer>> indexSentenceList = new Vector<Vector<Integer>>();
     synchronized (keyToBag) {
-      for (Vector<Word> wordList : sentenceList) {
+      for (Vector<LocaleWord> wordList : sentenceList) {
         Vector<Integer> sentence = new Vector<Integer>();
-        for (Word word : wordList) {
+        for (LocaleWord word : wordList) {
           Integer index = wordIndex.get(word);
           if (index == null) {
             index = wordIndex.size();
@@ -226,18 +230,17 @@ public class DocumentParser {
    * Processes a document.
    * 
    * @param document
-   * @param documentName
+   * @param rating
    * @return
-   * @throws Exception
    */
-  public void build(String document, String documentName) {
+  public void build(String document, double rating) {
     document = replacePattern(document);
     if (document != null) {
-      Vector<Vector<Word>> list = documentToSentences(document);
-      Vector<Vector<Word>> sentenceList = new Vector<Vector<Word>>();
+      Vector<Vector<LocaleWord>> list = documentToSentences(document);
+      Vector<Vector<LocaleWord>> sentenceList = new Vector<Vector<LocaleWord>>();
       int numWords = 0;
-      for (Vector<Word> s : list) {
-        Vector<Word> sentence = processSentence(s);
+      for (Vector<LocaleWord> s : list) {
+        Vector<LocaleWord> sentence = processSentence(s);
         if (sentence.size() >= minSentenceLength
             && sentence.size() <= maxSentenceLength) {
           sentenceList.add(sentence);
@@ -245,7 +248,12 @@ public class DocumentParser {
         }
       }
       if (numWords >= minDocLength) {
-        storeIntoBag(sentenceList, documentName);
+        storeIntoBag(sentenceList);
+        if (locale.equals(Locale.ENGLISH)) {
+          englishRatings.add(rating);
+        } else {
+          otherRatings.add(rating);
+        }
       }
     }
   }
@@ -255,16 +263,16 @@ public class DocumentParser {
    */
   public void filterWords() {
     System.out.print("Filtering words...");
-    TreeSet<Word> removeWords = new TreeSet<Word>();
+    TreeSet<LocaleWord> removeWords = new TreeSet<LocaleWord>();
     TreeSet<Integer> removeWordIndices = new TreeSet<Integer>();
     int numDocs = englishBag.size() + otherBag.size();
     while (true) {
       // why?
       int[] wordCount = getWordCount();
       int cntRemoveWords = 0;
-      for (Word word : wordIndex.keySet()) {
+      for (LocaleWord word : wordIndex.keySet()) {
         int idx = wordIndex.get(word);
-        if (wordCount[idx] < minWordOccur || wordCount[idx] > numDocs * 0.6) {
+        if (wordCount[idx] < minWordOccur || wordCount[idx] > numDocs * 0.3) {
           if (!removeWords.contains(word)) {
             removeWords.add(word);
             removeWordIndices.add(idx);
@@ -276,22 +284,22 @@ public class DocumentParser {
       if (cntRemoveWords == 0) {
         break;
       }
-      englishBag = filterBag(englishBag, removeWordIndices);
-      otherBag = filterBag(otherBag, removeWordIndices);
+      englishBag = filterBag(englishBag, englishRatings, removeWordIndices);
+      otherBag = filterBag(otherBag, otherRatings, removeWordIndices);
       // break;
     }
 
-    for (Word word : removeWords) {
+    for (LocaleWord word : removeWords) {
       wordIndex.remove(word);
     }
     HashMap<Integer, Integer> map = new HashMap<Integer, Integer>();
     Integer newWordIndex = 0;
-    for (Word word : wordIndex.keySet()) {
+    for (LocaleWord word : wordIndex.keySet()) {
       map.put(wordIndex.get(word), newWordIndex);
       wordIndex.put(word, newWordIndex++);
     }
-    englishBag = rewriteDocuments(englishBag, map);
-    otherBag = rewriteDocuments(otherBag, map);
+    englishBag = reindexDocuments(englishBag, map);
+    otherBag = reindexDocuments(otherBag, map);
     System.out.println("done");
   }
 
@@ -302,15 +310,20 @@ public class DocumentParser {
    * @param removeWordIndices
    */
   Vector<Vector<Vector<Integer>>> filterBag(
-      Vector<Vector<Vector<Integer>>> bag, TreeSet<Integer> removeWordIndices) {
+      Vector<Vector<Vector<Integer>>> bag, ArrayList<Double> oldRating,
+      TreeSet<Integer> removeWordIndices) {
     Vector<Vector<Vector<Integer>>> newBag = new Vector<Vector<Vector<Integer>>>();
-    for (Vector<Vector<Integer>> document : bag) {
-      Vector<Vector<Integer>> newDocument = filterDocument(document,
+    ArrayList<Double> newRating = new ArrayList<Double>();
+    for (int idx = 0; idx < bag.size(); idx++) {
+      Vector<Vector<Integer>> newDocument = filterDocument(bag.get(idx),
           removeWordIndices);
       if (newDocument.size() > 0) {
         newBag.add(newDocument);
+        newRating.add(oldRating.get(idx));
       }
     }
+    oldRating.clear();
+    oldRating.addAll(newRating);
     return newBag;
   }
 
@@ -341,20 +354,20 @@ public class DocumentParser {
   }
 
   /**
-   * Rewrites documents using the new indices of words.
+   * Re-indexs documents using the new indices of words.
    * 
    * @param bag
    * @param map
    *          the mapping between old index (key) and new index (value)
    */
-  private Vector<Vector<Vector<Integer>>> rewriteDocuments(
+  private Vector<Vector<Vector<Integer>>> reindexDocuments(
       Vector<Vector<Vector<Integer>>> bag, HashMap<Integer, Integer> map) {
     Vector<Vector<Vector<Integer>>> newBag = new Vector<Vector<Vector<Integer>>>();
     for (Vector<Vector<Integer>> document : bag) {
       Vector<Vector<Integer>> newDocument = new Vector<Vector<Integer>>();
       for (Vector<Integer> sentence : document) {
         Vector<Integer> newSentence = new Vector<Integer>();
-        for (int oldWordIndex : sentence) {
+        for (Integer oldWordIndex : sentence) {
           if (map.get(oldWordIndex) != null) {
             newSentence.add(map.get(oldWordIndex));
           }
@@ -375,13 +388,10 @@ public class DocumentParser {
     return wordIndex.size();
   }
 
-  public String[] getWordList() {
-    String[] list = new String[wordIndex.size()];
-    for (Word word : wordIndex.keySet()) {
-      if (word.hasTag())
-        list[wordIndex.get(word)] = word.value + "/" + word.tag;
-      else
-        list[wordIndex.get(word)] = word.value;
+  LocaleWord[] getWordList() {
+    LocaleWord[] list = new LocaleWord[wordIndex.size()];
+    for (LocaleWord word : wordIndex.keySet()) {
+      list[wordIndex.get(word)] = word;
     }
     return list;
   }
@@ -430,32 +440,40 @@ public class DocumentParser {
     return numTotalWords;
   }
 
-  private void writeWordCount(String file, String[] wordList)
+  private void writeWordCount(String file, LocaleWord[] wordList)
       throws IOException {
     int[] wordCount = getWordCount();
     PrintWriter out = new PrintWriter(new OutputStreamWriter(
         new FileOutputStream(file), UTF_8));
     for (int i = 0; i < wordList.length; i++)
-      out.println("\"" + wordList[i].replaceAll("\"", "\"\"") + "\","
-          + wordCount[i]);
+      out.printf("%s,%d\n", wordList[i], wordCount[i]);
     out.close();
   }
 
-  public void writeWordList(String file, String[] wordList) throws IOException {
+  public void writeWordList(String file, LocaleWord[] wordList)
+      throws IOException {
     PrintWriter out = new PrintWriter(new OutputStreamWriter(
         new FileOutputStream(file), UTF_8));
-    for (String word : wordList) {
+    for (LocaleWord word : wordList) {
       out.println(word);
     }
     out.close();
   }
 
-  private void writeBagOfSentences(Vector<Vector<Vector<Integer>>> bag,
-      String file) throws IOException {
+  /**
+   * Writes documents together with their ratings to the specified file.
+   * 
+   * @param documents
+   * @param file
+   * @throws IOException
+   */
+  private void writeDocuments(Vector<Vector<Vector<Integer>>> documents,
+      ArrayList<Double> ratings, String file) throws IOException {
     PrintWriter out = new PrintWriter(file);
-    for (Vector<Vector<Integer>> sentenceList : bag) {
-      out.println(sentenceList.size());
-      for (Vector<Integer> sentence : sentenceList) {
+    for (int idx = 0; idx < documents.size(); idx++) {
+      Vector<Vector<Integer>> document = documents.get(idx);
+      out.printf("%f %d\n", ratings.get(idx), document.size());
+      for (Vector<Integer> sentence : document) {
         for (int wordIndex : sentence)
           out.print(wordIndex + " ");
         out.println();
@@ -471,11 +489,49 @@ public class DocumentParser {
    * @throws Exception
    */
   public void writeOutFiles(String outDir) throws IOException {
-    String[] wordList = getWordList();
+    LocaleWord[] wordList = getWordList();
     writeWordCount(outDir + "/" + Application.wordcountFile, wordList);
     writeWordList(outDir + "/" + Application.wordlistFile, wordList);
-    writeBagOfSentences(englishBag, outDir + "/" + Application.enDocuments);
-    writeBagOfSentences(otherBag, outDir + "/" + Application.otherDocuments);
+    writeDocuments(englishBag, englishRatings, outDir + "/"
+        + Application.enDocuments);
+    writeDocuments(otherBag, otherRatings, outDir + "/"
+        + Application.otherDocuments);
+    printSubjectivityStatistics();
+  }
+
+  void printSubjectivityStatistics() {
+    int numPos = 0, numNeg = 0, numNeutral = 0;
+    for (Double rating : englishRatings) {
+      if (rating > 3.0) {
+        numPos++;
+      } else if (rating >= 0 && rating < 3.0) {
+        numNeg++;
+      } else {
+        numNeutral++;
+      }
+    }
+    double size = englishRatings.size();
+    System.out
+        .printf(
+            "English corpus(total=%d):\tpos = %d\tneg = %d\tneutral or not rated = %d\n",
+            (int) size, numPos, numNeg, numNeutral);
+    numPos = 0;
+    numNeg = 0;
+    numNeutral = 0;
+    for (Double rating : otherRatings) {
+      if (rating > 3.0) {
+        numPos++;
+      } else if (rating >= 0 && rating < 3.0) {
+        numNeg++;
+      } else {
+        numNeutral++;
+      }
+    }
+    size = otherRatings.size();
+    System.out
+        .printf(
+            "French corpus(total=%d):\tpos = %d\tneg = %d\tneutral or not rated = %d\n",
+            (int) size, numPos, numNeg, numNeutral);
   }
 
   /**

@@ -4,53 +4,38 @@ import java.io.Serializable;
 import java.util.Vector;
 
 /**
- * Document represented as a bag of words.
+ * Document represented as bag of sentences.
  */
 public class Document implements Serializable {
 
-  private static final long serialVersionUID = -2633043202773898814L;
+  private static final long serialVersionUID = -5236933567248150582L;
+  
+  Vector<Sentence> mSentences;
+  int mDocNo;
+  double mRating;
 
-  private int docNo;
-
-  protected Vector<Word> words;
-
-  public Document() {
-    this.words = new Vector<Word>();
+  public Document(int docNo) {
+    mSentences = new Vector<Sentence>();
+    mDocNo = docNo;
   }
-
-  public Document(int docLength) {
-    this.words = new Vector<Word>(docLength);
-  }
-
+  
   public int getDocNo() {
-    return docNo;
+    return mDocNo;
   }
 
-  public void setDocNo(int docNo) {
-    this.docNo = docNo;
+  public void setRating(double rating) {
+    mRating = rating;
   }
 
-  public void addWord(Word word) {
-    words.add(word);
+  public double getRating() {
+    return mRating;
   }
 
-  public void addWord(int wordNo) {
-    addWord(new Word(wordNo));
+  public void addSentence(Sentence sentence) {
+    mSentences.add(sentence);
   }
 
-  public int getLength() {
-    return words.size();
-  }
-
-  public int getNumWords() {
-    return words.size();
-  }
-
-  public Vector<Word> getWords() {
-    return words;
-  }
-
-  public void setWordsList(Vector<Word> wordsList) {
-    this.words = wordsList;
+  public Vector<Sentence> getSentences() {
+    return mSentences;
   }
 }

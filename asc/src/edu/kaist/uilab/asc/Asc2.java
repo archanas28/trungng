@@ -1,25 +1,24 @@
 package edu.kaist.uilab.asc;
 
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeSet;
+import java.util.Vector;
 
-import edu.kaist.uilab.asc.data.OrderedDocument;
+import edu.kaist.uilab.asc.data.Document;
 import edu.kaist.uilab.asc.opt.MathUtils;
-import edu.kaist.uilab.asc.prior.SimilarityGraph;
 import edu.kaist.uilab.asc.util.InvalidArgumentException;
 
 /**
  * Asc implementation with the following prior:
- * <code>beta_{jki} = exp(y_{ki} * y_{ji} + y_{v}</code> where j, k, i denotes
- * a sentiment, topic, and word respectively.
- * 
- * <p> This is a bad prior for the obvious solutions are <code>y_{ki} = 0</code>
- * and <code>y_{ji} = 0</code>.
+ * <code>beta_{jki} = exp((epsilon + y_{ki}) * (epsilon + y_{ji}) + y_{v}</code>
+ * where j, k, i denotes a sentiment, topic, and word respectively.
  * 
  * @author trung nguyen (trung.ngvan@gmail.com)
  */
@@ -32,6 +31,9 @@ public class Asc2 extends AbstractAsc {
     double[] yWord; // y[word]
   }
 
+  static final double epsilon = 0.00001;
+  double optimizationAccuracy = 0.5;
+
   /**
    * Creates a new ASC model.
    * 
@@ -42,15 +44,14 @@ public class Asc2 extends AbstractAsc {
    * @param sentiWordsList
    * @param alpha
    * @param gammas
-   * @param graph
+   * @param graphFile
    */
-  public Asc2(int numTopics, int numSenti, List<String> wordList,
-      List<OrderedDocument> documents, int numEnglishDocuments,
+  public Asc2(int numTopics, int numSenti, Vector<LocaleWord> wordList,
+      List<Document> documents, int numEnglishDocuments,
       List<TreeSet<Integer>> sentiWordsList, double alpha, double[] gammas,
-      SimilarityGraph graph) {
-    super(numTopics, numSenti, wordList, documents, numEnglishDocuments,
-        sentiWordsList, alpha, gammas, graph);
-    model = new Asc2Model();
+      String graphFile) {
+    super(new Asc2Model(), numTopics, numSenti, wordList, documents,
+        numEnglishDocuments, sentiWordsList, alpha, gammas, graphFile);
     probTable = new double[numTopics][numSenti];
     model.vars = new double[model.numSenti * model.numUniqueWords
         + model.numTopics * model.numUniqueWords + model.numUniqueWords];
@@ -83,12 +84,12 @@ public class Asc2 extends AbstractAsc {
   /**
    * Writes out some values of y.
    * 
-   * @param file
+   * @param dir
    * @throws IOException
    */
-  void writeSampleY(String file) throws IOException {
+  void writeSampleY(String dir) throws IOException {
     Asc2Model model = (Asc2Model) this.model;
-    PrintWriter out = new PrintWriter(file);
+    PrintWriter out = new PrintWriter(dir + "/y.txt");
     for (int i = 0; i < 100; i++) {
       int w = (int) (Math.random() * model.numUniqueWords);
       out.printf("\nWord no: %d", w);
@@ -103,6 +104,15 @@ public class Asc2 extends AbstractAsc {
       }
     }
     out.close();
+
+    // write word sentiment
+    out = new PrintWriter(new OutputStreamWriter(new FileOutputStream(dir
+        + "/wordSenti.csv"), "utf-8"));
+    for (int i = 0; i < model.numUniqueWords; i++) {
+      out.printf("%s,%.4f,%.4f\n", model.wordList.get(i),
+          model.ySentiment[0][i], model.ySentiment[1][i]);
+    }
+    out.close();
   }
 
   /**
@@ -113,14 +123,13 @@ public class Asc2 extends AbstractAsc {
     m.yTopic = new double[m.numTopics][m.numUniqueWords];
     m.ySentiment = new double[m.numSenti][m.numUniqueWords];
     m.yWord = new double[m.numUniqueWords];
-    initOldWay();
-    // initNewWay();
-    // initY0();
+//    initY0();
+    initNewWay();
   }
 
   void initNewWay() {
     Asc2Model m = (Asc2Model) model;
-    double commonTopicWord = 0.001;
+    double commonTopicWord = 0.1;
     for (int t = 0; t < m.numTopics; t++) {
       for (int w = 0; w < m.numUniqueWords; w++) {
         m.yTopic[t][w] = commonTopicWord;
@@ -131,12 +140,10 @@ public class Asc2 extends AbstractAsc {
     }
     for (int s = 0; s < m.numSenti; s++) {
       for (int w = 0; w < m.numUniqueWords; w++) {
-        if (m.sentiWordsList.get(s).contains(w)) {
-          m.ySentiment[s][w] = Math.log(0.001) - commonTopicWord;
-        } else if (m.sentiWordsList.get(1 - s).contains(w)) {
-          m.ySentiment[s][w] = Math.log(0.000001) - commonTopicWord;
+        if (m.sentiWordsList.get(1 - s).contains(w)) {
+          m.ySentiment[s][w] = -5;
         } else {
-          m.ySentiment[s][w] = Math.log(0.001) - commonTopicWord;
+          m.ySentiment[s][w] = 1;
         }
       }
     }
@@ -145,8 +152,8 @@ public class Asc2 extends AbstractAsc {
       for (int t = 0; t < m.numTopics; t++) {
         m.sumBeta[s][t] = 0;
         for (int w = 0; w < m.numUniqueWords; w++) {
-          m.beta[s][t][w] = Math.exp(m.yTopic[t][w] + m.ySentiment[s][w]
-              + m.yWord[w]);
+          m.beta[s][t][w] = Math.exp((m.yTopic[t][w] + epsilon)
+              * (m.ySentiment[s][w] + epsilon) + m.yWord[w]);
           m.sumBeta[s][t] += m.beta[s][t][w];
         }
       }
@@ -173,28 +180,7 @@ public class Asc2 extends AbstractAsc {
       for (int t = 0; t < m.numTopics; t++) {
         m.sumBeta[s][t] = 0;
         for (int w = 0; w < m.numUniqueWords; w++) {
-          m.beta[s][t][w] = 1.0;
-          m.sumBeta[s][t] += m.beta[s][t][w];
-        }
-      }
-    }
-  }
-
-  void initOldWay() {
-    Asc2Model m = (Asc2Model) model;
-    for (int s = 0; s < m.numSenti; s++) {
-      m.beta[s] = new double[m.numTopics][m.numUniqueWords];
-      for (int t = 0; t < m.numTopics; t++) {
-        m.sumBeta[s][t] = 0;
-        for (int w = 0; w < m.numUniqueWords; w++) {
-          // asymmetric beta
-          if (m.sentiWordsList.get(1 - s).contains(w)) {
-            m.beta[s][t][w] = 0.0000001;
-          } else {
-            m.beta[s][t][w] = 0.001;
-          }
-          // make beta[s][t][w] = exp(y(tw) + y(sw) + y(w)) where y(w) != 0
-          m.yWord[w] = Math.log(m.beta[s][t][w]);
+          m.beta[s][t][w] = Math.exp(epsilon * epsilon);
           m.sumBeta[s][t] += m.beta[s][t][w];
         }
       }
@@ -233,8 +219,8 @@ public class Asc2 extends AbstractAsc {
       for (int t = 0; t < m.numTopics; t++) {
         m.sumBeta[s][t] = 0;
         for (int w = 0; w < m.numUniqueWords; w++) {
-          m.beta[s][t][w] = Math.exp(m.yTopic[t][w] * m.ySentiment[s][w]
-              + m.yWord[w]);
+          m.beta[s][t][w] = Math.exp((m.yTopic[t][w] + epsilon)
+              * (m.ySentiment[s][w] + epsilon) + m.yWord[w]);
           m.sumBeta[s][t] += m.beta[s][t][w];
         }
       }
@@ -245,6 +231,8 @@ public class Asc2 extends AbstractAsc {
   public double computeFunction(double[] vars) throws InvalidArgumentException {
     Asc2Model m = (Asc2Model) model;
     // compute L_B = - log likelihood = -log p(w,z,s|alpha, beta)
+    // this never changes even if we changes the formula for beta because
+    // the computation is solely based on beta, not y.
     double negLogLikelihood = 0.0;
     for (int j = 0; j < m.numSenti; j++) {
       for (int k = 0; k < m.numTopics; k++) {
@@ -269,11 +257,12 @@ public class Asc2 extends AbstractAsc {
       // phi(i, iprime) = 1
       for (int iprime : neighbors) {
         for (int j = 0; j < m.numSenti; j++) {
-          for (int k = 0; k < m.numTopics; k++) {
-            term = m.yTopic[k][i] * m.ySentiment[j][i] - m.yTopic[k][iprime]
-                * m.ySentiment[j][iprime];
-            logPrior += term * term;
-          }
+          term = m.ySentiment[j][i] - m.ySentiment[j][iprime];
+          logPrior += term * term;
+        }
+        for (int k = 0; k < m.numTopics; k++) {
+          term = m.yTopic[k][i] - m.yTopic[k][iprime];
+          logPrior += term * term;
         }
       }
     }
@@ -291,43 +280,37 @@ public class Asc2 extends AbstractAsc {
   public double[] computeGradient(double[] vars)
       throws InvalidArgumentException {
     double[] grads = new double[vars.length];
-    double term, jk;
     Asc2Model m = (Asc2Model) model;
     double[][][] betaJki = new double[model.numSenti][model.numTopics][model.numUniqueWords];
-    double[][][] c = new double[model.numSenti][model.numTopics][model.numUniqueWords];
-    ArrayList<Integer> neighbors;
     // common beta terms for y_ki, y_ji and y_word i
     for (int j = 0; j < model.numSenti; j++) {
       for (int k = 0; k < model.numTopics; k++) {
-        jk = MathUtils.digamma(model.sumSTW[j][k] + model.sumBeta[j][k])
+        double jk = MathUtils.digamma(model.sumSTW[j][k] + model.sumBeta[j][k])
             - MathUtils.digamma(model.sumBeta[j][k]);
         for (int i = 0; i < model.numUniqueWords; i++) {
+          betaJki[j][k][i] = jk;
           if (model.matrixSWT[j].getValue(i, k) > 0) {
-            term = jk
-                + MathUtils.digamma(model.beta[j][k][i])
+            betaJki[j][k][i] += MathUtils.digamma(model.beta[j][k][i])
                 - MathUtils.digamma(model.beta[j][k][i]
                     + model.matrixSWT[j].getValue(i, k));
-          } else {
-            term = jk;
           }
-          betaJki[j][k][i] = m.beta[j][k][i] * term;
-          c[j][k][i] = betaJki[j][k][i];
-          neighbors = m.graph.getNeighbors(i);
-          for (int iprime : neighbors) {
-            c[j][k][i] += m.yTopic[k][i] * m.ySentiment[j][i]
-                - m.yTopic[k][iprime] * m.ySentiment[j][iprime];
-          }
+          betaJki[j][k][i] = betaJki[j][k][i] * m.beta[j][k][i];
         }
       }
     }
 
+    ArrayList<Integer> neighbors;
     // gradients of y_ki
     int idx = 0;
     for (int k = 0; k < m.numTopics; k++) {
       for (int i = 0; i < m.numUniqueWords; i++) {
         grads[idx] = 0;
         for (int j = 0; j < m.numSenti; j++) {
-          grads[idx] += c[j][k][i] * m.ySentiment[j][i];
+          grads[idx] += (epsilon + m.ySentiment[j][i]) * betaJki[j][k][i];
+        }
+        neighbors = m.graph.getNeighbors(i);
+        for (int iprime : neighbors) {
+          grads[idx] += m.yTopic[k][i] - m.yTopic[k][iprime];
         }
         idx++;
       }
@@ -338,7 +321,11 @@ public class Asc2 extends AbstractAsc {
       for (int i = 0; i < m.numUniqueWords; i++) {
         grads[idx] = 0;
         for (int k = 0; k < m.numTopics; k++) {
-          grads[idx] += c[j][k][i] * m.yTopic[k][i];
+          grads[idx] += (epsilon + m.yTopic[k][i]) * betaJki[j][k][i];
+        }
+        neighbors = m.graph.getNeighbors(i);
+        for (int iprime : neighbors) {
+          grads[idx] += m.ySentiment[j][i] - m.ySentiment[j][iprime];
         }
         idx++;
       }
@@ -356,5 +343,10 @@ public class Asc2 extends AbstractAsc {
     }
 
     return grads;
+  }
+
+  @Override
+  double getOptimizationAccuracy() {
+    return optimizationAccuracy;
   }
 }

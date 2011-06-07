@@ -10,7 +10,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.HashMap;
-import java.util.StringTokenizer;
+import java.util.HashSet;
+import java.util.Map.Entry;
 
 import edu.kaist.uilab.asc.stemmer.EnglishStemmer;
 import edu.kaist.uilab.asc.stemmer.FrenchStemmer;
@@ -132,19 +133,19 @@ public class Test {
       stem = line.substring(pos + 1);
       word = line.substring(0, pos);
       if (map.containsKey(stem)) {
-//        word = word + " " + map.get(stem);
+        // word = word + " " + map.get(stem);
       }
       map.put(stem, word);
     }
     in.close();
     return map;
   }
-  
+
   static void convertStemToWords() throws IOException {
-//  String dir = "C:/datasets/asc/reviews/ElectronicsReviews2/ElectronicsReviews2-Stemmed-InitY0(V2)-T15-S2-A0.10-I2000/2000";
-    String dir = "C:/datasets/asc/reviews/MovieReviews/MovieReviews-Stemmed-InitY0(V3)-T10-S2-A0.10-I2000/1200";
-//    String stemDir = "C:/datasets/asc/reviews/ElectronicsReviews2";
+//    String dir = "C:/datasets/asc/blogs/obama/(2)Stemmed-InitY0(V4)-T20-S2-A0.10-I2000(rf-0.10)/2000";
+    String dir = "C:/datasets/asc/reviews/MovieReviews/Stemmed-InitY0(V4)-T30-S2-A0.10-I2000(rf-0.10)/2000";
     String stemDir = "C:/datasets/asc/reviews/MovieReviews";
+    // String stemDir = "C:/datasets/asc/reviews/MovieReviews";
     stemToWords(dir + "/TopWords.csv", stemDir + "/Stem_en.txt", stemDir
         + "/Stem_fr.txt");
     stemToWords(dir + "/TopWordsByHalfTermScore.csv", stemDir + "/Stem_en.txt",
@@ -153,16 +154,93 @@ public class Test {
         stemDir + "/Stem_fr.txt");
   }
 
+  static void convertWordsToStems() throws IOException {
+    // Note that for MovieReviews dataset, SentiWords-0_fr.txt is encoded in ANSI
+    // but not utf-8
+    String dir = "C:/datasets/asc/blogs/obama";
+    Utils.wordsToStems(dir + "/SentiWords-0_en.txt", dir
+        + "/SentiStems-0_en.txt", "utf-8", new EnglishStemmer());
+    Utils.wordsToStems(dir + "/SentiWords-1_en.txt", dir
+        + "/SentiStems-1_en.txt", "utf-8", new EnglishStemmer());
+    Utils.wordsToStems(dir + "/SentiWords-0_fr.txt", dir
+        + "/SentiStems-0_fr.txt", "utf-8", new FrenchStemmer());
+    Utils.wordsToStems(dir + "/SentiWords-1_fr.txt", dir
+        + "/SentiStems-1_fr.txt", "utf-8", new FrenchStemmer());
+  }
+
+  /*
+   * Gets polarity words from the MPQA database and output to the specified
+   * file.
+   */
+  static void getPolarityWords(String output) throws Exception {
+    String docs = "C:/datasets/asc/mpqa.2.0/docs";
+    String annotations = "C:/datasets/asc/mpqa.2.0/man_anns";
+    String annotationFile = "gateman.mpqa.lre.2.0";
+    File dir = new File(docs);
+    HashMap<String, HashSet<String>> map = new HashMap<String, HashSet<String>>();
+    for (File dateDir : dir.listFiles()) {
+      String docName = dateDir.list()[0];
+      String docContent = TextFiles.readFile(dateDir.getPath() + "/" + docName);
+      BufferedReader in = new BufferedReader(new FileReader(annotations + "/"
+          + dateDir.getName() + "/" + docName + "/" + annotationFile));
+      String line, words;
+      String field[];
+      int pos, start, end;
+      while ((line = in.readLine()) != null) {
+        if (!line.startsWith("#")
+            && line.contains("polarity")
+            && (line.contains("GATE_expressive-subjectivity") || line
+                .contains("GATE_direct-subjective"))) {
+          field = line.split("\t");
+          pos = field[1].indexOf(",");
+          start = Integer.parseInt(field[1].substring(0, pos));
+          end = Integer.parseInt(field[1].substring(pos + 1));
+          words = docContent.substring(start, end);
+          String attributes = field[field.length - 1];
+          // find the substring polarity="xxx"
+          pos = attributes.indexOf("polarity");
+          start = attributes.indexOf("\"", pos);
+          end = attributes.indexOf("\"", start + 1) + 1;
+          String polarity = attributes.substring(start, end);
+          HashSet<String> set = map.get(polarity);
+          if (set == null) {
+            set = new HashSet<String>();
+            map.put(polarity, set);
+          }
+          for (String word : words.split(" ")) {
+            if (word.length() > 2) {
+              set.add(word);
+            }
+          }
+        }
+      }
+      in.close();
+    }
+    PrintWriter out = new PrintWriter(output);
+    for (Entry<String, HashSet<String>> entry : map.entrySet()) {
+      out.print(entry.getKey() + ",");
+      for (String word : entry.getValue()) {
+        out.printf("%s,", word);
+      }
+      out.println();
+    }
+    out.close();
+  }
+
   public static void main(String args[]) throws Exception {
-    convertStemToWords();
-//    String dir = "C:/datasets/asc/reviews/MovieReviews";
-//    Utils.wordsToStems(dir + "/SentiWords-0_en.txt", dir + "/SentiStems-0_en.txt",
-//        null, new EnglishStemmer());
-//    Utils.wordsToStems(dir + "/SentiWords-1_en.txt", dir + "/SentiStems-1_en.txt",
-//        null, new EnglishStemmer());
-//    Utils.wordsToStems(dir + "/SentiWords-0_fr.txt", dir + "/SentiStems-0_fr.txt",
-//        null, new FrenchStemmer());
-//    Utils.wordsToStems(dir + "/SentiWords-1_fr.txt", dir + "/SentiStems-1_fr.txt",
-//        null, new FrenchStemmer());    
+//    convertStemToWords();
+    int count[] = new int[2];
+    count[0] = 1;
+    count[1] = 1;
+    for (int i = 0; i < 1000; i++) {
+      int value = (int) (Math.random() * (count[0] + count[1]));
+      System.out.printf("%d, %d, %d\n", count[0], count[1], value);
+      int x = 0;
+      if (value >= count[0]) {
+        x = 1;
+      }
+      count[x]++;
+    }
+    System.out.println(count[0] + " " + count[1]);
   }
 }

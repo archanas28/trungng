@@ -30,14 +30,24 @@ public class SimilarityGraph implements Serializable {
    *        the text file which consists the list of vertices for this graph.
    *        Each line should contain two vertices separated by a space.
    */
-  @SuppressWarnings("unchecked")
   public SimilarityGraph(int numVertices, String edgeFile) {
+    this(numVertices);
+    initGraph(edgeFile);
+  }
+  
+  /**
+   * Default constructor
+   * 
+   * <p> Creates a graph with <code>numVertices</code> vertices and no edge.
+   * @param numVertices
+   */
+  @SuppressWarnings("unchecked")
+  public SimilarityGraph(int numVertices) {
     this.numVertices = numVertices;
     adj = new ArrayList[numVertices];
     for (int i = 0; i < numVertices; i++) {
       adj[i] = new ArrayList<Integer>();
     }
-    initGraph(edgeFile);
   }
   
   /**
@@ -45,7 +55,7 @@ public class SimilarityGraph implements Serializable {
    * 
    * @param file
    */
-  void initGraph(String file) {
+  public void initGraph(String file) {
     try {
       StringTokenizer tokenizer;
       String line;

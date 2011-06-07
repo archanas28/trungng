@@ -11,10 +11,10 @@ import java.util.Map;
 import java.util.TreeSet;
 import java.util.Vector;
 
-import edu.kaist.uilab.asc.data.OrderedDocument;
+import edu.kaist.uilab.asc.data.Document;
 import edu.kaist.uilab.asc.data.Sentence;
 import edu.kaist.uilab.asc.data.SentiWord;
-import edu.kaist.uilab.asc.data.Word;
+import edu.kaist.uilab.asc.data.SamplingWord;
 import edu.kaist.uilab.asc.opt.LBFGS;
 import edu.kaist.uilab.asc.opt.ObjectiveFunction;
 import edu.kaist.uilab.asc.prior.SimilarityGraph;
@@ -32,7 +32,6 @@ import edu.kaist.uilab.asc.util.IntegerMatrix;
  */
 public abstract class AbstractAsc implements ObjectiveFunction {
   AscModel model;
-  double optimizationAccuracy = 0.5;
   double[][] probTable;
   int startingIteration;
 
@@ -47,12 +46,12 @@ public abstract class AbstractAsc implements ObjectiveFunction {
    * @param sentiWordsList
    * @param alpha
    * @param gammas
-   * @param graph
+   * @param graphFile
    */
-  public AbstractAsc(int numTopics, int numSenti, List<String> wordList,
-      List<OrderedDocument> documents, int numEnglishDocuments,
-      List<TreeSet<Integer>> sentiWordsList, double alpha, double[] gammas,
-      SimilarityGraph graph) {
+  public AbstractAsc(AscModel model, int numTopics, int numSenti,
+      Vector<LocaleWord> wordList, List<Document> documents,
+      int numEnglishDocuments, List<TreeSet<Integer>> sentiWordsList,
+      double alpha, double[] gammas, String graphFile) {
     model.numTopics = numTopics;
     model.numSenti = numSenti;
     model.numUniqueWords = wordList.size();
@@ -63,7 +62,9 @@ public abstract class AbstractAsc implements ObjectiveFunction {
     model.sentiWordsList = sentiWordsList;
     model.alpha = alpha;
     model.gammas = gammas;
-    model.graph = graph;
+    model.graphFile = graphFile;
+    model.graph = new SimilarityGraph(model.numUniqueWords);
+    this.model = model;
   }
 
   /**
@@ -71,6 +72,13 @@ public abstract class AbstractAsc implements ObjectiveFunction {
    */
   public AbstractAsc() {
   }
+
+  /**
+   * Returns the optimization accuracy for this model.
+   * 
+   * @return
+   */
+  abstract double getOptimizationAccuracy();
 
   /**
    * Converts the variables used in optimization to the specific internal
@@ -138,43 +146,49 @@ public abstract class AbstractAsc implements ObjectiveFunction {
           model.numTopics);
     }
     model.matrixDS = new IntegerMatrix(model.numDocuments, model.numSenti);
+    initDocs(0, model.numEnglishDocuments, randomInit);
+  }
 
-    for (OrderedDocument currentDoc : model.documents) {
-      int docNo = currentDoc.getDocNo();
-      for (Sentence sentence : currentDoc.getSentences()) {
+  void initDocs(int from, int to, boolean randomInit) {
+    for (int docNo = from; docNo < to; docNo++) {
+      Document document = model.documents.get(docNo);
+      for (Sentence sentence : document.getSentences()) {
         int newSenti = -1;
         int numSentenceSenti = 0;
-        for (Word sWord : sentence.getWords()) {
+        for (SamplingWord sWord : sentence.getWords()) {
           SentiWord word = (SentiWord) sWord;
           int wordNo = word.getWordNo();
           for (int s = 0; s < model.sentiWordsList.size(); s++) {
             if (model.sentiWordsList.get(s).contains(wordNo)) {
               if (numSentenceSenti == 0 || s != newSenti)
                 numSentenceSenti++;
-              word.lexicon = s;
+              word.priorSentiment = s;
               newSenti = s;
             }
           }
         }
-        sentence.numSenti = numSentenceSenti;
         // if sentiment of the sentence is not determined, get random sentiment
-        if (randomInit || sentence.numSenti != 1) {
+        if (randomInit || numSentenceSenti != 1) {
           newSenti = (int) (Math.random() * model.numSenti);
         }
         if (numSentenceSenti <= 1) {
           int newTopic = (int) (Math.random() * model.numTopics);
           sentence.setTopic(newTopic);
           sentence.setSenti(newSenti);
-          for (Word sWord : sentence.getWords()) {
+          for (SamplingWord sWord : sentence.getWords()) {
             ((SentiWord) sWord).setSentiment(newSenti);
             sWord.setTopic(newTopic);
-            model.matrixSWT[newSenti].incValue(sWord.wordNo, newTopic);
+            model.matrixSWT[newSenti].incValue(sWord.getWordNo(), newTopic);
             model.sumSTW[newSenti][newTopic]++;
           }
           model.matrixSDT[newSenti].incValue(docNo, newTopic);
           model.matrixDS.incValue(docNo, newSenti);
           model.sumDST[docNo][newSenti]++;
           model.sumDS[docNo]++;
+        } else {
+          // // TODO(trung): this is added to eliminate all sentences with > 2
+          // sentiments!!
+          sentence.setSenti(-1);
         }
       }
     }
@@ -193,7 +207,6 @@ public abstract class AbstractAsc implements ObjectiveFunction {
    *          interval to optimize beta over y
    * @param numThreads
    *          how many threads to run
-   * @throws Exception
    */
   public void gibbsSampling(int numIters, int savingInterval, int burnIn,
       int optimizationInterval, int numThreads) throws IOException {
@@ -209,16 +222,27 @@ public abstract class AbstractAsc implements ObjectiveFunction {
     for (; iter < numIters; iter++) {
       realIter = iter + 1;
       // sampling over english documents in the first half of iterations
-      int maxDocNo = iter <= numIters / 2 ? model.numEnglishDocuments
-          : model.numDocuments;
-      for (int docNo = 0; docNo < maxDocNo; docNo++) {
+      int from, to;
+      if (iter * 2 < numIters) {
+        from = 0;
+        to = model.numEnglishDocuments;
+      } else {
+        // from = model.numEnglishDocuments;
+        from = 0;
+        to = model.numDocuments;
+        if (iter * 2 == numIters) {
+          initDocs(model.numEnglishDocuments, model.numDocuments, false);
+          model.graph.initGraph(model.graphFile);
+        }
+      }
+      for (int docNo = from; docNo < to; docNo++) {
         sampleForDoc(model.documents.get(docNo));
       }
       if (realIter % 50 == 0) {
         System.out.println();
       }
       System.out.printf(" %d ", iter);
-      if (realIter > burnIn && savingInterval > 0
+      if (realIter * 2 > numIters && savingInterval > 0
           && realIter % savingInterval == 0) {
         saveModel(realIter);
         writeModelOutput(realIter);
@@ -270,8 +294,8 @@ public abstract class AbstractAsc implements ObjectiveFunction {
       try {
         LBFGS.lbfgs(model.vars.length, numCorrections, model.vars,
             computeFunction(model.vars), computeGradient(model.vars),
-            supplyDiag, diag, iprint, optimizationAccuracy, machinePrecision,
-            iflag);
+            supplyDiag, diag, iprint, getOptimizationAccuracy(),
+            machinePrecision, iflag);
         variablesToY();
         updateBeta();
       } catch (Exception e) {
@@ -286,26 +310,26 @@ public abstract class AbstractAsc implements ObjectiveFunction {
    * 
    * @param currentDoc
    */
-  private void sampleForDoc(OrderedDocument currentDoc) {
+  private void sampleForDoc(Document currentDoc) {
     int docNo = currentDoc.getDocNo();
     for (Sentence sentence : currentDoc.getSentences()) {
       if (sentence.getSenti() == -1) {
         continue;
       }
-      Map<Word, Integer> wordCnt = sentence.getWordCnt();
-      double sumProb = 0;
       int oldTopic = sentence.getTopic();
       int oldSenti = sentence.getSenti();
       model.matrixSDT[oldSenti].decValue(docNo, oldTopic);
       model.matrixDS.decValue(docNo, oldSenti);
       model.sumDST[docNo][oldSenti]--;
       model.sumDS[docNo]--;
-      for (Word sWord : sentence.getWords()) {
-        model.matrixSWT[oldSenti].decValue(sWord.wordNo, oldTopic);
+      for (SamplingWord sWord : sentence.getWords()) {
+        model.matrixSWT[oldSenti].decValue(sWord.getWordNo(), oldTopic);
         model.sumSTW[oldSenti][oldTopic]--;
       }
 
       // Sampling
+      Map<SamplingWord, Integer> wordCnt = sentence.getWordCnt();
+      double sumProb = 0;
       for (int si = 0; si < model.numSenti; si++) {
         if (trim(wordCnt, si)) {
           // forced sentiment orientation (by assigning 0 probability to the
@@ -313,7 +337,8 @@ public abstract class AbstractAsc implements ObjectiveFunction {
           // "excellent", then the probability of being assigned sentiment
           // negative is 0.
           for (int ti = 0; ti < model.numTopics; ti++) {
-            probTable[ti][si] = 0;
+            probTable[ti][si] = Math.exp(-80);
+            sumProb += probTable[ti][si];
           }
         } else {
           for (int ti = 0; ti < model.numTopics; ti++) {
@@ -324,10 +349,10 @@ public abstract class AbstractAsc implements ObjectiveFunction {
             double beta0 = model.sumSTW[si][ti] + model.sumBeta[si][ti];
             int m0 = 0;
             double expectTSW = 1;
-            for (Word sWord : wordCnt.keySet()) {
+            for (SamplingWord sWord : wordCnt.keySet()) {
               SentiWord word = (SentiWord) sWord;
-              double betaw = model.matrixSWT[si].getValue(word.wordNo, ti)
-                  + model.beta[si][ti][word.wordNo];
+              double betaw = model.matrixSWT[si].getValue(word.getWordNo(), ti)
+                  + model.beta[si][ti][word.getWordNo()];
               int cnt = wordCnt.get(word);
               for (int m = 0; m < cnt; m++) {
                 expectTSW *= (betaw + m) / (beta0 + m0);
@@ -338,25 +363,27 @@ public abstract class AbstractAsc implements ObjectiveFunction {
                 / (model.sumDST[docNo][si] + model.sumAlpha)
                 * (model.matrixDS.getValue(docNo, si) + model.gammas[si])
                 * expectTSW;
+            // TODO(trung): some model omits sumBeta because it is constant
+            // factor in the model
+            // but here that cannot be the case
             sumProb += probTable[ti][si];
           }
         }
       }
 
-      int newTopic = 0, newSenti = 0;
+      int newTopic = -1, newSenti = -1;
       double randNo = Math.random() * sumProb;
       double tmpSumProb = 0;
       boolean found = false;
       for (int ti = 0; ti < model.numTopics; ti++) {
         for (int si = 0; si < model.numSenti; si++) {
           tmpSumProb += probTable[ti][si];
-          if (randNo <= tmpSumProb) {
+          if (randNo < tmpSumProb) {
             newTopic = ti;
             newSenti = si;
             found = true;
-          }
-          if (found)
             break;
+          }
         }
         if (found)
           break;
@@ -364,11 +391,11 @@ public abstract class AbstractAsc implements ObjectiveFunction {
 
       sentence.setTopic(newTopic);
       sentence.setSenti(newSenti);
-      for (Word sWord : sentence.getWords()) {
+      for (SamplingWord sWord : sentence.getWords()) {
         SentiWord word = (SentiWord) sWord;
         word.setTopic(newTopic);
         word.setSentiment(newSenti);
-        model.matrixSWT[newSenti].incValue(word.wordNo, newTopic);
+        model.matrixSWT[newSenti].incValue(word.getWordNo(), newTopic);
         model.sumSTW[newSenti][newTopic]++;
       }
       model.matrixSDT[newSenti].incValue(docNo, newTopic);
@@ -379,11 +406,11 @@ public abstract class AbstractAsc implements ObjectiveFunction {
   }
 
   // Check to see if the sentence contains one sentiment (seed) word
-  private boolean trim(Map<Word, Integer> wordCnt, int si) {
+  private boolean trim(Map<SamplingWord, Integer> wordCnt, int si) {
     // TODO(trung): uncomment if see worse behavior
-    for (Word sWord : wordCnt.keySet()) {
+    for (SamplingWord sWord : wordCnt.keySet()) {
       SentiWord word = (SentiWord) sWord;
-      if (word.lexicon != null && word.lexicon != si) {
+      if (word.priorSentiment != null && word.priorSentiment != si) {
         return true;
       }
     }
@@ -419,7 +446,7 @@ public abstract class AbstractAsc implements ObjectiveFunction {
       DoubleMatrix[] phi = Inference.calculatePhi(model.matrixSWT,
           model.sumSTW, model.beta, model.sumBeta);
       writePhi(phi, dir + "/Phi.csv");
-      writeSampleY(dir + "/y.txt");
+      writeSampleY(dir);
       printTopWords(phi, dir + "/TopWords.csv");
       printTopWords(
           buildTermScoreMatrix(phi, model.numTopics * model.numSenti), dir
@@ -428,13 +455,84 @@ public abstract class AbstractAsc implements ObjectiveFunction {
           + "/TopWordsByHalfTermScore.csv");
       writeTheta(Inference.calculateTheta(model.matrixSDT, model.sumDST,
           model.alpha, model.sumAlpha), dir + "/Theta.csv");
-      Inference.calculatePi(model.matrixDS, model.sumDS, model.gammas,
-          model.sumGamma).writeMatrixToCSVFile(dir + "/Pi.csv");
+      DoubleMatrix pi = Inference.calculatePi(model.matrixDS, model.sumDS,
+          model.gammas, model.sumGamma);
+      pi.writeMatrixToCSVFile(dir + "/Pi.csv");
+      writeClassificationSummary(pi, dir + "/classification.txt");
       System.err.println("\nModel saved and written to " + dir);
     } catch (IOException e) {
       System.err.println("Error writing model output");
       e.printStackTrace();
     }
+  }
+
+  void writeClassificationSummary(DoubleMatrix pi, String file)
+      throws IOException {
+    // get classification accuracy for english documents
+    int observedSenti, inferedSenti, numCorrect = 0;
+    int numNotRated = 0, numNeutral = 0, numPos = 0, numSubjective = 0;
+    for (int i = 0; i < model.numEnglishDocuments; i++) {
+      Document document = model.documents.get(i);
+      double rating = document.getRating();
+      if (rating != 3.0 && rating != -1.0) {
+        numSubjective++;
+        observedSenti = rating > 3.0 ? 0 : 1;
+        inferedSenti = pi.getValue(i, 0) > pi.getValue(i, 1) ? 0 : 1;
+        if (observedSenti == inferedSenti) {
+          numCorrect++;
+        }
+        if (observedSenti == 0) {
+          numPos++;
+        }
+      } else {
+        if (rating == 3.0) {
+          numNeutral++;
+        } else {
+          numNotRated++;
+        }
+      }
+    }
+    PrintWriter out = new PrintWriter(file);
+    out.println("English reviews:");
+    out.printf("\tSubjective:\t%d\tpos = %d(%.2f)\n", numSubjective, numPos,
+        ((double) numPos) / numSubjective);
+    out.printf("\tNeutral:\t%d\n", numNeutral);
+    out.printf("\tNot rated:\t%d\n", numNotRated);
+    out.printf("\tAccuracy:\t%.5f\n", ((double) numCorrect) / numSubjective);
+    out.println("-------------------");
+    numCorrect = 0;
+    numNotRated = 0;
+    numNeutral = 0;
+    numSubjective = 0;
+    numPos = 0;
+    for (int i = model.numEnglishDocuments; i < model.numDocuments; i++) {
+      Document document = model.documents.get(i);
+      double rating = document.getRating();
+      if (rating != 3.0 && rating != -1.0) {
+        numSubjective++;
+        observedSenti = rating > 3.0 ? 0 : 1;
+        inferedSenti = pi.getValue(i, 0) > pi.getValue(i, 1) ? 0 : 1;
+        if (observedSenti == inferedSenti) {
+          numCorrect++;
+        }
+        if (observedSenti == 0) {
+          numPos++;
+        }
+      } else {
+        if (rating == 3.0) {
+          numNeutral++;
+        } else {
+          numNotRated++;
+        }
+      }
+    }
+    out.println("French reviews:");
+    out.printf("\tSubjective:\t%d\tpos = %d(%.2f)\n", numSubjective, numPos,
+        ((double) numPos) / numSubjective);
+    out.printf("\tNeutral:\t%d\n", numNeutral);
+    out.printf("\tNot rated:\t%d\n", numNotRated);
+    out.printf("\tAccuracy:\t%.5f\n", ((double) numCorrect) / numSubjective);
+    out.close();
   }
 
   void writeTheta(double[][][] theta, String file) throws IOException {
@@ -443,8 +541,8 @@ public abstract class AbstractAsc implements ObjectiveFunction {
       for (int t = 0; t < model.numTopics; t++)
         out.print("S" + s + "-T" + t + ",");
     out.println();
-    for (int d = 0; d < model.numDocuments; d++) {
-      for (int s = 0; s < model.numSenti; s++) {
+    for (int s = 0; s < model.numSenti; s++) {
+      for (int d = 0; d < model.numDocuments; d++) {
         for (int t = 0; t < model.numTopics; t++) {
           out.print(theta[s][d][t] + ",");
         }

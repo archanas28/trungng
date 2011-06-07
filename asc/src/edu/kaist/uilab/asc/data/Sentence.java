@@ -14,19 +14,25 @@ import java.util.Vector;
 public class Sentence implements Serializable {
   private static final long serialVersionUID = 6117469973757059170L;
   
-  private Vector<Word> words;
-  private TreeMap<Word, Integer> wordCnt; // Somehow HashMap doesn't work
+  private Vector<SamplingWord> words;
+  private TreeMap<SamplingWord, Integer> wordCnt; // Somehow HashMap doesn't work
                                           // correctly
-  private int topic;
-  private int senti;
-  public int numSenti;
+  private int topic = -1;
+  private int senti = -1;
 
   public Sentence() {
-    words = new Vector<Word>();
-    wordCnt = new TreeMap<Word, Integer>();
+    words = new Vector<SamplingWord>();
+    wordCnt = new TreeMap<SamplingWord, Integer>();
   }
 
-  public void addWord(Word word) {
+  /**
+   * Adds a word to this sentence.
+   * 
+   * <p> This automatically updates the count for the word.
+   * 
+   * @param word
+   */
+  public void addWord(SamplingWord word) {
     words.add(word);
     Integer cnt = wordCnt.get(word);
     if (cnt == null)
@@ -35,11 +41,11 @@ public class Sentence implements Serializable {
       wordCnt.put(word, cnt + 1);
   }
 
-  public Vector<Word> getWords() {
+  public Vector<SamplingWord> getWords() {
     return words;
   }
 
-  public TreeMap<Word, Integer> getWordCnt() {
+  public TreeMap<SamplingWord, Integer> getWordCnt() {
     return wordCnt;
   }
 

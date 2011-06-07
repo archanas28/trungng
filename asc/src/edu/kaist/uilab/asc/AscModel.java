@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.TreeSet;
 
-import edu.kaist.uilab.asc.data.OrderedDocument;
+import edu.kaist.uilab.asc.data.Document;
 import edu.kaist.uilab.asc.prior.SimilarityGraph;
 import edu.kaist.uilab.asc.util.IntegerMatrix;
 
@@ -26,9 +26,10 @@ public class AscModel implements Serializable {
   int numSenti; // S
   int numDocuments;
   int numEnglishDocuments;
-  List<OrderedDocument> documents;
-  List<String> wordList;
+  List<Document> documents;
+  List<LocaleWord> wordList;
   SimilarityGraph graph;
+  String graphFile;
 
   int numProbWords = 100;
   double alpha;

@@ -1,5 +1,6 @@
 package edu.kaist.uilab.asc;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeSet;
@@ -11,19 +12,21 @@ import edu.kaist.uilab.asc.util.InvalidArgumentException;
 
 /**
  * Asc implementation with the following prior:
- * <code>beta_{jki} = exp(y_{ki} + y_{ji} + y_{v}</code> where j, k, i denotes
- * a sentiment, topic, and word respectively.
- * 
- * <p> This does not seem to be a good prior because in many cases,
- * <code>y_{ji}</code> dominates the term <code>y_{ki} + y_{ji}</code>, hence
- * making the <code>ith</code> word appear in many topics.
+ * <code>beta_{jki} = exp(y_{ki} + 0.1y_{ji} + y_{v}</code> where j, k, i
+ * denotes a sentiment, topic, and word respectively.
+ * <p>
+ * This adds a multiplicative constant to <code>y_{ji}</code> to limit their
+ * contribution to the value of <code>beta_{jki}</code> as in {@link Asc3}.
  * 
  * @author trung nguyen (trung.ngvan@gmail.com)
  */
-public class Asc3 extends Asc2 {
+public class Asc4 extends Asc2 {
+
+  private final double reducingFactor = 0.1;
+  private double optimizationAccuracy = 5;
 
   /**
-   * Creates a new Asc3 model.
+   * Creates a new Asc4 model.
    * 
    * @param numTopics
    * @param numSenti
@@ -34,7 +37,7 @@ public class Asc3 extends Asc2 {
    * @param gammas
    * @param graphFile
    */
-  public Asc3(int numTopics, int numSenti, Vector<LocaleWord> wordList,
+  public Asc4(int numTopics, int numSenti, Vector<LocaleWord> wordList,
       List<Document> documents, int numEnglishDocuments,
       List<TreeSet<Integer>> sentiWordsList, double alpha, double[] gammas,
       String graphFile) {
@@ -48,24 +51,35 @@ public class Asc3 extends Asc2 {
    * 
    * @param savedModel
    */
-  public Asc3(String savedModel, int iter) {
+  public Asc4(String savedModel, int iter) {
     super(savedModel, iter);
   }
 
+  @Override
+  public void setOutputDir(String dir) {
+    dir = String.format("%s(rf-%.2f)", dir, reducingFactor);
+    model.outputDir = dir;
+    new File(dir).mkdir();
+  }
+
+  @Override
+  double getOptimizationAccuracy() {
+    return optimizationAccuracy;
+  }
+  
   @Override
   void initOptimizationVariables() {
     Asc2Model m = (Asc2Model) model;
     m.yTopic = new double[m.numTopics][m.numUniqueWords];
     m.ySentiment = new double[m.numSenti][m.numUniqueWords];
     m.yWord = new double[m.numUniqueWords];
-    initOldWay();
-    // initNewWay();
-    // initY0();
+//    initNewWay();
+     initY0();
   }
 
   void initNewWay() {
     Asc2Model m = (Asc2Model) model;
-    double commonTopicWord = 0.001;
+    double commonTopicWord = 0.0;
     for (int t = 0; t < m.numTopics; t++) {
       for (int w = 0; w < m.numUniqueWords; w++) {
         m.yTopic[t][w] = commonTopicWord;
@@ -76,12 +90,10 @@ public class Asc3 extends Asc2 {
     }
     for (int s = 0; s < m.numSenti; s++) {
       for (int w = 0; w < m.numUniqueWords; w++) {
-        if (m.sentiWordsList.get(s).contains(w)) {
-          m.ySentiment[s][w] = Math.log(0.001) - commonTopicWord;
-        } else if (m.sentiWordsList.get(1 - s).contains(w)) {
-          m.ySentiment[s][w] = Math.log(0.000001) - commonTopicWord;
+        if (m.sentiWordsList.get(1 - s).contains(w)) {
+          m.ySentiment[s][w] = -25;
         } else {
-          m.ySentiment[s][w] = Math.log(0.001) - commonTopicWord;
+          m.ySentiment[s][w] = 2;
         }
       }
     }
@@ -90,8 +102,8 @@ public class Asc3 extends Asc2 {
       for (int t = 0; t < m.numTopics; t++) {
         m.sumBeta[s][t] = 0;
         for (int w = 0; w < m.numUniqueWords; w++) {
-          m.beta[s][t][w] = Math.exp(m.yTopic[t][w] + m.ySentiment[s][w]
-              + m.yWord[w]);
+          m.beta[s][t][w] = Math.exp(m.yTopic[t][w] + reducingFactor
+              * m.ySentiment[s][w] + m.yWord[w]);
           m.sumBeta[s][t] += m.beta[s][t][w];
         }
       }
@@ -125,27 +137,6 @@ public class Asc3 extends Asc2 {
     }
   }
 
-  void initOldWay() {
-    Asc2Model m = (Asc2Model) model;
-    for (int s = 0; s < m.numSenti; s++) {
-      m.beta[s] = new double[m.numTopics][m.numUniqueWords];
-      for (int t = 0; t < m.numTopics; t++) {
-        m.sumBeta[s][t] = 0;
-        for (int w = 0; w < m.numUniqueWords; w++) {
-          // asymmetric beta
-          if (m.sentiWordsList.get(1 - s).contains(w)) {
-            m.beta[s][t][w] = 0.0000001;
-          } else {
-            m.beta[s][t][w] = 0.001;
-          }
-          // make beta[s][t][w] = exp(y(tw) + y(sw) + y(w)) where y(w) != 0
-          m.yWord[w] = Math.log(m.beta[s][t][w]);
-          m.sumBeta[s][t] += m.beta[s][t][w];
-        }
-      }
-    }
-  }
-
   @Override
   void updateBeta() {
     Asc2Model m = (Asc2Model) model;
@@ -153,7 +144,7 @@ public class Asc3 extends Asc2 {
       for (int t = 0; t < m.numTopics; t++) {
         m.sumBeta[s][t] = 0;
         for (int w = 0; w < m.numUniqueWords; w++) {
-          m.beta[s][t][w] = Math.exp(m.yTopic[t][w] + m.ySentiment[s][w]
+          m.beta[s][t][w] = Math.exp(m.yTopic[t][w] + reducingFactor * m.ySentiment[s][w]
               + m.yWord[w]);
           m.sumBeta[s][t] += m.beta[s][t][w];
         }
@@ -253,6 +244,7 @@ public class Asc3 extends Asc2 {
         for (int k = 0; k < m.numTopics; k++) {
           grads[idx] += betaJki[j][k][i];
         }
+        grads[idx] *= reducingFactor;
         neighbors = m.graph.getNeighbors(i);
         for (int iprime : neighbors) {
           grads[idx] += m.ySentiment[j][i] - m.ySentiment[j][iprime];

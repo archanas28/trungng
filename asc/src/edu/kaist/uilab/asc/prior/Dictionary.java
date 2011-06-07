@@ -10,6 +10,7 @@ import java.io.PrintWriter;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Map;
 import java.util.StringTokenizer;
 
@@ -32,12 +33,11 @@ public class Dictionary {
   static final String EN = "en";
   static final String FR = "fr";
   static final String GOOGLE_TRANSLATE = "https://www.googleapis.com/language/translate/v2?"
-      + "key=AIzaSyDK00YAqjrlyeJfQ4DRBD5av-fmX-AjI5M&q=";
+      + "key=AIzaSyCjv-p8oZSMwuxOv1Al49pTlDhtNOHZUro&q=";
   private static final String UTF8 = "utf-8";
 
   /**
-   * Removes duplication in the file retrieved from the source used by James
-   * Petterson.
+   * Makes the lines of the specified file distinguished.
    * 
    * @param file
    * @param newFile
@@ -78,25 +78,26 @@ public class Dictionary {
    */
   public static void langToLang(String srcLangFile, String srcLang,
       String targetLang, String outputFile) throws IOException {
-    BufferedReader in;
-    HashSet<String> existingWords = getExistingWords(outputFile,
-        EN.equals(srcLang));
     PrintWriter out = null;
     try {
-      in = new BufferedReader(new InputStreamReader(new FileInputStream(
-          srcLangFile), UTF8));
+      BufferedReader in = new BufferedReader(new InputStreamReader(
+          new FileInputStream(srcLangFile), UTF8));
       out = new PrintWriter(new OutputStreamWriter(new FileOutputStream(
           outputFile, true), UTF8));
       String word, translatedWord;
       HttpClient httpClient = new DefaultHttpClient();
-      while ((word = in.readLine()) != null && !existingWords.contains(word)) {
+      while ((word = in.readLine()) != null) {
         translatedWord = translatesWord(word, srcLang, targetLang, httpClient);
         if (translatedWord != null) {
           // always write english word first
           if (EN.equals(srcLang)) {
+            translatedWord = translatedWord.toLowerCase(Locale.FRENCH).replace(
+                "&#39;", "'");
             out.printf("%s\t%s\n", word, translatedWord);
+            System.out.println(word + " " + translatedWord);
           } else {
-            out.printf("%s\t%s\n", translatedWord, word);
+            out.printf("%s\t%s\n", translatedWord.toLowerCase(), word);
+            System.out.println(translatedWord + " " + word);
           }
         }
       }
@@ -112,11 +113,25 @@ public class Dictionary {
     }
   }
 
+  static void getStems(String dictFile, HashSet<String> srcStems,
+      HashSet<String> targetStems) throws IOException {
+    BufferedReader in = new BufferedReader(new InputStreamReader(
+        new FileInputStream(dictFile), UTF8));
+    String line;
+    while ((line = in.readLine()) != null) {
+      String[] stem = line.split("\t");
+      srcStems.add(stem[0]);
+      targetStems.add(stem[1]);
+    }
+    in.close();
+  }
+
   /**
    * Makes a dictionary for the pair of words.
    * <p>
    * New pair of words will be appended to the provided dictionary file.
    * 
+   * @param wordCnt
    * @param enStemFile
    *          the stem file (english language) as produced by the parser. Each
    *          line of this file must contains two words separated by space, an
@@ -129,61 +144,92 @@ public class Dictionary {
    * @param dictFile
    *          the dictionary file.
    */
-  public static void make(String enStemFile, String secondStemFile,
-      String secondLanguage, String dictFile) throws IOException {
-    BufferedReader in;
+  public static void make(HashMap<String, Integer> wordCnt, String enStemFile,
+      String secondStemFile, String secondLanguage, String dictFile)
+      throws IOException {
+    HashSet<String> enStems = new HashSet<String>();
+    HashSet<String> frStems = new HashSet<String>();
+    getStems(dictFile, enStems, frStems);
     PrintWriter out = new PrintWriter(new OutputStreamWriter(
         new FileOutputStream(dictFile, true), UTF8));
     EnglishStemmer enStemmer = new EnglishStemmer();
     FrenchStemmer frStemmer = new FrenchStemmer();
     // english stem file
-    String line, word, translatedWord;
+    String line, word, translatedWord, stem;
     HttpClient httpClient = new DefaultHttpClient();
-    int pos;
-    in = new BufferedReader(new InputStreamReader(new FileInputStream(
-        enStemFile), UTF8));
+    BufferedReader in = new BufferedReader(new InputStreamReader(
+        new FileInputStream(enStemFile), UTF8));
     while ((line = in.readLine()) != null) {
-      line = line.trim();
-      pos = line.indexOf(" ");
-      if (pos >= 0) {
-        word = line.substring(0, pos);
+      int pos = line.trim().indexOf(" ");
+      if (pos <= 0)
+        continue;
+      word = line.substring(0, pos);
+      stem = enStemmer.getStem(word);
+      if (wordCnt.containsKey(stem) && !enStems.contains(stem)) {
+        wordCnt.remove(stem); // translate a word only once
+        boolean negation = false;
+        if (word.startsWith("not_")) {
+          negation = true;
+          word = word.substring(4);
+        }
         try {
           translatedWord = translatesWord(word, EN, secondLanguage, httpClient);
           if (translatedWord != null) {
-            out.printf("%s\t%s\n", enStemmer.getStem(word),
-                frStemmer.getStem(translatedWord));
-            System.out.printf("%s\t%s\n", enStemmer.getStem(word),
-                frStemmer.getStem(translatedWord));
+            translatedWord = translatedWord.toLowerCase(Locale.FRENCH).replace(
+                "&#39;", "'");
+            if (negation) {
+              out.printf("%s\tpas_%s\n", stem,
+                  frStemmer.getStem(translatedWord));
+              System.out.printf("%s\tpas_%s\n", stem,
+                  frStemmer.getStem(translatedWord));
+            } else {
+              out.printf("%s\t%s\n", stem, frStemmer.getStem(translatedWord));
+              System.out.printf("%s\t%s\n", stem,
+                  frStemmer.getStem(translatedWord));
+            }
           }
         } catch (Exception e) {
-          // do nothing
+          System.err.println(e.getMessage());
         }
       }
     }
     in.close();
 
     // french stem file
-    // TODO(trung): duplicated code
-//    in = new BufferedReader(new InputStreamReader(new FileInputStream(
-//        secondStemFile), UTF8));
-//    while ((line = in.readLine()) != null) {
-//      line = line.trim();
-//      pos = line.indexOf(" ");
-//      if (pos >= 0) {
-//        word = line.substring(0, pos);
-//        try {
-//          translatedWord = translatesWord(word, secondLanguage, EN, httpClient);
-//          if (translatedWord != null) {
-//            out.printf("%s\t%s\n", enStemmer.getStem(translatedWord),
-//                frStemmer.getStem(word));
-//            System.out.printf("%s\t%s\n", enStemmer.getStem(translatedWord),
-//                frStemmer.getStem(word));
-//          }
-//        } catch (Exception e) {
-//          // do nothing
-//        }
-//      }
-//    }
+    in = new BufferedReader(new InputStreamReader(new FileInputStream(
+        secondStemFile), UTF8));
+    while ((line = in.readLine()) != null) {
+      int pos = line.trim().indexOf(" ");
+      if (pos <= 0)
+        continue;
+      word = line.substring(0, pos);
+      stem = frStemmer.getStem(word);
+      if (wordCnt.containsKey(stem) && !frStems.contains(stem)) {
+        wordCnt.remove(stem); // translate a word only once
+        boolean negation = false;
+        if (word.startsWith("pas_")) {
+          negation = true;
+          word = word.substring(4);
+        }
+        try {
+          translatedWord = translatesWord(word, secondLanguage, EN, httpClient);
+          if (translatedWord != null) {
+            if (negation) {
+              out.printf("not_%s\t%s\n", enStemmer.getStem(translatedWord),
+                  stem);
+              System.out.printf("not_%s\t%s\n",
+                  enStemmer.getStem(translatedWord), stem);
+            } else {
+              out.printf("%s\t%s\n", enStemmer.getStem(translatedWord), stem);
+              System.out.printf("%s\t%s\n", enStemmer.getStem(translatedWord),
+                  stem);
+            }
+          }
+        } catch (Exception e) {
+          System.err.println(e.getMessage());
+        }
+      }
+    }
     httpClient.getConnectionManager().shutdown();
     in.close();
     out.close();
@@ -196,6 +242,7 @@ public class Dictionary {
    * @return
    * @throws IOException
    */
+  @SuppressWarnings("unused")
   private static HashMap<String, String> getStemMap(String stemFile)
       throws IOException {
     HashMap<String, String> map = new HashMap<String, String>();
@@ -224,24 +271,29 @@ public class Dictionary {
    *          language
    * @return
    */
+  @SuppressWarnings("unused")
   private static HashSet<String> getExistingWords(String dictFile,
-      boolean getEnglish) throws IOException {
+      boolean getEnglish) {
     HashSet<String> set = new HashSet<String>();
-    BufferedReader in = new BufferedReader(new InputStreamReader(
-        new FileInputStream(dictFile), UTF8));
-    String line;
-    int tabPosition;
-    String word;
-    while ((line = in.readLine()) != null) {
-      tabPosition = line.indexOf("\t");
-      if (getEnglish) {
-        word = line.substring(0, tabPosition);
-      } else {
-        word = line.substring(tabPosition + 1);
+    try {
+      BufferedReader in = new BufferedReader(new InputStreamReader(
+          new FileInputStream(dictFile), UTF8));
+      String line;
+      int tabPosition;
+      String word;
+      while ((line = in.readLine()) != null) {
+        tabPosition = line.indexOf("\t");
+        if (getEnglish) {
+          word = line.substring(0, tabPosition);
+        } else {
+          word = line.substring(tabPosition + 1);
+        }
+        set.add(word);
       }
-      set.add(word);
+      in.close();
+    } catch (Exception e) {
+      e.printStackTrace();
     }
-    in.close();
     return set;
   }
 
@@ -281,9 +333,11 @@ public class Dictionary {
    * Gets words in other languages from the results file produced by document
    * parser.
    */
+  @SuppressWarnings("unused")
   private static void getWordsInOtherLanguages() throws IOException {
     BufferedReader en = new BufferedReader(new InputStreamReader(
-        new FileInputStream("C:/datasets/asc/reviews/WordList_en.txt"), UTF8));
+        new FileInputStream("C:/datasets/asc/blogs/obama/WordList_en.txt"),
+        UTF8));
     String line;
     HashSet<String> enWords = new HashSet<String>();
     while ((line = en.readLine()) != null) {
@@ -291,10 +345,10 @@ public class Dictionary {
     }
     en.close();
     BufferedReader all = new BufferedReader(new InputStreamReader(
-        new FileInputStream("C:/datasets/asc/reviews/WordList.txt"), UTF8));
-    PrintWriter out = new PrintWriter(
-        new OutputStreamWriter(new FileOutputStream(
-            "C:/datasets/asc/reviews/WordList_other.txt", true), UTF8));
+        new FileInputStream("C:/datasets/asc/blogs/obama/WordList.txt"), UTF8));
+    PrintWriter out = new PrintWriter(new OutputStreamWriter(
+        new FileOutputStream("C:/datasets/asc/blogs/obama/WordList_other.txt",
+            true), UTF8));
     while ((line = all.readLine()) != null) {
       if (!enWords.contains(line)) {
         out.println(line);
@@ -304,16 +358,37 @@ public class Dictionary {
     out.close();
   }
 
+  /**
+   * Gets words whose counts are greater than <code>minCount</code>.
+   * 
+   * @param file
+   * @param minCount
+   * @return
+   * @throws IOException
+   */
+  private static HashMap<String, Integer> getWordCount(String file, int minCount)
+      throws IOException {
+    HashMap<String, Integer> map = new HashMap<String, Integer>();
+    BufferedReader in = new BufferedReader(new InputStreamReader(
+        new FileInputStream(file), "utf-8"));
+    String line;
+    while ((line = in.readLine()) != null) {
+      int pos = line.indexOf(",");
+      int count = Integer.parseInt(line.substring(pos + 1));
+      if (count > minCount) {
+        map.put(line.substring(0, pos), count);
+      }
+    }
+    in.close();
+    return map;
+  }
+
   public static void main(String args[]) throws Exception {
-    // Dictionary.langToLang("C:/datasets/asc/reviews/WordList_en.txt", EN, FR,
-    // DIRECTORY + "/en-fr.txt");
-    // getWordsInOtherLanguages();
-    // Dictionary.langToLang("C:/datasets/asc/reviews/WordList_other.txt", FR,
-    // EN,
-    // DIRECTORY + "/en-fr.txt");
-//    Dictionary.make("C:/datasets/asc/reviews/ElectronicsReviews1/Stem_en.txt",
-//        "C:/datasets/asc/reviews/ElectronicsReviews1/Stem_fr.txt", FR,
-//        DIRECTORY + "/en-fr2.txt");
-    Dictionary.removeDuplication(DIRECTORY + "/en-fr.txt");
+    String dataset = "C:/datasets/asc/reviews/BalancedMovieReviews2";
+    HashMap<String, Integer> wordCnt = getWordCount(dataset + "/WordCount.csv",
+        15);
+    Dictionary.make(wordCnt, dataset + "/Stem_en.txt",
+        dataset + "/Stem_fr.txt", FR, DIRECTORY + "/en-fr-movie.txt");
+    Dictionary.removeDuplication(DIRECTORY + "/en-fr-movie.txt");
   }
 }

@@ -20,10 +20,10 @@ import java.util.TreeSet;
 import java.util.Vector;
 
 import edu.kaist.uilab.asc.Application;
-import edu.kaist.uilab.asc.data.OrderedDocument;
+import edu.kaist.uilab.asc.data.Document;
 import edu.kaist.uilab.asc.data.Sentence;
 import edu.kaist.uilab.asc.data.SentiWord;
-import edu.kaist.uilab.asc.data.Word;
+import edu.kaist.uilab.asc.data.SamplingWord;
 import edu.kaist.uilab.asc.util.DoubleMatrix;
 import edu.kaist.uilab.asc.util.IntegerMatrix;
 import edu.kaist.uilab.asc.util.Utils;
@@ -65,7 +65,7 @@ public class STO2Core {
 
   private double[][] probTable;
 
-  private List<OrderedDocument> documents;
+  private List<Document> documents;
   final private int maxSentenceLength = 50;
 
   public static void main(String[] args) throws Exception {
@@ -100,8 +100,8 @@ public class STO2Core {
     // if (line != "") docList.add(line);
     // docListFile.close();
 
-    Vector<OrderedDocument> documents = Application.readDocuments(inputDir
-        + "/" + wordDocFileName);
+    Vector<Document> documents = new Vector<Document>();
+    Application.readDocuments(documents, inputDir + "/" + wordDocFileName);
 
     System.out.println("Documents: " + documents.size());
     System.out.println("Unique Words: " + wordList.size());
@@ -146,7 +146,7 @@ public class STO2Core {
   }
 
   public STO2Core(int numTopics, int numSenti, List<String> wordList,
-      List<OrderedDocument> documents, List<TreeSet<Integer>> sentiWordsList,
+      List<Document> documents, List<TreeSet<Integer>> sentiWordsList,
       double alpha, double[] betas, double[] gammas) {
     this.numTopics = numTopics;
     this.numSenti = numSenti;
@@ -177,13 +177,13 @@ public class STO2Core {
 
     int numTooLongSentences = 0;
 
-    for (OrderedDocument currentDoc : documents) {
+    for (Document currentDoc : documents) {
       int docNo = currentDoc.getDocNo();
 
       for (Sentence sentence : currentDoc.getSentences()) {
         int newSenti = -1;
         int numSentenceSenti = 0;
-        for (Word sWord : sentence.getWords()) {
+        for (SamplingWord sWord : sentence.getWords()) {
           SentiWord word = (SentiWord) sWord;
 
           int wordNo = word.getWordNo();
@@ -191,14 +191,12 @@ public class STO2Core {
             if (sentiWordsList.get(s).contains(wordNo)) {
               if (numSentenceSenti == 0 || s != newSenti)
                 numSentenceSenti++;
-              word.lexicon = s;
+              word.priorSentiment = s;
               newSenti = s;
             }
           }
         }
-        sentence.numSenti = numSentenceSenti;
-
-        if (randomInit || sentence.numSenti != 1)
+        if (randomInit || numSentenceSenti != 1)
           newSenti = (int) (Math.random() * numSenti);
         int newTopic = (int) (Math.random() * numTopics);
 
@@ -209,10 +207,10 @@ public class STO2Core {
           sentence.setTopic(newTopic);
           sentence.setSenti(newSenti);
 
-          for (Word sWord : sentence.getWords()) {
+          for (SamplingWord sWord : sentence.getWords()) {
             ((SentiWord) sWord).setSentiment(newSenti);
             sWord.setTopic(newTopic);
-            matrixSWT[newSenti].incValue(sWord.wordNo, newTopic);
+            matrixSWT[newSenti].incValue(sWord.getWordNo(), newTopic);
             sumSTW[newSenti][newTopic]++;
           }
           matrixSDT[newSenti].incValue(docNo, newTopic);
@@ -271,7 +269,7 @@ public class STO2Core {
 
       startTime = new Date().getTime();
 
-      for (OrderedDocument currentDoc : documents)
+      for (Document currentDoc : documents)
         sampleForDoc(currentDoc);
 
       endTime = new Date().getTime();
@@ -303,14 +301,14 @@ public class STO2Core {
     this.Pi = STO2Util.calculatePi(matrixDS, sumDS, this.gammas, this.sumGamma);
   }
 
-  private void sampleForDoc(OrderedDocument currentDoc) {
+  private void sampleForDoc(Document currentDoc) {
     int docNo = currentDoc.getDocNo();
     for (Sentence sentence : currentDoc.getSentences()) {
       if (sentence.getSenti() == -1
           || sentence.getWords().size() > this.maxSentenceLength)
         continue;
 
-      Map<Word, Integer> wordCnt = sentence.getWordCnt();
+      Map<SamplingWord, Integer> wordCnt = sentence.getWordCnt();
 
       double sumProb = 0;
 
@@ -323,8 +321,8 @@ public class STO2Core {
       sumDST[docNo][oldSenti]--;
       sumDS[docNo]--;
 
-      for (Word sWord : sentence.getWords()) {
-        matrixSWT[oldSenti].decValue(sWord.wordNo, oldTopic);
+      for (SamplingWord sWord : sentence.getWords()) {
+        matrixSWT[oldSenti].decValue(sWord.getWordNo(), oldTopic);
         sumSTW[oldSenti][oldTopic]--;
       }
 
@@ -333,9 +331,9 @@ public class STO2Core {
         boolean trim = false;
 
         // Fast Trimming
-        for (Word sWord : wordCnt.keySet()) {
+        for (SamplingWord sWord : wordCnt.keySet()) {
           SentiWord word = (SentiWord) sWord;
-          if (word.lexicon != null && word.lexicon != si) {
+          if (word.priorSentiment != null && word.priorSentiment != si) {
             trim = true;
             break;
           }
@@ -349,18 +347,18 @@ public class STO2Core {
             int m0 = 0;
             double expectTSW = 1;
 
-            for (Word sWord : wordCnt.keySet()) {
+            for (SamplingWord sWord : wordCnt.keySet()) {
               SentiWord word = (SentiWord) sWord;
 
               double beta;
-              if (word.lexicon == null)
+              if (word.priorSentiment == null)
                 beta = this.betas[0];
-              else if (word.lexicon == si)
+              else if (word.priorSentiment == si)
                 beta = this.betas[1];
               else
                 beta = this.betas[2];
 
-              double betaw = matrixSWT[si].getValue(word.wordNo, ti) + beta;
+              double betaw = matrixSWT[si].getValue(word.getWordNo(), ti) + beta;
 
               int cnt = wordCnt.get(word);
               for (int m = 0; m < cnt; m++) {
@@ -411,11 +409,11 @@ public class STO2Core {
       sentence.setTopic(newTopic);
       sentence.setSenti(newSenti);
 
-      for (Word sWord : sentence.getWords()) {
+      for (SamplingWord sWord : sentence.getWords()) {
         SentiWord word = (SentiWord) sWord;
         word.setTopic(newTopic);
         word.setSentiment(newSenti);
-        matrixSWT[newSenti].incValue(word.wordNo, newTopic);
+        matrixSWT[newSenti].incValue(word.getWordNo(), newTopic);
         sumSTW[newSenti][newTopic]++;
       }
       matrixSDT[newSenti].incValue(docNo, newTopic);
