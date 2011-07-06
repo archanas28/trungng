@@ -8,20 +8,25 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
-import java.util.Map;
-import java.util.StringTokenizer;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.htmlparser.Node;
+import org.htmlparser.Parser;
+import org.htmlparser.filters.HasAttributeFilter;
+import org.htmlparser.filters.TagNameFilter;
+import org.htmlparser.util.NodeList;
 
-import edu.kaist.uilab.asc.stemmer.EnglishStemmer;
-import edu.kaist.uilab.asc.stemmer.FrenchStemmer;
+import edu.kaist.uilab.stemmer.EnglishStemmer;
+import edu.kaist.uilab.stemmer.FrenchStemmer;
 
 /**
  * Dictionary.
@@ -29,37 +34,33 @@ import edu.kaist.uilab.asc.stemmer.FrenchStemmer;
  * @author trung nguyen (trung.ngvan@gmail.com)
  */
 public class Dictionary {
-  static final String DIRECTORY = "C:/datasets/asc/dict";
   static final String EN = "en";
   static final String FR = "fr";
-  static final String GOOGLE_TRANSLATE = "https://www.googleapis.com/language/translate/v2?"
+  static final String TRANSLATE_API = "https://www.googleapis.com/language/translate/v2?"
       + "key=AIzaSyCjv-p8oZSMwuxOv1Al49pTlDhtNOHZUro&q=";
+  static final String TRANSLATE_WEB = "http://translate.google.com/?";
   private static final String UTF8 = "utf-8";
 
   /**
-   * Makes the lines of the specified file distinguished.
+   * Removes duplicated lines in a text file.
    * 
    * @param file
    * @param newFile
    * @throws IOException
    */
-  public static void removeDuplication(String file) throws IOException {
-    HashMap<String, String> map = new HashMap<String, String>();
+  static void removeDuplication(String file) throws IOException {
+    HashSet<String> set = new HashSet<String>();
     BufferedReader in = new BufferedReader(new InputStreamReader(
         new FileInputStream(file), UTF8));
     String line;
-    StringTokenizer tokenizer;
     while ((line = in.readLine()) != null) {
-      tokenizer = new StringTokenizer(line, "\t");
-      if (tokenizer.countTokens() == 2) {
-        map.put(tokenizer.nextToken(), tokenizer.nextToken());
-      }
+      set.add(line);
     }
     in.close();
     PrintWriter out = new PrintWriter(new OutputStreamWriter(
         new FileOutputStream(file), UTF8));
-    for (Map.Entry<String, String> entry : map.entrySet()) {
-      out.printf("%s\t%s\n", entry.getKey(), entry.getValue());
+    for (String s : set) {
+      out.println(s);
     }
     out.close();
   }
@@ -67,6 +68,8 @@ public class Dictionary {
   /**
    * Translates words from a source language to a target language.
    * 
+   * @deprecated use {@link #make(HashMap, String, String, String, String)}
+   *             instead
    * @param srcLangFile
    *          the file that contains all words to be translated each on one line
    * @param srcLang
@@ -155,8 +158,7 @@ public class Dictionary {
     EnglishStemmer enStemmer = new EnglishStemmer();
     FrenchStemmer frStemmer = new FrenchStemmer();
     // english stem file
-    String line, word, translatedWord, stem;
-    HttpClient httpClient = new DefaultHttpClient();
+    String line, word, stem;
     BufferedReader in = new BufferedReader(new InputStreamReader(
         new FileInputStream(enStemFile), UTF8));
     while ((line = in.readLine()) != null) {
@@ -165,6 +167,7 @@ public class Dictionary {
         continue;
       word = line.substring(0, pos);
       stem = enStemmer.getStem(word);
+//      if (wordCnt.containsKey(stem)) {
       if (wordCnt.containsKey(stem) && !enStems.contains(stem)) {
         wordCnt.remove(stem); // translate a word only once
         boolean negation = false;
@@ -173,19 +176,16 @@ public class Dictionary {
           word = word.substring(4);
         }
         try {
-          translatedWord = translatesWord(word, EN, secondLanguage, httpClient);
-          if (translatedWord != null) {
-            translatedWord = translatedWord.toLowerCase(Locale.FRENCH).replace(
-                "&#39;", "'");
+          ArrayList<String> list = getTranslatedWords(word, EN, secondLanguage);
+          for (String translation : list) {
             if (negation) {
-              out.printf("%s\tpas_%s\n", stem,
-                  frStemmer.getStem(translatedWord));
+              out.printf("%s\tpas_%s\n", stem, frStemmer.getStem(translation));
               System.out.printf("%s\tpas_%s\n", stem,
-                  frStemmer.getStem(translatedWord));
+                  frStemmer.getStem(translation));
             } else {
-              out.printf("%s\t%s\n", stem, frStemmer.getStem(translatedWord));
+              out.printf("%s\t%s\n", stem, frStemmer.getStem(translation));
               System.out.printf("%s\t%s\n", stem,
-                  frStemmer.getStem(translatedWord));
+                  frStemmer.getStem(translation));
             }
           }
         } catch (Exception e) {
@@ -204,6 +204,7 @@ public class Dictionary {
         continue;
       word = line.substring(0, pos);
       stem = frStemmer.getStem(word);
+//      if (wordCnt.containsKey(stem)) {
       if (wordCnt.containsKey(stem) && !frStems.contains(stem)) {
         wordCnt.remove(stem); // translate a word only once
         boolean negation = false;
@@ -212,16 +213,15 @@ public class Dictionary {
           word = word.substring(4);
         }
         try {
-          translatedWord = translatesWord(word, secondLanguage, EN, httpClient);
-          if (translatedWord != null) {
+          ArrayList<String> list = getTranslatedWords(word, secondLanguage, EN);
+          for (String translation : list) {
             if (negation) {
-              out.printf("not_%s\t%s\n", enStemmer.getStem(translatedWord),
+              out.printf("not_%s\t%s\n", enStemmer.getStem(translation), stem);
+              System.out.printf("not_%s\t%s\n", enStemmer.getStem(translation),
                   stem);
-              System.out.printf("not_%s\t%s\n",
-                  enStemmer.getStem(translatedWord), stem);
             } else {
-              out.printf("%s\t%s\n", enStemmer.getStem(translatedWord), stem);
-              System.out.printf("%s\t%s\n", enStemmer.getStem(translatedWord),
+              out.printf("%s\t%s\n", enStemmer.getStem(translation), stem);
+              System.out.printf("%s\t%s\n", enStemmer.getStem(translation),
                   stem);
             }
           }
@@ -230,7 +230,6 @@ public class Dictionary {
         }
       }
     }
-    httpClient.getConnectionManager().shutdown();
     in.close();
     out.close();
   }
@@ -309,7 +308,7 @@ public class Dictionary {
    */
   private static String translatesWord(String word, String src, String target,
       HttpClient client) throws URISyntaxException {
-    HttpGet httpget = new HttpGet(GOOGLE_TRANSLATE + word + "&source=" + src
+    HttpGet httpget = new HttpGet(TRANSLATE_API + word + "&source=" + src
         + "&target=" + target);
     ResponseHandler<String> responseHandler = new BasicResponseHandler();
     String translatedWord = null;
@@ -327,6 +326,41 @@ public class Dictionary {
       return translatedWord;
     }
     return null;
+  }
+
+  private static ArrayList<String> getTranslatedWords(String word, String sl,
+      String tl) {
+    ArrayList<String> list = new ArrayList<String>();
+    try {
+      String url = TRANSLATE_WEB + "sl=" + sl + "&tl=" + tl + "&q="
+          + URLEncoder.encode(word, "utf-8");
+      Parser parser = new Parser(url);
+      NodeList nl = parser.extractAllNodesThatMatch(new HasAttributeFilter(
+          "id", "gt-res-dict"));
+      if (nl.size() == 1) {
+        Node node = nl.elementAt(0);
+        nl.removeAll();
+        node.collectInto(nl, new TagNameFilter("li"));
+        if (nl.size() == 0) {
+          // heuristic: if a word appears multiple times but without
+          // translation,
+          // maybe it is proper noun.
+          list.add(word);
+        }
+        for (int i = 0; i < nl.size(); i++) {
+          node = nl.elementAt(i);
+          if (node.getChildren().size() == 1) {
+            String text = node.getFirstChild().getText();
+            if (!text.contains(" ")) {
+              list.add(text.replace("&#39;", "'"));
+            }
+          }
+        }
+      }
+    } catch (Exception e) {
+      System.err.println(e.getMessage());
+    }
+    return list;
   }
 
   /**
@@ -373,9 +407,9 @@ public class Dictionary {
         new FileInputStream(file), "utf-8"));
     String line;
     while ((line = in.readLine()) != null) {
-      int pos = line.indexOf(",");
-      int count = Integer.parseInt(line.substring(pos + 1));
-      if (count > minCount) {
+      int pos = line.indexOf("(");
+      int count = Integer.parseInt(line.substring(pos + 5));
+      if (count >= minCount) {
         map.put(line.substring(0, pos), count);
       }
     }
@@ -383,12 +417,46 @@ public class Dictionary {
     return map;
   }
 
+  /**
+   * Converts the old dictionary file to new format.
+   * 
+   * @param dictionaryFile
+   * @param localeDictFile
+   * @throws IOException
+   */
+  static void toLocaleDictionary(String dictionaryFile, String localeDictFile)
+      throws IOException {
+    BufferedReader in = new BufferedReader(new InputStreamReader(
+        new FileInputStream(dictionaryFile), "utf-8"));
+    ArrayList<String> list = new ArrayList<String>();
+    String line;
+    while ((line = in.readLine()) != null) {
+      list.add(line);
+    }
+    in.close();
+    PrintWriter out = new PrintWriter(new OutputStreamWriter(
+        new FileOutputStream(localeDictFile), UTF8));
+    String[] word;
+    for (String s : list) {
+      word = s.split("\t");
+      out.printf("%s(en)\t%s(fr)\n", word[0].toLowerCase(Locale.ENGLISH),
+          word[1].toLowerCase(Locale.FRENCH));
+    }
+    out.close();
+  }
+
   public static void main(String args[]) throws Exception {
-    String dataset = "C:/datasets/asc/reviews/BalancedMovieReviews2";
+//    final String directory = "C:/datasets/asc/reviews/ElectronicsReviews1";
+    final String directory = "C:/datasets/asc/ldatest/ElectronicsReviews2";
+    String dataset = "C:/datasets/asc/ldatest/ElectronicsReviews2";
+    int cnt = 10;
+    String dictFile = directory + "/en-fr.txt";
+    String localeFile = directory + "/en-fr-locale.txt" + cnt;
     HashMap<String, Integer> wordCnt = getWordCount(dataset + "/WordCount.csv",
-        15);
+        cnt);
     Dictionary.make(wordCnt, dataset + "/Stem_en.txt",
-        dataset + "/Stem_fr.txt", FR, DIRECTORY + "/en-fr-movie.txt");
-    Dictionary.removeDuplication(DIRECTORY + "/en-fr-movie.txt");
+        dataset + "/Stem_fr.txt", FR, dictFile);
+    Dictionary.removeDuplication(dictFile);
+    toLocaleDictionary(dictFile, localeFile);
   }
 }

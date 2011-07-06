@@ -6,34 +6,26 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.util.List;
 import java.util.Map;
-import java.util.TreeSet;
 import java.util.Vector;
 
 import edu.kaist.uilab.asc.data.Document;
+import edu.kaist.uilab.asc.data.SamplingWord;
 import edu.kaist.uilab.asc.data.Sentence;
 import edu.kaist.uilab.asc.data.SentiWord;
-import edu.kaist.uilab.asc.data.SamplingWord;
-import edu.kaist.uilab.asc.opt.LBFGS;
-import edu.kaist.uilab.asc.opt.ObjectiveFunction;
-import edu.kaist.uilab.asc.prior.SimilarityGraph;
 import edu.kaist.uilab.asc.util.DoubleMatrix;
 import edu.kaist.uilab.asc.util.IntegerMatrix;
+import edu.kaist.uilab.opt.LBFGS;
 
 /**
- * A base implementation of the ASC model.
- * <p>
- * All sub-classes share the same Gibbs sampling implementation (hence the
- * internal data such as hyper-parameters). Each class must provide its own
- * implementation for the optimization of priors (beta and y).
+ * Gibbs sampling for the ASC model.
  * 
  * @author trung nguyen (trung.ngvan@gmail.com)
  */
-public abstract class AbstractAsc implements ObjectiveFunction {
-  AscModel model;
+public class AscGibbsSampler {
+  AbstractAscModel model;
   double[][] probTable;
-  int startingIteration;
+  int startingIter;
 
   /**
    * Creates a base asc implementation with provided parameters.
@@ -48,59 +40,16 @@ public abstract class AbstractAsc implements ObjectiveFunction {
    * @param gammas
    * @param graphFile
    */
-  public AbstractAsc(AscModel model, int numTopics, int numSenti,
-      Vector<LocaleWord> wordList, List<Document> documents,
-      int numEnglishDocuments, List<TreeSet<Integer>> sentiWordsList,
-      double alpha, double[] gammas, String graphFile) {
-    model.numTopics = numTopics;
-    model.numSenti = numSenti;
-    model.numUniqueWords = wordList.size();
-    model.documents = documents;
-    model.numDocuments = documents.size();
-    model.numEnglishDocuments = numEnglishDocuments;
-    model.wordList = wordList;
-    model.sentiWordsList = sentiWordsList;
-    model.alpha = alpha;
-    model.gammas = gammas;
-    model.graphFile = graphFile;
-    model.graph = new SimilarityGraph(model.numUniqueWords);
+  public AscGibbsSampler(AbstractAscModel model) {
     this.model = model;
+    probTable = new double[model.numTopics][model.numSenti];
   }
 
   /**
    * Default constructor
    */
-  public AbstractAsc() {
+  public AscGibbsSampler() {
   }
-
-  /**
-   * Returns the optimization accuracy for this model.
-   * 
-   * @return
-   */
-  abstract double getOptimizationAccuracy();
-
-  /**
-   * Converts the variables used in optimization to the specific internal
-   * representation of the extending class.
-   */
-  abstract void variablesToY();
-
-  /**
-   * Updates betas and their sums.
-   * <p>
-   * This method must be called whenever the internal variables y (which beta
-   * depends on change).
-   */
-  abstract void updateBeta();
-
-  /**
-   * Writes out some values of y.
-   * 
-   * @param file
-   * @throws IOException
-   */
-  abstract void writeSampleY(String file) throws IOException;
 
   /**
    * Sets the output dir for this model.
@@ -111,42 +60,25 @@ public abstract class AbstractAsc implements ObjectiveFunction {
    * @param dir
    */
   public void setOutputDir(String dir) {
-    model.outputDir = dir;
-    new File(dir).mkdir();
-  }
-
-  /**
-   * Initializes hyper parameters and related quantities for Gibbs sampling.
-   */
-  void initHyperParameters() {
-    model.sumAlpha = model.alpha * model.numTopics;
-    model.sumGamma = 0;
-    for (double gamma : model.gammas) {
-      model.sumGamma += gamma;
-    }
-    model.beta = new double[model.numSenti][][];
-    model.sumBeta = new double[model.numSenti][model.numTopics];
+    model.outputDir = dir + "(" + model.extraInfo + ")";
+    new File(model.outputDir).mkdir();
   }
 
   /**
    * Initializes for gibbs sampling.
-   * 
-   * @param randomInit
    */
-  void gibbsInit(boolean randomInit) {
+  void gibbsInit() {
     model.sumSTW = new int[model.numSenti][model.numTopics];
     model.sumDST = new int[model.numDocuments][model.numSenti];
     model.sumDS = new int[model.numDocuments];
     model.matrixSWT = new IntegerMatrix[model.numSenti];
     model.matrixSDT = new IntegerMatrix[model.numSenti];
     for (int i = 0; i < model.numSenti; i++) {
-      model.matrixSWT[i] = new IntegerMatrix(model.numUniqueWords,
-          model.numTopics);
+      model.matrixSWT[i] = new IntegerMatrix(model.vocabSize, model.numTopics);
       model.matrixSDT[i] = new IntegerMatrix(model.numDocuments,
           model.numTopics);
     }
     model.matrixDS = new IntegerMatrix(model.numDocuments, model.numSenti);
-    initDocs(0, model.numEnglishDocuments, randomInit);
   }
 
   void initDocs(int from, int to, boolean randomInit) {
@@ -210,50 +142,46 @@ public abstract class AbstractAsc implements ObjectiveFunction {
    */
   public void gibbsSampling(int numIters, int savingInterval, int burnIn,
       int optimizationInterval, int numThreads) throws IOException {
-    int iter = 0;
-    if (!model.isExisting) {
-      gibbsInit(false);
-    } else {
-      iter = startingIteration;
-    }
     System.out.printf("Gibbs sampling started (Iterations: %d)\n", numIters);
+    int numEffectiveDocuments = model.numEnglishDocuments;
+    if (!model.isExisting) {
+      gibbsInit();
+      // TODO(trung): this may not work for a saved model
+      initDocs(0, model.numEnglishDocuments, false);
+      startingIter = 0;
+    }
     double startTime = System.currentTimeMillis();
-    int realIter;
-    for (; iter < numIters; iter++) {
-      realIter = iter + 1;
-      // sampling over english documents in the first half of iterations
-      int from, to;
-      if (iter * 2 < numIters) {
-        from = 0;
-        to = model.numEnglishDocuments;
-      } else {
-        // from = model.numEnglishDocuments;
-        from = 0;
-        to = model.numDocuments;
-        if (iter * 2 == numIters) {
-          initDocs(model.numEnglishDocuments, model.numDocuments, false);
-          model.graph.initGraph(model.graphFile);
-        }
-      }
-      for (int docNo = from; docNo < to; docNo++) {
-        sampleForDoc(model.documents.get(docNo));
-      }
+    for (int iter = startingIter; iter < numIters; iter++) {
+      int realIter = iter + 1;
       if (realIter % 50 == 0) {
         System.out.println();
       }
-      System.out.printf(" %d ", iter);
+      System.out.printf(" %d ", realIter);
+      if (realIter * 2 == numIters) {
+        numEffectiveDocuments = model.numDocuments;
+        initDocs(model.numEnglishDocuments, model.numDocuments, false);
+        model.effectiveVocabSize = model.vocabSize;
+        model.extendVars();
+        model.updateBeta();
+        model.graph.initGraph(model.graphFile, "\t");
+      }
+      if (realIter >= burnIn && realIter % optimizationInterval == 0
+          && realIter < numIters) {
+        optimizeBeta();
+      }
+      for (int docNo = 0; docNo < numEffectiveDocuments; docNo++) {
+        sampleForDoc(model.documents.get(docNo));
+      }
       if (realIter * 2 > numIters && savingInterval > 0
-          && realIter % savingInterval == 0) {
+          && realIter % savingInterval == 0 && realIter != numIters) {
         saveModel(realIter);
         writeModelOutput(realIter);
-      }
-      if (realIter >= burnIn && realIter % optimizationInterval == 0) {
-        optimizeBeta();
       }
     }
     System.out.printf("Gibbs sampling terminated. (%.4fs)\n",
         (System.currentTimeMillis() - startTime) / 1000);
-    // save the last model
+    // update beta and save the last sample
+    optimizeBeta();
     saveModel(numIters);
     writeModelOutput(numIters);
   }
@@ -275,7 +203,7 @@ public abstract class AbstractAsc implements ObjectiveFunction {
   /**
    * Optimizes beta over y.
    * 
-   * @param vars
+   * @param mVars
    *          the solution
    * @return true if an solution was found, false if an error occurs
    */
@@ -284,7 +212,7 @@ public abstract class AbstractAsc implements ObjectiveFunction {
     int numCorrections = 4;
     int[] iflag = new int[2];
     boolean supplyDiag = false;
-    double machinePrecision = 1e-32;
+    double machinePrecision = 1.1920929e-7;
     // starting point
     double[] diag = new double[model.vars.length];
     // iprint[0] = output every iprint[0] iterations
@@ -293,11 +221,11 @@ public abstract class AbstractAsc implements ObjectiveFunction {
     do {
       try {
         LBFGS.lbfgs(model.vars.length, numCorrections, model.vars,
-            computeFunction(model.vars), computeGradient(model.vars),
-            supplyDiag, diag, iprint, getOptimizationAccuracy(),
+            model.computeFunction(null), model.computeGradient(null),
+            supplyDiag, diag, iprint, model.getOptimizationAccuracy(),
             machinePrecision, iflag);
-        variablesToY();
-        updateBeta();
+        model.variablesToY();
+        model.updateBeta();
       } catch (Exception e) {
         e.printStackTrace();
       }
@@ -363,9 +291,6 @@ public abstract class AbstractAsc implements ObjectiveFunction {
                 / (model.sumDST[docNo][si] + model.sumAlpha)
                 * (model.matrixDS.getValue(docNo, si) + model.gammas[si])
                 * expectTSW;
-            // TODO(trung): some model omits sumBeta because it is constant
-            // factor in the model
-            // but here that cannot be the case
             sumProb += probTable[ti][si];
           }
         }
@@ -446,7 +371,8 @@ public abstract class AbstractAsc implements ObjectiveFunction {
       DoubleMatrix[] phi = Inference.calculatePhi(model.matrixSWT,
           model.sumSTW, model.beta, model.sumBeta);
       writePhi(phi, dir + "/Phi.csv");
-      writeSampleY(dir);
+      model.writeSampleY(dir);
+      writeBeta(dir + "/logbeta.csv");
       printTopWords(phi, dir + "/TopWords.csv");
       printTopWords(
           buildTermScoreMatrix(phi, model.numTopics * model.numSenti), dir
@@ -541,8 +467,8 @@ public abstract class AbstractAsc implements ObjectiveFunction {
       for (int t = 0; t < model.numTopics; t++)
         out.print("S" + s + "-T" + t + ",");
     out.println();
-    for (int s = 0; s < model.numSenti; s++) {
-      for (int d = 0; d < model.numDocuments; d++) {
+    for (int d = 0; d < model.numDocuments; d++) {
+      for (int s = 0; s < model.numSenti; s++) {
         for (int t = 0; t < model.numTopics; t++) {
           out.print(theta[s][d][t] + ",");
         }
@@ -563,6 +489,24 @@ public abstract class AbstractAsc implements ObjectiveFunction {
       for (int s = 0; s < model.numSenti; s++) {
         for (int t = 0; t < model.numTopics; t++) {
           out.print("," + phi[s].getValue(w, t));
+        }
+      }
+      out.println();
+    }
+    out.close();
+  }
+
+  void writeBeta(String file) throws IOException {
+    PrintWriter out = new PrintWriter(file);
+    for (int s = 0; s < model.numSenti; s++)
+      for (int t = 0; t < model.numTopics; t++)
+        out.print(",S" + s + "-T" + t);
+    out.println();
+    for (int w = 0; w < model.wordList.size(); w++) {
+      out.print(model.wordList.get(w) + ",");
+      for (int s = 0; s < model.numSenti; s++) {
+        for (int t = 0; t < model.numTopics; t++) {
+          out.printf("%.5f,", Math.log(model.beta[s][t][w]));
         }
       }
       out.println();
@@ -606,9 +550,9 @@ public abstract class AbstractAsc implements ObjectiveFunction {
    */
   private DoubleMatrix[] buildTermScoreMatrix(DoubleMatrix[] phi, int topics) {
     DoubleMatrix[] termScore = new DoubleMatrix[phi.length];
-    double sumOfLogs[] = new double[model.numUniqueWords];
+    double sumOfLogs[] = new double[model.vocabSize];
     // compute the sum of logs for each word
-    for (int w = 0; w < model.numUniqueWords; w++) {
+    for (int w = 0; w < model.vocabSize; w++) {
       sumOfLogs[w] = 0.0;
       for (int s = 0; s < model.numSenti; s++) {
         for (int t = 0; t < model.numTopics; t++) {
@@ -618,9 +562,9 @@ public abstract class AbstractAsc implements ObjectiveFunction {
     }
     double score, prob;
     for (int s = 0; s < model.numSenti; s++) {
-      termScore[s] = new DoubleMatrix(model.numUniqueWords, model.numTopics);
+      termScore[s] = new DoubleMatrix(model.vocabSize, model.numTopics);
       for (int t = 0; t < model.numTopics; t++) {
-        for (int w = 0; w < model.numUniqueWords; w++) {
+        for (int w = 0; w < model.vocabSize; w++) {
           prob = phi[s].getValue(w, t);
           score = prob * (Math.log(prob) - sumOfLogs[w] / topics);
           termScore[s].setValue(w, t, score);

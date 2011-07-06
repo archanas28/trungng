@@ -74,7 +74,7 @@ public class DoubleMatrix implements Serializable {
   }
 
   /**
-   * Increases the value of an element by some amount {@code value}. 
+   * Increases the value of an element by some amount {@code value}.
    * 
    * @param rowIdx
    * @param colIdx
@@ -160,6 +160,14 @@ public class DoubleMatrix implements Serializable {
     return row;
   }
 
+  /**
+   * Returns the indices of top <code>n</code> columns in the specified row
+   * <code>row</code>.
+   * 
+   * @param row
+   * @param n
+   * @return
+   */
   public Vector<Integer> getSortedRowIndex(int row, int n) {
     Vector<Integer> sortedList = new Vector<Integer>();
 
@@ -188,15 +196,15 @@ public class DoubleMatrix implements Serializable {
   }
 
   /**
-   * Returns row indices of the top n rows in the specified column <code>col</code>.
-   *  
+   * Returns the indices of top <code>n</code> rows in the specified column
+   * <code>col</code>.
+   * 
    * @param col
    * @param n
    * @return
    */
   public Vector<Integer> getSortedColIndex(int col, int n) {
     Vector<Integer> sortedList = new Vector<Integer>();
-
     for (int i = 0; i < n; i++) {
       double maxValue = Integer.MIN_VALUE;
       int maxIndex = -1;

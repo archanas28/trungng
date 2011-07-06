@@ -16,11 +16,12 @@ import java.util.TreeSet;
 import java.util.Vector;
 import java.util.regex.Pattern;
 
-import edu.kaist.uilab.asc.stemmer.SnowballStemmer;
+import edu.kaist.uilab.stemmer.SnowballStemmer;
 
 /**
- * Parse the datasets into bag of sentences. TODO(trung): use local lowercase
- * for each language
+ * Parse the datasets into bag of sentences.
+ * @deprecated
+ * Use {@link LocaleCorpusParser} to parse each lingual corpus instead.
  */
 public class DocumentParser {
 

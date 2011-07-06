@@ -1,6 +1,5 @@
 package edu.kaist.uilab.asc;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeSet;
@@ -12,19 +11,18 @@ import edu.kaist.uilab.opt.MathUtils;
 
 /**
  * Asc implementation with the following prior:
- * <code>beta_{jki} = exp(y_{ki} + 0.1y_{ji} + y_{v}</code> where j, k, i
- * denotes a sentiment, topic, and word respectively.
+ * <code>beta_{jki} = exp(y_{ki} + y_{ji} + y_{v}</code> where j, k, i denotes a
+ * sentiment, topic, and word respectively.
  * <p>
- * This adds a multiplicative constant to <code>y_{ji}</code> to limit their
- * contribution to the value of <code>beta_{jki}</code>.
+ * Log(beta) is now added the term <code>sumof((y_{0i} + y_{1i})^2))</code>.
  * 
  * @author trung nguyen (trung.ngvan@gmail.com)
  */
-public class Asc4 extends BaseAscModel {
+public class Asc42 extends BaseAscModel {
 
-  private static final long serialVersionUID = 1L;
-  private final double reducingFactor = 0.1;
-  double optimizationAccuracy = 0.5;
+  private static final long serialVersionUID = -4139519724003288360L;
+  private double optimizationAccuracy = 0.5;
+  double[][][] betaJki;
 
   /**
    * Creates a new Asc4 model.
@@ -38,18 +36,13 @@ public class Asc4 extends BaseAscModel {
    * @param gammas
    * @param graphFile
    */
-  public Asc4(int numTopics, int numSenti, Vector<LocaleWord> wordList,
+  public Asc42(int numTopics, int numSenti, Vector<LocaleWord> wordList,
       List<Document> documents, int numEnglishDocuments,
       List<TreeSet<Integer>> sentiWordsList, double alpha, double[] gammas,
       String graphFile) {
     super(numTopics, numSenti, wordList, documents, numEnglishDocuments,
         sentiWordsList, alpha, gammas, graphFile);
-    changeOutputDir();
-  }
-
-  public void changeOutputDir() {
-    outputDir = String.format("%s(rf-%.2f)", outputDir, reducingFactor);;
-    new File(outputDir).mkdir();
+    betaJki = new double[numSenti][numTopics][wordList.size()];
   }
 
   @Override
@@ -63,8 +56,8 @@ public class Asc4 extends BaseAscModel {
       for (int t = 0; t < numTopics; t++) {
         sumBeta[s][t] = 0;
         for (int w = 0; w < effectiveVocabSize; w++) {
-          beta[s][t][w] = Math.exp(yTopic[t][w] + reducingFactor
-              * ySentiment[s][w] + yWord[w]);
+          beta[s][t][w] = Math.exp(yTopic[t][w] + ySentiment[s][w]
+              + yWord[w]);
           sumBeta[s][t] += beta[s][t][w];
         }
       }
@@ -80,12 +73,19 @@ public class Asc4 extends BaseAscModel {
         negLogLikelihood += MathUtils
             .logGamma(sumSTW[j][k] + sumBeta[j][k])
             - MathUtils.logGamma(sumBeta[j][k]);
+        double jk = MathUtils.digamma(sumSTW[j][k] + sumBeta[j][k])
+            - MathUtils.digamma(sumBeta[j][k]);
         for (int i = 0; i < effectiveVocabSize; i++) {
+          double jki = jk;
           if (matrixSWT[j].getValue(i, k) > 0) {
             negLogLikelihood += MathUtils.logGamma(beta[j][k][i])
                 - MathUtils.logGamma(beta[j][k][i]
                     + matrixSWT[j].getValue(i, k));
+            jki += MathUtils.digamma(beta[j][k][i])
+                - MathUtils.digamma(beta[j][k][i]
+                    + matrixSWT[j].getValue(i, k));
           }
+          betaJki[j][k][i] = beta[j][k][i] * jki;
         }
       }
     }
@@ -108,6 +108,12 @@ public class Asc4 extends BaseAscModel {
     }
     // each edge can be used only once
     logPrior /= 2;
+    // add the term sigma((y_{0,i} + y_{1,i})^2)
+    for (int i = 0; i < effectiveVocabSize; i++) {
+      term = ySentiment[0][i] + ySentiment[1][i];
+      logPrior += term * term;
+    }
+    // add the term sigma(y_{i}^2)
     for (int i = 0; i < effectiveVocabSize; i++) {
       logPrior += yWord[i] * yWord[i];
     }
@@ -116,28 +122,10 @@ public class Asc4 extends BaseAscModel {
   }
 
   @Override
-  public double[] computeGradient(double[] x) throws InvalidArgumentException {
+  public double[] computeGradient(double[] x)
+      throws InvalidArgumentException {
     double[] grads = new double[vars.length];
-    double term, jk;
-    double[][][] betaJki = new double[numSenti][numTopics][effectiveVocabSize];
     ArrayList<Integer> neighbors;
-    // common beta terms for y_ki, y_ji and y_word i
-    for (int j = 0; j < numSenti; j++) {
-      for (int k = 0; k < numTopics; k++) {
-        jk = MathUtils.digamma(sumSTW[j][k] + sumBeta[j][k])
-            - MathUtils.digamma(sumBeta[j][k]);
-        for (int i = 0; i < effectiveVocabSize; i++) {
-          term = jk;
-          if (matrixSWT[j].getValue(i, k) > 0) {
-            term += MathUtils.digamma(beta[j][k][i])
-                - MathUtils.digamma(beta[j][k][i]
-                    + matrixSWT[j].getValue(i, k));
-          }
-          betaJki[j][k][i] = beta[j][k][i] * term;
-        }
-      }
-    }
-
     // gradients of y_ki
     int idx = 0;
     for (int k = 0; k < numTopics; k++) {
@@ -156,11 +144,10 @@ public class Asc4 extends BaseAscModel {
     // gradient of y_ji
     for (int j = 0; j < numSenti; j++) {
       for (int i = 0; i < effectiveVocabSize; i++) {
-        grads[idx] = 0;
+        grads[idx] = ySentiment[0][i] + ySentiment[1][i];
         for (int k = 0; k < numTopics; k++) {
           grads[idx] += betaJki[j][k][i];
         }
-        grads[idx] *= reducingFactor;
         neighbors = graph.getNeighbors(i);
         for (int iprime : neighbors) {
           grads[idx] += ySentiment[j][i] - ySentiment[j][iprime];

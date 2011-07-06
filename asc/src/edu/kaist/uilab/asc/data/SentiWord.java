@@ -3,7 +3,7 @@ package edu.kaist.uilab.asc.data;
 public class SentiWord extends SamplingWord {
   private static final long serialVersionUID = -6338115900857865882L;
   
-  private int sentiment;
+  private int mSentiment;
   public Integer priorSentiment = null;
 
   public SentiWord(int wordNo) {
@@ -11,10 +11,10 @@ public class SentiWord extends SamplingWord {
   }
 
   public void setSentiment(int sentiment) {
-    this.sentiment = sentiment;
+    mSentiment = sentiment;
   }
 
   public int getSentiment() {
-    return sentiment;
+    return mSentiment;
   }
 }

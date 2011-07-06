@@ -11,12 +11,16 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map.Entry;
+import java.util.TreeSet;
 
-import edu.kaist.uilab.asc.stemmer.EnglishStemmer;
-import edu.kaist.uilab.asc.stemmer.FrenchStemmer;
+import edu.kaist.uilab.stemmer.EnglishStemmer;
 
-public class Test {
+/**
+ * Utilities for various tasks.
+ */
+public class MiscUtils {
   private static final String UTF8 = "utf-8";
 
   static void amazonToCategories() throws IOException {
@@ -142,7 +146,8 @@ public class Test {
   }
 
   static void convertStemToWords() throws IOException {
-//    String dir = "C:/datasets/asc/blogs/obama/(2)Stemmed-InitY0(V4)-T20-S2-A0.10-I2000(rf-0.10)/2000";
+    // String dir =
+    // "C:/datasets/asc/blogs/obama/(2)Stemmed-InitY0(V4)-T20-S2-A0.10-I2000(rf-0.10)/2000";
     String dir = "C:/datasets/asc/reviews/MovieReviews/Stemmed-InitY0(V4)-T30-S2-A0.10-I2000(rf-0.10)/2000";
     String stemDir = "C:/datasets/asc/reviews/MovieReviews";
     // String stemDir = "C:/datasets/asc/reviews/MovieReviews";
@@ -155,17 +160,17 @@ public class Test {
   }
 
   static void convertWordsToStems() throws IOException {
-    // Note that for MovieReviews dataset, SentiWords-0_fr.txt is encoded in ANSI
-    // but not utf-8
-    String dir = "C:/datasets/asc/blogs/obama";
-    Utils.wordsToStems(dir + "/SentiWords-0_en.txt", dir
-        + "/SentiStems-0_en.txt", "utf-8", new EnglishStemmer());
-    Utils.wordsToStems(dir + "/SentiWords-1_en.txt", dir
-        + "/SentiStems-1_en.txt", "utf-8", new EnglishStemmer());
-    Utils.wordsToStems(dir + "/SentiWords-0_fr.txt", dir
-        + "/SentiStems-0_fr.txt", "utf-8", new FrenchStemmer());
-    Utils.wordsToStems(dir + "/SentiWords-1_fr.txt", dir
-        + "/SentiStems-1_fr.txt", "utf-8", new FrenchStemmer());
+    // Note that for MovieReviews dataset, SentiWords-0_fr.txt is encoded in
+    // ANSI but not utf-8
+    String dir = "C:/datasets/asc/ldatest/ElectronicsReviews2";
+    // Utils.wordsToStems(dir + "/SentiWords-0_en.txt", dir
+    // + "/SentiStems-0_en.txt", "utf-8", new EnglishStemmer());
+    // Utils.wordsToStems(dir + "/SentiWords-1_en.txt", dir
+    // + "/SentiStems-1_en.txt", "utf-8", new EnglishStemmer());
+    // Utils.wordsToStems(dir + "/SentiWords-0_fr.txt", dir
+    // + "/SentiStems-0_fr.txt", "utf-8", new FrenchStemmer());
+    Utils.wordsToStems(dir + "/en.txt", dir
+        + "/enstem.txt", "utf-8", new EnglishStemmer());
   }
 
   /*
@@ -227,20 +232,147 @@ public class Test {
     out.close();
   }
 
-  public static void main(String args[]) throws Exception {
-//    convertStemToWords();
-    int count[] = new int[2];
-    count[0] = 1;
-    count[1] = 1;
-    for (int i = 0; i < 1000; i++) {
-      int value = (int) (Math.random() * (count[0] + count[1]));
-      System.out.printf("%d, %d, %d\n", count[0], count[1], value);
-      int x = 0;
-      if (value >= count[0]) {
-        x = 1;
+  /**
+   * Reads the polarity file (provided by Pang & Lee) and output the ranked list
+   * of words for the given polarity.
+   * 
+   * @param sentiFile
+   * @param outputFile
+   */
+  static void printTopWords(String sentiFile, String outputFile)
+      throws Exception {
+    List<String> sentences = TextFiles.readLinesAsLowerCase(sentiFile);
+    HashMap<String, Integer> wordCnt = new HashMap<String, Integer>();
+    for (String sentence : sentences) {
+      String words[] = sentence.split("[ \t,.;!]");
+      for (String word : words) {
+        Integer count = wordCnt.get(word);
+        if (count == null) {
+          wordCnt.put(word, 1);
+        } else {
+          wordCnt.put(word, count + 1);
+        }
       }
-      count[x]++;
     }
-    System.out.println(count[0] + " " + count[1]);
+    TreeSet<Word> set = new TreeSet<Word>();
+    for (Entry<String, Integer> entry : wordCnt.entrySet()) {
+      set.add(new Word(entry.getKey(), entry.getValue()));
+    }
+    TextFiles.writeCollection(set.descendingSet(), outputFile);
+  }
+
+  static class Word implements Comparable<Word> {
+    String mValue;
+    int mCount;
+
+    public Word(String value, int count) {
+      mValue = value;
+      mCount = count;
+    }
+
+    @Override
+    public int compareTo(Word other) {
+      if (mCount == other.mCount) {
+        return mValue.compareTo(other.mValue);
+      } else {
+        return mCount - other.mCount;
+      }
+    }
+
+    @Override
+    public String toString() {
+      return mValue + "," + mCount;
+    }
+  }
+
+  // convert the european parliament congress (fr-en pair) to documents.
+  static void europarlToDocuments() throws Exception {
+    BufferedReader in = new BufferedReader(
+        new InputStreamReader(new FileInputStream(
+            "C:/Users/trung/Downloads/fr-en.txt"), "ISO-8859-1"));
+    PrintWriter out = new PrintWriter("europarl.txt");
+    int cnt = 0;
+    String line;
+    do {
+      line = in.readLine();
+    } while (!line.contains("<CHAPTER ID=2>"));
+    do {
+      // start of a new session (ignore chapter 1)
+      if (line.contains("<CHAPTER ID=2>")) {
+        cnt++;
+        System.out.println("Session " + cnt);
+        // find the first speaker
+        do {
+          line = in.readLine();
+        } while (!line.contains("<SPEAKER ID="));
+        HashMap<String, String> map = new HashMap<String, String>();
+        // read each speaker's speech until a new chapter
+        String speakerName = null;
+        do {
+          if (line.contains("<SPEAKER ID=")) {
+            int pos = line.indexOf("NAME=");
+            speakerName = line.substring(pos + "NAME=".length() + 1,
+                line.length() - 2);
+          } else if (!line.contains("<P>") && !line.contains("CHAPTER ID=")) {
+            String speech = map.get(speakerName);
+            if (speech == null) {
+              map.put(speakerName, line);
+            } else {
+              map.put(speakerName, speech + " " + line);
+            }
+          }
+          line = in.readLine();
+        } while (line != null && !line.contains("<CHAPTER ID=2>"));
+        // write each speaker as a document
+        map.remove("President");
+        map.remove("Le Président");
+        for (String value : map.values()) {
+          out.println(value);
+        }
+      }
+    } while (line != null);
+    in.close();
+    out.close();
+  }
+
+  static void toUtf8Encoding(String file) throws Exception {
+    List<String> lines = TextFiles.readLines(file);
+    PrintWriter out = new PrintWriter(new OutputStreamWriter(
+        new FileOutputStream(file), UTF8));
+    for (String line : lines) {
+      out.println(line);
+    }
+    out.close();
+  }
+
+  static void writeDocuments(String originalFile, String subsetFile, int numDocs)
+      throws Exception {
+    List<String> lines = TextFiles.readLines(originalFile, "utf-8");
+    HashSet<Integer> selectedIdx = new HashSet<Integer>();
+    do {
+      int idx = (int) (Math.random() * lines.size());
+      if (selectedIdx.add(idx)) {
+        numDocs--;
+      }
+    } while (numDocs > 0);
+    PrintWriter out = new PrintWriter(new OutputStreamWriter(
+        new FileOutputStream(subsetFile), "utf-8"));
+    for (Integer idx : selectedIdx) {
+      out.println(idx); // ignore source
+      out.println(-1); // ignore rating
+      out.println(lines.get(idx));
+    }
+    out.close();
+  }
+
+  public static void main(String args[]) throws Exception {
+    System.out.println(Math.exp(0.5));
+    System.out.println(Math.exp(1.0));
+    System.out.println(Math.exp(1.2));
+    System.out.println(Math.exp(1.5));
+    System.out.println(Math.log(0.0001));
+//    String dir = "C:/datasets/asc/ldatest/europarl";
+//    writeDocuments(dir + "/data/europarl_en.txt", dir + "/docs_en3000.txt", 3000);
+//    writeDocuments(dir + "/data/europarl_fr.txt", dir + "/docs_other3000.txt", 3000);
   }
 }

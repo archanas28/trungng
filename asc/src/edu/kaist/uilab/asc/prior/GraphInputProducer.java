@@ -1,8 +1,9 @@
 package edu.kaist.uilab.asc.prior;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,6 +17,8 @@ import java.util.StringTokenizer;
  * @author trung nguyen (trung.ngvan@gmail.com)
  */
 public class GraphInputProducer {
+
+  private static final String UTF8 = "utf-8";
 
   String mFile;
   HashMap<String, Integer> map;
@@ -56,33 +59,33 @@ public class GraphInputProducer {
    * @param output
    *          the output file
    */
-  public void write(String output) throws IOException {
+  public void write(String output, String delimiter) throws IOException {
     System.out.println("Constructing similarity graph...");
     readWords(mFile);
     PrintWriter out = new PrintWriter(output);
     for (String langPair : mList) {
-      processLangPair(langPair, out);
+      processLangPair(langPair, out, delimiter);
     }
     out.close();
     System.out.println("Graph constructed.");
   }
 
   /**
-   * Converts a line consisting two words to two separate words.
+   * Converts the given string <code>pair</code> to two strings separated by one
+   * of the space character.
    * 
    * @param pair
-   *          the word pair
    * @param word
-   *          the array to store 2 words
    */
   void toWordPair(String pair, String[] word) {
-    StringTokenizer tokenizer = new StringTokenizer(pair, "\t");
+    StringTokenizer tokenizer = new StringTokenizer(pair);
     word[0] = tokenizer.nextToken();
     word[1] = tokenizer.nextToken();
   }
-
+  
   /**
-   * Reads a language pair file and creates an edge for each unique pair of words.
+   * Reads a language pair file and creates an edge for each unique pair of
+   * words.
    * <p>
    * Also writes the edges to the specified writer <code>out</code>.
    * 
@@ -91,9 +94,11 @@ public class GraphInputProducer {
    * @param out
    *          the writer
    */
-  void processLangPair(String pairFile, PrintWriter out) throws IOException {
+  void processLangPair(String pairFile, PrintWriter out, String delimiter)
+      throws IOException {
     System.out.printf("\nReading language pair %s...", pairFile);
-    BufferedReader in = new BufferedReader(new FileReader(pairFile));
+    BufferedReader in = new BufferedReader(new InputStreamReader(
+        new FileInputStream(pairFile), UTF8));
     String pair;
     String[] word = new String[2];
     Integer idx1, idx2;
@@ -104,10 +109,10 @@ public class GraphInputProducer {
       idx1 = map.get(word[0]);
       idx2 = map.get(word[1]);
       if (idx1 != null && idx2 != null && !idx1.equals(idx2)) {
-        s = idx1 < idx2 ? String.format("%d,%d", idx1, idx2) : String.format(
-            "%d,%d", idx2, idx1);
+        s = idx1 < idx2 ? String.format("%d%s%d", idx1, delimiter, idx2)
+            : String.format("%d%s%d", idx2, delimiter, idx1);
         if (set.add(s)) {
-          out.printf("%d %d\n", idx1, idx2);
+          out.println(s);
         }
       }
     }
@@ -121,11 +126,14 @@ public class GraphInputProducer {
    * @param file
    */
   void readWords(String file) throws IOException {
-    BufferedReader in = new BufferedReader(new FileReader(file));
-    String word;
+    BufferedReader in = new BufferedReader(new InputStreamReader(
+        new FileInputStream(file), UTF8));
+    String line;
     int idx = 0;
-    while ((word = in.readLine()) != null) {
-      map.put(word, idx++);
+    while ((line = in.readLine()) != null) {
+      if (line != "") {
+        map.put(line, idx++);
+      }
     }
     in.close();
   }

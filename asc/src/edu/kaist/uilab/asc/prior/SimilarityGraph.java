@@ -32,7 +32,7 @@ public class SimilarityGraph implements Serializable {
    */
   public SimilarityGraph(int numVertices, String edgeFile) {
     this(numVertices);
-    initGraph(edgeFile);
+    initGraph(edgeFile, " \t");
   }
   
   /**
@@ -54,15 +54,18 @@ public class SimilarityGraph implements Serializable {
    * Inits the graph from the given file.
    * 
    * @param file
+   *          the file which contains two integers in each line
+   * @param delimiter
+   *          the characters that separate the two integers in a line
    */
-  public void initGraph(String file) {
+  public void initGraph(String file, String delimiter) {
     try {
       StringTokenizer tokenizer;
       String line;
       int u, v;
       BufferedReader in = new BufferedReader(new FileReader(file));
       while ((line = in.readLine()) != null) {
-        tokenizer = new StringTokenizer(line, " ");
+        tokenizer = new StringTokenizer(line, delimiter);
         u = Integer.parseInt(tokenizer.nextToken());
         v = Integer.parseInt(tokenizer.nextToken());
         adj[u].add(v);
