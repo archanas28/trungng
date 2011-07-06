@@ -22,8 +22,8 @@ import edu.kaist.uilab.asc.data.Sentence;
 import edu.kaist.uilab.asc.data.SentiWord;
 import edu.kaist.uilab.asc.prior.GraphInputProducer;
 import edu.kaist.uilab.crawler.blogposts.PostCollector;
-import edu.kaist.uilab.stemmer.EnglishStemmer;
-import edu.kaist.uilab.stemmer.FrenchStemmer;
+import edu.kaist.uilab.stemmers.EnglishStemmer;
+import edu.kaist.uilab.stemmers.FrenchStemmer;
 
 /**
  * Main application.

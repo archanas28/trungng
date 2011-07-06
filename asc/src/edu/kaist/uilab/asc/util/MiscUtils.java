@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.TreeSet;
 
-import edu.kaist.uilab.stemmer.EnglishStemmer;
+import edu.kaist.uilab.stemmers.EnglishStemmer;
 
 /**
  * Utilities for various tasks.

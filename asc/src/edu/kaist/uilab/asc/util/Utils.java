@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.TreeSet;
 
-import edu.kaist.uilab.stemmer.SnowballStemmer;
+import edu.kaist.uilab.stemmers.SnowballStemmer;
 
 /**
  * Utility class.

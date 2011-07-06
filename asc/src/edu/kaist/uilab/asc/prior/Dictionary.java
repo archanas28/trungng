@@ -25,8 +25,8 @@ import org.htmlparser.filters.HasAttributeFilter;
 import org.htmlparser.filters.TagNameFilter;
 import org.htmlparser.util.NodeList;
 
-import edu.kaist.uilab.stemmer.EnglishStemmer;
-import edu.kaist.uilab.stemmer.FrenchStemmer;
+import edu.kaist.uilab.stemmers.EnglishStemmer;
+import edu.kaist.uilab.stemmers.FrenchStemmer;
 
 /**
  * Dictionary.

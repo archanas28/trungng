@@ -17,7 +17,7 @@ import java.util.TreeSet;
 import java.util.Vector;
 import java.util.regex.Pattern;
 
-import edu.kaist.uilab.stemmer.SnowballStemmer;
+import edu.kaist.uilab.stemmers.SnowballStemmer;
 
 /**
  * Parser that support language-specific parsing of documents.
