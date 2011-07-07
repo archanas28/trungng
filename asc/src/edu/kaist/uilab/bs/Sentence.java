@@ -21,22 +21,6 @@ public class Sentence implements Serializable {
     mSentiWords = new Vector<Integer>();
   }
 
-  public Vector<Integer> getAspectWords() {
-    return mAspectWords;
-  }
-  
-  public Vector<Integer> getSentiWords() {
-    return mSentiWords;
-  }
-
-  public int getTopic() {
-    return mTopic;
-  }
-
-  public int getSenti() {
-    return mSenti;
-  }
-
   /**
    * Adds an aspect-related word to this sentence.
    */
@@ -67,5 +51,29 @@ public class Sentence implements Serializable {
    */
   public void setSenti(int senti) {
     mSenti = senti;
+  }
+  
+  public int getTopic() {
+    return mTopic;
+  }
+
+  public int getSenti() {
+    return mSenti;
+  }
+  
+  public boolean hasAspectAndSenti() {
+    return mAspectWords.size() > 0 && mSentiWords.size() > 0;
+  }
+
+  public int length() {
+    return mAspectWords.size() + mSentiWords.size();
+  }
+  
+  public Vector<Integer> getAspectWords() {
+    return mAspectWords;
+  }
+  
+  public Vector<Integer> getSentiWords() {
+    return mSentiWords;
   }
 }

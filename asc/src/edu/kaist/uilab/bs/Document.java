@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.Vector;
 
 /**
- * A document is a bag of {@link Sentence}s. It may optionally has a rating.
+ * A document is a bag of {@link Sentence}s. It may optionally have a rating.
  * 
  * @author trung
  */
@@ -27,6 +27,10 @@ public class Document implements Serializable {
 
   public Vector<Sentence> getSentences() {
     return mSentences;
+  }
+  
+  public int getNumSentences() {
+    return mSentences.size();
   }
   
   public void setRating(double rating) {
