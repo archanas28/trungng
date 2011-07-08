@@ -258,7 +258,7 @@ public class MiscUtils {
     for (Entry<String, Integer> entry : wordCnt.entrySet()) {
       set.add(new Word(entry.getKey(), entry.getValue()));
     }
-    TextFiles.writeCollection(set.descendingSet(), outputFile);
+    TextFiles.writeCollection(set.descendingSet(), outputFile, UTF8);
   }
 
   static class Word implements Comparable<Word> {

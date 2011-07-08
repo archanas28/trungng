@@ -2,9 +2,11 @@ package edu.kaist.uilab.asc.util;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -56,9 +58,10 @@ public class TextFiles {
    * @param col
    * @param file
    */
-  public static <T> void writeCollection(Collection<T> col, String file)
-      throws Exception {
-    PrintWriter writer = new PrintWriter(file);
+  public static <T> void writeCollection(Collection<T> col, String file,
+      String encoding) throws IOException {
+    PrintWriter writer = new PrintWriter(new OutputStreamWriter(
+        new FileOutputStream(file), encoding));
     for (T e : col) {
       writer.println(e);
     }
@@ -72,9 +75,10 @@ public class TextFiles {
    * @param iter
    * @param file
    */
-  public static <T> void writeIterator(Iterator<T> iter, String file)
-      throws Exception {
-    PrintWriter writer = new PrintWriter(file);
+  public static <T> void writeIterator(Iterator<T> iter, String file,
+      String encoding) throws IOException {
+    PrintWriter writer = new PrintWriter(new OutputStreamWriter(
+        new FileOutputStream(file), encoding));
     while (iter.hasNext()) {
       writer.println(iter.next());
     }
@@ -109,7 +113,6 @@ public class TextFiles {
    * 
    * @param fileName
    * @param encoding
-   * 
    * @return
    */
   public static List<String> readLines(String fileName, String encoding)
@@ -158,10 +161,11 @@ public class TextFiles {
    * 
    * @return
    */
-  public static Collection<String> readUniqueLines(String fileName)
-      throws Exception {
+  public static Collection<String> readUniqueLines(String fileName,
+      String encoding) throws IOException {
     HashSet<String> words = new HashSet<String>();
-    BufferedReader reader = new BufferedReader(new FileReader(fileName));
+    BufferedReader reader = new BufferedReader(new InputStreamReader(
+        new FileInputStream(fileName), encoding));
     String line;
     while ((line = reader.readLine()) != null) {
       words.add(line);
