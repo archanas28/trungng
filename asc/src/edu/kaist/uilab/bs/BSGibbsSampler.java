@@ -49,7 +49,7 @@ public class BSGibbsSampler {
     new File(model.outputDir).mkdir();
   }
 
-  void initDocs(int from, int to, boolean randomInit) {
+  void initDocs(int from, int to) {
     for (int docNo = from; docNo < to; docNo++) {
       Document document = model.documents.get(docNo);
       for (Sentence sentence : document.getSentences()) {
@@ -65,7 +65,7 @@ public class BSGibbsSampler {
           }
         }
         // if sentiment of the sentence is not determined, get random sentiment
-        if (randomInit || numSentenceSenti != 1) {
+        if (numSentenceSenti != 1) {
           newSenti = (int) (Math.random() * model.numSenti);
         }
         if (numSentenceSenti <= 1) {
@@ -94,7 +94,7 @@ public class BSGibbsSampler {
       throws IOException {
     System.out.printf("Gibbs sampling started (Iterations: %d)\n", numIters);
     if (!model.isExisting) {
-      initDocs(0, model.numDocuments, false);
+      initDocs(0, model.numDocuments);
       startingIter = 0;
     }
     double startTime = System.currentTimeMillis();
@@ -144,20 +144,20 @@ public class BSGibbsSampler {
             sumProb += probTable[t][s];
           }
         } else {
-          for (int t = 0; t < model.numTopics; t++) {
-            double prob = (model.cntDT.getValue(docIdx, t) + model.alpha)
+          for (int k = 0; k < model.numTopics; k++) {
+            double prob = (model.cntDT.getValue(docIdx, k) + model.alpha)
                 * (model.cntDS.getValue(docIdx, s) + model.gammas[s]);
             int x = 0;
             for (Integer aspectWord : sentence.getAspectWords()) {
-              prob *= (model.cntWT.getValue(aspectWord, t) + model.betaAspect)
-                  / (model.sumWT[t] + model.sumBetaAspect + x++);
+              prob *= (model.cntWT.getValue(aspectWord, k) + model.betaAspect)
+                  / (model.sumWT[k] + model.sumBetaAspect + x++);
             }
             x = 0;
             for (Integer sentiWord : sentence.getSentiWords()) {
-              prob *= (model.cntSWT[s].getValue(sentiWord, t) + model.betaSenti[s][sentiWord])
-                  / (model.sumSTW[s][t] + model.sumBetaSenti[s] + x++);
+              prob *= (model.cntSWT[s].getValue(sentiWord, k) + model.betaSenti[s][sentiWord])
+                  / (model.sumSTW[s][k] + model.sumBetaSenti[s] + x++);
             }
-            probTable[t][s] = prob;
+            probTable[k][s] = prob;
             sumProb += prob;
           }
         }
@@ -167,12 +167,12 @@ public class BSGibbsSampler {
       double randNo = Math.random() * sumProb;
       double sumSoFar = 0;
       boolean found = false;
-      for (int ti = 0; ti < model.numTopics; ti++) {
-        for (int si = 0; si < model.numSenti; si++) {
-          sumSoFar += probTable[ti][si];
+      for (int k = 0; k < model.numTopics; k++) {
+        for (int j = 0; j < model.numSenti; j++) {
+          sumSoFar += probTable[k][j];
           if (randNo < sumSoFar) {
-            newTopic = ti;
-            newSenti = si;
+            newTopic = k;
+            newSenti = j;
             found = true;
             break;
           }
@@ -235,7 +235,7 @@ public class BSGibbsSampler {
 
   /**
    * Returns true if the given sentence contains a word of the senti opposite to
-   * the given senti <code>sentiment</code>.
+   * the given <code>sentiment</code>.
    * 
    * @param sentence
    * @param sentiment
@@ -282,11 +282,13 @@ public class BSGibbsSampler {
           model.sumSTW, model.betaSenti, model.sumBetaSenti);
       writePhiSenti(phiSenti, dir + "/PhiSenti.csv");
       printTopSentiWords(phiSenti, dir + "/TopSentiWords.csv");
-      printTopSentiWords(buildTermScoreMatrix(phiSenti, model.numTopics), dir
-          + "/TopSentiWordsByTermScore.csv");
+      printTopSentiWords(buildTermscoreMatrix(phiSenti, model.numTopics), dir
+          + "/TopSentiWordsByTermscore.csv");
       double[][] phiAspect = Inference.computePhiAspect(model.cntWT,
           model.sumWT, model.betaAspect, model.sumBetaAspect);
       printTopAspectWords(phiAspect, dir + "/TopAspectWords.csv");
+      printTopAspectWords(buildTermscore(phiAspect), dir
+          + "/TopAspectWordsByTermscore.csv");
       // TODO(trung): print top aspect words by term score and the phiAspect
       // matrix to csv file
       writeTheta(Inference.computeTheta(model.cntDT, model.sumDT, model.alpha,
@@ -313,7 +315,7 @@ public class BSGibbsSampler {
       if (rating != 3.0 && rating != -1.0) {
         numSubjective++;
         observedSenti = rating > 3.0 ? 0 : 1;
-        inferedSenti = pi.getValue(i, 0) > pi.getValue(i, 1) ? 0 : 1;
+        inferedSenti = pi.getValue(i, 0) >= pi.getValue(i, 1) ? 0 : 1;
         if (observedSenti == inferedSenti) {
           numCorrect++;
         }
@@ -340,8 +342,7 @@ public class BSGibbsSampler {
 
   void writeTheta(double[][] theta, String file) throws IOException {
     PrintWriter out = new PrintWriter(file);
-    for (int s = 0; s < model.numSenti; s++)
-      for (int t = 0; t < model.numTopics; t++)
+    for (int t = 0; t < model.numTopics; t++)
         out.print("T" + t + ",");
     out.println();
     for (int d = 0; d < model.numDocuments; d++) {
@@ -438,7 +439,7 @@ public class BSGibbsSampler {
    * 
    * @return
    */
-  private DoubleMatrix[] buildTermScoreMatrix(DoubleMatrix[] phi, int topics) {
+  private DoubleMatrix[] buildTermscoreMatrix(DoubleMatrix[] phi, int topics) {
     DoubleMatrix[] termScore = new DoubleMatrix[phi.length];
     double sumOfLogs[] = new double[model.numSentiWords];
     // compute the sum of logs for each word
@@ -462,6 +463,26 @@ public class BSGibbsSampler {
       }
     }
     return termScore;
+  }
+
+  private double[][] buildTermscore(double[][] phi) {
+    double[][] termscore = new double[model.numTopics][model.numAspectWords];
+    double sumOfLogs[] = new double[model.numAspectWords];
+    // compute the sum of logs for each word
+    for (int w = 0; w < model.numAspectWords; w++) {
+      sumOfLogs[w] = 0.0;
+      for (int t = 0; t < model.numTopics; t++) {
+        sumOfLogs[w] += Math.log(phi[t][w]);
+      }
+    }
+    for (int t = 0; t < model.numTopics; t++) {
+      for (int w = 0; w < model.numAspectWords; w++) {
+        termscore[t][w] = phi[t][w]
+            * (Math.log(phi[t][w]) - sumOfLogs[w] / model.numTopics);
+      }
+    }
+
+    return termscore;
   }
 
   /**

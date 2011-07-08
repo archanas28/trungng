@@ -28,7 +28,8 @@ import com.aliasi.util.Strings;
 import edu.kaist.uilab.stemmers.EnglishStemmer;
 
 /**
- * Parsers for corpus used in the BS model.
+ * Parsers for corpus used in the BS model. TODO(trung): use stanford parser to
+ * divide into clause rather than sentences.
  * 
  * @author trung
  */
@@ -51,6 +52,9 @@ public class BSCorpusParser {
   ArrayList<Document> mDocuments;
   ArrayList<CharSequence> mCorpusChars;
   ArrayList<Double> mRatings;
+
+  int sentenceCnt = 0;
+  int noSentimentSentenceCnt = 0;
 
   /**
    * Constructor
@@ -118,6 +122,8 @@ public class BSCorpusParser {
     writeWordCount(corpusFile);
     writeTokens(mAspectTable, aspectFile);
     writeTokens(mSentiTable, sentiFile);
+    System.out.printf("Sentences with no sentiment: %d/%d\n",
+        noSentimentSentenceCnt, sentenceCnt);
   }
 
   void writeWordCount(String file) throws IOException {
@@ -250,7 +256,7 @@ public class BSCorpusParser {
       }
     }
     mWordCnt.prune(mMinTokenCount);
-    // pruneTopTokens(mWordCnt, mTopStopWords);
+    pruneTopTokens(mWordCnt, mTopStopWords);
     pruneTokensInManyDocuments(tokDocumentCounter, mTopDocumentTokens);
     // index all remaining words
     Set<String> tokenSet = mWordCnt.keySet();
@@ -289,10 +295,7 @@ public class BSCorpusParser {
    */
   private void pruneTokensInManyDocuments(ObjectToCounterMap<String> counter,
       int percent) {
-    System.out
-        .printf(
-            "Pruning tokens that appear in more than %d percent of the documents\n",
-            percent);
+    System.out.printf("\nPruning tokens appearing in many documents\n");
     int threshold = percent * mCorpusChars.size() / 100;
     int count = 0;
     Iterator<Map.Entry<String, Counter>> iter = counter.entrySet().iterator();
@@ -345,33 +348,30 @@ public class BSCorpusParser {
     String docContent = mCorpusChars.get(docIdx).toString();
     Document document = new Document(mDocuments.size());
     document.setRating(mRatings.get(docIdx));
-    String[] sentences = docContent.split(sentenceDelimiter);
     char[] cs = null;
     Tokenizer tokenizer = null;
+    String[] sentences = docContent.split(sentenceDelimiter);
     for (String sentence : sentences) {
       Sentence sent = new Sentence();
       cs = Strings.toCharArray(sentence);
       tokenizer = mTokenizerFactory.tokenizer(cs, 0, cs.length);
-      if (containsSentiment(tokenizer)) {
-        // TODO(trung): carefully check whether the iterator starts from
-        // beginning since we already traverses in the containsSentiment method
-        for (String token : tokenizer) {
-          int id = mAspectTable.symbolToID(token);
-          if (id >= 0) {
-            sent.addAspectWord(id);
-          }
-          id = mSentiTable.symbolToID(token);
-          if (id >= 0) {
-            sent.addSentiWord(id);
-          }
+      ArrayList<String> tokens = getTokensIfHasSentiment(tokenizer);
+      for (String token : tokens) {
+        int id = mAspectTable.symbolToID(token);
+        if (id >= 0) {
+          sent.addAspectWord(id);
         }
-//        if (sent.length() > 0 && sent.length() < MAX_SENTENCE_LENGTH) {
-//          document.addSentence(sent);
-//        }
-        if (sent.hasAspectAndSenti() && sent.length() < MAX_SENTENCE_LENGTH) {
-          document.addSentence(sent);
+        id = mSentiTable.symbolToID(token);
+        if (id >= 0) {
+          sent.addSentiWord(id);
         }
       }
+      if (sent.length() > 0 && sent.length() < MAX_SENTENCE_LENGTH) {
+        document.addSentence(sent);
+      }
+      // if (sent.hasAspectAndSenti() && sent.length() < MAX_SENTENCE_LENGTH) {
+      // document.addSentence(sent);
+      // }
     }
     if (document.getNumSentences() > 0) {
       mDocuments.add(document);
@@ -387,13 +387,22 @@ public class BSCorpusParser {
    * @param tokenizer
    * @return
    */
-  boolean containsSentiment(Tokenizer tokenizer) {
+  ArrayList<String> getTokensIfHasSentiment(Tokenizer tokenizer) {
+    sentenceCnt++;
+    ArrayList<String> tokens = new ArrayList<String>();
+    boolean hasSentiment = false;
     for (String token : tokenizer) {
+      tokens.add(token);
       if (isSentimentWord(token)) {
-        return true;
+        hasSentiment = true;
       }
     }
-    return false;
+    if (!hasSentiment) {
+      tokens.clear();
+      noSentimentSentenceCnt++;
+    }
+
+    return tokens;
   }
 
   /**
@@ -411,7 +420,7 @@ public class BSCorpusParser {
 
     private BSTokenizerFactory() {
       super(new LowerCaseTokenizerFactory(new RegExTokenizerFactory(
-          "[$a-zA-Z0-9_]+")));
+          "[$a-zA-Z_]+")));
     }
 
     @Override

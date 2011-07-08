@@ -107,7 +107,7 @@ public class WordsBreaker {
 
   public static void main(String args[]) throws Exception {
     WordsBreaker wb = new WordsBreaker();
-    String dir = "C:/datasets/bs/small";
+    String dir = "C:/datasets/bs/big";
     wb.divide(dir + "/docs.txt", dir + "/aspects.txt", dir + "/senti.txt", dir
         + "/common.txt");
   }

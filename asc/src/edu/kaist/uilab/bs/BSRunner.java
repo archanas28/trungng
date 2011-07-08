@@ -12,23 +12,24 @@ public class BSRunner {
 
   public static void main(String args[]) throws IOException {
     String utf8 = "utf-8";
-    String dir = "C:/datasets/bs/small";
+    String dir = "C:/datasets/bs/big";
     String stopFile = "stop_en.txt";
     String sentiStemsFile = "senti.txt";
     String positiveSeeds = "seedstems0.txt";
     String negativeSeeds = "seedstems1.txt";
 
-    int minTokenCount = 3;
-    int topStopWords = 40;
-    int topDocumentTokens = 50;
-    int numTopics = 15;
+    int minTokenCount = 4;
+    int topWordsToRemove = 0;
+    int topDocumentTokens = 40;
+    int numTopics = 70;
     int numSenti = 2;
     double alpha = 0.1;
+//    double alpha = 50.0 / numTopics;
     double betaAspect = 0.001;
-    double[] betaSenti = new double[] { 0.001, 0.001, 0.000000001 };
+    double[] betaSenti = new double[] { 0.001, 0.000000001, 0.001 };
     double[] gammas = new double[] { 1.0, 1.0 };
 
-    int numIters = 2000;
+    int numIters = 1000;
     int burnin = 500;
     int savingInterval = 200;
 
@@ -36,7 +37,7 @@ public class BSRunner {
     HashSet<String> sentiStems = (HashSet<String>) TextFiles.readUniqueLines(
         dir + "/" + sentiStemsFile, utf8);
     BSCorpusParser parser = new BSCorpusParser(dir + "/docs.txt",
-        minTokenCount, topStopWords, topDocumentTokens, sentiStems, stopStems);
+        minTokenCount, topWordsToRemove, topDocumentTokens, sentiStems, stopStems);
     parser.parse();
     parser.reportCorpus(dir + "/wordcount.csv", dir + "/aspectwords.txt", dir
         + "/sentiwords.txt");
@@ -48,6 +49,7 @@ public class BSRunner {
     BSModel model = new BSModel(numTopics, numSenti, sentiTable,
         parser.getAspectSymbolTable(), parser.getDocuments(), seedWords, alpha,
         betaAspect, betaSenti, gammas);
+//    model.extraInfo = "moreSeedWords";
     BSGibbsSampler sampler = new BSGibbsSampler(model);
     sampler.setOutputDir(String.format("%s/T%d-A%.1f-G%.2f,%.2f-I%d", dir,
         numTopics, alpha, gammas[0], gammas[1], numIters));
