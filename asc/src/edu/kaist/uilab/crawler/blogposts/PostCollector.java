@@ -127,7 +127,8 @@ public class PostCollector {
         // TextFiles.writeCollection(urls,
         // String.format("%s/urls_en/%s.%s.txt", DIR, mKeyword, mDomain));
         TextFiles.writeCollection(urls,
-            String.format("%s/urls_fr/%s.%s.txt", DIR, mKeyword, mDomain));
+            String.format("%s/urls_fr/%s.%s.txt", DIR, mKeyword, mDomain),
+            "utf-8");
         System.err.printf("Urls saved to %s.%s.txt\n", mKeyword, mDomain);
       } catch (Exception e) {
         e.printStackTrace();
@@ -242,8 +243,8 @@ public class PostCollector {
   }
 
   public static void main(String args[]) throws Exception {
-//    getUrls();
-//     getBlogposts();
-    
+    // getUrls();
+    // getBlogposts();
+
   }
 }
