@@ -11,16 +11,16 @@ import java.util.Vector;
 public class Document implements Serializable {
 
   private static final long serialVersionUID = -5236933567248150582L;
-  
-  Vector<Sentence> mSentences;
-  int mDocNo;
-  double mRating;
+
+  private Vector<Sentence> mSentences;
+  private int mDocNo;
+  private double mRating;
 
   public Document(int docNo) {
     mSentences = new Vector<Sentence>();
     mDocNo = docNo;
   }
-  
+
   public int getDocNo() {
     return mDocNo;
   }
@@ -28,11 +28,11 @@ public class Document implements Serializable {
   public Vector<Sentence> getSentences() {
     return mSentences;
   }
-  
+
   public int getNumSentences() {
     return mSentences.size();
   }
-  
+
   public void setRating(double rating) {
     mRating = rating;
   }
@@ -41,6 +41,12 @@ public class Document implements Serializable {
     return mRating;
   }
 
+  /**
+   * Adds a sentence to this document.
+   * 
+   * @param sentence
+   *          the sentence
+   */
   public void addSentence(Sentence sentence) {
     mSentences.add(sentence);
   }

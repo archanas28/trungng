@@ -48,6 +48,7 @@ public class BSCorpusParser {
   HashSet<String> mSentiStems;
   SymbolTable mAspectTable;
   SymbolTable mSentiTable;
+  TwogramsCounter mCounter;
   ObjectToCounterMap<String> mWordCnt;
   ArrayList<Document> mDocuments;
   ArrayList<CharSequence> mCorpusChars;
@@ -87,6 +88,7 @@ public class BSCorpusParser {
     mSentiStems = sentiStems;
     mAspectTable = new MapSymbolTable();
     mSentiTable = new MapSymbolTable();
+    mCounter = new TwogramsCounter();
     mWordCnt = new ObjectToCounterMap<String>();
     mCorpusChars = new ArrayList<CharSequence>();
     mDocuments = new ArrayList<Document>();
@@ -183,6 +185,15 @@ public class BSCorpusParser {
    */
   public SymbolTable getSentiSymbolTable() {
     return mSentiTable;
+  }
+
+  /**
+   * Returns the two-grams counter of this corpus.
+   * 
+   * @return
+   */
+  public TwogramsCounter getTwogramsCounter() {
+    return mCounter;
   }
 
   /**
@@ -352,7 +363,7 @@ public class BSCorpusParser {
     Tokenizer tokenizer = null;
     String[] sentences = docContent.split(sentenceDelimiter);
     for (String sentence : sentences) {
-      Sentence sent = new Sentence();
+      Sentence sent = new Sentence(sentence);
       cs = Strings.toCharArray(sentence);
       tokenizer = mTokenizerFactory.tokenizer(cs, 0, cs.length);
       ArrayList<String> tokens = getTokensIfHasSentiment(tokenizer);
@@ -368,9 +379,11 @@ public class BSCorpusParser {
       }
       if (sent.length() > 0 && sent.length() < MAX_SENTENCE_LENGTH) {
         document.addSentence(sent);
+        updatePhraseCount(tokens);
       }
       // if (sent.hasAspectAndSenti() && sent.length() < MAX_SENTENCE_LENGTH) {
       // document.addSentence(sent);
+      // updatePhraseCount(tokens);
       // }
     }
     if (document.getNumSentences() > 0) {
@@ -379,6 +392,18 @@ public class BSCorpusParser {
       document = null;
     }
     return document;
+  }
+
+  /**
+   * Update counts for phrase in the given words of a sentence.
+   * 
+   * @param words
+   */
+  private void updatePhraseCount(ArrayList<String> words) {
+    int size = words.size();
+    for (int idx = 0; idx < size - 1; idx++) {
+      mCounter.addOrIncreases(words.get(idx), words.get(idx + 1));
+    }
   }
 
   /**

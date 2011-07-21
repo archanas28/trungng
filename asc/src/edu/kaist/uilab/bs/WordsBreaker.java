@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
@@ -16,9 +17,19 @@ import edu.stanford.nlp.tagger.maxent.MaxentTagger;
 
 /**
  * Breaks the words in a corpus into two sets, the aspect-indicating words and
- * the sentiment-indicating words. TODO(trung): one potential issue is words
- * that have multiple functions. Looking at the words it seems that most of them
- * are indeed adj. For now we consider them as adjective.
+ * the sentiment-indicating words.
+ * <p>
+ * Two ways to deal with words that have multiple functions are.
+ * <ul>
+ * <li>Treat the word as a sentiment word, not allowing to be in the aspect
+ * words category.</li>
+ * <li>Choose as the category the function which is more frequently associated
+ * with the word. If equals then treat the word as a sentiment word.</li>
+ * </ul>
+ * 
+ * <p> Based on the document-level sentiment classification task, it seems that
+ * the model is not sensitive to the 2 different settings. If that is the case,
+ * use approach 2 as it is more efficient in terms of time and memory space.
  * 
  * @author trung
  */
@@ -31,8 +42,8 @@ public class WordsBreaker {
   private static String model = "D:/java-libs/stanford-postagger-2010-05-26/models/left3words-wsj-0-18.tagger";
 
   private MaxentTagger tagger;
-  private HashSet<String> sentiWords;
-  private HashSet<String> aspectWords;
+  private HashMap<String, Integer> sentiWords;
+  private HashMap<String, Integer> aspectWords;
   private EnglishStemmer stemmer;
 
   public WordsBreaker() throws Exception {
@@ -41,8 +52,8 @@ public class WordsBreaker {
 
   public WordsBreaker(String model) throws Exception {
     tagger = new MaxentTagger(model);
-    sentiWords = new HashSet<String>();
-    aspectWords = new HashSet<String>();
+    sentiWords = new HashMap<String, Integer>();
+    aspectWords = new HashMap<String, Integer>();
     stemmer = new EnglishStemmer();
   }
 
@@ -62,12 +73,39 @@ public class WordsBreaker {
       tagDocument(in.readLine());
     }
     in.close();
-    HashSet<String> copy = new HashSet<String>(aspectWords);
-    aspectWords.removeAll(sentiWords);
-    TextFiles.writeCollection(sentiWords, sentiWordsFile, UTF8);
-    TextFiles.writeCollection(aspectWords, aspectWordsFile, UTF8);
-    copy.retainAll(sentiWords);
-    TextFiles.writeCollection(copy, commonWordsFile, UTF8);
+    HashSet<String> commonWords = new HashSet<String>(sentiWords.keySet());
+    commonWords.retainAll(aspectWords.keySet());
+    TextFiles.writeCollection(commonWords, commonWordsFile, UTF8);
+    categorizeCommonWords1(commonWords);
+//    categorizeCommonWords2(commonWords);
+//    TextFiles.writeCollection(sentiWords.keySet(), sentiWordsFile, UTF8);
+//    TextFiles.writeCollection(aspectWords.keySet(), aspectWordsFile, UTF8);
+  }
+
+  /**
+   * Categorizes the common words using the first approach.
+   * 
+   * @param commonWords
+   */
+  @SuppressWarnings("unused")
+  private void categorizeCommonWords1(HashSet<String> commonWords) {
+    aspectWords.keySet().removeAll(commonWords);
+  }
+
+  /**
+   * Categorizes the common words using the second approach.
+   */
+  @SuppressWarnings("unused")
+  private void categorizeCommonWords2(HashSet<String> commonWords) {
+    for (String word : commonWords) {
+      int sentiCnt = sentiWords.get(word);
+      int aspectCnt = aspectWords.get(word);
+      if (sentiCnt < aspectCnt) {
+        sentiWords.remove(word);
+      } else {
+        aspectWords.remove(word);
+      }
+    }
   }
 
   public void tagDocument(String document) {
@@ -79,18 +117,24 @@ public class WordsBreaker {
         String stem = stemmer.getStem(tWord.word().toLowerCase());
         if (stem.length() < 2)
           continue;
+        Integer count = null;
         if (isSentiTag(tWord.tag())) {
-          sentiWords.add(stem);
+          count = sentiWords.get(stem);
+          if (count == null) {
+            sentiWords.put(stem, 0);
+          } else {
+            sentiWords.put(stem, count + 1);
+          }
         } else {
-          aspectWords.add(stem);
+          count = aspectWords.get(stem);
+          if (count == null) {
+            aspectWords.put(stem, 0);
+          } else {
+            aspectWords.put(stem, count + 1);
+          }
         }
       }
     }
-  }
-
-  void test() {
-    System.out.println(tagger.tagString("The battery is not good"));
-    System.out.println(tagger.tagString("The battery is notgood"));
   }
 
   /*
@@ -107,8 +151,11 @@ public class WordsBreaker {
 
   public static void main(String args[]) throws Exception {
     WordsBreaker wb = new WordsBreaker();
-    String dir = "C:/datasets/bs/big";
-    wb.divide(dir + "/docs.txt", dir + "/aspects.txt", dir + "/senti.txt", dir
-        + "/common.txt");
+    String dir = "C:/datasets/bs/movies";
+    wb.divide(dir + "/docs.txt", dir + "/aspects.txt", dir + "/senti.txt",
+        dir + "/common.txt");
+    // wb.divide(dir + "/docs.txt", dir + "/aspects_adj.txt", dir +
+    // "/senti_adj.txt", dir
+    // + "/common_adj.txt");
   }
 }
