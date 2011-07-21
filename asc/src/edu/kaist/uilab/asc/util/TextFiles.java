@@ -188,12 +188,12 @@ public class TextFiles {
    * @return
    */
   public static Collection<String> readUniqueLinesAsLowerCase(String fileName)
-      throws Exception {
+      throws IOException {
     HashSet<String> words = new HashSet<String>();
     BufferedReader reader = new BufferedReader(new FileReader(fileName));
     String line;
     while ((line = reader.readLine()) != null) {
-      words.add(line);
+      words.add(line.toLowerCase());
     }
     reader.close();
 

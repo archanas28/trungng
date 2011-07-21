@@ -365,12 +365,28 @@ public class MiscUtils {
     out.close();
   }
 
+  // convert all yelp reviews into a corpus file
+  static void yelpReviewsToCorpus() throws IOException {
+    File yelpDir = new File("C:/datasets/bs/Yelp");
+    PrintWriter out = new PrintWriter("C:/datasets/bs/restaurants/docs.txt");
+    for (File file : yelpDir.listFiles()) {
+      BufferedReader in = new BufferedReader(new FileReader(file));
+      String id = in.readLine().substring("ReviewID: ".length());
+      System.out.println(id);
+      in.readLine(); // ignore reviewer id
+      String rating = in.readLine().substring("Rating: ".length());
+      in.readLine(); // ignore restaurant
+      in.readLine(); // ignore category
+      out.println(id);
+      out.println(rating);
+      out.println(in.readLine()); // review content
+      in.close();
+    }
+    out.close();
+  }
+  
   public static void main(String args[]) throws Exception {
-    System.out.println(Math.exp(0.5));
-    System.out.println(Math.exp(1.0));
-    System.out.println(Math.exp(1.2));
-    System.out.println(Math.exp(1.5));
-    System.out.println(Math.log(0.0001));
+    yelpReviewsToCorpus();
 //    String dir = "C:/datasets/asc/ldatest/europarl";
 //    writeDocuments(dir + "/data/europarl_en.txt", dir + "/docs_en3000.txt", 3000);
 //    writeDocuments(dir + "/data/europarl_fr.txt", dir + "/docs_other3000.txt", 3000);
