@@ -18,6 +18,7 @@ import org.htmlparser.tags.ImageTag;
 import org.htmlparser.util.NodeList;
 import org.htmlparser.util.ParserException;
 
+import edu.kaist.uilab.asc.data.Review;
 import edu.kaist.uilab.asc.util.TextFiles;
 
 /**

@@ -9,6 +9,8 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
+import edu.kaist.uilab.asc.data.Review;
+
 public class Dataset {
 
   static void getBalancedDataset() throws Exception {
@@ -43,7 +45,7 @@ public class Dataset {
         } catch (NumberFormatException e) {
           review = new Review(source, -1.0, content);
         }
-        words = review.mContent.split("[; ,.\t!':]");
+        words = review.getContent().split("[; ,.\t!':]");
         if (words.length > 20) {
           reviews.add(review);
         }
@@ -62,11 +64,11 @@ public class Dataset {
 //        new FileOutputStream(inputDir + "/docs_en.txt", false), "utf-8"));
      new FileOutputStream(inputDir + "/docs_other.txt", false), "utf-8"));
     for (Review review : reviews) {
-      if (review.mRating >= 0) {
-        if (review.mRating > 3.0 && numPos > 0) {
+      if (review.getRating() >= 0) {
+        if (review.getRating() > 3.0 && numPos > 0) {
           out.print(review);
           numPos--;
-        } else if (review.mRating < 3.0 && numNeg > 0) {
+        } else if (review.getRating() < 3.0 && numNeg > 0) {
           out.print(review);
           numNeg--;
         } else if (numNeutral > 0) {
@@ -112,7 +114,7 @@ public class Dataset {
         } catch (NumberFormatException e) {
           review = new Review(source, -1.0, content);
         }
-        words = review.mContent.split("[,.\t]");
+        words = review.getContent().split("[,.\t]");
         if (words.length > 15) {
           reviews.add(review);
         }

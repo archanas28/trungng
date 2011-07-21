@@ -13,6 +13,8 @@ import org.htmlparser.tags.CompositeTag;
 import org.htmlparser.util.NodeList;
 import org.htmlparser.util.ParserException;
 
+import edu.kaist.uilab.asc.data.Review;
+
 /**
  * Collecting reviews in English.
  * 

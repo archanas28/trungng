@@ -11,6 +11,8 @@ import org.htmlparser.filters.HasAttributeFilter;
 import org.htmlparser.util.NodeList;
 import org.htmlparser.util.ParserException;
 
+import edu.kaist.uilab.asc.data.Review;
+
 /**
  * Collecting reviews in french.
  * 
