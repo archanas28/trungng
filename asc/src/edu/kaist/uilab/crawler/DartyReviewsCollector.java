@@ -155,7 +155,7 @@ public class DartyReviewsCollector {
     if (nl.size() > 0) {
       content = nl.elementAt(0).toPlainTextString();
     }
-    out.print(new Review(productLink, rating, content));
+    out.print(new Review(productLink, null, rating, content));
     System.out.println(content);
   }
 

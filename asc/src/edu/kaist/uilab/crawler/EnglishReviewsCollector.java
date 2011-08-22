@@ -93,7 +93,7 @@ public class EnglishReviewsCollector {
       if (list.size() > 0) {
         content = normalizeContent(list.elementAt(0).toPlainTextString().trim());
       }
-      out.print(new Review(source, rating, content));
+      out.print(new Review(source, null, rating, content));
     }
   }
 

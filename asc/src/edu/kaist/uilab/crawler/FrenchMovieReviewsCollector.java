@@ -90,7 +90,7 @@ public class FrenchMovieReviewsCollector {
         // the first <p class="fs11"> element is empty
         content = normalizeContent(list.elementAt(1).toPlainTextString().trim());
       }
-      out.print(new Review(source, rating, content));
+      out.print(new Review(source, null, rating, content));
     }
   }
 

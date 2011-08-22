@@ -41,9 +41,9 @@ public class Dataset {
         rating = in.readLine();
         content = in.readLine();
         try {
-          review = new Review(source, Double.parseDouble(rating), content);
+          review = new Review(source, null, Double.parseDouble(rating), content);
         } catch (NumberFormatException e) {
-          review = new Review(source, -1.0, content);
+          review = new Review(source, null, -1.0, content);
         }
         words = review.getContent().split("[; ,.\t!':]");
         if (words.length > 20) {
@@ -110,9 +110,9 @@ public class Dataset {
         rating = in.readLine();
         content = in.readLine();
         try {
-          review = new Review(source, Double.parseDouble(rating), content);
+          review = new Review(source, null, Double.parseDouble(rating), content);
         } catch (NumberFormatException e) {
-          review = new Review(source, -1.0, content);
+          review = new Review(source, null, -1.0, content);
         }
         words = review.getContent().split("[,.\t]");
         if (words.length > 15) {
