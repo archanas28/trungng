@@ -2,8 +2,8 @@ package edu.kaist.uilab.asc.data;
 
 /**
  * A review to be stored in the dataset.
- * 
- * <p> Each review contains:
+ * <p>
+ * Each review contains:
  * <li>rating (if available)
  * <li>url (source of the review if available)
  * <li>content
@@ -13,32 +13,35 @@ package edu.kaist.uilab.asc.data;
  */
 public class Review {
   public static final double NO_RATING = -1.0;
-  
+
   private Double mRating;
-  String mSource;
+  String mReviewId;
+  String mRestaurantId;
   private String mContent;
-  
+
   /**
    * Constructor
-   * 
-   * <p> <code>rating</code> and <code>source</code> should be null if not available.
+   * <p>
+   * All parameters that are not available must be null.
    * 
    * @param rating
-   * @param source
+   * @param reviewId
    * @param content
    */
-  public Review(String source, Double rating, String content) {
-    if (rating != null) {
-      mRating = rating;
-    } else {
-      mRating = NO_RATING;
-    }
-    if (source != null) {
-      mSource = source;
-    } else {
-      source = "";
-    }
+  public Review(String reviewId, String restaurantId, Double rating,
+      String content) {
+    mRating = rating != null ? rating : NO_RATING;
+    mReviewId = reviewId != null ? reviewId : "";
+    mRestaurantId = restaurantId != null ? restaurantId : "";
     mContent = content;
+  }
+
+  public String getReviewId() {
+    return mReviewId;
+  }
+
+  public String getRestaurantId() {
+    return mRestaurantId;
   }
   
   public Double getRating() {
@@ -55,6 +58,7 @@ public class Review {
    * a text file.
    */
   public String toString() {
-    return String.format("%s\n%.1f\n%s\n", mSource, mRating, mContent);
+    return String.format("%s %s\n%.1f\n%s\n", mReviewId, mRestaurantId,
+        mRating, mContent);
   }
 }

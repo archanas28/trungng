@@ -15,8 +15,9 @@ public class Sentence implements Serializable {
   private static final long serialVersionUID = 6117469973757059170L;
   
   private Vector<SamplingWord> words;
-  private TreeMap<SamplingWord, Integer> wordCnt; // Somehow HashMap doesn't work
-                                          // correctly
+  private TreeMap<SamplingWord, Integer> wordCnt;
+  private String text;
+  
   private int topic = -1;
   private int senti = -1;
 
@@ -44,6 +45,10 @@ public class Sentence implements Serializable {
   public Vector<SamplingWord> getWords() {
     return words;
   }
+  
+  public SamplingWord getWord() {
+    return words.get(0);
+  }
 
   public TreeMap<SamplingWord, Integer> getWordCnt() {
     return wordCnt;
@@ -57,6 +62,14 @@ public class Sentence implements Serializable {
     return senti;
   }
 
+  public String getText() {
+    return text;
+  }
+  
+  public void setText(String text) {
+    this.text = text;
+  }
+  
   public void setTopic(int topic) {
     this.topic = topic;
   }
