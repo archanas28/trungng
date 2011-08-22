@@ -20,7 +20,7 @@ import com.aliasi.tokenizer.RegExTokenizerFactory;
 import com.aliasi.tokenizer.TokenFeatureExtractor;
 import com.aliasi.util.FeatureExtractor;
 
-import edu.kaist.uilab.bs.BSCorpusParser;
+import edu.kaist.uilab.bs.CorpusParser;
 
 public class MaxentClassifier {
   private static final String POSITIVE = "Positive";
@@ -44,7 +44,7 @@ public class MaxentClassifier {
       for (int i = 0; i < numSentences; i++) {
         line = in.readLine();
         int pos = line.indexOf(",");
-        String sentence = BSCorpusParser.replacePatterns(line
+        String sentence = CorpusParser.replacePatterns(line
             .substring(pos + 1).trim());
         String sentiment = line.substring(0, pos);
         if (sentiment.equalsIgnoreCase(POSITIVE)

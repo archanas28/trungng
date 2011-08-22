@@ -34,7 +34,7 @@ import edu.kaist.uilab.stemmers.EnglishStemmer;
  * 
  * @author trung
  */
-public class BSCorpusParser {
+public class CorpusParser {
 
   private static final String UTF8 = "utf-8";
   private static final String sentenceDelimiter = "[.!?\\n]";
@@ -77,7 +77,7 @@ public class BSCorpusParser {
    *          the list of stop words (in addition to the standard stop words
    *          used in lingpipe)
    */
-  public BSCorpusParser(String corpus, int minTokenCount, int topStopWords,
+  public CorpusParser(String corpus, int minTokenCount, int topStopWords,
       int topDocumentTokens, HashSet<String> sentiStems, List<String> stopStems) {
     mCorpus = corpus;
     mMinTokenCount = minTokenCount;

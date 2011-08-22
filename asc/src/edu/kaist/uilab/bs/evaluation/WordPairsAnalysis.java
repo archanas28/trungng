@@ -14,7 +14,7 @@ import com.aliasi.util.Counter;
 import com.aliasi.util.ObjectToCounterMap;
 
 import edu.kaist.uilab.asc.data.Review;
-import edu.kaist.uilab.bs.BSModel;
+import edu.kaist.uilab.bs.Model;
 import edu.kaist.uilab.bs.Document;
 import edu.kaist.uilab.bs.DocumentUtils;
 import edu.kaist.uilab.bs.MaxentTaggerSingleton;
@@ -201,7 +201,7 @@ public class WordPairsAnalysis {
    * 
    * @param model
    */
-  public void summarizeByWordPairs(BSModel model,
+  public void summarizeByWordPairs(Model model,
       HashMap<String, ArrayList<Review>> map, int numSamples, String output)
       throws IOException {
     int numTopWords = 100;
@@ -378,7 +378,7 @@ public class WordPairsAnalysis {
     HashMap<String, ArrayList<Review>> map = ursa.getReviews();
     String dir = "C:/datasets/bs/ursa/T2-A0.1-B0.0010-G0.10,0.10-I1000(improvedParser)/1000";
     System.out.println("Loading model at " + dir);
-    BSModel model = BSModel.loadModel(dir + "/model.gz");
+    Model model = Model.loadModel(dir + "/model.gz");
     wp.summarizeByWordPairs(model, map, 200, dir + "/wordpairs");
 
     // ArrayList<String> documents = new ArrayList<String>();

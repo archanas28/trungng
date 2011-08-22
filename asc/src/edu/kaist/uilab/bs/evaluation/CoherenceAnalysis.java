@@ -6,7 +6,7 @@ import java.io.PrintWriter;
 import com.aliasi.symbol.SymbolTable;
 
 import edu.kaist.uilab.asc.util.DoubleMatrix;
-import edu.kaist.uilab.bs.BSModel;
+import edu.kaist.uilab.bs.Model;
 import edu.kaist.uilab.bs.TwogramsCounter;
 
 /**
@@ -15,8 +15,8 @@ import edu.kaist.uilab.bs.TwogramsCounter;
  * @author trung
  */
 public class CoherenceAnalysis {
-  BSModel sentiModel;
-  BSModel aspectModel;
+  Model sentiModel;
+  Model aspectModel;
   SymbolTable sentiTable;
   int[][][] sentiIndice;
   SymbolTable aspectTable;
@@ -24,7 +24,7 @@ public class CoherenceAnalysis {
   DoubleMatrix[] phiSenti;
   double[][] phiAspect;
 
-  public CoherenceAnalysis(BSModel sentiModel, BSModel aspectModel) {
+  public CoherenceAnalysis(Model sentiModel, Model aspectModel) {
     this.sentiModel = sentiModel;
     this.aspectModel = aspectModel;
     phiSenti = sentiModel.getPhiSentiByTermscore();
@@ -44,7 +44,7 @@ public class CoherenceAnalysis {
    * @param aspectWords
    * @param sentiWords
    */
-  public static void writeWithinCorpusTopicCoherence(String dir, BSModel model)
+  public static void writeWithinCorpusTopicCoherence(String dir, Model model)
       throws IOException {
     int nSenti[] = new int[] { 25, 50 };
     int nAspect[] = new int[] { 25, 50 };
@@ -247,7 +247,7 @@ public class CoherenceAnalysis {
   }
 
   public static void dealingWithCamera(String dir) throws IOException {
-    BSModel small = BSModel.loadModel(dir + "/model.gz");
+    Model small = Model.loadModel(dir + "/model.gz");
     CoherenceAnalysis c = new CoherenceAnalysis(small, small);
     c.writeWithinCorpusTopicCoherence(dir);
   }

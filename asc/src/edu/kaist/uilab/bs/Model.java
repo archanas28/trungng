@@ -26,7 +26,7 @@ import edu.kaist.uilab.asc.util.Utils;
  * 
  * @author trung
  */
-public class BSModel implements Serializable {
+public class Model implements Serializable {
 
   private static final long serialVersionUID = 1L;
   private int numProbWords = 100;
@@ -78,7 +78,7 @@ public class BSModel implements Serializable {
    * @param betaSenti
    * @param gammas
    */
-  public BSModel(int numTopics, int numSenti, SymbolTable sentiTable,
+  public Model(int numTopics, int numSenti, SymbolTable sentiTable,
       SymbolTable aspectTable, TwogramsCounter counter,
       List<Document> documents, HashSet<Integer>[] seedWords, double alpha,
       double betaAspect, double[] betaSenti, double[] gammas) {
@@ -171,13 +171,13 @@ public class BSModel implements Serializable {
    * 
    * @param savedModel
    */
-  public static BSModel loadModel(String savedModel) {
-    BSModel model = null;
+  public static Model loadModel(String savedModel) {
+    Model model = null;
     ObjectInputStream in = null;
     try {
       System.err.println("Loading model");
       in = new ObjectInputStream(new FileInputStream(savedModel));
-      model = (BSModel) in.readObject();
+      model = (Model) in.readObject();
       model.isExisting = true;
       in.close();
     } catch (ClassNotFoundException e) {

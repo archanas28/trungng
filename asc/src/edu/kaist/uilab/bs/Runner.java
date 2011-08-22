@@ -14,7 +14,7 @@ import com.aliasi.symbol.SymbolTable;
 
 import edu.kaist.uilab.asc.util.TextFiles;
 
-public class BSRunner {
+public class Runner {
 
   public static void main(String args[]) throws Exception {
     runNewTraining();
@@ -53,7 +53,7 @@ public class BSRunner {
     // BSCorpusParser parser = new BSCorpusParser(dir + "/docs.txt",
     // minTokenCount, topWordsToRemove, topDocumentTokens, sentiStems,
     // stopStems);
-    BSCorpusParserWithTagger parser = new BSCorpusParserWithTagger(dir
+    CorpusParserWithTagger parser = new CorpusParserWithTagger(dir
         + "/docs.txt", minTokenCount, topWordsToRemove,
         topDocumentTokens, stopStems);
     parser.parse();
@@ -64,22 +64,22 @@ public class BSRunner {
     SymbolTable sentiTable = parser.getSentiSymbolTable();
     seedWords[0] = loadSeedWords(sentiTable, dir + "/" + positiveSeeds);
     seedWords[1] = loadSeedWords(sentiTable, dir + "/" + negativeSeeds);
-    BSModel model = new BSModel(numTopics, numSenti, sentiTable,
+    Model model = new Model(numTopics, numSenti, sentiTable,
         parser.getAspectSymbolTable(), parser.getTwogramsCounter(),
         parser.getDocuments(), seedWords, alpha, betaAspect, betaSenti, gammas);
     // model
     // .setAnnotatedDocuments(getAnnotatedDocuments(dir + "/" + annotatedFile));
     model.extraInfo = "improvedParser";
-    BSGibbsSampler sampler = new BSGibbsSampler(model);
+    GibbsSampler sampler = new GibbsSampler(model);
     sampler.setOutputDir(String.format("%s/T%d-A%.1f-B%.4f-G%.2f,%.2f-I%d",
         dir, numTopics, alpha, betaAspect, gammas[0], gammas[1], numIters));
     sampler.gibbsSampling(numIters, 0, savingInterval, burnin);
   }
 
   static void runExistingTraining() throws IOException {
-    BSModel model = BSModel
+    Model model = Model
         .loadModel("C:/datasets/bs/small/T30-A0.1-B0.0010-G5.00,0.10-I1000(adjsenti)/1000/model.gz");
-    BSGibbsSampler sampler = new BSGibbsSampler(model);
+    GibbsSampler sampler = new GibbsSampler(model);
     int maxIters = 2500;
     int startingIter = 1000;
     int savingInterval = 200;

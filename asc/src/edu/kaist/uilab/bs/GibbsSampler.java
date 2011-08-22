@@ -10,17 +10,17 @@ import java.io.ObjectOutputStream;
  * 
  * @author trung
  */
-public class BSGibbsSampler {
-  private BSModel model;
+public class GibbsSampler {
+  private Model model;
 
   /**
    * Creates a Gibbs sampler with the given model.
    */
-  public BSGibbsSampler(BSModel model) {
+  public GibbsSampler(Model model) {
     this.model = model;
   }
 
-  public BSModel getModel() {
+  public Model getModel() {
     return model;
   }
   

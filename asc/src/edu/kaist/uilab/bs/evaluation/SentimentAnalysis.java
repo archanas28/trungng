@@ -5,13 +5,13 @@ import java.io.PrintWriter;
 import java.util.List;
 
 import edu.kaist.uilab.asc.util.DoubleMatrix;
-import edu.kaist.uilab.bs.BSModel;
+import edu.kaist.uilab.bs.Model;
 import edu.kaist.uilab.bs.Document;
 
 public class SentimentAnalysis {
 
   static void run(String dir) throws IOException {
-    BSModel model = BSModel.loadModel(dir + "/model.gz");
+    Model model = Model.loadModel(dir + "/model.gz");
     DoubleMatrix pi = model.getPi();
     int numPosCorrect = 0, numNegCorrect = 0;
     int numPosWrong = 0, numNegWrong = 0;

@@ -35,7 +35,7 @@ import edu.stanford.nlp.tagger.maxent.MaxentTagger;
  * 
  * @author trung
  */
-public class BSCorpusParserWithTagger {
+public class CorpusParserWithTagger {
 
   private static final int MAX_SENTENCE_LENGTH = 40;
   private static final String UTF8 = "utf-8";
@@ -82,7 +82,7 @@ public class BSCorpusParserWithTagger {
    *          the list of stop words (in addition to the standard stop words
    *          used in lingpipe)
    */
-  public BSCorpusParserWithTagger(String corpus, int minTokenCount,
+  public CorpusParserWithTagger(String corpus, int minTokenCount,
       int topStopWords, int topDocumentTokens, List<String> stopStems)
       throws Exception {
     mCorpus = corpus;

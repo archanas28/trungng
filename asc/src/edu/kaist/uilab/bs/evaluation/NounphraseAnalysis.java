@@ -12,7 +12,7 @@ import com.aliasi.symbol.SymbolTable;
 import edu.kaist.uilab.asc.util.DoubleMatrix;
 import edu.kaist.uilab.asc.util.SentiWordNet;
 import edu.kaist.uilab.asc.util.TextFiles;
-import edu.kaist.uilab.bs.BSModel;
+import edu.kaist.uilab.bs.Model;
 import edu.kaist.uilab.stemmers.EnglishStemmer;
 import edu.stanford.nlp.tagger.maxent.MaxentTagger;
 
@@ -85,7 +85,7 @@ public class NounphraseAnalysis {
     }
     HashSet<String> adjs = new HashSet<String>(positiveAdjs);
     adjs.addAll(negativeAdjs);
-    BSModel model = BSModel.loadModel(dir
+    Model model = Model.loadModel(dir
         + "/ursa/T50-A0.1-B0.0010-G0.10,0.10-I1000(newstop)/800/model.gz");
     int numWords = 100; // top words to take
     String[][][] sentiWords = model.getTopSentiWords(numWords);
@@ -162,7 +162,7 @@ public class NounphraseAnalysis {
     }
     HashSet<String> adjs = new HashSet<String>(positiveAdjs);
     adjs.addAll(negativeAdjs);
-    BSModel model = BSModel.loadModel(dir
+    Model model = Model.loadModel(dir
         + "/ursa/T50-A0.1-B0.0010-G0.10,0.10-I1000(newstop)/800/model.gz");
     DoubleMatrix[] phi = model.getPhiSentiByTermscore();
     int numWords = 100; // top words to take
@@ -280,7 +280,7 @@ public class NounphraseAnalysis {
         .readUniqueLinesAsLowerCase(dir + "/pos.data");
     HashSet<String> negPhrases = (HashSet<String>) TextFiles
         .readUniqueLinesAsLowerCase(dir + "/neg.data");
-    BSModel model = BSModel.loadModel(dir
+    Model model = Model.loadModel(dir
         + "/ursa/T50-A0.1-B0.0010-G0.10,0.10-I1000(top50)/1000/model.gz");
     System.err.println("\nClassification using model:");
     posPhrases.removeAll(classify(model, posPhrases, "positive", 0));
@@ -291,7 +291,7 @@ public class NounphraseAnalysis {
     classifyByWordnet(negPhrases, "negative", 1);
   }
 
-  static HashSet<String> classify(BSModel model, HashSet<String> phrases,
+  static HashSet<String> classify(Model model, HashSet<String> phrases,
       String sentiClass, int senti) {
     int numWords = 100;
     System.out.println("Using " + numWords + " words");
