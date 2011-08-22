@@ -11,7 +11,7 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
-import edu.kaist.uilab.bs.BSModel;
+import edu.kaist.uilab.bs.Model;
 import edu.kaist.uilab.stemmers.EnglishStemmer;
 
 public class SentiWordNet {
@@ -109,9 +109,9 @@ public class SentiWordNet {
     allPhrases.addAll(negPhrases);
     ArrayList<String> words;
     SentiWordNet wn = new SentiWordNet();
-    BSModel model = BSModel.loadModel(dir
+    Model model = Model.loadModel(dir
         + "/restaurants/T50-A0.1-B0.0010-G1.00,0.10-I1000()--84/1000/model.gz");
-    String[][] w = model.getTopAspectWords();
+    String[][] w = model.getTopAspectWords(50);
     HashSet<String> aspectWords = new HashSet<String>();
     for (String[] topicWords : w) {
       for (String topicWord : topicWords) {

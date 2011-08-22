@@ -24,10 +24,10 @@ public class MiscUtils {
   private static final String UTF8 = "utf-8";
 
   static void amazonToCategories() throws IOException {
-    String amazon = "C:/datasets/asc/ASUM/Amazon";
-    String cats = "C:/datasets/asc/ASUM/Categories";
+    String amazon = "C:/datasets/ASUM/Amazon";
+    String cats = "C:/datasets/ASUM/Categories";
     String[] categories = new String[] { "MP3Players", "CoffeeMachines",
-        "CanisterVacuums", };
+        "CanisterVacuums", "Laptops", "DigitalSLRs", "AirConditioners", "SpaceHeaters"};
     HashMap<String, PrintWriter> map = new HashMap<String, PrintWriter>();
     for (String c : categories) {
       map.put(c, new PrintWriter(cats + "/" + c + ".txt"));
@@ -169,8 +169,8 @@ public class MiscUtils {
     // + "/SentiStems-1_en.txt", "utf-8", new EnglishStemmer());
     // Utils.wordsToStems(dir + "/SentiWords-0_fr.txt", dir
     // + "/SentiStems-0_fr.txt", "utf-8", new FrenchStemmer());
-    Utils.wordsToStems(dir + "/en.txt", dir
-        + "/enstem.txt", "utf-8", new EnglishStemmer());
+    Utils.wordsToStems(dir + "/en.txt", dir + "/enstem.txt", "utf-8",
+        new EnglishStemmer());
   }
 
   /*
@@ -384,11 +384,14 @@ public class MiscUtils {
     }
     out.close();
   }
-  
+
   public static void main(String args[]) throws Exception {
-    yelpReviewsToCorpus();
-//    String dir = "C:/datasets/asc/ldatest/europarl";
-//    writeDocuments(dir + "/data/europarl_en.txt", dir + "/docs_en3000.txt", 3000);
-//    writeDocuments(dir + "/data/europarl_fr.txt", dir + "/docs_other3000.txt", 3000);
+    amazonToCategories();
+    // yelpReviewsToCorpus();
+    // String dir = "C:/datasets/asc/ldatest/europarl";
+    // writeDocuments(dir + "/data/europarl_en.txt", dir + "/docs_en3000.txt",
+    // 3000);
+    // writeDocuments(dir + "/data/europarl_fr.txt", dir +
+    // "/docs_other3000.txt", 3000);
   }
 }

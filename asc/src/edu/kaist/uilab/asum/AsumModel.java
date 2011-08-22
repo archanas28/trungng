@@ -35,7 +35,7 @@ import edu.kaist.uilab.asc.data.SentiWord;
 import edu.kaist.uilab.asc.util.DoubleMatrix;
 import edu.kaist.uilab.asc.util.IntegerMatrix;
 import edu.kaist.uilab.asc.util.TextFiles;
-import edu.kaist.uilab.bs.BSCorpusParser;
+import edu.kaist.uilab.bs.CorpusParser;
 import edu.kaist.uilab.bs.TwogramsCounter;
 
 public class AsumModel {
@@ -100,7 +100,7 @@ public class AsumModel {
     List<String> stopStems = TextFiles.readLines(dir + "/" + stopFile, utf8);
     HashSet<String> sentiStems = (HashSet<String>) TextFiles.readUniqueLines(
         dir + "/" + sentiStemsFile, utf8);
-    BSCorpusParser parser = new BSCorpusParser(dir + "/docs_en.txt", 4, 0, 70,
+    CorpusParser parser = new CorpusParser(dir + "/docs_en.txt", 4, 0, 70,
         sentiStems, stopStems);
     parser.parse();
 
