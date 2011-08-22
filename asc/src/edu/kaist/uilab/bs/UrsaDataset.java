@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map.Entry;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -28,31 +30,47 @@ public class UrsaDataset {
   /**
    * Converts all xml reviews into one text file.
    */
-  private static void xmlsToText() {
-    String xmlDir = "C:/datasets/ursa/citysearch_data";
+  public void xmlsToText() {
     String textFile = "C:/datasets/bs/ursa/docs.txt";
-    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
     try {
       PrintWriter out = new PrintWriter(new OutputStreamWriter(
           new FileOutputStream(textFile), "utf-8"));
-      DocumentBuilder db = dbf.newDocumentBuilder();
-      File dir = new File(xmlDir);
-      for (File xmlFile : dir.listFiles()) {
-        System.out.println(xmlFile.getName());
-        Document doc = db.parse(xmlFile);
-        ArrayList<Review> reviews = documentToReview(doc);
+      HashMap<String, ArrayList<Review>> map = getReviews();
+      for (Entry<String, ArrayList<Review>> entry : map.entrySet()) {
+        ArrayList<Review> reviews = entry.getValue();
         for (Review review : reviews) {
           out.print(review);
         }
       }
       out.close();
-    } catch (ParserConfigurationException e) {
-      e.printStackTrace();
-    } catch (SAXException e) {
-      e.printStackTrace();
-    } catch (IOException e) {
+    } catch (Exception e) {
       e.printStackTrace();
     }
+  }
+
+  /**
+   * Returns a map between a restaurant (id) and all of its reviews.
+   * 
+   * @return
+   */
+  public HashMap<String, ArrayList<Review>> getReviews() {
+    HashMap<String, ArrayList<Review>> map = new HashMap<String, ArrayList<Review>>();
+    String xmlDir = "C:/datasets/ursa/citysearch_data";
+    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+    try {
+      DocumentBuilder db = dbf.newDocumentBuilder();
+      File dir = new File(xmlDir);
+      for (File xmlFile : dir.listFiles()) {
+        Document doc = db.parse(xmlFile);
+        String name = xmlFile.getName();
+        String restaurantId = name.substring(0, name.length() - 4);
+        map.put(restaurantId, documentToReviews(restaurantId, doc));
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
+    return map;
   }
 
   /**
@@ -61,12 +79,14 @@ public class UrsaDataset {
    * @param doc
    * @return
    */
-  private static ArrayList<Review> documentToReview(Document doc) {
+  private ArrayList<Review> documentToReviews(String restaurantId, Document doc) {
     ArrayList<Review> list = new ArrayList<Review>();
     NodeList reviews = doc.getElementsByTagName("Review");
     for (int idx = 0; idx < reviews.getLength(); idx++) {
       Node node = reviews.item(idx);
       String id = node.getAttributes().getNamedItem("id").getNodeValue();
+      if (id.equals("0"))
+        continue;
       String content = "";
       String rating = null;
       NodeList children = node.getChildNodes();
@@ -75,19 +95,22 @@ public class UrsaDataset {
         if (node.getNodeName().equals("Rating")) {
           rating = node.getTextContent();
         } else if (node.getNodeName().equals("Body")) {
-          content = node.getTextContent();
+          content = node.getTextContent().replaceAll("\n", "");
         }
       }
       if (rating.trim().length() == 0) {
         rating = "-1";
       }
-      list.add(new Review(id, Double.parseDouble(rating), content));
+      list.add(new Review(id, restaurantId, Double.parseDouble(rating), content));
     }
 
     return list;
   }
 
-  private static void writeAnnotatedXmls() {
+  /**
+   * Writes the content of annotated files to a text file.
+   */
+  public void annotatedXmlsToTextFile() {
     String annotatedFile = "C:/datasets/ursa/ManuallyAnnotated_Corpus.xml";
     String textFile = "C:/datasets/bs/ursa/annotated.txt";
     DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -116,7 +139,7 @@ public class UrsaDataset {
     }
   }
 
-  private static ArrayList<String> reviewNodeToSentences(Node review) {
+  private ArrayList<String> reviewNodeToSentences(Node review) {
     ArrayList<String> list = new ArrayList<String>();
     NodeList sentences = review.getChildNodes();
     for (int i = 0; i < sentences.getLength(); i++) {
@@ -125,12 +148,12 @@ public class UrsaDataset {
         node = node.getFirstChild();
       }
       if (node != null) {
-        list.add(String.format("%s,%s", node.getNodeName(), node.getTextContent()));
-        System.out.printf("%s,%s\n", node.getNodeName(),
-            node.getTextContent());
+        list.add(String.format("%s,%s", node.getNodeName(),
+            node.getTextContent()));
+        System.out.printf("%s,%s\n", node.getNodeName(), node.getTextContent());
       }
     }
-    
+
     return list;
   }
 
@@ -141,7 +164,7 @@ public class UrsaDataset {
    * @param sentence
    * @return
    */
-  private static boolean isSentimentNode(Node node) {
+  private boolean isSentimentNode(Node node) {
     String name = node.getNodeName();
     return (name.equalsIgnoreCase("positive")
         || name.equalsIgnoreCase("negative") || name
@@ -149,10 +172,8 @@ public class UrsaDataset {
   }
 
   public static void main(String args[]) {
-    // 1. convert all reviews in xml format to one text file.
-    // 2. write all annotatated reviews in one file.
-    // for accuracy calculation, document (review id) can be used to match.
-    // xmlsToText();
-    writeAnnotatedXmls();
+    UrsaDataset ursa = new UrsaDataset();
+    ursa.xmlsToText();
+//    ursa.getReviews();
   }
 }

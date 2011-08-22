@@ -27,7 +27,7 @@ public class TwogramsCounter implements Serializable {
    * @param word1
    * @param word2
    */
-  public void addOrIncreases(String word1, String word2) {
+  public void addOrIncrease(String word1, String word2) {
     String phrase = constructNgram(word1, word2);
     Integer cnt = mCounter.get(phrase);
     if (cnt == null) {

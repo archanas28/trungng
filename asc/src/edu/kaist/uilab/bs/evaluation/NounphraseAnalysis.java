@@ -1,4 +1,4 @@
-package edu.kaist.uilab.bs;
+package edu.kaist.uilab.bs.evaluation;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,7 +10,9 @@ import java.util.StringTokenizer;
 import com.aliasi.symbol.SymbolTable;
 
 import edu.kaist.uilab.asc.util.DoubleMatrix;
+import edu.kaist.uilab.asc.util.SentiWordNet;
 import edu.kaist.uilab.asc.util.TextFiles;
+import edu.kaist.uilab.bs.BSModel;
 import edu.kaist.uilab.stemmers.EnglishStemmer;
 import edu.stanford.nlp.tagger.maxent.MaxentTagger;
 
@@ -58,7 +60,7 @@ public class NounphraseAnalysis {
     TextFiles.writeCollection(negativeAdjs, "C:/datasets/bs/neg.txt", "utf-8");
   }
 
-  private static void readData() throws IOException {
+  static void readData() throws IOException {
     List<String> lines = TextFiles.readLines("C:/datasets/bs/np-eval.data");
     String POS = "pos", NEG = "neg";
     for (String line : lines) {
@@ -73,7 +75,7 @@ public class NounphraseAnalysis {
     }
   }
 
-  private static void wordSentimentClassification() throws IOException {
+  static void classifyWordSentiment() throws IOException {
     String dir = "C:/datasets/bs";
     for (String word : TextFiles.readUniqueLines(dir + "/pos.txt", UTF8)) {
       positiveAdjs.add(stemmer.getStem(word));
@@ -83,13 +85,13 @@ public class NounphraseAnalysis {
     }
     HashSet<String> adjs = new HashSet<String>(positiveAdjs);
     adjs.addAll(negativeAdjs);
-    System.err.println("Loading model");
     BSModel model = BSModel.loadModel(dir
-        + "/restaurants/T50-A0.1-B0.0010-G3.00,0.10-I1000()--84/1000/model.gz");
-    String[][][] sentiWords = model.getTopSentiWords();
-    int numTopics = model.getNumTopics();
+        + "/ursa/T50-A0.1-B0.0010-G0.10,0.10-I1000(newstop)/800/model.gz");
     int numWords = 100; // top words to take
+    String[][][] sentiWords = model.getTopSentiWords(numWords);
+    int numTopics = model.getNumTopics();
     // get all positive sentiment words
+    @SuppressWarnings("unchecked")
     HashMap<String, Integer>[] map = new HashMap[2];
     for (int s = 0; s < model.getNumSentiments(); s++) {
       map[s] = new HashMap<String, Integer>();
@@ -150,7 +152,7 @@ public class NounphraseAnalysis {
         / (adjs.size() - numNotClassified));
   }
 
-  private static void wordSentimentClassification2() throws IOException {
+  static void classifyWordSentiment2() throws IOException {
     String dir = "C:/datasets/bs";
     for (String word : TextFiles.readUniqueLines(dir + "/pos.txt", UTF8)) {
       positiveAdjs.add(stemmer.getStem(word));
@@ -160,15 +162,15 @@ public class NounphraseAnalysis {
     }
     HashSet<String> adjs = new HashSet<String>(positiveAdjs);
     adjs.addAll(negativeAdjs);
-    System.err.println("Loading model");
     BSModel model = BSModel.loadModel(dir
-        + "/restaurants/T70-A0.1-B0.0010-G0.50,0.10-I1000()--84/1000/model.gz");
+        + "/ursa/T50-A0.1-B0.0010-G0.10,0.10-I1000(newstop)/800/model.gz");
     DoubleMatrix[] phi = model.getPhiSentiByTermscore();
-    int[][][] indice = model.getIndiceOfTopSentiWords(phi);
+    int numWords = 100; // top words to take
+    int[][][] indice = model.getIndiceOfTopSentiWords(phi, numWords);
     SymbolTable table = model.getSentiTable();
     int numTopics = model.getNumTopics();
-    int numWords = 100; // top words to take
     // get all positive sentiment words
+    @SuppressWarnings("unchecked")
     HashMap<String, Double>[] map = new HashMap[2];
     for (int s = 0; s < model.getNumSentiments(); s++) {
       map[s] = new HashMap<String, Double>();
@@ -230,47 +232,98 @@ public class NounphraseAnalysis {
         / (adjs.size() - numNotClassified));
   }
 
-  static void phraseSentimentClassification() throws IOException {
+  static void classifyByWordnet(HashSet<String> phrases, String sentiClass,
+      int senti) throws IOException {
+    SentiWordNet wn = new SentiWordNet();
+    int numCorrect = 0, numWrong = 0;
+    int numNotClassified = 0;
+    ArrayList<String> words;
+    for (String phrase : phrases) {
+      words = stemPhrase(phrase);
+      double score = 0.0;
+      boolean hasChanged = false;
+      for (int i = 0; i < words.size(); i++) {
+        Double wordscore = wn.getPolarity(words.get(i), "a");
+        if (wordscore != null) {
+          score += wordscore;
+          hasChanged = true;
+        }
+      }
+      if (hasChanged) {
+        int classifiedSenti = -1;
+        if (score > 0) {
+          classifiedSenti = 0;
+        } else if (score < 0) {
+          classifiedSenti = 1;
+        }
+        if (classifiedSenti == senti) {
+          numCorrect++;
+        } else {
+          numWrong++;
+        }
+      } else {
+        System.err.println("not classified: " + phrase);
+        numNotClassified++;
+      }
+    }
+    System.out.printf("#%s phrases: %d\n", sentiClass, phrases.size());
+    System.out.printf("#phrases not classified: %d\n", numNotClassified);
+    System.out
+        .printf("#numCorrect = %d, numWrong = %d\n", numCorrect, numWrong);
+    System.out.printf("accuracy (%s): %.3f\n", sentiClass, (numCorrect + 0.0)
+        / (phrases.size() - numNotClassified));
+  }
+
+  static void classifyPhraseSentiment() throws IOException {
     String dir = "C:/datasets/bs";
     HashSet<String> posPhrases = (HashSet<String>) TextFiles
         .readUniqueLinesAsLowerCase(dir + "/pos.data");
     HashSet<String> negPhrases = (HashSet<String>) TextFiles
         .readUniqueLinesAsLowerCase(dir + "/neg.data");
-    HashSet<String> allPhrases = new HashSet<String>(posPhrases);
-    allPhrases.addAll(negPhrases);
-    // BSModel model = BSModel.loadModel(dir
-    // + "/restaurants/T70-A0.1-B0.0010-G0.50,0.10-I1000()--84/1000/model.gz");
     BSModel model = BSModel.loadModel(dir
-        + "/restaurants/T50-A0.1-B0.0010-G1.00,0.10-I1000()/1000/model.gz");
+        + "/ursa/T50-A0.1-B0.0010-G0.10,0.10-I1000(top50)/1000/model.gz");
+    System.err.println("\nClassification using model:");
+    posPhrases.removeAll(classify(model, posPhrases, "positive", 0));
+    negPhrases.removeAll(classify(model, negPhrases, "negative", 1));
+
+    System.err.println("\nClassification using SentiWordNet: ");
+    classifyByWordnet(posPhrases, "positive", 0);
+    classifyByWordnet(negPhrases, "negative", 1);
+  }
+
+  static HashSet<String> classify(BSModel model, HashSet<String> phrases,
+      String sentiClass, int senti) {
+    int numWords = 100;
+    System.out.println("Using " + numWords + " words");
     DoubleMatrix[] phiSenti = model.getPhiSentiByTermscore();
-    int[][][] sentiIndice = model.getIndiceOfTopSentiWords(phiSenti);
+    int[][][] sentiIndice = model.getIndiceOfTopSentiWords(phiSenti, numWords);
     double[][] phiAspect = model.getPhiAspectByTermscore();
-    int[][] aspectIndice = model.getIndiceOfTopAspectWords(phiAspect);
+    int[][] aspectIndice = model.getIndiceOfTopAspectWords(phiAspect, numWords);
     SymbolTable sentiTable = model.getSentiTable();
     SymbolTable aspectTable = model.getAspectTable();
-    int numCorrect = 0, numNotClassified = 0;
+    int numCorrect = 0, numWrong = 0;
+    int numNotClassified = 0;
     ArrayList<String> words;
-    int sentiWord, aspectWord;
-    for (String phrase : allPhrases) {
+    HashSet<String> notClassifiedPhrases = new HashSet<String>();
+    for (String phrase : phrases) {
       words = stemPhrase(phrase);
-      double[] score = new double[model.numSenti];
+      double[] score = new double[model.getNumSentiments()];
       // score = sumOfProb((senti, aspect|topic k)) for all topic k and every
-      // possible
-      // pair contained in the original phrase
+      // possible pair contained in the original phrase
       for (int i = 0; i < words.size() - 1; i++) {
         for (int j = i + 1; j < words.size(); j++) {
-          sentiWord = sentiTable.symbolToID(words.get(i));
-          aspectWord = aspectTable.symbolToID(words.get(j));
+          int sentiWord = sentiTable.symbolToID(words.get(i));
+          int aspectWord = aspectTable.symbolToID(words.get(j));
           if (sentiWord >= 0 && aspectWord >= 0) {
-            for (int k = 0; k < model.numTopics; k++) {
+            for (int k = 0; k < model.getNumTopics(); k++) {
               // method 2: use all words
-//              for (int s = 0; s < model.numSenti; s++) {
-//                score[s] += phiSenti[s].getValue(sentiWord, k)
-//                    * phiAspect[k][aspectWord];
-//              }
+              // for (int s = 0; s < model.numSenti; s++) {
+              // score[s] += phiSenti[s].getValue(sentiWord, k)
+              // * phiAspect[k][aspectWord];
+              // }
               // method 1: use only top words
               if (isInArray(aspectIndice[k], aspectWord)) {
-                for (int s = 0; s < model.numSenti; s++) {
+                for (int s = 0; s < model.getNumSentiments(); s++) {
                   if (isInArray(sentiIndice[s][k], sentiWord)) {
                     score[s] += phiSenti[s].getValue(sentiWord, k)
                         * phiAspect[k][aspectWord];
@@ -281,23 +334,28 @@ public class NounphraseAnalysis {
           }
         }
       }
+      // TODO(trung): what if the phrase is in the corpus but not in the
+      // senti-aspect pair? this should not happen if we take all words
       if (score[0] > 0 || score[1] > 0) {
         int classifiedSenti = score[0] >= score[1] ? 0 : 1;
-        int annotatedSenti = posPhrases.contains(phrase) ? 0 : 1;
-        if (classifiedSenti == annotatedSenti) {
+        if (classifiedSenti == senti) {
           numCorrect++;
+        } else {
+          numWrong++;
         }
       } else {
-        System.err.println("not classified: " + phrase);
         numNotClassified++;
+        notClassifiedPhrases.add(phrase);
       }
     }
-    System.out.println("#positive phrases: " + posPhrases.size());
-    System.out.println("#negative phrases: " + negPhrases.size());
-    System.out.println("#testing phrases: " + allPhrases.size());
-    System.out.println("#phrases not classified: " + numNotClassified);
-    System.out.printf("Accuracy: %.3f\n",
-        (1.0 * numCorrect) / (allPhrases.size() - numNotClassified));
+    System.out.printf("#%s phrases: %d\n", sentiClass, phrases.size());
+    System.out.printf("#phrases not classified: %d\n", numNotClassified);
+    System.out
+        .printf("#numCorrect = %d, numWrong = %d\n", numCorrect, numWrong);
+    System.out.printf("accuracy (%s): %.3f\n", sentiClass, (numCorrect + 0.0)
+        / (phrases.size() - numNotClassified));
+
+    return notClassifiedPhrases;
   }
 
   /**
@@ -334,8 +392,6 @@ public class NounphraseAnalysis {
   public static void main(String args[]) throws Exception {
     String dir = "C:/datasets/bs";
     // tagger = new MaxentTagger(model);
-    // wordSentimentClassification();
-    // wordSentimentClassification2();
-    phraseSentimentClassification();
+    classifyPhraseSentiment();
   }
 }

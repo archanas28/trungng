@@ -10,8 +10,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.regex.Pattern;
 
 import com.aliasi.symbol.MapSymbolTable;
 import com.aliasi.symbol.SymbolTable;
@@ -27,18 +25,26 @@ import com.aliasi.util.Strings;
 
 import edu.kaist.uilab.asc.data.Review;
 import edu.kaist.uilab.stemmers.EnglishStemmer;
+import edu.stanford.nlp.ling.HasWord;
+import edu.stanford.nlp.ling.TaggedWord;
+import edu.stanford.nlp.tagger.maxent.MaxentTagger;
 
 /**
- * Parsers for corpus used in the BS model. TODO(trung): use stanford parser to
- * divide into clause rather than sentences.
+ * Parser for parsing a corpus. This parser uses a a part-of-speech tagger to
+ * determine if a word in a sentence has the function of conveying a sentiment.
  * 
  * @author trung
  */
-public class BSCorpusParser {
+public class BSCorpusParserWithTagger {
 
-  private static final String UTF8 = "utf-8";
-  private static final String sentenceDelimiter = "[.!?\\n]";
   private static final int MAX_SENTENCE_LENGTH = 40;
+  private static final String UTF8 = "utf-8";
+  private final String sentiTags[] = { "JJ", "JJR", "JJS", // adjective
+      "RB", "RBR", "RBS" // adverb
+  };
+  private final String[] nounTags = { "NN", "NNS" };
+
+  private MaxentTagger tagger = MaxentTaggerSingleton.getInstance();
 
   int mMinTokenCount;
   int mTopStopWords;
@@ -46,7 +52,6 @@ public class BSCorpusParser {
   String mCorpus;
   TokenizerFactory mTokenizerFactory;
   HashSet<String> mStopStems;
-  HashSet<String> mSentiStems;
   SymbolTable mAspectTable;
   SymbolTable mSentiTable;
   TwogramsCounter mCounter;
@@ -77,15 +82,15 @@ public class BSCorpusParser {
    *          the list of stop words (in addition to the standard stop words
    *          used in lingpipe)
    */
-  public BSCorpusParser(String corpus, int minTokenCount, int topStopWords,
-      int topDocumentTokens, HashSet<String> sentiStems, List<String> stopStems) {
+  public BSCorpusParserWithTagger(String corpus, int minTokenCount,
+      int topStopWords, int topDocumentTokens, List<String> stopStems)
+      throws Exception {
     mCorpus = corpus;
     mMinTokenCount = minTokenCount;
     mTopStopWords = topStopWords;
     mTopDocumentTokens = topDocumentTokens;
     mStopStems = new HashSet<String>(stopStems);
     mTokenizerFactory = BSTokenizerFactory.getInstance(mStopStems);
-    mSentiStems = sentiStems;
     mAspectTable = new MapSymbolTable();
     mSentiTable = new MapSymbolTable();
     mCounter = new TwogramsCounter();
@@ -101,8 +106,10 @@ public class BSCorpusParser {
    * using the various getter methods.
    */
   public void parse() throws IOException {
-    readCorpus();
-    tokenizeDocuments();
+    mReviews = readCorpus(mCorpus);
+    tokenizeReviews(mReviews);
+    System.out.printf("\n#sentences with no sentiments %d/%d\n",
+        noSentimentSentenceCnt, sentenceCnt);
   }
 
   /**
@@ -205,15 +212,17 @@ public class BSCorpusParser {
   }
 
   /**
-   * Reads documents in the corpus.
+   * Reads documents in the corpus and returns them as a list of {@link Review}
+   * s.
    * 
    * @throws IOException
    */
-  void readCorpus() throws IOException {
+  public ArrayList<Review> readCorpus(String corpus) throws IOException {
     BufferedReader in = new BufferedReader(new InputStreamReader(
-        new FileInputStream(mCorpus), UTF8));
-    double rating;
+        new FileInputStream(corpus), UTF8));
     String line;
+    double rating;
+    ArrayList<Review> list = new ArrayList<Review>();
     while ((line = in.readLine()) != null) {
       String[] ids = line.split(" ");
       try {
@@ -221,36 +230,12 @@ public class BSCorpusParser {
       } catch (NumberFormatException e) {
         rating = -1.0;
       }
-      mReviews.add(new Review(ids[0], ids[1], rating, replacePatterns(in
+      list.add(new Review(ids[0], ids[1], rating, DocumentUtils.negate(in
           .readLine())));
     }
     in.close();
-  }
 
-  /**
-   * Replaces non-meaningful and negates words in a document.
-   * 
-   * @param document
-   * @return
-   */
-  public static String replacePatterns(String document) {
-    ArrayList<String[]> list = new ArrayList<String[]>();
-    list.add(new String[] { "[http|ftp]://[\\S]*", " " });
-    list.add(new String[] {
-        "(not|n't|without|never)[\\s]+(very|so|too|much|"
-            + "quite|even|that|as|as much|a|the|to|really|been|be)[\\s]+",
-        " not_" });
-    list.add(new String[] { "(not|n't|without|never|no)[\\s]+", " not_" });
-    list.add(new String[] { "[()<>\\[\\],~&;:\"\\-/=*#@^+'`’]", " " });
-    for (String[] rp : list) {
-      if (document != null) {
-        document = Pattern
-            .compile(rp[0], Pattern.CASE_INSENSITIVE | Pattern.DOTALL)
-            .matcher(document).replaceAll(rp[1]);
-      }
-    }
-
-    return document;
+    return list;
   }
 
   /**
@@ -264,10 +249,10 @@ public class BSCorpusParser {
    * added to the symbol table, thus producing a compact set of symbol
    * assignments to tokens for downstream processing.
    */
-  void tokenizeDocuments() {
+  void tokenizeReviews(ArrayList<Review> reviews) {
     // count #documents a token appears in
     ObjectToCounterMap<String> tokDocumentCounter = new ObjectToCounterMap<String>();
-    for (Review review : mReviews) {
+    for (Review review : reviews) {
       HashSet<String> uniqueDocTokens = new HashSet<String>();
       char[] cs = Strings.toCharArray(review.getContent());
       Tokenizer tokenizer = mTokenizerFactory.tokenizer(cs, 0, cs.length);
@@ -281,32 +266,14 @@ public class BSCorpusParser {
     mWordCnt.prune(mMinTokenCount);
     pruneTopTokens(mWordCnt, mTopStopWords);
     pruneTokensInManyDocuments(tokDocumentCounter, mTopDocumentTokens);
-    // index all remaining words
-    Set<String> tokenSet = mWordCnt.keySet();
-    for (String token : tokenSet) {
-      if (isSentimentWord(token)) {
-        mSentiTable.getOrAddSymbol(token);
-      } else {
-        mAspectTable.getOrAddSymbol(token);
+    // convert documents into a form usable in BS
+    for (Review review : reviews) {
+      Document document = tokenizeDocument(review);
+      if (document != null) {
+        document.setReviewId(review.getReviewId());
+        document.setRating(review.getRating());
       }
     }
-    // convert documents into SB form
-    for (Review review : mReviews) {
-      tokenizeDocument(review);
-    }
-  }
-
-  /**
-   * Returns true if the given word might indicate a sentiment.
-   * 
-   * @param word
-   * @return
-   */
-  boolean isSentimentWord(String word) {
-    String negate = "not_";
-    return mSentiStems.contains(word)
-        || (word.startsWith(negate) && mSentiStems.contains(word
-            .substring(negate.length())));
   }
 
   /**
@@ -358,10 +325,9 @@ public class BSCorpusParser {
   }
 
   /**
-   * Tokenizes the specified text document using the specified tokenizer factory
+   * Tokenizes the specified text document using the same tokenizer factory
    * returning only tokens that exist in the symbol table constructed in
-   * previous step. This method is useful within a given LDA model for
-   * tokenizing new documents into lists of words.
+   * previous step.
    * 
    * @param review
    *          a review
@@ -369,36 +335,37 @@ public class BSCorpusParser {
    */
   private Document tokenizeDocument(Review review) {
     String docContent = review.getContent();
-    Document document = new Document(mDocuments.size());
-    document.setReviewId(review.getReviewId());
-    document.setRating(review.getRating());
-    char[] cs = null;
-    Tokenizer tokenizer = null;
-    String[] sentences = docContent.split(sentenceDelimiter);
-    for (String sentence : sentences) {
-      Sentence sent = new Sentence(sentence.replaceAll("[\\s]+", " ").trim());
-      cs = Strings.toCharArray(sentence);
-      tokenizer = mTokenizerFactory.tokenizer(cs, 0, cs.length);
-      ArrayList<String> tokens = getTokensIfHasSentiment(tokenizer);
-      for (String token : tokens) {
-        int id = mAspectTable.symbolToID(token);
-        if (id >= 0) {
-          sent.addAspectWord(id);
-        }
-        id = mSentiTable.symbolToID(token);
-        if (id >= 0) {
-          sent.addSentiWord(id);
+    Document document = new Document(mDocuments.size(), review.getReviewId(),
+        review.getRestaurantId());
+    // List<ArrayList<? extends HasWord>> tokenizedSentences = MaxentTagger
+    // .tokenizeText(new BufferedReader(new StringReader(docContent
+    // .replaceAll("not_", "not "))));
+    List<ArrayList<? extends HasWord>> tokenizedSentences = DocumentUtils
+        .tokenizeSentences(docContent.replaceAll("not_", "not "));
+    for (int idx = 0; idx < tokenizedSentences.size(); idx++) {
+      sentenceCnt++;
+      ArrayList<? extends HasWord> tokenizedSentence = tokenizedSentences
+          .get(idx);
+      ArrayList<TaggedWord> tSentence = tagger.tagSentence(tokenizedSentence);
+      ArrayList<String> sentimentStems = getLowercaseSentimentStems(tSentence);
+      if (sentimentStems.isEmpty()) {
+        noSentimentSentenceCnt++;
+        continue;
+      }
+      String txt = DocumentUtils.tokenizedSentenceToText(tokenizedSentence);
+      Sentence sentence = new Sentence(txt);
+      for (String token : mTokenizerFactory.tokenizer(Strings.toCharArray(txt),
+          0, txt.length())) {
+        if (sentimentStems.contains(token)) {
+          sentence.addSentiWord(mSentiTable.getOrAddSymbol(token));
+        } else {
+          sentence.addAspectWord(mAspectTable.getOrAddSymbol(token));
         }
       }
-      if (sent.length() > 0 && sent.length() < MAX_SENTENCE_LENGTH) {
-        document.addSentence(sent);
-        // updatePhraseCount(tokens);
-        updatePhraseCount2(tokens);
+      if (sentence.length() > 0 && sentence.length() < MAX_SENTENCE_LENGTH) {
+        document.addSentence(sentence);
+        updatePhraseCount(tSentence);
       }
-      // if (sent.hasAspectAndSenti() && sent.length() < MAX_SENTENCE_LENGTH) {
-      // document.addSentence(sent);
-      // updatePhraseCount(tokens);
-      // }
     }
     if (document.getNumSentences() > 0) {
       mDocuments.add(document);
@@ -409,66 +376,88 @@ public class BSCorpusParser {
   }
 
   /**
-   * Update counts for phrase in the given words of a sentence.
+   * Returns the sentiment stems of the specified tagged sentence.
    * 
-   * @param words
+   * @param tWords
+   * @return
    */
-  private void updatePhraseCount(ArrayList<String> words) {
-    int size = words.size();
-    for (int idx = 0; idx < size - 1; idx++) {
-      mCounter.addOrIncrease(words.get(idx), words.get(idx + 1));
+  private ArrayList<String> getLowercaseSentimentStems(
+      ArrayList<TaggedWord> tSentence) {
+    ArrayList<String> list = new ArrayList<String>();
+    for (int idx = 0; idx < tSentence.size(); idx++) {
+      TaggedWord tWord = tSentence.get(idx);
+      String stem = BSTokenizerFactory.stemmer.getStem(tWord.word()
+          .toLowerCase());
+      tWord.setWord(stem);
+      if (stem.length() < 3 || !mWordCnt.containsKey(stem))
+        continue;
+      if (isSentiTag(tWord.tag())) {
+        if (idx > 0 && tSentence.get(idx - 1).word().equals("not")) {
+          list.add("not_" + stem);
+        } else {
+          list.add(stem);
+        }
+      }
     }
+
+    return list;
+  }
+
+  /*
+   * Returns true if the given tag is one of the senti tag.
+   */
+  private boolean isSentiTag(String tag) {
+    for (String sentiTag : sentiTags) {
+      if (sentiTag.equals(tag)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  boolean isNounTag(String tag) {
+    for (String nTag : nounTags) {
+      if (nTag.equals(tag)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   /**
-   * Counts 'phrases' in a sentence.
+   * Counts senti-aspect pairs in a sentence.
    * <p>
    * A valid phrase must contain a sentiment word. The non-sentiment word, i.e.
    * aspect, is the word within 2 steps from the sentiment word. This accounts
    * for the cases such as "food was fantastic", "drinks were flowing", "love
    * the pleasant atmosphere", "friendly staff outshine the rest".
    * 
-   * @param words
+   * @param tSentence
    */
-  private void updatePhraseCount2(ArrayList<String> words) {
-    int size = words.size();
+  private void updatePhraseCount(ArrayList<TaggedWord> tSentence) {
+    int size = tSentence.size();
     for (int idx = 0; idx < size; idx++) {
-      String word = words.get(idx);
-      if (mSentiStems.contains(word)) {
-        // case 1: aspect tobe sentiment
-        if (idx > 1) {
-          mCounter.addOrIncrease(word, words.get(idx - 2));
-        }
-        // case 2: sentiment aspect
-        if (idx < size - 1) {
-          mCounter.addOrIncrease(word, words.get(idx + 1));
+      TaggedWord tWord = tSentence.get(idx);
+      String word = tWord.word();
+      if (idx > 0 && tSentence.get(idx - 1).word().equals("not")) {
+        word = "not_" + word;
+      }
+      if (isSentiTag(tWord.tag())) {
+        if (idx < size - 1 && isNounTag(tSentence.get(idx + 1).tag())) {
+          // case 1: sentiment aspect
+          mCounter.addOrIncrease(word, tSentence.get(idx + 1).word());
+        } else if (idx > 1) {
+          // case 2: aspect tobe sentiment
+          for (int nounIdx = idx - 1; nounIdx >= 0; nounIdx--) {
+            if (isNounTag(tSentence.get(nounIdx).tag())) {
+              mCounter.addOrIncrease(word, tSentence.get(nounIdx).word());
+              break;
+            }
+          }
         }
       }
     }
-  }
-
-  /**
-   * Returns true if the given tokenizer (a sentence) expresses a sentiment.
-   * 
-   * @param tokenizer
-   * @return
-   */
-  ArrayList<String> getTokensIfHasSentiment(Tokenizer tokenizer) {
-    sentenceCnt++;
-    ArrayList<String> tokens = new ArrayList<String>();
-    boolean hasSentiment = false;
-    for (String token : tokenizer) {
-      tokens.add(token);
-      if (isSentimentWord(token)) {
-        hasSentiment = true;
-      }
-    }
-    if (!hasSentiment) {
-      tokens.clear();
-      noSentimentSentenceCnt++;
-    }
-
-    return tokens;
   }
 
   /**
@@ -509,5 +498,10 @@ public class BSCorpusParser {
     static TokenizerFactory getInstance(HashSet<String> stopStems) {
       return new StopTokenizerFactory(instance, stopStems);
     }
+  }
+
+  public static void main(String[] args) throws Exception {
+//    BSCorpusParserWithTagger bs = new BSCorpusParserWithTagger(null, 0, 0, 0,
+//        new ArrayList<String>());
   }
 }

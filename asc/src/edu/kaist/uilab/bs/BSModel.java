@@ -7,6 +7,7 @@ import java.io.ObjectInputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Vector;
@@ -21,14 +22,14 @@ import edu.kaist.uilab.asc.util.Utils;
 /**
  * Stores all data used in the Gibbs sampling procedure. This model implements
  * {@link Serializable} so that it can be saved and loaded to allow Gibbs
- * sampler to continue from an existing model.
+ * sampler to continue from an existing training.
  * 
  * @author trung
  */
 public class BSModel implements Serializable {
 
   private static final long serialVersionUID = 1L;
-  int numProbWords = 100;
+  private int numProbWords = 100;
 
   boolean isExisting = false;
   String outputDir = ".";
@@ -39,7 +40,8 @@ public class BSModel implements Serializable {
   int numTopics; // K
   int numSenti; // S
   int numDocuments; // M
-  List<Document> documents;
+  private List<Document> documents;
+  HashMap<String, Document> annotatedDocuments;
   SymbolTable sentiTable;
   SymbolTable aspectTable;
   TwogramsCounter counter;
@@ -106,6 +108,16 @@ public class BSModel implements Serializable {
     cntDS = new IntegerMatrix(numDocuments, numSenti);
     sumDS = new int[numDocuments];
     initHyperParameters(betaSenti);
+    this.annotatedDocuments = null;
+  }
+
+  /**
+   * Sets annotated documents for sentence-level sentiment classification.
+   * 
+   * @param documents
+   */
+  public void setAnnotatedDocuments(HashMap<String, Document> documents) {
+    annotatedDocuments = documents;
   }
 
   double[][] getBetaSenti(double betaSenti[]) {
@@ -179,11 +191,19 @@ public class BSModel implements Serializable {
   public int getNumSentiments() {
     return numSenti;
   }
-  
+
   public int getNumTopics() {
     return numTopics;
   }
-  
+
+  public List<Document> getDocuments() {
+    return documents;
+  }
+
+  public int getNumProbWords() {
+    return numProbWords;
+  }
+
   public DoubleMatrix[] getPhiSenti() {
     return Inference.computePhiSenti(cntSWT, sumSTW, betaSenti, sumBetaSenti);
   }
@@ -199,7 +219,7 @@ public class BSModel implements Serializable {
   public double[][] getPhiAspectByTermscore() {
     return buildTermscore(getPhiAspect());
   }
-  
+
   public DoubleMatrix getPi() {
     return Inference.calculatePi(cntDS, sumDS, gammas, sumGamma);
   }
@@ -211,15 +231,15 @@ public class BSModel implements Serializable {
   public SymbolTable getSentiTable() {
     return sentiTable;
   }
-  
+
   public SymbolTable getAspectTable() {
     return aspectTable;
   }
-  
+
   public TwogramsCounter getTwogramsCounter() {
     return counter;
   }
-  
+
   /**
    * Writes output of the model at the specified iteration.
    * 
@@ -232,26 +252,117 @@ public class BSModel implements Serializable {
       DoubleMatrix[] phiSenti = getPhiSenti();
       double[][] phiAspect = getPhiAspect();
       DoubleMatrix pi = getPi();
-      writePhiSenti(phiSenti, dir + "/phiSenti.csv");
-      writeTheta(getTheta(), dir + "/theta.csv");
-      pi.writeMatrixToCSVFile(dir + "/pi.csv");
-      writeTopSentiWords(phiSenti, dir + "/sentiWords.csv");
+      // writePhiSenti(phiSenti, dir + "/phiSenti.csv");
+      // writeTheta(getTheta(), dir + "/theta.csv");
+      // pi.writeMatrixToCSVFile(dir + "/pi.csv");
+      // writeTopSentiWords(phiSenti, dir + "/sentiWords.csv");
       String[][][] sentiWords = writeTopSentiWords(
           buildTermscoreMatrix(phiSenti, numTopics), dir
               + "/sentiWordsByTermscore.csv");
-      writeTopAspectWords(phiAspect, dir + "/aspectWords.csv");
+      // writeTopAspectWords(phiAspect, dir + "/aspectWords.csv");
       String[][] aspectWords = writeTopAspectWords(buildTermscore(phiAspect),
           dir + "/aspectWordsByTermscore.csv");
-      writeClassificationSummary(pi, dir + "/classification.txt");
+      writeDocumentClassificationSummary(pi, dir + "/classification.txt");
+      writeNewDocumentClassificationSummary(pi, dir + "/newdocsentiment.txt");
+      if (annotatedDocuments != null) {
+        writeSentenceClassificationSummary(dir + "/sentenceClassification.txt");
+      }
       writeSampleClassifiedDocuments(dir + "/sampleDocs.html");
-      writeCoherence(dir, sentiWords, aspectWords, 25, 25);
+      writeSampleSummarizedDocuments(dir + "/summarizeDocs.html", sentiWords,
+          aspectWords);
       writeCoherence(dir, sentiWords, aspectWords, 25, 50);
-      writeCoherence(dir, sentiWords, aspectWords, 50, 50);
-      writeCoherence(dir, sentiWords, aspectWords, 50, 100);
       System.err.println("\nModel saved and written to " + dir);
     } catch (IOException e) {
       e.printStackTrace();
     }
+  }
+
+  /**
+   * Writes summary of the sentence-level sentiment classification task.
+   * 
+   * @param file
+   * @throws IOException
+   */
+  public void writeSentenceClassificationSummary(String file)
+      throws IOException {
+    int[] sentimentClass = countSentimentClasses(annotatedDocuments);
+    int numPosCorrect = 0, numPosWrong = 0;
+    int numNegCorrect = 0, numNegWrong = 0;
+    int numSentencesNotMatched = 0;
+    PrintWriter out = new PrintWriter(new OutputStreamWriter(
+        new FileOutputStream(file), "utf-8"));
+    for (Document document : getDocuments()) {
+      if (annotatedDocuments.containsKey(document.getReviewId())) {
+        Document annotatedDoc = annotatedDocuments.get(document.getReviewId());
+        for (Sentence sentence : annotatedDoc.getSentences()) {
+          // only consider sentence annotated with no sentiment conflict
+          int annotated = sentence.getSenti();
+          if (annotated != -1) {
+            int classified = document.getSentenceSentiment(sentence.getText());
+            if (classified != Document.NO_SENTENCE) {
+              if (annotated == classified) {
+                if (classified == 0) {
+                  numPosCorrect++;
+                } else {
+                  numNegCorrect++;
+                }
+              } else {
+                if (classified == 0) {
+                  numPosWrong++;
+                } else {
+                  numNegWrong++;
+                }
+              }
+            } else {
+              numSentencesNotMatched++;
+            }
+          }
+        }
+      }
+    }
+    out.printf("#annotated documents: %d\n", annotatedDocuments.size());
+    out.printf("#annotated positive: %d\n", sentimentClass[0]);
+    out.printf("#annotated negative: %d\n", sentimentClass[1]);
+    out.printf("#annotated neutral or conflict: %d\n", sentimentClass[2]);
+    out.printf("#sentences not matched: %d\n", numSentencesNotMatched);
+    out.printf(
+        "#numPosCorrect = %d, numPosWrong = %d, numNegCorrect=%d, numNegWrong=%d\n",
+        numPosCorrect, numPosWrong, numNegCorrect, numNegWrong);
+    out.printf("accuracy (positive + negative): %.3f\n", (numPosCorrect
+        + numNegCorrect + 0.0)
+        / (sentimentClass[0] + sentimentClass[1] - numSentencesNotMatched));
+    out.printf("precision (positive): %.3f\n", (numPosCorrect + 0.0)
+        / (numPosCorrect + numPosWrong));
+    out.printf("recall (positive): %.3f\n", (numPosCorrect + 0.0)
+        / sentimentClass[0]);
+    out.printf("precision (negative): %.3f\n", (numNegCorrect + 0.0)
+        / (numNegCorrect + numNegWrong));
+    out.printf("recall (negative): %.3f\n", (numNegCorrect + 0.0)
+        / sentimentClass[1]);
+    out.close();
+  }
+
+  /**
+   * Counts the number of sentences for all sentiment classes.
+   * 
+   * @param documents
+   *          annotated documents
+   * @return
+   */
+  private int[] countSentimentClasses(HashMap<String, Document> documents) {
+    int[] count = new int[3];
+    for (Document document : documents.values()) {
+      for (Sentence sentence : document.getSentences()) {
+        int senti = sentence.getSenti();
+        if (senti == -1) {
+          count[2]++;
+        } else {
+          count[senti]++;
+        }
+      }
+    }
+
+    return count;
   }
 
   /**
@@ -260,7 +371,7 @@ public class BSModel implements Serializable {
    * @param file
    * @throws IOException
    */
-  private void writeSampleClassifiedDocuments(String file) throws IOException {
+  public void writeSampleClassifiedDocuments(String file) throws IOException {
     int numDocs = 500;
     String[] sentiColors = { "green", "red" };
     PrintWriter out = new PrintWriter(new OutputStreamWriter(
@@ -270,7 +381,7 @@ public class BSModel implements Serializable {
     for (int i = 0; i < numDocs; i++) {
       int docIdx = (int) (Math.random() * numDocuments);
       out.println("<p>");
-      Document doc = documents.get(docIdx);
+      Document doc = getDocuments().get(docIdx);
       for (Sentence sentence : doc.getSentences()) {
         if (sentence.getSenti() > -1) {
           out.printf("<span style=\"color:%s\">%s.</span>",
@@ -286,13 +397,123 @@ public class BSModel implements Serializable {
     out.close();
   }
 
-  private void writeClassificationSummary(DoubleMatrix pi, String file)
+  /**
+   * Writes some sample reviews summarized by sentiment-aspect word pairs.
+   * 
+   * @param file
+   * @param sentiWords
+   * @param aspectWords
+   * @throws IOException
+   */
+  public void writeSampleSummarizedDocuments(String file,
+      String[][][] sentiWords, String[][] aspectWords) throws IOException {
+    int numDocs = 500;
+    String[] sentiColors = { "green", "red" };
+    PrintWriter out = new PrintWriter(new OutputStreamWriter(
+        new FileOutputStream(file), "utf-8"));
+    out.println("<html>");
+    out.println("<body>");
+    for (int docIdx = 0; docIdx < numDocs; docIdx++) {
+      out.println("<p>");
+      Document doc = getDocuments().get(docIdx);
+      for (Sentence sentence : doc.getSentences()) {
+        int senti = sentence.getSenti();
+        if (senti > -1) {
+          int topic = sentence.getTopic();
+          Vector<Integer> mySentiWords = sentence.getSentiWords();
+          Vector<Integer> myAspectWords = sentence.getAspectWords();
+          StringBuilder pairs = new StringBuilder("[");
+          for (String sentiWord : sentiWords[senti][topic]) {
+            for (String aspectWord : aspectWords[topic]) {
+              if (mySentiWords.contains(sentiTable.symbolToID(sentiWord))
+                  && myAspectWords.contains(aspectTable.symbolToID(aspectWord))) {
+                pairs.append(sentiWord).append(" ").append(aspectWord)
+                    .append(", ");
+              }
+            }
+          }
+          pairs.append("]\t");
+          out.printf(
+              "%s, aspect %d, <span style=\"color:%s\">%s.</span><br />",
+              pairs.toString(), topic, sentiColors[sentence.getSenti()],
+              sentence.getText());
+        } else {
+          out.printf("%s.<br />", sentence.getText());
+        }
+      }
+      out.println("</p>");
+    }
+    out.println("</body>");
+    out.println("</html>");
+    out.close();
+  }
+
+  public void writeNewDocumentClassificationSummary(DoubleMatrix pi, String file)
+      throws IOException {
+    int numPosCorrect = 0, numNegCorrect = 0;
+    int numPosWrong = 0, numNegWrong = 0;
+    int numNotRated = 0, numNeutral = 0, numPos = 0, numNeg = 0;
+    for (int i = 0; i < numDocuments; i++) {
+      Document document = getDocuments().get(i);
+      double rating = document.getRating();
+      if (rating != 3.0 && rating != -1.0) {
+        int observedSenti = rating > 3.0 ? 0 : 1;
+        if (observedSenti == 0) {
+          numPos++;
+        } else {
+          numNeg++;
+        }
+        int inferedSenti = pi.getValue(i, 0) >= pi.getValue(i, 1) ? 0 : 1;
+        if (inferedSenti == observedSenti) {
+          if (inferedSenti == 0) {
+            numPosCorrect++;
+          } else {
+            numNegCorrect++;
+          }
+        } else {
+          if (inferedSenti == 0) {
+            numPosWrong++;
+          } else {
+            numNegWrong++;
+          }
+        }
+      } else {
+        if (rating == 3.0) {
+          numNeutral++;
+        } else {
+          numNotRated++;
+        }
+      }
+    }
+
+    PrintWriter out = new PrintWriter(file);
+    out.printf("#positive = %d, #negative = %d, #total subjective =%d\n",
+        numPos, numNeg, numPos + numNeg);
+    out.printf("#neutral =%d, #not rated = %d, sum = %d\n", numNeutral,
+        numNotRated, numNeutral + numNotRated);
+    out.printf(
+        "#numPosCorrect = %d, numPosWrong = %d, numNegCorrect=%d, numNegWrong=%d\n",
+        numPosCorrect, numPosWrong, numNegCorrect, numNegWrong);
+    out.printf("accuracy (positive + negative): %.3f\n", (numPosCorrect
+        + numNegCorrect + 0.0)
+        / (numPos + numNeg));
+    out.printf("precision (positive): %.3f\n", (numPosCorrect + 0.0)
+        / (numPosCorrect + numPosWrong));
+    out.printf("recall (positive): %.3f\n", (numPosCorrect + 0.0) / numPos);
+    out.printf("precision (negative): %.3f\n", (numNegCorrect + 0.0)
+        / (numNegCorrect + numNegWrong));
+    out.printf("recall (negative): %.3f\n", (numNegCorrect + 0.0) / numNeg);
+    out.close();
+  }
+
+  @Deprecated
+  private void writeDocumentClassificationSummary(DoubleMatrix pi, String file)
       throws IOException {
     // get classification accuracy for english documents
     int observedSenti, inferedSenti, numCorrect = 0;
     int numNotRated = 0, numNeutral = 0, numPos = 0, numSubjective = 0;
     for (int i = 0; i < numDocuments; i++) {
-      Document document = documents.get(i);
+      Document document = getDocuments().get(i);
       double rating = document.getRating();
       if (rating != 3.0 && rating != -1.0) {
         numSubjective++;
@@ -322,6 +543,7 @@ public class BSModel implements Serializable {
     out.close();
   }
 
+  @SuppressWarnings("unused")
   private void writeTheta(double[][] theta, String file) throws IOException {
     PrintWriter out = new PrintWriter(file);
     for (int t = 0; t < numTopics; t++)
@@ -336,6 +558,7 @@ public class BSModel implements Serializable {
     out.close();
   }
 
+  @SuppressWarnings("unused")
   private void writePhiSenti(DoubleMatrix[] phi, String file)
       throws IOException {
     PrintWriter out = new PrintWriter(file);
@@ -360,7 +583,7 @@ public class BSModel implements Serializable {
    * 
    * @param matrix
    */
-  private String[][][] writeTopSentiWords(DoubleMatrix[] matrix, String file)
+  public String[][][] writeTopSentiWords(DoubleMatrix[] matrix, String file)
       throws IOException {
     PrintWriter out = new PrintWriter(new OutputStreamWriter(
         new FileOutputStream(file), "utf-8"));
@@ -370,9 +593,9 @@ public class BSModel implements Serializable {
       }
     }
     out.println();
-    int[][][] indice = getIndiceOfTopSentiWords(matrix);
-    String[][][] topWords = new String[numSenti][numTopics][numProbWords];
-    for (int w = 0; w < numProbWords; w++) {
+    int[][][] indice = getIndiceOfTopSentiWords(matrix, getNumProbWords());
+    String[][][] topWords = new String[numSenti][numTopics][getNumProbWords()];
+    for (int w = 0; w < getNumProbWords(); w++) {
       for (int s = 0; s < numSenti; s++) {
         for (int t = 0; t < numTopics; t++) {
           int idx = indice[s][t][w];
@@ -395,7 +618,7 @@ public class BSModel implements Serializable {
    * @param file
    * @throws IOException
    */
-  private String[][] writeTopAspectWords(double[][] phi, String file)
+  public String[][] writeTopAspectWords(double[][] phi, String file)
       throws IOException {
     PrintWriter out = new PrintWriter(new OutputStreamWriter(
         new FileOutputStream(file), "utf-8"));
@@ -403,10 +626,10 @@ public class BSModel implements Serializable {
       out.printf("T%d,", topic);
     }
     out.println();
-    int[][] topIndice = getIndiceOfTopAspectWords(phi);
+    int[][] topIndice = getIndiceOfTopAspectWords(phi, getNumProbWords());
     // write the inverse of the top word matrix (for easy visualization)
-    String[][] topWords = new String[numTopics][numProbWords];
-    for (int i = 0; i < numProbWords; i++) {
+    String[][] topWords = new String[numTopics][getNumProbWords()];
+    for (int i = 0; i < getNumProbWords(); i++) {
       for (int topic = 0; topic < numTopics; topic++) {
         int wordId = topIndice[topic][i];
         String word = aspectTable.idToSymbol(wordId);
@@ -474,20 +697,22 @@ public class BSModel implements Serializable {
   /**
    * Gets indice of top sentiment words for all topics.
    * 
+   * @param numWords
+   *          number of top words to get
    * @return
    */
-  public int[][][] getIndiceOfTopSentiWords(DoubleMatrix[] matrix) {
-    int[][][] indice = new int[numSenti][numTopics][numProbWords];
+  public int[][][] getIndiceOfTopSentiWords(DoubleMatrix[] matrix, int numWords) {
+    int[][][] indice = new int[numSenti][numTopics][numWords];
     for (int s = 0; s < numSenti; s++) {
       for (int t = 0; t < numTopics; t++) {
         Vector<Integer> sortedIndexList = matrix[s].getSortedColIndex(t,
-            numProbWords);
+            numWords);
         for (int w = 0; w < sortedIndexList.size(); w++) {
           indice[s][t][w] = sortedIndexList.get(w);
         }
       }
     }
-    
+
     return indice;
   }
 
@@ -496,52 +721,57 @@ public class BSModel implements Serializable {
    * 
    * @return
    */
-  public String[][][] getTopSentiWords() {
-    int[][][] indice = getIndiceOfTopSentiWords(getPhiSentiByTermscore());
-    String[][][] words = new String[numSenti][numTopics][numProbWords];
+  public String[][][] getTopSentiWords(int numWords) {
+    int[][][] indice = getIndiceOfTopSentiWords(getPhiSentiByTermscore(),
+        numWords);
+    String[][][] words = new String[numSenti][numTopics][numWords];
     for (int s = 0; s < numSenti; s++) {
       for (int t = 0; t < numTopics; t++) {
-        for (int w = 0; w < numProbWords; w++) {
+        for (int w = 0; w < numWords; w++) {
           words[s][t][w] = sentiTable.idToSymbol(indice[s][t][w]);
         }
       }
     }
-    
+
     return words;
   }
-  
+
   /**
    * Gets indice of top aspect words for all topics.
    * 
    * @param phi
+   * @param numWords
    * @return
    */
-  public int[][] getIndiceOfTopAspectWords(double[][] phi) {
+  public int[][] getIndiceOfTopAspectWords(double[][] phi, int numWords) {
     int[][] topIndice = new int[numTopics][];
     for (int topic = 0; topic < numTopics; topic++) {
-      topIndice[topic] = Utils.topColumns(phi, topic, numProbWords);
+      topIndice[topic] = Utils.topColumns(phi, topic, numWords);
     }
-    
+
     return topIndice;
   }
-  
+
   /**
    * Gets the top aspect words for all topics.
    * 
+   * @param numWords
+   *          number of top words to get
    * @return
    */
-  public String[][] getTopAspectWords() {
-    int[][] indice = getIndiceOfTopAspectWords(getPhiAspectByTermscore());
-    String[][] words = new String[numTopics][numProbWords];
+  public String[][] getTopAspectWords(int numWords) {
+    int[][] indice = getIndiceOfTopAspectWords(getPhiAspectByTermscore(),
+        numWords);
+    String[][] words = new String[numTopics][numWords];
     for (int t = 0; t < numTopics; t++) {
-      for (int w = 0; w < numProbWords; w++) {
+      for (int w = 0; w < numWords; w++) {
         words[t][w] = aspectTable.idToSymbol(indice[t][w]);
       }
     }
-    
+
     return words;
   }
-  
+
   /**
    * Reports the coherence scores between topics.
    * 
@@ -553,20 +783,14 @@ public class BSModel implements Serializable {
       String[][] aspectWords, int nSenti, int nAspect) throws IOException {
     PrintWriter out = new PrintWriter(dir + "/coherence-A" + nAspect + "-S"
         + nSenti + ".csv");
-    PrintWriter out2 = new PrintWriter(dir + "/altCoherence-A" + nAspect + "-S"
-        + nSenti + ".csv");
     for (int k1 = 0; k1 < numTopics; k1++) {
       for (int k2 = 0; k2 < numTopics; k2++) {
         out.print(computeCoherenceScore(sentiWords[0][k1], sentiWords[1][k1],
             aspectWords[k2], nAspect, nSenti) + ",");
-        out2.print(computeAlternativeCoherenceScore(sentiWords[0][k1],
-            sentiWords[1][k1], aspectWords[k2], nAspect, nSenti) + ",");
       }
       out.println();
-      out2.println();
     }
     out.close();
-    out2.close();
   }
 
   private int computeCoherenceScore(String[] senti0Words, String[] senti1Words,
@@ -580,27 +804,6 @@ public class BSModel implements Serializable {
     for (int wordIdx = 0; wordIdx < nSenti; wordIdx++) {
       for (int aspectIdx = 0; aspectIdx < nAspect; aspectIdx++) {
         cnt += counter.getCount(senti1Words[wordIdx], aspectWords[aspectIdx]);
-      }
-    }
-
-    return cnt;
-  }
-
-  private int computeAlternativeCoherenceScore(String[] senti0Words,
-      String[] senti1Words, String[] aspectWords, int nAspect, int nSenti) {
-    int cnt = 0;
-    for (int wordIdx = 0; wordIdx < nSenti; wordIdx++) {
-      for (int aspectIdx = 0; aspectIdx < nAspect; aspectIdx++) {
-        if (counter.getCount(senti0Words[wordIdx], aspectWords[aspectIdx]) > 0) {
-          cnt++;
-        }
-      }
-    }
-    for (int wordIdx = 0; wordIdx < nSenti; wordIdx++) {
-      for (int aspectIdx = 0; aspectIdx < nAspect; aspectIdx++) {
-        if (counter.getCount(senti1Words[wordIdx], aspectWords[aspectIdx]) > 0) {
-          cnt++;
-        }
       }
     }
 

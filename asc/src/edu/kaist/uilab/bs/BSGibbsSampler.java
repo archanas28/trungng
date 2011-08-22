@@ -40,7 +40,7 @@ public class BSGibbsSampler {
   private void initDocs(int from, int to) {
     int cnt = 0;
     for (int docNo = from; docNo < to; docNo++) {
-      Document document = model.documents.get(docNo);
+      Document document = model.getDocuments().get(docNo);
       for (Sentence sentence : document.getSentences()) {
         int newSenti = -1;
         int numSentenceSenti = 0;
@@ -96,7 +96,7 @@ public class BSGibbsSampler {
         System.out.println();
       }
       System.out.printf(" %d ", realIter);
-      for (Document document : model.documents) {
+      for (Document document : model.getDocuments()) {
         sampleForDoc(document);
       }
       if (realIter > burnin && savingInterval > 0
@@ -132,9 +132,8 @@ public class BSGibbsSampler {
           // opposite senti-aspect. example: if a sentences contains the word
           // "excellent", then the probability of being assigned negative
           // sentiment is 0.
-          for (int t = 0; t < model.numTopics; t++) {
-            probTable[t][s] = Math.exp(-80);
-            sumProb += probTable[t][s];
+          for (int k = 0; k < model.numTopics; k++) {
+            probTable[k][s] = 0;
           }
         } else {
           for (int k = 0; k < model.numTopics; k++) {
@@ -235,7 +234,6 @@ public class BSGibbsSampler {
    * @return
    */
   private boolean hasOppositeSentiment(Sentence sentence, int sentiment) {
-    // TODO(trung): uncomment if see worse behavior
     for (Integer sentiWord : sentence.getSentiWords()) {
       if (model.seedWords[1 - sentiment].contains(sentiWord)) {
         return true;
