@@ -4,8 +4,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 
 /**
- * Counter for N-grams in the corpus (where n = 2 in this particular
- * application).
+ * Counter for 2-grams in the corpus.
  * 
  * @author trung
  */
@@ -22,12 +21,12 @@ public class TwogramsCounter implements Serializable {
   }
 
   /**
-   * Adds or increases count for the given <code>(word1, word2)</code> pair.
+   * Increases count for the given <code>(word1, word2)</code> pair.
    * 
    * @param word1
    * @param word2
    */
-  public void addOrIncrease(String word1, String word2) {
+  public void increaseCount(String word1, String word2) {
     String phrase = constructNgram(word1, word2);
     Integer cnt = mCounter.get(phrase);
     if (cnt == null) {

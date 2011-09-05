@@ -153,33 +153,23 @@ public class WordsBreaker {
 
   public static void main(String args[]) throws Exception {
     WordsBreaker wb = new WordsBreaker();
-    String[] strs = new String[] {
-        "On this night the Duck L'Orange was exceptional, and the Chilian Seabass moist and flavorful",
-        "This is a relaxed country inn in the middle of Manhattan.",
-        "They will offer suggestions when asked, and were on the mark with the recommendation of the chocolate souffle' for dessert.",
-        "Immediately was offered menus and bar service. Served a wonderful roasted eggplant dip and crostini within minutes of sitting down. Had the goat cheese and potato appetizer and the chicken with capers entree.",
-        "Had difficulty getting a cab from the Waldorf, so we were about 15 mins late, but they still greeted us warmly as though we were precisely on time",
-        "The food was better than expected, the service attentive without making us feel like we had to rush through the meal, and the ambiance superb.",
-        "Our waiter, while not the most personable, did his job, and the food was excellent",
-        "We were not given menus, waited fifteen minutes and had to ask for them.",
-        "Our tapanade and crustini were wisked off the table before we had a chance to try them.",
-        "Food at Columbia Cottage is tasty and well prepared.",
-        "My favorites include Orange Beef, Beef Lo Mein, and Crispy Shredded Beef.",
-        "The ambience is pleasant and relaxing.",
-        "Where else in the city can you go get completely tanked and have a good meal for the price of chinese takeout.",
-        "The comfort foods, kind employees and hustle and bustle remind me of Sundays at Grandma's with the entire extended family.",
-        "I leave feeling cared for and content.",
-        "I grew up in the neighborhood, but I still schlep back for the best kosher deli on the planet.",
-        "I didn't even eat one and sent it back, but they still put it on my bill, which I had to contest",
-        "Chicken alfredo was too buttery and thick in all the wrong ways, chicken bites tasted boiled",
-        "Joe Mineo is often behind the counter, providing fun, laughs and love to all his customers!",
-        "Even the mashed potatoes and gravy tasted like they were made in a high-school cafeteria",
-        "The place is a little dirty and there are kids running around everywhere but the food makes up for it",
-        "The atmosphere was mostly of an older crowd, but there were a few groups of mid 20's/30 year olds also.",
-    };
-    for (String s : strs) {
-      System.out.println(wb.tagger.tagString(s));
+    int cnt = 0, trials = 20;
+    StringBuilder builder = new StringBuilder();
+    BufferedReader in = new BufferedReader(new InputStreamReader(
+        new FileInputStream("C:/datasets/models/bs/electronics/docs.txt"), "utf-8"));
+    while (in.readLine() != null) {
+      in.readLine();
+      String document = in.readLine();
+      String[] sentences = document.split("[.!?]");
+      for (String sentence : sentences) {
+        builder.append(wb.tagger.tagString(sentence)).append("\n");
+      }
+      if (cnt++ > trials) {
+        break;
+      }
     }
+    in.close();
+    TextFiles.writeFile("tagged.txt", builder.toString());
 //    String dir = "C:/datasets/bs/restaurants";
 //    wb.divide(dir + "/docs.txt", dir + "/aspects.txt", dir + "/senti.txt", dir
 //        + "/common.txt");

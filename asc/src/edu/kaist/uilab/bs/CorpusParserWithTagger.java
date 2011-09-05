@@ -446,12 +446,12 @@ public class CorpusParserWithTagger {
       if (isSentiTag(tWord.tag())) {
         if (idx < size - 1 && isNounTag(tSentence.get(idx + 1).tag())) {
           // case 1: sentiment aspect
-          mCounter.addOrIncrease(word, tSentence.get(idx + 1).word());
+          mCounter.increaseCount(word, tSentence.get(idx + 1).word());
         } else if (idx > 1) {
           // case 2: aspect tobe sentiment
           for (int nounIdx = idx - 1; nounIdx >= 0; nounIdx--) {
             if (isNounTag(tSentence.get(nounIdx).tag())) {
-              mCounter.addOrIncrease(word, tSentence.get(nounIdx).word());
+              mCounter.increaseCount(word, tSentence.get(nounIdx).word());
               break;
             }
           }
@@ -465,7 +465,7 @@ public class CorpusParserWithTagger {
    * <p>
    * This tokenizer stems every word using Porter stemmer.
    */
-  static final class BSTokenizerFactory extends ModifyTokenTokenizerFactory {
+  public static final class BSTokenizerFactory extends ModifyTokenTokenizerFactory {
     static final long serialVersionUID = -3401639068551227864L;
     static final EnglishStemmer stemmer = new EnglishStemmer();
     static final int MIN_WORD_LENGTH = 2;
@@ -495,7 +495,7 @@ public class CorpusParserWithTagger {
       return true;
     }
 
-    static TokenizerFactory getInstance(HashSet<String> stopStems) {
+    public static TokenizerFactory getInstance(HashSet<String> stopStems) {
       return new StopTokenizerFactory(instance, stopStems);
     }
   }

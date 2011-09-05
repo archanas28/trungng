@@ -101,14 +101,11 @@ public class GibbsSampler {
       }
       if (realIter > burnin && savingInterval > 0
           && realIter % savingInterval == 0 && realIter != numIters) {
-        saveModel(realIter);
         model.writeModelOutput(realIter);
       }
     }
     System.out.printf("\nGibbs sampling terminated. (%.4fs)\n",
         (System.currentTimeMillis() - startTime) / 1000);
-    // update beta and save the last sample
-    saveModel(numIters);
     model.writeModelOutput(numIters);
   }
 
@@ -241,22 +238,5 @@ public class GibbsSampler {
     }
 
     return false;
-  }
-
-  /**
-   * Saves the model at current the iteration <code>iter</code>.
-   * 
-   * @param iter
-   */
-  private void saveModel(int iter) {
-    try {
-      new File(model.outputDir + "/" + iter).mkdir();
-      ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(
-          model.outputDir + "/" + iter + "/model.gz"));
-      out.writeObject(model);
-      out.close();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
   }
 }

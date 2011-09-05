@@ -416,7 +416,7 @@ public class CorpusParser {
   private void updatePhraseCount(ArrayList<String> words) {
     int size = words.size();
     for (int idx = 0; idx < size - 1; idx++) {
-      mCounter.addOrIncrease(words.get(idx), words.get(idx + 1));
+      mCounter.increaseCount(words.get(idx), words.get(idx + 1));
     }
   }
 
@@ -437,11 +437,11 @@ public class CorpusParser {
       if (mSentiStems.contains(word)) {
         // case 1: aspect tobe sentiment
         if (idx > 1) {
-          mCounter.addOrIncrease(word, words.get(idx - 2));
+          mCounter.increaseCount(word, words.get(idx - 2));
         }
         // case 2: sentiment aspect
         if (idx < size - 1) {
-          mCounter.addOrIncrease(word, words.get(idx + 1));
+          mCounter.increaseCount(word, words.get(idx + 1));
         }
       }
     }

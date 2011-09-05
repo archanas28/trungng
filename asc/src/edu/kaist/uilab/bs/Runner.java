@@ -21,14 +21,14 @@ public class Runner {
   }
 
   static void runNewTraining() throws Exception {
-    String dir = "C:/datasets/bs/ursa";
+    String dir = "C:/datasets/models/bs/electronics";
     String stopFile = "stop.txt";
     String sentiStemsFile = "senti.txt";
     // String sentiStemsFile = "senti_adj.txt";
-    String positiveSeeds = "seedstems0(+2).txt";
-    String negativeSeeds = "seedstems1(+2).txt";
-//     String positiveSeeds = "seedstems0(+1).txt";
-//     String negativeSeeds = "seedstems1(+1).txt";
+//    String positiveSeeds = "seedstems0(+2).txt";
+//    String negativeSeeds = "seedstems1(+2).txt";
+     String positiveSeeds = "seedstems0(+1).txt";
+     String negativeSeeds = "seedstems1(+1).txt";
     String annotatedFile = "annotated.txt";
     int minTokenCount = 3;
     int topWordsToRemove = 0;
@@ -38,7 +38,7 @@ public class Runner {
     double alpha = 0.1;
     double betaAspect = 0.001;
     double[] betaSenti = new double[] { 0.001, 0.000000001, 0.001 };
-    double[] gammas = new double[] { 0.1, 0.1 };
+    double[] gammas = new double[] { 1.0, 1.0 };
 
     int numIters = 1000;
     int burnin = 500;
@@ -69,7 +69,7 @@ public class Runner {
         parser.getDocuments(), seedWords, alpha, betaAspect, betaSenti, gammas);
     // model
     // .setAnnotatedDocuments(getAnnotatedDocuments(dir + "/" + annotatedFile));
-    model.extraInfo = "improvedParser";
+    model.extraInfo = "senti1";
     GibbsSampler sampler = new GibbsSampler(model);
     sampler.setOutputDir(String.format("%s/T%d-A%.1f-B%.4f-G%.2f,%.2f-I%d",
         dir, numTopics, alpha, betaAspect, gammas[0], gammas[1], numIters));

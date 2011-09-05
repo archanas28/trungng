@@ -18,7 +18,7 @@ import edu.stanford.nlp.tagger.maxent.MaxentTagger;
  * @author trung
  */
 public final class DocumentUtils {
-  
+
   private static final String SENTI_TAGS[] = { "JJ", "JJR", "JJS", // adjective
   // "RB", "RBR", "RBS" // adverb
   };
@@ -47,6 +47,7 @@ public final class DocumentUtils {
    */
   public static List<ArrayList<? extends HasWord>> tokenizeSentences(
       String content) {
+    content = removesNonAlphabets(content);
     List<ArrayList<? extends HasWord>> list = new ArrayList<ArrayList<? extends HasWord>>();
     List<ArrayList<? extends HasWord>> tSentences = MaxentTagger
         .tokenizeText(new BufferedReader(new StringReader(content)));
@@ -153,9 +154,37 @@ public final class DocumentUtils {
 
     return text;
   }
-  
+
   /**
-   * Replaces non-alphabet characters in the given text.
+   * Removes non-alphabet symbols from and negates the given <code>text</code>.
+   * 
+   * @param text
+   * @return
+   */
+  public static String removeNonAlphabetSymbolsAndNegate(String text) {
+    ArrayList<String[]> list = new ArrayList<String[]>();
+    list.add(new String[] { "[http|ftp]://[\\S]*", " " });
+    list.add(new String[] {
+        "(not|n't|without|never)[\\s]+(very|so|too|much|"
+            + "quite|even|that|as|as much|a|the|to|really|been)[\\s]+", " not_" });
+    list.add(new String[] { "(not|n't|without|never|no)[\\s]+", " not_" });
+    list.add(new String[] { "[()<>\\[\\],~&;:\"\\-/=*#@^+'`’]", " " });
+    list.add(new String[] { "[\\s]+", " " });
+    for (String[] rp : list) {
+      if (text != null) {
+        text = Pattern
+            .compile(rp[0], Pattern.CASE_INSENSITIVE | Pattern.DOTALL)
+            .matcher(text).replaceAll(rp[1]);
+      }
+    }
+
+    return text;
+  }
+
+  /**
+   * Removes non-alphabet characters in the given text.
+   * <p>
+   * Comma is preserved because it is useful to the tagger.
    * 
    * @param text
    * @return
@@ -163,7 +192,7 @@ public final class DocumentUtils {
   public static String removesNonAlphabets(String text) {
     ArrayList<String[]> list = new ArrayList<String[]>();
     list.add(new String[] { "[http|ftp]://[\\S]*", " " });
-    list.add(new String[] { "[()<>\\[\\],~&;:\"\\-/=*#@^+'`’]", " " });
+    list.add(new String[] { "[()<>\\[\\]~&;:\"\\-/=*#@^+'`’]", " " });
     for (String[] rp : list) {
       if (text != null) {
         text = Pattern

@@ -1,5 +1,6 @@
 package edu.kaist.uilab.bs;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -249,6 +250,8 @@ public class Model implements Serializable {
   public void writeModelOutput(int iter) {
     try {
       String dir = outputDir + "/" + iter;
+      new File(dir).mkdir();
+      BSUtils.saveModel(dir + "/model.gz", this);
       DoubleMatrix[] phiSenti = getPhiSenti();
       double[][] phiAspect = getPhiAspect();
       DoubleMatrix pi = getPi();
@@ -262,7 +265,6 @@ public class Model implements Serializable {
       // writeTopAspectWords(phiAspect, dir + "/aspectWords.csv");
       String[][] aspectWords = writeTopAspectWords(buildTermscore(phiAspect),
           dir + "/aspectWordsByTermscore.csv");
-      writeDocumentClassificationSummary(pi, dir + "/classification.txt");
       writeNewDocumentClassificationSummary(pi, dir + "/newdocsentiment.txt");
       if (annotatedDocuments != null) {
         writeSentenceClassificationSummary(dir + "/sentenceClassification.txt");
@@ -503,43 +505,6 @@ public class Model implements Serializable {
     out.printf("precision (negative): %.3f\n", (numNegCorrect + 0.0)
         / (numNegCorrect + numNegWrong));
     out.printf("recall (negative): %.3f\n", (numNegCorrect + 0.0) / numNeg);
-    out.close();
-  }
-
-  @Deprecated
-  private void writeDocumentClassificationSummary(DoubleMatrix pi, String file)
-      throws IOException {
-    // get classification accuracy for english documents
-    int observedSenti, inferedSenti, numCorrect = 0;
-    int numNotRated = 0, numNeutral = 0, numPos = 0, numSubjective = 0;
-    for (int i = 0; i < numDocuments; i++) {
-      Document document = getDocuments().get(i);
-      double rating = document.getRating();
-      if (rating != 3.0 && rating != -1.0) {
-        numSubjective++;
-        observedSenti = rating > 3.0 ? 0 : 1;
-        inferedSenti = pi.getValue(i, 0) >= pi.getValue(i, 1) ? 0 : 1;
-        if (observedSenti == inferedSenti) {
-          numCorrect++;
-        }
-        if (observedSenti == 0) {
-          numPos++;
-        }
-      } else {
-        if (rating == 3.0) {
-          numNeutral++;
-        } else {
-          numNotRated++;
-        }
-      }
-    }
-    PrintWriter out = new PrintWriter(file);
-    out.println("English reviews:");
-    out.printf("\tSubjective:\t%d\tpos = %d(%.2f)\n", numSubjective, numPos,
-        ((double) numPos) / numSubjective);
-    out.printf("\tNeutral:\t%d\n", numNeutral);
-    out.printf("\tNot rated:\t%d\n", numNotRated);
-    out.printf("\tAccuracy:\t%.5f\n", ((double) numCorrect) / numSubjective);
     out.close();
   }
 
