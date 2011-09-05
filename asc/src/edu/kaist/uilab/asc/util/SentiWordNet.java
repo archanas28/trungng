@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.Vector;
@@ -95,8 +96,18 @@ public class SentiWordNet {
   }
 
   public static void main(String args[]) throws IOException {
-//    classifyWordSentiment();
-    classifyPhraseSentiment();
+    SentiWordNet swn = new SentiWordNet();
+    ArrayList<String> polarityVerbs = new ArrayList<String>();
+    for (Entry<String, Double> entry : swn.dict.entrySet()) {
+      String key = entry.getKey();
+      if (key.contains("#v") && !key.contains("_")
+          && Math.abs(entry.getValue()) >= 0.5) {
+        polarityVerbs.add(key);
+      }
+    }
+    TextFiles.writeCollection(polarityVerbs, "polarityVerbs.txt", "utf-8");
+    // classifyWordSentiment();
+    // classifyPhraseSentiment();
   }
 
   static void classifyPhraseSentiment() throws IOException {
@@ -140,7 +151,7 @@ public class SentiWordNet {
         int classifiedSenti = score > 0 ? 0 : 1;
         if (score == 0) {
           classifiedSenti = -1;
-        } 
+        }
         if (classifiedSenti == annotatedSenti) {
           numCorrect++;
         }
@@ -154,9 +165,9 @@ public class SentiWordNet {
     System.out.println("#testing phrases: " + allPhrases.size());
     System.out.println("#phrases not classified: " + numNotClassified);
     System.out.printf("Accuracy: %.3f\n",
-        (1.0 * numCorrect) / (allPhrases.size() - numNotClassified));    
+        (1.0 * numCorrect) / (allPhrases.size() - numNotClassified));
   }
-  
+
   /**
    * Returns the list of stemmed words from the given phrase <code>s</code>.
    * 
@@ -214,8 +225,8 @@ public class SentiWordNet {
         numCorrect++;
       }
     }
-    System.out.printf("#words in NP: %d (pos = %d, neg = %d)\n",
-        adjs.size(), positiveAdjs.size(), negativeAdjs.size());
+    System.out.printf("#words in NP: %d (pos = %d, neg = %d)\n", adjs.size(),
+        positiveAdjs.size(), negativeAdjs.size());
     System.out.printf("#annotated as both positive and negative: %d\n",
         numPolyByNP);
     System.out.printf("#not classified by WN: %d\n", numNotClassified);

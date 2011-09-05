@@ -56,8 +56,8 @@ public class Asc5 extends AbstractAscModel {
       String graphFile) {
     super(numTopics, numSenti, wordList, documents, numEnglishDocuments,
         sentiWordsList, alpha, gammas, graphFile);
-//    initY0();
-     initPrior();
+    initY0();
+//     initPrior();
   }
 
   void initPrior() {

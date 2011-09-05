@@ -8,12 +8,12 @@ import java.util.Locale;
  * 
  * @author trung nguyen (trung.ngvan@gmail.com)
  */
-class LocaleWord implements Comparable<LocaleWord>, Serializable {
+public class LocaleWord implements Comparable<LocaleWord>, Serializable {
   private static final long serialVersionUID = 1L;
-  
+
   String mValue;
   Locale mLocale;
-  
+
   /**
    * Creates a word in the specified locale.
    * 
@@ -24,9 +24,11 @@ class LocaleWord implements Comparable<LocaleWord>, Serializable {
     mValue = word;
     mLocale = locale;
   }
-  
+
   /**
-   * Creates a word with its locale extracted from the given <code>localeWord</code>.
+   * Creates a word with its locale extracted from the given
+   * <code>localeWord</code>.
+   * 
    * @param localeWord
    */
   public LocaleWord(String localeWord) {
@@ -34,7 +36,16 @@ class LocaleWord implements Comparable<LocaleWord>, Serializable {
     mValue = localeWord.substring(0, pos);
     mLocale = new Locale(localeWord.substring(pos + 1, localeWord.length() - 1));
   }
-  
+
+  /**
+   * Returns the string value of this word without the locale information.
+   * 
+   * @return
+   */
+  public String getValue() {
+    return mValue;
+  }
+
   @Override
   public int compareTo(LocaleWord o) {
     int ret = mValue.compareTo(o.mValue);
@@ -43,13 +54,13 @@ class LocaleWord implements Comparable<LocaleWord>, Serializable {
     }
     return ret;
   }
-  
+
   @Override
   public boolean equals(Object o) {
     LocaleWord word = (LocaleWord) o;
     return mValue.equals(word.mValue) && mLocale.equals(word.mLocale);
   }
-  
+
   @Override
   public String toString() {
     return mValue + "(" + mLocale + ")";

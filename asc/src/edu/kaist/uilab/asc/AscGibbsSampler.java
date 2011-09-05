@@ -30,14 +30,14 @@ public class AscGibbsSampler {
   /**
    * Creates a base asc implementation with provided parameters.
    * 
-   * @param numTopics
-   * @param numSenti
-   * @param wordList
-   * @param documents
+   * @param mTopics
+   * @param mNumSentis
+   * @param data.wordList
+   * @param data.documents
    * @param numEnglishDocuments
-   * @param sentiWordsList
-   * @param alpha
-   * @param gammas
+   * @param sentiWords
+   * @param data.alpha
+   * @param data.gammas
    * @param graphFile
    */
   public AscGibbsSampler(AbstractAscModel model) {
@@ -274,6 +274,7 @@ public class AscGibbsSampler {
             // conditional probability in yohan's paper. it is mathematically
             // correct but
             // not straightforward by just looking at the implementation.
+            // TODO(trung): in fact Yohan only use sumBeta[si]
             double beta0 = model.sumSTW[si][ti] + model.sumBeta[si][ti];
             int m0 = 0;
             double expectTSW = 1;
@@ -368,7 +369,7 @@ public class AscGibbsSampler {
   void writeModelOutput(int iter) {
     try {
       String dir = model.outputDir + "/" + iter;
-      DoubleMatrix[] phi = Inference.calculatePhi(model.matrixSWT,
+      DoubleMatrix[] phi = Inference.computePhi(model.matrixSWT,
           model.sumSTW, model.beta, model.sumBeta);
       writePhi(phi, dir + "/Phi.csv");
       model.writeSampleY(dir);
@@ -379,7 +380,7 @@ public class AscGibbsSampler {
               + "/TopWordsByTermScore.csv");
       printTopWords(buildTermScoreMatrix(phi, model.numTopics), dir
           + "/TopWordsByHalfTermScore.csv");
-      writeTheta(Inference.calculateTheta(model.matrixSDT, model.sumDST,
+      writeTheta(Inference.computeTheta(model.matrixSDT, model.sumDST,
           model.alpha, model.sumAlpha), dir + "/Theta.csv");
       DoubleMatrix pi = Inference.calculatePi(model.matrixDS, model.sumDS,
           model.gammas, model.sumGamma);

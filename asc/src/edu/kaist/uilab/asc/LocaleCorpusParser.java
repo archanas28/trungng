@@ -9,7 +9,6 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map.Entry;
 import java.util.TreeMap;
@@ -21,6 +20,12 @@ import edu.kaist.uilab.stemmers.SnowballStemmer;
 
 /**
  * Parser that support language-specific parsing of documents.
+ * 
+ * TODO(trung): This is very messy & sloppy. Use the same parser as BSCopurParser.
+ * Also, we could do without re-indexing the words by removing stop words based on
+ * words rather than indices.
+ * 
+ * @author trung
  */
 public class LocaleCorpusParser {
 
@@ -28,7 +33,6 @@ public class LocaleCorpusParser {
   private static final String wordDelimiter = "[\\s]+";
   private static final String UTF_8 = "utf-8";
 
-  private Object keyToBag = new Object(); // For synchronization
   private Vector<String[]> mReplacePatternList = new Vector<String[]>();
   private String[] mWordReplacePattern;
   private TreeSet<String> mStopStems = new TreeSet<String>();
@@ -40,10 +44,31 @@ public class LocaleCorpusParser {
   private int mMinSentenceLength = 1;
   private int mMaxSentenceLength = 50;
   private int mMinWordOccur = 1;
-  private int mMinDocLength = 1;
   private SnowballStemmer mStemmer = null;
 
-  private Vector<Vector<Vector<Integer>>> mDocuments;
+  public static final class Structure {
+    Vector<Vector<Integer>> sentences;
+    Vector<String> sentenceTexts;
+    String id;
+
+    public Structure(String id) {
+      this(id, new Vector<Vector<Integer>>(), new Vector<String>());
+    }
+
+    public Structure(String id, Vector<Vector<Integer>> sentences,
+        Vector<String> sentenceTexts) {
+      this.sentences = sentences;
+      this.sentenceTexts = sentenceTexts;
+      this.id = id;
+    }
+
+    public void addSentence(Vector<Integer> sentence, String txt) {
+      sentences.add(sentence);
+      sentenceTexts.add(txt.replaceAll("[\\s]+", " ").trim());
+    }
+  }
+
+  private Vector<Structure> mStructures;
   private ArrayList<Double> mRatings;
   private TreeMap<LocaleWord, Integer> mWordIndex;
 
@@ -65,8 +90,7 @@ public class LocaleCorpusParser {
     mMinSentenceLength = minSentenceLength;
     mMaxSentenceLength = maxSentenceLength;
     mMinWordOccur = minWordOccurrence;
-    mMinDocLength = minDocumentLength;
-    mDocuments = new Vector<Vector<Vector<Integer>>>();
+    mStructures = new Vector<Structure>();
     mRatings = new ArrayList<Double>();
     mWordIndex = new TreeMap<LocaleWord, Integer>();
   }
@@ -133,14 +157,13 @@ public class LocaleCorpusParser {
   }
 
   /**
-   * Splits a document into a list of sentences.
+   * Splits all sentences into vector of locale words.
    * 
    * @param document
    * @return
    */
-  private Vector<Vector<LocaleWord>> documentToSentences(String document) {
+  private Vector<Vector<LocaleWord>> sentencesToLocaleWords(String[] sentences) {
     Vector<Vector<LocaleWord>> list = new Vector<Vector<LocaleWord>>();
-    String[] sentences = document.split(sentenceDelimiter);
     for (String sentence : sentences) {
       Vector<LocaleWord> wordList = new Vector<LocaleWord>();
       String[] words = sentence.split(wordDelimiter);
@@ -197,23 +220,22 @@ public class LocaleCorpusParser {
    * @param sentenceList
    * @return
    */
-  private void storeIntoBag(Vector<Vector<LocaleWord>> sentenceList) {
+  private void storeIntoBag(String id, Vector<Vector<LocaleWord>> sentenceList,
+      Vector<String> sentenceTxts) {
     Vector<Vector<Integer>> indexSentenceList = new Vector<Vector<Integer>>();
-    synchronized (keyToBag) {
-      for (Vector<LocaleWord> wordList : sentenceList) {
-        Vector<Integer> sentence = new Vector<Integer>();
-        for (LocaleWord word : wordList) {
-          Integer index = mWordIndex.get(word);
-          if (index == null) {
-            index = mWordIndex.size();
-            mWordIndex.put(word, index);
-          }
-          sentence.add(index);
+    for (Vector<LocaleWord> wordList : sentenceList) {
+      Vector<Integer> sentence = new Vector<Integer>();
+      for (LocaleWord word : wordList) {
+        Integer index = mWordIndex.get(word);
+        if (index == null) {
+          index = mWordIndex.size();
+          mWordIndex.put(word, index);
         }
-        indexSentenceList.add(sentence);
+        sentence.add(index);
       }
-      mDocuments.add(indexSentenceList);
+      indexSentenceList.add(sentence);
     }
+    mStructures.add(new Structure(id, indexSentenceList, sentenceTxts));
   }
 
   /**
@@ -223,24 +245,23 @@ public class LocaleCorpusParser {
    * @param rating
    * @return
    */
-  public void build(String document, double rating) {
+  public void build(String id, String document, double rating) {
     document = replacePattern(document);
     if (document != null) {
-      Vector<Vector<LocaleWord>> list = documentToSentences(document);
+      String[] sentences = document.split(sentenceDelimiter);
+      Vector<Vector<LocaleWord>> list = sentencesToLocaleWords(sentences);
       Vector<Vector<LocaleWord>> sentenceList = new Vector<Vector<LocaleWord>>();
-      int numWords = 0;
-      for (Vector<LocaleWord> s : list) {
-        Vector<LocaleWord> sentence = processSentence(s);
+      Vector<String> sentenceTxts = new Vector<String>();
+      for (int i = 0; i < list.size(); i++) {
+        Vector<LocaleWord> sentence = processSentence(list.get(i));
         if (sentence.size() >= mMinSentenceLength
             && sentence.size() <= mMaxSentenceLength) {
           sentenceList.add(sentence);
-          numWords += sentence.size();
+          sentenceTxts.add(sentences[i]);
         }
       }
-      if (numWords >= mMinDocLength) {
-        storeIntoBag(sentenceList);
-        mRatings.add(rating);
-      }
+      storeIntoBag(id, sentenceList, sentenceTxts);
+      mRatings.add(rating);
     }
   }
 
@@ -251,15 +272,13 @@ public class LocaleCorpusParser {
     System.out.print("Filtering words...");
     TreeSet<LocaleWord> removeWords = new TreeSet<LocaleWord>();
     TreeSet<Integer> removeWordIndices = new TreeSet<Integer>();
-    int numDocs = mDocuments.size();
     while (true) { // why?
       int[] wordCount = new int[mWordIndex.size()];
-      int[] docCount = new int[mWordIndex.size()];
-      getWordCount(wordCount, docCount);
+      getWordCount(wordCount);
       int cntRemoveWords = 0;
       for (LocaleWord word : mWordIndex.keySet()) {
         int idx = mWordIndex.get(word);
-        if (wordCount[idx] < mMinWordOccur || docCount[idx] > numDocs * 0.1) {
+        if (wordCount[idx] < mMinWordOccur) {
           if (!removeWords.contains(word)) {
             removeWords.add(word);
             removeWordIndices.add(idx);
@@ -271,7 +290,7 @@ public class LocaleCorpusParser {
       if (cntRemoveWords == 0) {
         break;
       }
-      mDocuments = filterBag(mDocuments, mRatings, removeWordIndices);
+      mStructures = filterBag(mStructures, mRatings, removeWordIndices);
       // break;
     }
     for (LocaleWord word : removeWords) {
@@ -284,21 +303,14 @@ public class LocaleCorpusParser {
    * 
    * @param corpusCount
    *          array to store the count of a word in the entire corpus
-   * @param docCount
-   *          array to store the total number of documents that a word appears
-   *          in
    */
-  private void getWordCount(int[] corpusCount, int[] docCount) {
-    for (Vector<Vector<Integer>> document : mDocuments) {
-      HashSet<Integer> uniqueWords = new HashSet<Integer>();
+  private void getWordCount(int[] corpusCount) {
+    for (Structure structure : mStructures) {
+      Vector<Vector<Integer>> document = structure.sentences;
       for (Vector<Integer> sentence : document) {
         for (int wordIndex : sentence) {
           corpusCount[wordIndex]++;
-          uniqueWords.add(wordIndex);
         }
-      }
-      for (Integer index : uniqueWords) {
-        docCount[index]++;
       }
     }
   }
@@ -309,15 +321,13 @@ public class LocaleCorpusParser {
    * @param bag
    * @param removeWordIndices
    */
-  Vector<Vector<Vector<Integer>>> filterBag(
-      Vector<Vector<Vector<Integer>>> bag, ArrayList<Double> oldRating,
-      TreeSet<Integer> removeWordIndices) {
-    Vector<Vector<Vector<Integer>>> newBag = new Vector<Vector<Vector<Integer>>>();
+  Vector<Structure> filterBag(Vector<Structure> bag,
+      ArrayList<Double> oldRating, TreeSet<Integer> removeWordIndices) {
+    Vector<Structure> newBag = new Vector<Structure>();
     ArrayList<Double> newRating = new ArrayList<Double>();
     for (int idx = 0; idx < bag.size(); idx++) {
-      Vector<Vector<Integer>> newDocument = filterDocument(bag.get(idx),
-          removeWordIndices);
-      if (newDocument.size() > 0) {
+      Structure newDocument = filterDocument(bag.get(idx), removeWordIndices);
+      if (newDocument.sentences.size() > 0) {
         newBag.add(newDocument);
         newRating.add(oldRating.get(idx));
       }
@@ -336,10 +346,11 @@ public class LocaleCorpusParser {
    * @param removeWordIndices
    * @return
    */
-  Vector<Vector<Integer>> filterDocument(Vector<Vector<Integer>> document,
+  Structure filterDocument(Structure document,
       TreeSet<Integer> removeWordIndices) {
-    Vector<Vector<Integer>> newDocument = new Vector<Vector<Integer>>();
-    for (Vector<Integer> sentence : document) {
+    Structure newDocument = new Structure(document.id);
+    for (int i = 0; i < document.sentences.size(); i++) {
+      Vector<Integer> sentence = document.sentences.get(i);
       Vector<Integer> newSentence = new Vector<Integer>();
       for (Integer wordIndex : sentence) {
         if (!removeWordIndices.contains(wordIndex))
@@ -347,7 +358,7 @@ public class LocaleCorpusParser {
       }
       if (newSentence.size() >= mMinSentenceLength
           && newSentence.size() <= mMaxSentenceLength) {
-        newDocument.add(newSentence);
+        newDocument.addSentence(newSentence, document.sentenceTexts.get(i));
       }
     }
     return newDocument;
@@ -368,21 +379,22 @@ public class LocaleCorpusParser {
       map.put(mWordIndex.get(word), newIdx);
       mWordIndex.put(word, newIdx++);
     }
-    Vector<Vector<Vector<Integer>>> newBag = new Vector<Vector<Vector<Integer>>>();
-    for (Vector<Vector<Integer>> document : mDocuments) {
-      Vector<Vector<Integer>> newDocument = new Vector<Vector<Integer>>();
-      for (Vector<Integer> sentence : document) {
+    Vector<Structure> newBag = new Vector<Structure>();
+    for (Structure document : mStructures) {
+      Structure newDocument = new Structure(document.id);
+      for (int i = 0; i < document.sentences.size(); i++) {
+        Vector<Integer> sentence = document.sentences.get(i);
         Vector<Integer> newSentence = new Vector<Integer>();
         for (Integer oldWordIndex : sentence) {
           if (map.get(oldWordIndex) != null) {
             newSentence.add(map.get(oldWordIndex));
           }
         }
-        newDocument.add(newSentence);
+        newDocument.addSentence(newSentence, document.sentenceTexts.get(i));
       }
       newBag.add(newDocument);
     }
-    mDocuments = newBag;
+    mStructures = newBag;
     return newIdx;
   }
 
@@ -405,8 +417,8 @@ public class LocaleCorpusParser {
    */
   HashMap<Integer, Integer> getWordCountMap() {
     HashMap<Integer, Integer> wordCnt = new HashMap<Integer, Integer>();
-    for (Vector<Vector<Integer>> sentenceList : mDocuments) {
-      for (Vector<Integer> sentence : sentenceList) {
+    for (Structure structure : mStructures) {
+      for (Vector<Integer> sentence : structure.sentences) {
         for (int wordIdx : sentence) {
           Integer count = wordCnt.get(wordIdx);
           if (count == null) {
@@ -435,8 +447,8 @@ public class LocaleCorpusParser {
     }
   }
 
-  public Vector<Vector<Vector<Integer>>> getDocuments() {
-    return mDocuments;
+  public Vector<Structure> getDocuments() {
+    return mStructures;
   }
 
   public ArrayList<Double> getRatings() {
@@ -450,8 +462,8 @@ public class LocaleCorpusParser {
    */
   public int getNumTotalWords() {
     int numTotalWords = 0;
-    for (Vector<Vector<Integer>> sentenceList : mDocuments) {
-      for (Vector<Integer> sentence : sentenceList) {
+    for (Structure document : mStructures) {
+      for (Vector<Integer> sentence : document.sentences) {
         numTotalWords += sentence.size();
       }
     }
@@ -494,7 +506,7 @@ public class LocaleCorpusParser {
     String str = "\nCorpus information: ";
     str += "\n# unique words: " + getNumUniqueWords();
     str += "\n# total words: " + getNumTotalWords();
-    str += String.format("\n# documents: %d", mDocuments.size());
+    str += String.format("\n# documents: %d", mStructures.size());
     return str;
   }
 }

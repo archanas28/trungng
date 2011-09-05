@@ -8,7 +8,7 @@ package edu.kaist.uilab.asc.data;
  * <li>url (source of the review if available)
  * <li>content
  * </p>
- * 
+ *
  * @author trung nguyen (trung.ngvan@gmail.com)
  */
 public class Review {
@@ -16,6 +16,7 @@ public class Review {
 
   private Double mRating;
   String mReviewId;
+  // TODO(trung): rename mRestaurantId to mTargetId
   String mRestaurantId;
   private String mContent;
 
@@ -24,8 +25,9 @@ public class Review {
    * <p>
    * All parameters that are not available must be null.
    * 
+   * @param reviewid
+   * @param restaurantId
    * @param rating
-   * @param reviewId
    * @param content
    */
   public Review(String reviewId, String restaurantId, Double rating,
@@ -58,7 +60,7 @@ public class Review {
    * a text file.
    */
   public String toString() {
-    return String.format("%s %s\n%.1f\n%s\n", mReviewId, mRestaurantId,
+    return String.format("%s %s\n%.1f\n%s", mReviewId, mRestaurantId,
         mRating, mContent);
   }
 }

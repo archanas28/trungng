@@ -17,6 +17,7 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.Vector;
 
+import edu.kaist.uilab.asc.LocaleCorpusParser.Structure;
 import edu.kaist.uilab.asc.data.Document;
 import edu.kaist.uilab.asc.data.Sentence;
 import edu.kaist.uilab.asc.data.SentiWord;
@@ -34,10 +35,10 @@ public class Application {
   private static final String UTF8 = "utf-8";
   private static final String EN_PATTERN = ".*[^a-zA-Z_].*";
   private static final String FR_PATTERN = ".*[0-9()<>,&;\"].*";
-   String inputDir = "C:/datasets/asc/ldatest/MovieReviews";
-//  String inputDir = "C:/datasets/asc/reviews/ElectronicsReviews3";
+  // String inputDir = "C:/datasets/asc/ldatest/MovieReviews";
+  // String inputDir = "C:/datasets/asc/reviews/ElectronicsReviews2";
   // String inputDir = "C:/datasets/asc/reviews/BalancedMovieReviews";
-  // String inputDir = "C:/datasets/asc/reviews/ASUM";
+  String inputDir = "C:/datasets/models/asum/ursa";
   // String inputDir = "C:/datasets/asc/reviews/MovieReviews";
   // String inputDir = "C:/datasets/asc/blogs/obama";
   final String dictionaryFile = inputDir + "/en-fr-locale.txt";
@@ -58,12 +59,12 @@ public class Application {
 
   int minWordLength = 3;
   int maxWordLength = 30;
-  int minSentenceLength = 4;
+  int minSentenceLength = 2;
   int maxSentenceLength = 50;
   int minWordOccur = 4;
   int minDocLength = 20; // used 20
 
-  int numTopics = 25;
+  int numTopics = 30;
   int numSenti = 2;
   double alpha = 0.5;
   double[] gammas = new double[] { 1.0, 1.0 };
@@ -77,8 +78,8 @@ public class Application {
   public static void main(String[] args) throws Exception {
     Application app = new Application();
     // app.parseDocuments();
-     app.parseCorpora();
-//    app.runModel(51);
+    app.parseCorpora();
+    // app.runModel(5);
   }
 
   /**
@@ -255,47 +256,51 @@ public class Application {
     english.printSubjectivityStatistics();
 
     // French corpus
-    System.out.println("Parsing french corpus...");
-    LocaleCorpusParser french = new LocaleCorpusParser(minWordLength,
-        maxWordLength, minSentenceLength, maxSentenceLength, minWordOccur,
-        minDocLength);
-    french.addReplacePattern("[http|ftp]://[\\S]*", " ");
-    french.addReplacePattern("(pas|non|sans|n'est|pas de)[\\s]+", " pas_");
-    french.addReplacePattern(
-        "(pas|ne|non|jamais|sans|n'est)[\\s]+(très|si|trop|beaucoup|toujours"
-            + "assez|si|que|ausi|vraiment)[\\s]+", " pas_");
-    french.addReplacePattern("[()<>\\[\\],~&;:\"\\-/=*#@^+'`’]", " ");
-    french.setLocale(Locale.FRENCH);
-    french.setWordReplacePattern(new String[] { FR_PATTERN, null });
-    french.setStopStems(frStopWordFile);
-    french.setStemmer(new FrenchStemmer());
-    parseCorpus(frCorpus, french);
-    french.filterWords();
-    french.writeStemMap(inputDir + "/Stem_fr.txt");
-    System.out.println(french);
-    french.printSubjectivityStatistics();
+    // System.out.println("Parsing french corpus...");
+    // LocaleCorpusParser french = new LocaleCorpusParser(minWordLength,
+    // maxWordLength, minSentenceLength, maxSentenceLength, minWordOccur,
+    // minDocLength);
+    // french.addReplacePattern("[http|ftp]://[\\S]*", " ");
+    // french.addReplacePattern("(pas|non|sans|n'est|pas de)[\\s]+", " pas_");
+    // french.addReplacePattern(
+    // "(pas|ne|non|jamais|sans|n'est)[\\s]+(très|si|trop|beaucoup|toujours"
+    // + "assez|si|que|ausi|vraiment)[\\s]+", " pas_");
+    // french.addReplacePattern("[()<>\\[\\],~&;:\"\\-/=*#@^+'`’]", " ");
+    // french.setLocale(Locale.FRENCH);
+    // french.setWordReplacePattern(new String[] { FR_PATTERN, null });
+    // french.setStopStems(frStopWordFile);
+    // french.setStemmer(new FrenchStemmer());
+    // parseCorpus(frCorpus, french);
+    // french.filterWords();
+    // french.writeStemMap(inputDir + "/Stem_fr.txt");
+    // System.out.println(french);
+    // french.printSubjectivityStatistics();
 
     // aggregate words from all languages
     int idx = english.reindexDocuments(0);
-    french.reindexDocuments(idx);
-    writeWordCount(inputDir + "/" + wordcountFile, new LocaleCorpusParser[] {
-        english, french });
+    // french.reindexDocuments(idx);
+    // writeWordCount(inputDir + "/" + wordcountFile, new LocaleCorpusParser[] {
+    // english, french });
+    writeWordCount(inputDir + "/" + wordcountFile,
+        new LocaleCorpusParser[] { english });
+
     // write word list (line indicates the word index)
-    LocaleWord[] wordList = new LocaleWord[english.getNumUniqueWords()
-        + french.getNumUniqueWords()];
+    // LocaleWord[] wordList = new LocaleWord[english.getNumUniqueWords()
+    // + french.getNumUniqueWords()];
+    LocaleWord[] wordList = new LocaleWord[english.getNumUniqueWords()];
     TreeMap<LocaleWord, Integer> wordIndex = english.getWordIndex();
     for (LocaleWord word : wordIndex.keySet()) {
       wordList[wordIndex.get(word)] = word;
     }
-    wordIndex = french.getWordIndex();
-    for (LocaleWord word : wordIndex.keySet()) {
-      wordList[wordIndex.get(word)] = word;
-    }
+    // wordIndex = french.getWordIndex();
+    // for (LocaleWord word : wordIndex.keySet()) {
+    // wordList[wordIndex.get(word)] = word;
+    // }
     writeWordList(inputDir + "/" + wordlistFile, wordList);
     writeDocuments(english.getDocuments(), english.getRatings(), inputDir + "/"
-        + Application.enDocuments);
-    writeDocuments(french.getDocuments(), french.getRatings(), inputDir + "/"
-        + Application.otherDocuments);
+        + Application.enDocuments, true);
+    // writeDocuments(french.getDocuments(), french.getRatings(), inputDir + "/"
+    // + Application.otherDocuments);
   }
 
   void writeWordCount(String file, LocaleCorpusParser[] parsers)
@@ -324,16 +329,21 @@ public class Application {
    * @param file
    * @throws IOException
    */
-  void writeDocuments(Vector<Vector<Vector<Integer>>> documents,
-      ArrayList<Double> ratings, String file) throws IOException {
+  void writeDocuments(Vector<Structure> documents, ArrayList<Double> ratings,
+      String file, boolean writeSentenceTxt) throws IOException {
     PrintWriter out = new PrintWriter(file);
     for (int idx = 0; idx < documents.size(); idx++) {
-      Vector<Vector<Integer>> document = documents.get(idx);
-      out.printf("%f %d\n", ratings.get(idx), document.size());
-      for (Vector<Integer> sentence : document) {
+      Structure document = documents.get(idx);
+      out.printf("%s %f %d\n", document.id, ratings.get(idx),
+          document.sentences.size());
+      for (int i = 0; i < document.sentences.size(); i++) {
+        Vector<Integer> sentence = document.sentences.get(i);
         for (int wordIndex : sentence)
           out.print(wordIndex + " ");
         out.println();
+        if (writeSentenceTxt) {
+          out.println(document.sentenceTexts.get(i));
+        }
       }
     }
     out.close();
@@ -383,13 +393,14 @@ public class Application {
     BufferedReader in = new BufferedReader(new InputStreamReader(
         new FileInputStream(corpus), UTF8));
     double rating;
-    while (in.readLine() != null) {
+    String id;
+    while ((id = in.readLine()) != null) {
       try {
         rating = Double.parseDouble(in.readLine());
       } catch (NumberFormatException e) {
         rating = -1.0;
       }
-      parser.build(in.readLine(), rating);
+      parser.build(id, in.readLine(), rating);
     }
     in.close();
   }
@@ -464,6 +475,8 @@ public class Application {
     while ((line = in.readLine()) != null) {
       Document document = new Document(documents.size());
       StringTokenizer st = new StringTokenizer(line);
+      document.setExternalId(st.nextToken());
+      st.nextToken(); // ignore the review target id
       document.setRating(Double.valueOf(st.nextToken()));
       int numSentences = Integer.valueOf(st.nextToken());
       for (int s = 0; s < numSentences; s++) {
@@ -474,10 +487,45 @@ public class Application {
           int wordNo = Integer.valueOf(st.nextToken());
           sentence.addWord(new SentiWord(wordNo));
         }
+        sentence.setText(in.readLine());
         document.addSentence(sentence);
       }
       documents.add(document);
     }
     in.close();
   }
+
+  /**
+   * Reads documents for the JST model. Note that if we treat each sentence as
+   * containing only one word then ASUM becomes JST. 
+   * @param documents
+   * @param corpus
+   * @throws IOException
+   */
+  public static void readDocumentsForJst(Vector<Document> documents,
+      String corpus) throws IOException {
+    BufferedReader in = new BufferedReader(new FileReader(corpus));
+    String line;
+    while ((line = in.readLine()) != null) {
+      Document document = new Document(documents.size());
+      StringTokenizer st = new StringTokenizer(line);
+      document.setExternalId(st.nextToken());
+      st.nextToken(); // ignore the review target id
+      document.setRating(Double.valueOf(st.nextToken()));
+      int numSentences = Integer.valueOf(st.nextToken());
+      for (int s = 0; s < numSentences; s++) {
+        line = in.readLine();
+        st = new StringTokenizer(line);
+        while (st.hasMoreElements()) {
+          Sentence sentence = new Sentence();
+          sentence.addWord(new SentiWord(Integer.valueOf(st.nextToken())));
+          document.addSentence(sentence);
+        }
+        in.readLine(); // ignore sentence text
+      }
+      documents.add(document);
+    }
+    in.close();
+  }
+
 }
