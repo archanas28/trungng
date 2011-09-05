@@ -37,7 +37,7 @@ public class TestGraphInputProducer extends TestCase {
   }
   
   public void testWrite() throws IOException {
-    producer.write("test/test_graph.txt");
+    producer.write("test/test_graph.txt", "\t");
     File file = new File("test/test_graph.txt");
     if (!file.exists()) {
       fail("Expected output file not found");
