@@ -280,8 +280,9 @@ public class NounphraseAnalysis {
         .readUniqueLinesAsLowerCase(dir + "/pos.data");
     HashSet<String> negPhrases = (HashSet<String>) TextFiles
         .readUniqueLinesAsLowerCase(dir + "/neg.data");
-    Model model = Model.loadModel(dir
-        + "/ursa/T50-A0.1-B0.0010-G0.10,0.10-I1000(top50)/1000/model.gz");
+    Model model = Model
+        .loadModel(dir
+            + "/ursa/T50-A0.1-B0.0010-G0.10,0.10-I1000(improvedParser)/1000/model.gz");
     System.err.println("\nClassification using model:");
     posPhrases.removeAll(classify(model, posPhrases, "positive", 0));
     negPhrases.removeAll(classify(model, negPhrases, "negative", 1));
@@ -317,7 +318,7 @@ public class NounphraseAnalysis {
           if (sentiWord >= 0 && aspectWord >= 0) {
             for (int k = 0; k < model.getNumTopics(); k++) {
               // method 2: use all words
-              // for (int s = 0; s < model.numSenti; s++) {
+              // for (int s = 0; s < model.getNumSentiments(); s++) {
               // score[s] += phiSenti[s].getValue(sentiWord, k)
               // * phiAspect[k][aspectWord];
               // }
