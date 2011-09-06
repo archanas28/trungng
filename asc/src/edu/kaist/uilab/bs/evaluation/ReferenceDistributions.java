@@ -33,18 +33,18 @@ public class ReferenceDistributions {
   public static final String[] ASPECTS = { "food", "staff", "price",
       "ambience", "miscellaneous", "anecdotes" };
 
-  private static final int UNKNOWN_SENTIMENT = -1;
-  private static int numSenti = 2;
-  private static int positive = 0, negative = 1, neutral = 2, conflict = 3;
-  private static int numAspects = 6;
-  
-  private HashMap<String, Integer> topics;
+  static final int UNKNOWN_SENTIMENT = -1;
+  static int numSenti = 2;
+  static int positive = 0, negative = 1, neutral = 2, conflict = 3;
+  static int numAspects = 6;
+
+  HashMap<String, Integer> topics;
   ObjectToCounterMap<String>[][] cnt;
   int[][] sumCnt;
-  private ObjectToDoubleMap<String>[][] phi;
-  private TokenizerFactory tokenizer;
-  private int numSentences = 0;
-  private int sentencesWithMultipleAspects = 0;
+  ObjectToDoubleMap<String>[][] phi;
+  TokenizerFactory tokenizer;
+  int numSentences = 0;
+  int sentencesWithMultipleAspects = 0;
 
   /**
    * For testing purpose.
@@ -62,11 +62,23 @@ public class ReferenceDistributions {
     readAnnotatedReviews(annotatedFile);
     System.out.printf("# sentences with multiple aspects : %d/%d\n",
         sentencesWithMultipleAspects, numSentences);
-    computePhi(cnt, sumCnt);
+    computePhiSenti(cnt, sumCnt);
   }
 
-  public ObjectToCounterMap<String>[][] getWordCount() {
-    return cnt;
+  @SuppressWarnings("unchecked")
+  void init() {
+    topics = new HashMap<String, Integer>();
+    for (int topic = 0; topic < ASPECTS.length; topic++) {
+      topics.put(ASPECTS[topic], topic);
+    }
+    cnt = new ObjectToCounterMap[numSenti][numAspects];
+    phi = new ObjectToDoubleMap[numSenti][numAspects];
+    for (int i = 0; i < numSenti; i++) {
+      for (int j = 0; j < numAspects; j++) {
+        cnt[i][j] = new ObjectToCounterMap<String>();
+      }
+    }
+    sumCnt = new int[numSenti][numAspects];
   }
 
   /**
@@ -89,22 +101,6 @@ public class ReferenceDistributions {
    */
   public ObjectToDoubleMap<String>[][] getReferenceDistributions() {
     return phi;
-  }
-
-  @SuppressWarnings("unchecked")
-  private void init() {
-    topics = new HashMap<String, Integer>();
-    for (int topic = 0; topic < ASPECTS.length; topic++) {
-      topics.put(ASPECTS[topic], topic);
-    }
-    cnt = new ObjectToCounterMap[numSenti][numAspects];
-    phi = new ObjectToDoubleMap[numSenti][numAspects];
-    for (int i = 0; i < numSenti; i++) {
-      for (int j = 0; j < numAspects; j++) {
-        cnt[i][j] = new ObjectToCounterMap<String>();
-      }
-    }
-    sumCnt = new int[numSenti][numAspects];
   }
 
   /**
@@ -186,7 +182,8 @@ public class ReferenceDistributions {
    * @param cnt
    * @param sumCnt
    */
-  private void computePhi(ObjectToCounterMap<String>[][] cnt, int[][] sumCnt) {
+  private void computePhiSenti(ObjectToCounterMap<String>[][] cnt,
+      int[][] sumCnt) {
     for (int senti = 0; senti < numSenti; senti++) {
       for (int topic = 0; topic < numAspects; topic++) {
         phi[senti][topic] = new ObjectToDoubleMap<String>();

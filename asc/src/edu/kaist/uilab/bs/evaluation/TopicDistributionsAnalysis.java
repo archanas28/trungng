@@ -8,6 +8,7 @@ import com.aliasi.util.ObjectToDoubleMap;
 import edu.kaist.uilab.asum.AsumModel.AsumModelData;
 import edu.kaist.uilab.asum.JstModel.JstModelData;
 import edu.kaist.uilab.bs.BSUtils;
+import edu.kaist.uilab.bs.Model;
 
 /**
  * Analysis of topic distributions for different models. TODO(trung): refactor
@@ -26,16 +27,16 @@ public class TopicDistributionsAnalysis {
     int numTopics = data.getNumTopics();
     PrintWriter out = new PrintWriter(outFile);
     out.print(",");
-    for (int senti = 0; senti < data.getNumSenti(); senti++) {
-      for (int topic = 0; topic < data.getNumTopics(); topic++) {
+    for (int senti = 0; senti < numSenti; senti++) {
+      for (int topic = 0; topic < numTopics; topic++) {
         out.printf("S%d-T%d,", senti, topic);
       }
     }
     out.println();
     out.print("ref,");
     int[][] refTopics = new int[numSenti][numTopics];
-    for (int senti = 0; senti < data.getNumSenti(); senti++) {
-      for (int topic = 0; topic < data.getNumTopics(); topic++) {
+    for (int senti = 0; senti < numSenti; senti++) {
+      for (int topic = 0; topic < numTopics; topic++) {
         refTopics[senti][topic] = matchTopic(phi[senti][topic], refPhi[senti]);
         out.printf("%s,",
             ReferenceDistributions.ASPECTS[refTopics[senti][topic]]);
@@ -43,8 +44,8 @@ public class TopicDistributionsAnalysis {
     }
     out.println();
     out.print("cosine,");
-    for (int senti = 0; senti < data.getNumSenti(); senti++) {
-      for (int topic = 0; topic < data.getNumTopics(); topic++) {
+    for (int senti = 0; senti < numSenti; senti++) {
+      for (int topic = 0; topic < numTopics; topic++) {
         out.printf("%.2f,", EvaluationUtils.cosineSimilarity(phi[senti][topic],
             refPhi[senti][refTopics[senti][topic]]));
       }
@@ -62,16 +63,16 @@ public class TopicDistributionsAnalysis {
     int numTopics = data.getNumTopics();
     PrintWriter out = new PrintWriter(outFile);
     out.print(",");
-    for (int senti = 0; senti < data.getNumSenti(); senti++) {
-      for (int topic = 0; topic < data.getNumTopics(); topic++) {
+    for (int senti = 0; senti < numSenti; senti++) {
+      for (int topic = 0; topic < numTopics; topic++) {
         out.printf("S%d-T%d,", senti, topic);
       }
     }
     out.println();
     out.print("ref,");
     int[][] refTopics = new int[numSenti][numTopics];
-    for (int senti = 0; senti < data.getNumSenti(); senti++) {
-      for (int topic = 0; topic < data.getNumTopics(); topic++) {
+    for (int senti = 0; senti < numSenti; senti++) {
+      for (int topic = 0; topic < numTopics; topic++) {
         refTopics[senti][topic] = matchTopic(phi[senti][topic], refPhi[senti]);
         out.printf("%s,",
             ReferenceDistributions.ASPECTS[refTopics[senti][topic]]);
@@ -79,11 +80,72 @@ public class TopicDistributionsAnalysis {
     }
     out.println();
     out.print("cosine,");
-    for (int senti = 0; senti < data.getNumSenti(); senti++) {
-      for (int topic = 0; topic < data.getNumTopics(); topic++) {
+    for (int senti = 0; senti < numSenti; senti++) {
+      for (int topic = 0; topic < numTopics; topic++) {
         out.printf("%.2f,", EvaluationUtils.cosineSimilarity(phi[senti][topic],
             refPhi[senti][refTopics[senti][topic]]));
       }
+    }
+    out.println();
+    out.close();
+  }
+
+  public static void analyzeBs(Model data, BSReferenceDistributions reference,
+      String sentiFile, String aspectFile) throws IOException {
+    ObjectToDoubleMap<String>[][] phi = data.getPhiSentiIndexedByWord();
+    ObjectToDoubleMap<String>[][] refPhi = reference
+        .getReferenceDistributions();
+    int numSenti = data.getNumSentiments();
+    int numTopics = data.getNumTopics();
+    PrintWriter out = new PrintWriter(sentiFile);
+    out.print(",");
+    for (int senti = 0; senti < numSenti; senti++) {
+      for (int topic = 0; topic < numTopics; topic++) {
+        out.printf("S%d-T%d,", senti, topic);
+      }
+    }
+    out.println();
+    out.print("ref,");
+    int[][] refTopics = new int[numSenti][numTopics];
+    for (int senti = 0; senti < numSenti; senti++) {
+      for (int topic = 0; topic < numTopics; topic++) {
+        refTopics[senti][topic] = matchTopic(phi[senti][topic], refPhi[senti]);
+        out.printf("%s,",
+            ReferenceDistributions.ASPECTS[refTopics[senti][topic]]);
+      }
+    }
+    out.println();
+    out.print("cosine,");
+    for (int senti = 0; senti < numSenti; senti++) {
+      for (int topic = 0; topic < numTopics; topic++) {
+        out.printf("%.2f,", EvaluationUtils.cosineSimilarity(phi[senti][topic],
+            refPhi[senti][refTopics[senti][topic]]));
+      }
+    }
+    out.println();
+    out.close();
+
+    // print comparison for aspects
+    ObjectToDoubleMap<String>[] phiAspect = data.getPhiAspectIndexedByWord();
+    ObjectToDoubleMap<String>[] refPhiAspects = reference
+        .getReferenceAspectDistributions();
+    out = new PrintWriter(aspectFile);
+    out.print(",");
+    for (int topic = 0; topic < numTopics; topic++) {
+      out.printf("T%d,", topic);
+    }
+    out.println();
+    out.print("ref,");
+    int[] refAspects = new int[numTopics];
+    for (int topic = 0; topic < numTopics; topic++) {
+      refAspects[topic] = matchTopic(phiAspect[topic], refPhiAspects);
+      out.printf("%s,", ReferenceDistributions.ASPECTS[refAspects[topic]]);
+    }
+    out.println();
+    out.print("cosine,");
+    for (int topic = 0; topic < numTopics; topic++) {
+      out.printf("%.2f,", EvaluationUtils.cosineSimilarity(phiAspect[topic],
+          refPhiAspects[refAspects[topic]]));
     }
     out.println();
     out.close();
@@ -111,16 +173,38 @@ public class TopicDistributionsAnalysis {
   }
 
   public static void main(String args[]) throws IOException {
-    String annotatedFile = "C:/datasets/ursa/ManuallyAnnotated_Corpus.xml";
-    String stopStem = "C:/datasets/models/bs/ursa/stop.txt";
-    String asumDir = "C:/datasets/models/asum/ursa/T7G0.10-0.10(seed1)/1000";
-    String jstDir = "C:/datasets/models/jst/ursa/T7-G0.10-0.10(seed1)/1000";
-    ReferenceDistributions reference = new ReferenceDistributions(
+    String annotatedFile = "C:/datasets/ManuallyAnnotated_Corpus.xml";
+    String stopStem = "C:/datasets/stop.txt";
+    // String asumDir = "C:/datasets";
+    // String jstDir = "C:/datasets";
+    String bsDir = "C:/datasets";
+    // ReferenceDistributions reference = new ReferenceDistributions(
+    // annotatedFile, stopStem);
+    // AsumModelData asum = (AsumModelData) BSUtils
+    // .loadModel(asumDir + "/asum.gz");
+    // analyzeAsum(asum, reference, asumDir + "/asum.csv");
+    // JstModelData jst = (JstModelData) BSUtils.loadModel(jstDir + "/jst.gz");
+    // analyzeJst(jst, reference, jstDir + "/jst.csv");
+    BSReferenceDistributions reference = new BSReferenceDistributions(
         annotatedFile, stopStem);
-    AsumModelData asum = (AsumModelData) BSUtils.loadModel(asumDir
-        + "/model.gz");
-    analyzeAsum(asum, reference, asumDir + "/reference.csv");
-    JstModelData jst = (JstModelData) BSUtils.loadModel(jstDir + "/model.gz");
-    analyzeJst(jst, reference, jstDir + "/reference.csv");
+//    reference.writeTopWords(bsDir + "/bssentiwords.csv", 50);
+//    reference.writeTopAspectWords(bsDir + "/bsaspectwords.csv", 100);
+     Model bs = (Model) BSUtils.loadModel(bsDir + "/bs.gz");
+    analyzeBs(bs, reference, bsDir + "/bssenti.csv", bsDir + "/bsaspect.csv");
   }
+
+  // public static void main(String args[]) throws IOException {
+  // String annotatedFile = "C:/datasets/ursa/ManuallyAnnotated_Corpus.xml";
+  // String stopStem = "C:/datasets/models/bs/ursa/stop.txt";
+  // String asumDir = "C:/datasets/models/asum/ursa/T7G0.10-0.10(seed1)/1000";
+  // String jstDir = "C:/datasets/models/jst/ursa/T7-G0.10-0.10(seed1)/1000";
+  // ReferenceDistributions reference = new ReferenceDistributions(
+  // annotatedFile, stopStem);
+  // AsumModelData asum = (AsumModelData) BSUtils.loadModel(asumDir
+  // + "/model.gz");
+  // analyzeAsum(asum, reference, asumDir + "/reference.csv");
+  // JstModelData jst = (JstModelData) BSUtils.loadModel(jstDir + "/model.gz");
+  // analyzeJst(jst, reference, jstDir + "/reference.csv");
+  // }
+
 }
