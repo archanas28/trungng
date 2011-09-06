@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Vector;
 
 import com.aliasi.symbol.SymbolTable;
+import com.aliasi.util.ObjectToDoubleMap;
 
 import edu.kaist.uilab.asc.Inference;
 import edu.kaist.uilab.asc.util.DoubleMatrix;
@@ -209,12 +210,41 @@ public class Model implements Serializable {
     return Inference.computePhiSenti(cntSWT, sumSTW, betaSenti, sumBetaSenti);
   }
 
+  public ObjectToDoubleMap<String>[][] getPhiSentiIndexedByWord() {
+    @SuppressWarnings("unchecked")
+    ObjectToDoubleMap<String>[][] newPhi = new ObjectToDoubleMap[numSenti][numTopics];
+    DoubleMatrix[] phi = getPhiSenti();
+    for (int senti = 0; senti < numSenti; senti++) {
+      for (int topic = 0; topic < numTopics; topic++) {
+        newPhi[senti][topic] = new ObjectToDoubleMap<String>();
+        for (int idx = 0; idx < numSentiWords; idx++) {
+          newPhi[senti][topic].increment(sentiTable.idToSymbol(idx),
+              phi[senti].getValue(idx, topic));
+        }
+      }
+    }
+    return newPhi;
+  }
+
   public DoubleMatrix[] getPhiSentiByTermscore() {
     return buildTermscoreMatrix(getPhiSenti(), numTopics);
   }
 
   public double[][] getPhiAspect() {
     return Inference.computePhiAspect(cntWT, sumWT, betaAspect, sumBetaAspect);
+  }
+
+  public ObjectToDoubleMap<String>[] getPhiAspectIndexedByWord() {
+    @SuppressWarnings("unchecked")
+    ObjectToDoubleMap<String>[] newPhi = new ObjectToDoubleMap[numTopics];
+    double[][] phi = getPhiAspect();
+    for (int topic = 0; topic < numTopics; topic++) {
+      newPhi[topic] = new ObjectToDoubleMap<String>();
+      for (int idx = 0; idx < numAspectWords; idx++) {
+        newPhi[topic].increment(aspectTable.idToSymbol(idx), phi[topic][idx]);
+      }
+    }
+    return newPhi;
   }
 
   public double[][] getPhiAspectByTermscore() {
