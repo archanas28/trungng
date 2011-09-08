@@ -14,11 +14,11 @@ package edu.kaist.uilab.asc.data;
 public class Review {
   public static final double NO_RATING = -1.0;
 
-  private Double mRating;
+  Double mRating;
   String mReviewId;
   // TODO(trung): rename mRestaurantId to mTargetId
   String mRestaurantId;
-  private String mContent;
+  String mContent;
 
   /**
    * Constructor
