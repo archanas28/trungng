@@ -13,7 +13,8 @@ import edu.kaist.uilab.bs.DocumentUtils;
 public class ReviewWithProsAndConsReader extends ReviewReader {
 
   @Override
-  public Review readReview(BufferedReader reader) throws IOException {
+  public Review readReview(BufferedReader reader, boolean negateContent)
+      throws IOException {
     String line;
     Double rating;
     ReviewWithProsAndCons review = null;
@@ -24,9 +25,14 @@ public class ReviewWithProsAndConsReader extends ReviewReader {
       } catch (NumberFormatException e) {
         rating = -1.0;
       }
-      review = new ReviewWithProsAndCons(ids[0], ids[1], rating,
-          reader.readLine(), reader.readLine(), DocumentUtils.negate(reader
-              .readLine()));
+      if (negateContent) {
+        review = new ReviewWithProsAndCons(ids[0], ids[1], rating,
+            reader.readLine(), reader.readLine(), DocumentUtils.negate(reader
+                .readLine()));
+      } else {
+        review = new ReviewWithProsAndCons(ids[0], ids[1], rating,
+            reader.readLine(), reader.readLine(), reader.readLine());
+      }
     }
 
     return review;
