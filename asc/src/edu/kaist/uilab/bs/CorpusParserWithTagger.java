@@ -24,6 +24,7 @@ import com.aliasi.util.ObjectToCounterMap;
 import com.aliasi.util.Strings;
 
 import edu.kaist.uilab.asc.data.Review;
+import edu.kaist.uilab.asc.data.ReviewReader;
 import edu.kaist.uilab.stemmers.EnglishStemmer;
 import edu.stanford.nlp.ling.HasWord;
 import edu.stanford.nlp.ling.TaggedWord;
@@ -39,9 +40,6 @@ public class CorpusParserWithTagger {
 
   private static final int MAX_SENTENCE_LENGTH = 40;
   private static final String UTF8 = "utf-8";
-  private final String sentiTags[] = { "JJ", "JJR", "JJS", // adjective
-      "RB", "RBR", "RBS" // adverb
-  };
   private final String[] nounTags = { "NN", "NNS" };
 
   private MaxentTagger tagger = MaxentTaggerSingleton.getInstance();
@@ -50,6 +48,7 @@ public class CorpusParserWithTagger {
   int mTopStopWords;
   int mTopDocumentTokens;
   String mCorpus;
+  ReviewReader mReviewReader;
   TokenizerFactory mTokenizerFactory;
   HashSet<String> mStopStems;
   SymbolTable mAspectTable;
@@ -67,6 +66,8 @@ public class CorpusParserWithTagger {
    * 
    * @param corpus
    *          the file that contains the corpus
+   * @param reviewReader
+   *          a reader to read reviews
    * @param minTokenCount
    *          the minimum count of a token to be retained as one word in the
    *          vocabulary
@@ -82,10 +83,11 @@ public class CorpusParserWithTagger {
    *          the list of stop words (in addition to the standard stop words
    *          used in lingpipe)
    */
-  public CorpusParserWithTagger(String corpus, int minTokenCount,
-      int topStopWords, int topDocumentTokens, List<String> stopStems)
-      throws Exception {
+  public CorpusParserWithTagger(String corpus, ReviewReader reviewReader,
+      int minTokenCount, int topStopWords, int topDocumentTokens,
+      List<String> stopStems) throws Exception {
     mCorpus = corpus;
+    mReviewReader = reviewReader;
     mMinTokenCount = minTokenCount;
     mTopStopWords = topStopWords;
     mTopDocumentTokens = topDocumentTokens;
@@ -220,19 +222,14 @@ public class CorpusParserWithTagger {
   public ArrayList<Review> readCorpus(String corpus) throws IOException {
     BufferedReader in = new BufferedReader(new InputStreamReader(
         new FileInputStream(corpus), UTF8));
-    String line;
-    double rating;
     ArrayList<Review> list = new ArrayList<Review>();
-    while ((line = in.readLine()) != null) {
-      String[] ids = line.split(" ");
-      try {
-        rating = Double.parseDouble(in.readLine());
-      } catch (NumberFormatException e) {
-        rating = -1.0;
+    Review review = null;
+    do {
+      review = mReviewReader.readReview(in, true);
+      if (review != null) {
+        list.add(review);
       }
-      list.add(new Review(ids[0], ids[1], rating, DocumentUtils.negate(in
-          .readLine())));
-    }
+    } while (review != null);
     in.close();
 
     return list;
@@ -303,8 +300,7 @@ public class CorpusParserWithTagger {
   }
 
   /**
-   * Prunes the top {@code num} tokens from the vocabulary set. TODO(trung): we
-   * may not need to prune these words
+   * Prunes the top {@code num} tokens from the vocabulary set.
    * 
    * @param tokenCounter
    * @param num
@@ -337,11 +333,8 @@ public class CorpusParserWithTagger {
     String docContent = review.getContent();
     Document document = new Document(mDocuments.size(), review.getReviewId(),
         review.getRestaurantId());
-    // List<ArrayList<? extends HasWord>> tokenizedSentences = MaxentTagger
-    // .tokenizeText(new BufferedReader(new StringReader(docContent
-    // .replaceAll("not_", "not "))));
     List<ArrayList<? extends HasWord>> tokenizedSentences = DocumentUtils
-        .tokenizeSentences(docContent.replaceAll("not_", "not "));
+        .tokenizeSentences(docContent.replaceAll("not_", "not "), false);
     for (int idx = 0; idx < tokenizedSentences.size(); idx++) {
       sentenceCnt++;
       ArrayList<? extends HasWord> tokenizedSentence = tokenizedSentences
@@ -391,7 +384,8 @@ public class CorpusParserWithTagger {
       tWord.setWord(stem);
       if (stem.length() < 3 || !mWordCnt.containsKey(stem))
         continue;
-      if (isSentiTag(tWord.tag())) {
+      if (SentimentPrior.isSentiTag(tWord.tag())
+          || SentimentPrior.isSentiWord(stem)) {
         if (idx > 0 && tSentence.get(idx - 1).word().equals("not")) {
           list.add("not_" + stem);
         } else {
@@ -401,28 +395,6 @@ public class CorpusParserWithTagger {
     }
 
     return list;
-  }
-
-  /*
-   * Returns true if the given tag is one of the senti tag.
-   */
-  private boolean isSentiTag(String tag) {
-    for (String sentiTag : sentiTags) {
-      if (sentiTag.equals(tag)) {
-        return true;
-      }
-    }
-
-    return false;
-  }
-
-  boolean isNounTag(String tag) {
-    for (String nTag : nounTags) {
-      if (nTag.equals(tag)) {
-        return true;
-      }
-    }
-    return false;
   }
 
   /**
@@ -443,7 +415,7 @@ public class CorpusParserWithTagger {
       if (idx > 0 && tSentence.get(idx - 1).word().equals("not")) {
         word = "not_" + word;
       }
-      if (isSentiTag(tWord.tag())) {
+      if (SentimentPrior.isSentiTag(tWord.tag())) {
         if (idx < size - 1 && isNounTag(tSentence.get(idx + 1).tag())) {
           // case 1: sentiment aspect
           mCounter.increaseCount(word, tSentence.get(idx + 1).word());
@@ -460,12 +432,22 @@ public class CorpusParserWithTagger {
     }
   }
 
+  boolean isNounTag(String tag) {
+    for (String nTag : nounTags) {
+      if (nTag.equals(tag)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   /**
    * Tokenizer factory for the BS model.
    * <p>
    * This tokenizer stems every word using Porter stemmer.
    */
-  public static final class BSTokenizerFactory extends ModifyTokenTokenizerFactory {
+  public static final class BSTokenizerFactory extends
+      ModifyTokenTokenizerFactory {
     static final long serialVersionUID = -3401639068551227864L;
     static final EnglishStemmer stemmer = new EnglishStemmer();
     static final int MIN_WORD_LENGTH = 2;
@@ -501,7 +483,7 @@ public class CorpusParserWithTagger {
   }
 
   public static void main(String[] args) throws Exception {
-//    BSCorpusParserWithTagger bs = new BSCorpusParserWithTagger(null, 0, 0, 0,
-//        new ArrayList<String>());
+    // BSCorpusParserWithTagger bs = new BSCorpusParserWithTagger(null, 0, 0, 0,
+    // new ArrayList<String>());
   }
 }

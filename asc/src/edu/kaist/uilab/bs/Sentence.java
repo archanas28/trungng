@@ -79,7 +79,7 @@ public class Sentence implements Serializable {
     return mSentiWords;
   }
 
-  public boolean hasAspectAndSenti() {
-    return mAspectWords.size() > 0 && mSentiWords.size() > 0;
+  public boolean hasSentimentWords() {
+    return mSentiWords.size() > 0;
   }
 }

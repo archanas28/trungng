@@ -10,6 +10,7 @@ import com.aliasi.util.ObjectToCounterMap;
 import com.aliasi.util.ObjectToDoubleMap;
 
 import edu.kaist.uilab.bs.MaxentTaggerSingleton;
+import edu.kaist.uilab.bs.SentimentPrior;
 import edu.kaist.uilab.stemmers.EnglishStemmer;
 import edu.stanford.nlp.tagger.maxent.MaxentTagger;
 
@@ -20,10 +21,6 @@ import edu.stanford.nlp.tagger.maxent.MaxentTagger;
  * 
  */
 public class BSReferenceDistributions extends ReferenceDistributions {
-  private static final String sentiTags[] = { "JJ", "JJR", "JJS", // adjective
-      "RB", "RBR", "RBS" // adverb
-  };
-
   private MaxentTagger tagger;
   private EnglishStemmer stemmer;
   ObjectToCounterMap<String>[] aspectCnt;
@@ -109,7 +106,7 @@ public class BSReferenceDistributions extends ReferenceDistributions {
   }
 
   /**
-   * Returns the lowercase sentiment stems of a tagged sentence.
+   * Returns the lowercase sentiment stems in a tagged sentence.
    * 
    * @param taggedString
    * @return
@@ -122,8 +119,8 @@ public class BSReferenceDistributions extends ReferenceDistributions {
       int slashPos = token.indexOf("/");
       String word = token.substring(0, slashPos);
       String tag = token.substring(slashPos + 1);
-      if (isSentiTag(tag)) {
-        String stem = stemmer.getStem(word.toLowerCase());
+      String stem = stemmer.getStem(word.toLowerCase());
+      if (SentimentPrior.isSentiTag(tag) || SentimentPrior.isSentiWord(stem)) {
         if (i > 0 && tokens[i - 1].contains("not/")) {
           set.add("not_" + stem);
         } else {
@@ -133,19 +130,6 @@ public class BSReferenceDistributions extends ReferenceDistributions {
     }
 
     return set;
-  }
-
-  /*
-   * Returns true if the given tag is one of the senti tag.
-   */
-  private boolean isSentiTag(String tag) {
-    for (String sentiTag : sentiTags) {
-      if (sentiTag.equals(tag)) {
-        return true;
-      }
-    }
-
-    return false;
   }
 
   /**
@@ -179,7 +163,9 @@ public class BSReferenceDistributions extends ReferenceDistributions {
   public static void main(String args[]) throws IOException {
     String annotatedFile = "C:/datasets/ManuallyAnnotated_Corpus.xml";
     String stopStem = "C:/datasets/stop.txt";
+    @SuppressWarnings("unused")
     BSReferenceDistributions reference = new BSReferenceDistributions(
         annotatedFile, stopStem);
+    
   }
 }

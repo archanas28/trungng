@@ -153,26 +153,15 @@ public class WordsBreaker {
 
   public static void main(String args[]) throws Exception {
     WordsBreaker wb = new WordsBreaker();
-    int cnt = 0, trials = 20;
-    StringBuilder builder = new StringBuilder();
-    BufferedReader in = new BufferedReader(new InputStreamReader(
-        new FileInputStream("C:/datasets/models/bs/electronics/docs.txt"), "utf-8"));
-    while (in.readLine() != null) {
-      in.readLine();
-      String document = in.readLine();
-      String[] sentences = document.split("[.!?]");
-      for (String sentence : sentences) {
-        builder.append(wb.tagger.tagString(sentence)).append("\n");
-      }
-      if (cnt++ > trials) {
-        break;
-      }
-    }
-    in.close();
-    TextFiles.writeFile("tagged.txt", builder.toString());
-//    String dir = "C:/datasets/bs/restaurants";
-//    wb.divide(dir + "/docs.txt", dir + "/aspects.txt", dir + "/senti.txt", dir
-//        + "/common.txt");
+    System.out.println(wb.tagger
+        .tagString("The caesar with salmon or chicken is really quite good."));
+    System.out.println(wb.tagger
+        .tagString("The waitress, who was gorgeous, was unwilling to take our order."));
+    
+    // String dir = "C:/datasets/bs/restaurants";
+    // wb.divide(dir + "/docs.txt", dir + "/aspects.txt", dir + "/senti.txt",
+    // dir
+    // + "/common.txt");
     // wb.divide(dir + "/docs.txt", dir + "/aspects_adj.txt", dir +
     // "/senti_adj.txt", dir
     // + "/common_adj.txt");

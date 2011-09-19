@@ -46,12 +46,17 @@ public final class DocumentUtils {
    * @return
    */
   public static List<ArrayList<? extends HasWord>> tokenizeSentences(
-      String content) {
+      String content, boolean divideSentenceByConjunction) {
     content = removesNonAlphabets(content);
     List<ArrayList<? extends HasWord>> list = new ArrayList<ArrayList<? extends HasWord>>();
     List<ArrayList<? extends HasWord>> tSentences = MaxentTagger
         .tokenizeText(new BufferedReader(new StringReader(content)));
-    final String[] conjunctions = { "but", "and" };
+    final String[] conjunctions;
+    if (divideSentenceByConjunction) {
+      conjunctions = new String[] { "but", "and" };
+    } else {
+      conjunctions = new String[] { "", "" };
+    }
     for (ArrayList<? extends HasWord> sentence : tSentences) {
       boolean broken = false;
       int size = sentence.size();

@@ -1,7 +1,6 @@
 package edu.kaist.uilab.bs;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -10,10 +9,11 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import edu.kaist.uilab.asc.data.Review;
+import edu.kaist.uilab.asc.data.ReviewReader;
 import edu.kaist.uilab.asc.util.TextFiles;
-import edu.kaist.uilab.stemmers.EnglishStemmer;
 
 /**
  * Utility methods for this package.
@@ -64,42 +64,92 @@ public class BSUtils {
   }
 
   /**
-   * Re-writes the electronics corpus to make in consistent with the format.
+   * Reads reviews from a corpus.
+   * <p>
+   * All reviews of each specific review target is read into its own list of
+   * reviews, which is mapped by its id in the returned map.
    * 
+   * @param corpus
+   *          the file containing all reviews
+   * @param reader
+   *          a review reader
+   * @return a map from a target id (i.e., a product or a restaurant) to its
+   *         list of reviews
    * @throws IOException
    */
-  public static void temp(String inputDir, String outputFile)
-      throws IOException {
-    String[] files = new File(inputDir).list();
+  public static HashMap<String, ArrayList<Review>> readReviews(String corpus,
+      ReviewReader reader) throws IOException {
+    BufferedReader in = new BufferedReader(new InputStreamReader(
+        new FileInputStream(corpus), "utf-8"));
+    HashMap<String, ArrayList<Review>> map = new HashMap<String, ArrayList<Review>>();
     ArrayList<Review> list = new ArrayList<Review>();
-    int count = 0;
-    String targetId;
-    for (String file : files) {
-      if (!file.equals("avatar.txt"))
-        continue;
-      targetId = file.substring(0, file.length() - 4);
-      BufferedReader in = new BufferedReader(new InputStreamReader(
-          new FileInputStream(inputDir + "/" + file), "utf-8"));
-      double rating;
-      while (in.readLine() != null) {
-        count++;
-        try {
-          rating = Double.parseDouble(in.readLine());
-        } catch (NumberFormatException e) {
-          rating = -1.0;
+    Review review = null;
+    do {
+      review = reader.readReview(in, false);
+      if (review != null) {
+        if (map.containsKey(review.getRestaurantId())) {
+          list = map.get(review.getRestaurantId());
+        } else {
+          list = new ArrayList<Review>();
+          map.put(review.getRestaurantId(), list);
         }
-        list.add(new Review(String.valueOf(count), targetId, rating, in
-            .readLine()));
+        list.add(review);
       }
-      in.close();
+    } while (review != null);
+    in.close();
+
+    return map;
+  }
+
+  /**
+   * Returns true if <code>element</code> is in <code>array</code>.
+   * 
+   * @param array
+   * @param value
+   * @return
+   */
+  public static boolean isInArray(Object[] array, Object value) {
+    for (Object element : array) {
+      if (element.equals(value)) {
+        return true;
+      }
     }
 
-    TextFiles.writeCollection(list, outputFile, "utf-8");
+    return false;
+  }
+
+  /**
+   * Returns a string that is a concatenation of elements of the given array.
+   * 
+   * @param array
+   * @param separator
+   * @return
+   */
+  public static String arrayToString(String[] array, String separator) {
+    StringBuilder builder = new StringBuilder();
+    for (String s : array) {
+      builder.append(s).append(separator);
+    }
+    return builder.toString();
   }
 
   public static void main(String args[]) throws IOException {
-    // temp("C:/datasets/movies/eng", "C:/datasets/models/bs/movies/docs.txt");
-    EnglishStemmer stemmer = new EnglishStemmer();
-    System.out.println(stemmer.getStem("useful"));
+//    EnglishStemmer stemmer = new EnglishStemmer();
+//    System.out.println(stemmer.getStem("fresh"));
+//    String[] verbs = { "love", "loves", "loved", "like", "liked", "likes",
+//        "enjoy", "enjoyed", "enjoys", "recommends" };
+//    String[] verbs2 = { "hate", "hates", "hated", "annoy", "annoyed", "annoys",
+//        "fail", "fails", "failed", "disappoint", "disappointed", "disappoints",
+//        "waste", "regrets", };
+//    for (String verb : verbs) {
+//      System.out.println(verb + " --> " + stemmer.getStem(verb));
+//    }
+//    for (String verb : verbs2) {
+//      System.out.println(verb + " --> " + stemmer.getStem(verb));
+//    }
+    TextFiles.aggregateDirectoryToFile("C:/datasets/epinions/vacuum",
+        "C:/datasets/epinions/vacuum2.txt");
+    TextFiles.aggregateDirectoryToFile("C:/datasets/epinions/coffeemaker",
+        "C:/datasets/epinions/coffeemaker2.txt");
   }
 }

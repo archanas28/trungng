@@ -1,9 +1,7 @@
 package edu.kaist.uilab.bs;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 
 /**
  * Gibbs sampling for the BS model.
@@ -11,7 +9,7 @@ import java.io.ObjectOutputStream;
  * @author trung
  */
 public class GibbsSampler {
-  private Model model;
+  Model model;
 
   /**
    * Creates a Gibbs sampler with the given model.
@@ -23,7 +21,7 @@ public class GibbsSampler {
   public Model getModel() {
     return model;
   }
-  
+
   /**
    * Sets the output dir for this model.
    * <p>
@@ -37,38 +35,56 @@ public class GibbsSampler {
     new File(model.outputDir).mkdir();
   }
 
-  private void initDocs(int from, int to) {
+  /**
+   * Inits for Gibbs sampling.
+   * 
+   * @param from
+   *          starting document index
+   * @param to
+   *          end document index
+   */
+  void initDocs(int from, int to) {
     int cnt = 0;
     for (int docNo = from; docNo < to; docNo++) {
       Document document = model.getDocuments().get(docNo);
       for (Sentence sentence : document.getSentences()) {
-        int newSenti = -1;
-        int numSentenceSenti = 0;
-        for (Integer sentiWord : sentence.getSentiWords()) {
-          for (int s = 0; s < model.numSenti; s++) {
-            if (model.seedWords[s].contains(sentiWord)) {
-              if (numSentenceSenti == 0 || s != newSenti)
-                numSentenceSenti++;
-              newSenti = s;
-            }
-          }
-        }
-        // if sentiment of the sentence is not determined, get random sentiment
-        if (numSentenceSenti != 1) {
-          newSenti = (int) (Math.random() * model.numSenti);
-        }
-        if (numSentenceSenti <= 1) {
-          int newTopic = (int) (Math.random() * model.numTopics);
-          setTopicSentiment(docNo, sentence, newTopic, newSenti);
-        } else {
-          // // TODO(trung): this is added to eliminate all sentences with > 2
-          // sentiments!!
-          sentence.setSenti(-1);
+        initSentence(docNo, sentence);
+        if (sentence.getSenti() == -1) {
           cnt++;
         }
       }
     }
     System.out.printf("\nSentences with more than 1 sentiments: %d\n", cnt);
+  }
+
+  /**
+   * Initializes a sentiment and topic for <code>sentence</code>.
+   * 
+   * @param sentence
+   */
+  void initSentence(int docNo, Sentence sentence) {
+    int newSenti = -1;
+    int numSentenceSenti = 0;
+    for (Integer sentiWord : sentence.getSentiWords()) {
+      for (int s = 0; s < model.numSenti; s++) {
+        if (model.seedWords[s].contains(sentiWord)) {
+          if (numSentenceSenti == 0 || s != newSenti)
+            numSentenceSenti++;
+          newSenti = s;
+        }
+      }
+    }
+    // if sentiment of the sentence is not determined, get random sentiment
+    if (numSentenceSenti != 1) {
+      newSenti = (int) (Math.random() * model.numSenti);
+    }
+    if (numSentenceSenti <= 1) {
+      int newTopic = (int) (Math.random() * model.numTopics);
+      setTopic(docNo, sentence, newTopic);
+      setSentiment(docNo, sentence, newTopic, newSenti);
+    } else {
+      sentence.setSenti(-1);
+    }
   }
 
   /**
@@ -114,82 +130,100 @@ public class GibbsSampler {
    * 
    * @param document
    */
-  private void sampleForDoc(Document document) {
-    double[][] probTable = new double[model.numTopics][model.numSenti];
+  void sampleForDoc(Document document) {
     int docIdx = document.getDocNo();
     for (Sentence sentence : document.getSentences()) {
       if (sentence.getSenti() == -1) {
         continue;
       }
-      unsetTopicSentiment(docIdx, sentence);
-      double sumProb = 0;
-      for (int s = 0; s < model.numSenti; s++) {
-        if (hasOppositeSentiment(sentence, s)) {
-          // forced sentiment orientation (by assigning 0 probability to the
-          // opposite senti-aspect. example: if a sentences contains the word
-          // "excellent", then the probability of being assigned negative
-          // sentiment is 0.
-          for (int k = 0; k < model.numTopics; k++) {
-            probTable[k][s] = 0;
-          }
-        } else {
-          for (int k = 0; k < model.numTopics; k++) {
-            double prob = (model.cntDT.getValue(docIdx, k) + model.alpha)
-                * (model.cntDS.getValue(docIdx, s) + model.gammas[s]);
-            int x = 0;
-            for (Integer aspectWord : sentence.getAspectWords()) {
-              prob *= (model.cntWT.getValue(aspectWord, k) + model.betaAspect)
-                  / (model.sumWT[k] + model.sumBetaAspect + x++);
-            }
-            x = 0;
-            for (Integer sentiWord : sentence.getSentiWords()) {
-              prob *= (model.cntSWT[s].getValue(sentiWord, k) + model.betaSenti[s][sentiWord])
-                  / (model.sumSTW[s][k] + model.sumBetaSenti[s] + x++);
-            }
-            probTable[k][s] = prob;
-            sumProb += prob;
-          }
-        }
-      }
-      // sample from a discrete distribution
-      int newTopic = -1, newSenti = -1;
-      double randNo = Math.random() * sumProb;
-      double sumSoFar = 0;
-      boolean found = false;
-      for (int k = 0; k < model.numTopics; k++) {
-        for (int j = 0; j < model.numSenti; j++) {
-          sumSoFar += probTable[k][j];
-          if (randNo < sumSoFar) {
-            newTopic = k;
-            newSenti = j;
-            found = true;
-            break;
-          }
-        }
-        if (found)
-          break;
-      }
-      setTopicSentiment(docIdx, sentence, newTopic, newSenti);
+      sampleForSentence(docIdx, sentence);
     }
   }
 
   /**
-   * Unsets the topic and sentiment of the sentence in the given document.
+   * Samples a new topic and sentiment for <code>sentence</code>.
    * 
    * @param docIdx
    * @param sentence
    */
-  private void unsetTopicSentiment(int docIdx, Sentence sentence) {
+  void sampleForSentence(int docIdx, Sentence sentence) {
+    double[][] probTable = new double[model.numTopics][model.numSenti];
+    unsetTopic(docIdx, sentence);
+    unsetSentiment(docIdx, sentence);
+    double sumProb = 0;
+    for (int s = 0; s < model.numSenti; s++) {
+      if (hasOppositeSentiment(sentence, s)) {
+        for (int k = 0; k < model.numTopics; k++) {
+          probTable[k][s] = 0;
+        }
+      } else {
+        for (int k = 0; k < model.numTopics; k++) {
+          double prob = (model.cntDT.getValue(docIdx, k) + model.alpha)
+              * (model.cntDS.getValue(docIdx, s) + model.gammas[s]);
+          int x = 0;
+          for (Integer aspectWord : sentence.getAspectWords()) {
+            prob *= (model.cntWT.getValue(aspectWord, k) + model.betaAspect)
+                / (model.sumWT[k] + model.sumBetaAspect + x++);
+          }
+          x = 0;
+          for (Integer sentiWord : sentence.getSentiWords()) {
+            prob *= (model.cntSWT[s].getValue(sentiWord, k) + model.betaSenti[s][sentiWord])
+                / (model.sumSTW[s][k] + model.sumBetaSenti[s] + x++);
+          }
+          probTable[k][s] = prob;
+          sumProb += prob;
+        }
+      }
+    }
+    // sample from a discrete distribution
+    int newTopic = -1, newSenti = -1;
+    double randNo = Math.random() * sumProb;
+    double sumSoFar = 0;
+    boolean found = false;
+    for (int k = 0; k < model.numTopics; k++) {
+      for (int j = 0; j < model.numSenti; j++) {
+        sumSoFar += probTable[k][j];
+        if (randNo < sumSoFar) {
+          newTopic = k;
+          newSenti = j;
+          found = true;
+          break;
+        }
+      }
+      if (found)
+        break;
+    }
+    setTopic(docIdx, sentence, newTopic);
+    setSentiment(docIdx, sentence, newTopic, newSenti);
+  }
+
+  /**
+   * Unsets the sentiment of <code>sentence</code> in the given document.
+   * 
+   * @param docIdx
+   * @param sentence
+   */
+  void unsetSentiment(int docIdx, Sentence sentence) {
     int oldTopic = sentence.getTopic();
     int oldSenti = sentence.getSenti();
-    model.cntDT.decValue(docIdx, oldTopic);
     model.cntDS.decValue(docIdx, oldSenti);
-    model.sumDT[docIdx]--;
     model.sumDS[docIdx]--;
     for (Integer sentiWord : sentence.getSentiWords()) {
       model.cntSWT[oldSenti].decValue(sentiWord, oldTopic);
       model.sumSTW[oldSenti][oldTopic]--;
     }
+  }
+
+  /**
+   * Unsets the topic of <code>sentence</code> in the given document.
+   * 
+   * @param docIdx
+   * @param sentence
+   */
+  void unsetTopic(int docIdx, Sentence sentence) {
+    int oldTopic = sentence.getTopic();
+    model.cntDT.decValue(docIdx, oldTopic);
+    model.sumDT[docIdx]--;
     for (Integer aspectWord : sentence.getAspectWords()) {
       model.cntWT.decValue(aspectWord, oldTopic);
       model.sumWT[oldTopic]--;
@@ -201,25 +235,34 @@ public class GibbsSampler {
    * 
    * @param docIdx
    * @param sentence
-   * @param newTopic
+   * @param topic
    * @param newSenti
    */
-  private void setTopicSentiment(int docIdx, Sentence sentence, int newTopic,
-      int newSenti) {
-    sentence.setTopic(newTopic);
+  void setSentiment(int docIdx, Sentence sentence, int topic, int newSenti) {
     sentence.setSenti(newSenti);
+    for (Integer sentiWord : sentence.getSentiWords()) {
+      model.cntSWT[newSenti].incValue(sentiWord, topic);
+      model.sumSTW[newSenti][topic]++;
+    }
+    model.cntDS.incValue(docIdx, newSenti);
+    model.sumDS[docIdx]++;
+  }
+
+  /**
+   * Sets new topic for <code>sentence</code> in the given document.
+   * 
+   * @param docIdx
+   * @param sentence
+   * @param newTopic
+   */
+  void setTopic(int docIdx, Sentence sentence, int newTopic) {
+    sentence.setTopic(newTopic);
     for (Integer aspectWord : sentence.getAspectWords()) {
       model.cntWT.incValue(aspectWord, newTopic);
       model.sumWT[newTopic]++;
     }
-    for (Integer sentiWord : sentence.getSentiWords()) {
-      model.cntSWT[newSenti].incValue(sentiWord, newTopic);
-      model.sumSTW[newSenti][newTopic]++;
-    }
     model.cntDT.incValue(docIdx, newTopic);
-    model.cntDS.incValue(docIdx, newSenti);
     model.sumDT[docIdx]++;
-    model.sumDS[docIdx]++;
   }
 
   /**
@@ -230,7 +273,7 @@ public class GibbsSampler {
    * @param sentiment
    * @return
    */
-  private boolean hasOppositeSentiment(Sentence sentence, int sentiment) {
+  boolean hasOppositeSentiment(Sentence sentence, int sentiment) {
     for (Integer sentiWord : sentence.getSentiWords()) {
       if (model.seedWords[1 - sentiment].contains(sentiWord)) {
         return true;

@@ -12,24 +12,25 @@ import java.util.regex.Pattern;
 
 import com.aliasi.symbol.SymbolTable;
 
+import edu.kaist.uilab.asc.data.ReviewReader;
+import edu.kaist.uilab.asc.data.ReviewWithProsAndConsReader;
 import edu.kaist.uilab.asc.util.TextFiles;
 
 public class Runner {
 
   public static void main(String args[]) throws Exception {
-    runNewTraining();
+//     runNewTraining();
+    runExistingTraining();
   }
 
   static void runNewTraining() throws Exception {
-    String dir = "C:/datasets/models/bs/electronics";
+    String dir = "C:/datasets/models/bs/coffeemaker";
     String stopFile = "stop.txt";
-    String sentiStemsFile = "senti.txt";
-    // String sentiStemsFile = "senti_adj.txt";
-//    String positiveSeeds = "seedstems0(+2).txt";
-//    String negativeSeeds = "seedstems1(+2).txt";
-     String positiveSeeds = "seedstems0(+1).txt";
-     String negativeSeeds = "seedstems1(+1).txt";
-    String annotatedFile = "annotated.txt";
+    // String positiveSeeds = "seedstems0(+2).txt";
+    // String negativeSeeds = "seedstems1(+2).txt";
+    String positiveSeeds = "C:/datasets/models/seedstems/seedstems0(+1).txt";
+    String negativeSeeds = "C:/datasets/models/seedstems/seedstems1(+1).txt";
+    // String annotatedFile = "annotated.txt";
     int minTokenCount = 3;
     int topWordsToRemove = 0;
     int topDocumentTokens = 70;
@@ -38,7 +39,7 @@ public class Runner {
     double alpha = 0.1;
     double betaAspect = 0.001;
     double[] betaSenti = new double[] { 0.001, 0.000000001, 0.001 };
-    double[] gammas = new double[] { 1.0, 1.0 };
+    double[] gammas = new double[] { 0.1, 0.1 };
 
     int numIters = 1000;
     int burnin = 500;
@@ -53,23 +54,22 @@ public class Runner {
     // BSCorpusParser parser = new BSCorpusParser(dir + "/docs.txt",
     // minTokenCount, topWordsToRemove, topDocumentTokens, sentiStems,
     // stopStems);
+    ReviewReader reader = new ReviewWithProsAndConsReader();
     CorpusParserWithTagger parser = new CorpusParserWithTagger(dir
-        + "/docs.txt", minTokenCount, topWordsToRemove,
+        + "/docs.txt", reader, minTokenCount, topWordsToRemove,
         topDocumentTokens, stopStems);
     parser.parse();
-    // parser.reportCorpus(dir + "/wordcount.csv", dir + "/aspectwords.txt", dir
-    // + "/sentiwords.txt");
     @SuppressWarnings("unchecked")
     HashSet<Integer>[] seedWords = new HashSet[2];
     SymbolTable sentiTable = parser.getSentiSymbolTable();
-    seedWords[0] = loadSeedWords(sentiTable, dir + "/" + positiveSeeds);
-    seedWords[1] = loadSeedWords(sentiTable, dir + "/" + negativeSeeds);
+    seedWords[0] = loadSeedWords(sentiTable, positiveSeeds);
+    seedWords[1] = loadSeedWords(sentiTable, negativeSeeds);
     Model model = new Model(numTopics, numSenti, sentiTable,
         parser.getAspectSymbolTable(), parser.getTwogramsCounter(),
         parser.getDocuments(), seedWords, alpha, betaAspect, betaSenti, gammas);
     // model
     // .setAnnotatedDocuments(getAnnotatedDocuments(dir + "/" + annotatedFile));
-    model.extraInfo = "senti1";
+    model.extraInfo = "updateSentimentPrior";
     GibbsSampler sampler = new GibbsSampler(model);
     sampler.setOutputDir(String.format("%s/T%d-A%.1f-B%.4f-G%.2f,%.2f-I%d",
         dir, numTopics, alpha, betaAspect, gammas[0], gammas[1], numIters));
@@ -78,13 +78,22 @@ public class Runner {
 
   static void runExistingTraining() throws IOException {
     Model model = Model
-        .loadModel("C:/datasets/bs/small/T30-A0.1-B0.0010-G5.00,0.10-I1000(adjsenti)/1000/model.gz");
-    GibbsSampler sampler = new GibbsSampler(model);
-    int maxIters = 2500;
-    int startingIter = 1000;
-    int savingInterval = 200;
-    int burnin = 500;
-    sampler.gibbsSampling(maxIters, startingIter, savingInterval, burnin);
+        .loadModel("C:/datasets/models/bs/ursa/T6-A0.1-B0.0010-G0.10,0.10-I1000(updateSentimentPrior)/800/model.gz");
+    model
+        .writeDocumentClassificationSummary(
+            model.getPi(),
+            "C:/datasets/models/bs/ursa/T6-A0.1-B0.0010-G0.10,0.10-I1000(updateSentimentPrior)/800/olddocsentiment.txt");
+    // AsumModelData model = (AsumModelData) BSUtils
+    // .loadModel("C:/datasets/models/asum/vacuum/T7-G0.10-0.10(seed1)/1000/model.gz");
+    // Vector<edu.kaist.uilab.asc.data.Document> documents = new
+    // Vector<edu.kaist.uilab.asc.data.Document>();
+    // Application.readDocuments(documents,
+    // "C:/datasets/models/asum/coffeemaker/BagOfSentences_en.txt");
+    //
+    // model
+    // .writeClassificationSummary(
+    // "C:/datasets/models/asum/vacuum/T7-G0.10-0.10(seed1)/1000/docclassification2.txt",
+    // documents);
   }
 
   public static HashMap<String, Document> getAnnotatedDocuments(String file)

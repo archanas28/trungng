@@ -16,13 +16,15 @@ import com.aliasi.symbol.SymbolTable;
 import com.aliasi.util.ObjectToCounterMap;
 
 import edu.kaist.uilab.asc.data.Review;
+import edu.kaist.uilab.asc.data.ReviewReader;
+import edu.kaist.uilab.asc.data.ReviewWithProsAndConsReader;
 import edu.kaist.uilab.asc.util.DoubleMatrix;
+import edu.kaist.uilab.bs.BSUtils;
 import edu.kaist.uilab.bs.Document;
 import edu.kaist.uilab.bs.DocumentUtils;
 import edu.kaist.uilab.bs.MaxentTaggerSingleton;
 import edu.kaist.uilab.bs.Model;
 import edu.kaist.uilab.bs.Sentence;
-import edu.kaist.uilab.bs.UrsaDataset;
 import edu.kaist.uilab.stemmers.EnglishStemmer;
 import edu.stanford.nlp.ling.HasWord;
 import edu.stanford.nlp.ling.TaggedWord;
@@ -278,7 +280,7 @@ public class WordPairsAnalysis {
       Review review = getReview(map.get(restId), document.getReviewId());
       List<ArrayList<? extends HasWord>> tSentences = DocumentUtils
           .tokenizeSentences(DocumentUtils.negate(review.getContent())
-              .replaceAll("not_", "not "));
+              .replaceAll("not_", "not "), false);
       for (ArrayList<? extends HasWord> tSentence : tSentences) {
         ArrayList<WordPair> wordPairs = getWordPairs(tagger
             .tagSentence(tSentence));
@@ -470,7 +472,7 @@ public class WordPairsAnalysis {
     }
     List<ArrayList<? extends HasWord>> tSentences = DocumentUtils
         .tokenizeSentences(DocumentUtils.negate(review.getContent())
-            .replaceAll("not_", "not "));
+            .replaceAll("not_", "not "), false);
     for (ArrayList<? extends HasWord> tSentence : tSentences) {
       Sentence bsSentence = findSentence(document, tSentence);
       if (bsSentence != null && bsSentence.getSenti() >= 0) {
@@ -515,8 +517,8 @@ public class WordPairsAnalysis {
     int aspectWord = aspectTable.symbolToID(pair.stemNoun);
     if (sentiWord >= 0 && aspectWord >= 0) {
       for (int topic = 0; topic < model.getNumTopics(); topic++) {
-        if (isInArray(aspectWords[topic], pair.stemNoun)
-            && isInArray(sentimentWords[senti][topic], pair.stemAdj)) {
+        if (BSUtils.isInArray(aspectWords[topic], pair.stemNoun)
+            && BSUtils.isInArray(sentimentWords[senti][topic], pair.stemAdj)) {
           double prob = phiSenti[senti].getValue(sentiWord, topic)
               * phiAspect[topic][aspectWord];
           if (maxProb < prob) {
@@ -546,9 +548,9 @@ public class WordPairsAnalysis {
     }
 
     for (int topic = 0; topic < model.getNumTopics(); topic++) {
-      if (isInArray(aspectWords[topic], pair.stemNoun)) {
+      if (BSUtils.isInArray(aspectWords[topic], pair.stemNoun)) {
         for (int senti = 0; senti < model.getNumSentiments(); senti++) {
-          if (isInArray(sentimentWords[senti][topic], pair.stemAdj)) {
+          if (BSUtils.isInArray(sentimentWords[senti][topic], pair.stemAdj)) {
             double prob = phiSenti[senti].getValue(sentiWord, topic)
                 * phiAspect[topic][aspectWord];
             if (maxProb < prob) {
@@ -581,7 +583,7 @@ public class WordPairsAnalysis {
     int senti = bsSentence.getSenti();
     int topic = bsSentence.getTopic();
     for (WordPair pair : wordPairs) {
-      if (isInArray(aspectWords[topic], pair.stemNoun)) {
+      if (BSUtils.isInArray(aspectWords[topic], pair.stemNoun)) {
         // && isInArray(sentimentWords[senti][topic], pair.stemAdj)) {
         ret.add(pair);
       } else {
@@ -592,23 +594,6 @@ public class WordPairsAnalysis {
     }
 
     return ret;
-  }
-
-  /**
-   * Returns true if <code>element</code> is in <code>array</code>.
-   * 
-   * @param array
-   * @param value
-   * @return
-   */
-  private boolean isInArray(String[] array, String value) {
-    for (String element : array) {
-      if (element.equals(value)) {
-        return true;
-      }
-    }
-
-    return false;
   }
 
   /**
@@ -702,13 +687,17 @@ public class WordPairsAnalysis {
     // "C:/datasets/models/bs/ursa/T7-A0.1-B0.0010-G0.10,0.10-I1000/1000";
     // String dir =
     // "C:/datasets/models/bs/movies/T7-A0.1-B0.0010-G1.00,1.00-I1000(senti1)/1000";
-    String dir = "C:/datasets/models/bs/electronics/T7-A0.1-B0.0010-G1.00,1.00-I1000(senti1)/1000";
+    // String dir =
+    // "C:/datasets/models/bs/electronics/T7-A0.1-B0.0010-G1.00,1.00-I1000(senti1)/1000";
+    String dir = "C:/datasets/models/bs/vacuum/T10-A0.1-B0.0010-G0.10,0.10-I1000()/1000";
     System.out.println("Loading model at " + dir);
     Model model = Model.loadModel(dir + "/model.gz");
     System.out.println("Reading reviews");
     // UrsaDataset ursa = new UrsaDataset();
     // HashMap<String, ArrayList<Review>> map = ursa.getReviews();
-    HashMap<String, ArrayList<Review>> map = readReviews("C:/datasets/models/bs/electronics/docs.txt");
+    ReviewReader reader = new ReviewWithProsAndConsReader();
+    HashMap<String, ArrayList<Review>> map = BSUtils.readReviews(
+        "C:/datasets/models/bs/vacuum/docs.txt", reader);
     WordPairsAnalysis wp = new WordPairsAnalysis(model, 200);
     int numSamples = 20;
     // wp.summarizeByWordPairs(model, map, numSamples, dir + "/wordpairs");
@@ -760,7 +749,9 @@ public class WordPairsAnalysis {
     out.println("<html><title>Summary of reviews by term frequency</title><body>");
     WordPairsAnalysis wp = new WordPairsAnalysis();
     int numSamples = 20;
-    HashMap<String, ArrayList<Review>> map = readReviews(dir + "/docs.txt");
+    ReviewReader reader = new ReviewReader();
+    HashMap<String, ArrayList<Review>> map = BSUtils.readReviews(dir
+        + "/docs.txt", reader);
     out.print("<h2>Review targets with 0 - 20 reviews</h2>");
     wp.printTopWordPairs(out, map, null, 0, 20, numSamples);
     out.print("<h2>Review targets with 20 - 50 reviews</h2>");
@@ -775,38 +766,5 @@ public class WordPairsAnalysis {
     wp.printTopWordPairs(out, map, null, 1000, 10000, numSamples);
     out.print("</body></html>");
     out.close();
-  }
-
-  /**
-   * Reads reviews of the review targets for the given corpus.
-   * 
-   * @throws IOException
-   */
-  public static HashMap<String, ArrayList<Review>> readReviews(String corpus)
-      throws IOException {
-    BufferedReader in = new BufferedReader(new InputStreamReader(
-        new FileInputStream(corpus), "utf-8"));
-    String line;
-    double rating;
-    HashMap<String, ArrayList<Review>> map = new HashMap<String, ArrayList<Review>>();
-    ArrayList<Review> list = new ArrayList<Review>();
-    while ((line = in.readLine()) != null) {
-      String[] ids = line.split(" ");
-      try {
-        rating = Double.parseDouble(in.readLine());
-      } catch (NumberFormatException e) {
-        rating = -1.0;
-      }
-      if (map.containsKey(ids[1])) {
-        list = map.get(ids[1]);
-      } else {
-        list = new ArrayList<Review>();
-        map.put(ids[1], list);
-      }
-      list.add(new Review(ids[0], ids[1], rating, in.readLine()));
-    }
-    in.close();
-
-    return map;
   }
 }

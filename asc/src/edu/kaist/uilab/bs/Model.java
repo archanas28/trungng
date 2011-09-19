@@ -288,14 +288,14 @@ public class Model implements Serializable {
       // writePhiSenti(phiSenti, dir + "/phiSenti.csv");
       // writeTheta(getTheta(), dir + "/theta.csv");
       // pi.writeMatrixToCSVFile(dir + "/pi.csv");
-      // writeTopSentiWords(phiSenti, dir + "/sentiWords.csv");
+      writeTopSentiWords(phiSenti, dir + "/sentiWords.csv");
       String[][][] sentiWords = writeTopSentiWords(
           buildTermscoreMatrix(phiSenti, numTopics), dir
               + "/sentiWordsByTermscore.csv");
-      // writeTopAspectWords(phiAspect, dir + "/aspectWords.csv");
+      writeTopAspectWords(phiAspect, dir + "/aspectWords.csv");
       String[][] aspectWords = writeTopAspectWords(buildTermscore(phiAspect),
           dir + "/aspectWordsByTermscore.csv");
-      writeNewDocumentClassificationSummary(pi, dir + "/newdocsentiment.txt");
+      writeDocumentClassificationSummary(pi, dir + "/newdocsentiment.txt");
       if (annotatedDocuments != null) {
         writeSentenceClassificationSummary(dir + "/sentenceClassification.txt");
       }
@@ -480,7 +480,7 @@ public class Model implements Serializable {
     out.close();
   }
 
-  public void writeNewDocumentClassificationSummary(DoubleMatrix pi, String file)
+  public void writeDocumentClassificationSummary(DoubleMatrix pi, String file)
       throws IOException {
     int numPosCorrect = 0, numNegCorrect = 0;
     int numPosWrong = 0, numNegWrong = 0;
@@ -489,7 +489,8 @@ public class Model implements Serializable {
       Document document = getDocuments().get(i);
       double rating = document.getRating();
       if (rating != 3.0 && rating != -1.0) {
-        int observedSenti = rating > 3.0 ? 0 : 1;
+//        if (rating != -1.0) {        
+        int observedSenti = rating >= 3.0 ? 0 : 1;
         if (observedSenti == 0) {
           numPos++;
         } else {
@@ -765,6 +766,67 @@ public class Model implements Serializable {
     }
 
     return words;
+  }
+
+  /**
+   * Classifies topic of a segment given its stemmed words <code>words</code>.
+   * <p>
+   * This classification does not take into account where the segment comes
+   * from, i.e., it can classify any arbitrary segment of text.
+   * 
+   * @param phiAspect
+   *          the per-aspect word distributions
+   * @param phiSenti
+   *          the per-sentiaspect word distributions
+   * @param words
+   *          the words of the segment
+   * @return the topic of this segment or <code>-1</code> if cannot classify
+   */
+  public int classifySegmentTopic(double[][] phiAspect,
+      DoubleMatrix[] phiSenti, String[] words) {
+    int maxTopic = -1;
+    double max = -1.0;
+    for (int topic = 0; topic < numTopics; topic++) {
+      double prob = 1.0;
+      for (String word : words) {
+        double wordProb = getWordProb(word, topic, phiAspect, phiSenti);
+        if (wordProb != 0) {
+          prob *= wordProb;
+        }
+      }
+      if (max < prob) {
+        max = prob;
+        maxTopic = topic;
+      }
+    }
+
+    return max != 1.0 ? maxTopic : -1;
+  }
+
+  /**
+   * Gets the probability of <code>word</code> to be in the topic
+   * <code>topic</code>.
+   * 
+   * @param word
+   * @param topic
+   * @param phiAspect
+   * @param phiSenti
+   * @return
+   */
+  private double getWordProb(String word, int topic, double[][] phiAspect,
+      DoubleMatrix[] phiSenti) {
+    double prob = 0.0;
+    int id = aspectTable.symbolToID(word);
+    if (id != SymbolTable.UNKNOWN_SYMBOL_ID) {
+      prob = phiAspect[topic][id];
+    }
+    // id = sentiTable.symbolToID(word);
+    // if (id != SymbolTable.UNKNOWN_SYMBOL_ID) {
+    // prob += (phiSenti[0].getValue(id, topic) + phiSenti[1]
+    // .getValue(id, topic)) / 2;
+    // }
+
+    return prob;
   }
 
   /**

@@ -29,8 +29,7 @@ import edu.kaist.uilab.asc.data.Review;
 import edu.kaist.uilab.stemmers.EnglishStemmer;
 
 /**
- * Parsers for corpus used in the BS model. TODO(trung): use stanford parser to
- * divide into clause rather than sentences.
+ * Parsers for corpus used in the BS model.
  * 
  * @author trung
  */

@@ -275,14 +275,13 @@ public class NounphraseAnalysis {
   }
 
   static void classifyPhraseSentiment() throws IOException {
-    String dir = "C:/datasets/bs";
+    String dir = "C:/datasets/models/bs";
     HashSet<String> posPhrases = (HashSet<String>) TextFiles
         .readUniqueLinesAsLowerCase(dir + "/pos.data");
     HashSet<String> negPhrases = (HashSet<String>) TextFiles
         .readUniqueLinesAsLowerCase(dir + "/neg.data");
-    Model model = Model
-        .loadModel(dir
-            + "/ursa/T50-A0.1-B0.0010-G0.10,0.10-I1000(improvedParser)/1000/model.gz");
+    Model model = Model.loadModel(dir
+        + "/ursa/T7-A0.1-B0.0010-G0.10,0.10-I1000/1000/model.gz");
     System.err.println("\nClassification using model:");
     posPhrases.removeAll(classify(model, posPhrases, "positive", 0));
     negPhrases.removeAll(classify(model, negPhrases, "negative", 1));
@@ -318,19 +317,19 @@ public class NounphraseAnalysis {
           if (sentiWord >= 0 && aspectWord >= 0) {
             for (int k = 0; k < model.getNumTopics(); k++) {
               // method 2: use all words
+              for (int s = 0; s < model.getNumSentiments(); s++) {
+                score[s] += phiSenti[s].getValue(sentiWord, k)
+                    * phiAspect[k][aspectWord];
+              }
+              // method 1: use only top words
+              // if (isInArray(aspectIndice[k], aspectWord)) {
               // for (int s = 0; s < model.getNumSentiments(); s++) {
+              // if (isInArray(sentiIndice[s][k], sentiWord)) {
               // score[s] += phiSenti[s].getValue(sentiWord, k)
               // * phiAspect[k][aspectWord];
               // }
-              // method 1: use only top words
-              if (isInArray(aspectIndice[k], aspectWord)) {
-                for (int s = 0; s < model.getNumSentiments(); s++) {
-                  if (isInArray(sentiIndice[s][k], sentiWord)) {
-                    score[s] += phiSenti[s].getValue(sentiWord, k)
-                        * phiAspect[k][aspectWord];
-                  }
-                }
-              }
+              // }
+              // }
             }
           }
         }
@@ -391,7 +390,7 @@ public class NounphraseAnalysis {
   }
 
   public static void main(String args[]) throws Exception {
-    String dir = "C:/datasets/bs";
+    String dir = "C:/datasets/models/bs";
     // tagger = new MaxentTagger(model);
     classifyPhraseSentiment();
   }
