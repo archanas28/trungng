@@ -1,6 +1,7 @@
 package edu.kaist.uilab.asc.util;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
@@ -20,6 +21,35 @@ import java.util.List;
  * @author Trung Nguyen
  */
 public class TextFiles {
+
+  /**
+   * Aggregates the content of text files of a directory into a single file.
+   * 
+   * @param dir
+   *          the directory to aggregate
+   * @param file
+   *          the file
+   */
+  public static void aggregateDirectoryToFile(String dir, String file)
+      throws IOException {
+    PrintWriter out = new PrintWriter(file);
+    File directory = new File(dir);
+    int lines = 0;
+    for (File f : directory.listFiles()) {
+      BufferedReader in = new BufferedReader(new FileReader(f));
+      String line;
+      while ((line = in.readLine()) != null) {
+        out.println(line);
+        lines++;
+      }
+      in.close();
+      if (lines % 5 != 0) {
+        System.out.println(f.getAbsolutePath());
+        break;
+      }
+    }
+    out.close();
+  }
 
   /**
    * Returns the text content of a file.
