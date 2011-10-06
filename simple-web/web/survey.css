@@ -1,0 +1,36 @@
+/* 
+    Document   : survey
+    Created on : Oct 6, 2011, 4:57:11 PM
+    Author     : trung
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+/* 
+   TODO customize this sample style
+   Syntax recommendation http://www.w3.org/TR/REC-CSS2/
+*/
+
+root { 
+    display: block;
+}
+
+.paragraph {
+    width: 600px;
+    margin-left: 15px;
+    margin-top: 25px;
+}
+
+.segment {
+    width: 250px;
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-top: 10px;
+    color: chocolate;
+}
+
+.review {
+    font-size: larger;
+    font-variant: small-caps;
+    margin-right: 5px;
+}
