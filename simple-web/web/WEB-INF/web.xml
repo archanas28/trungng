@@ -8,13 +8,22 @@
         <servlet-name>SurveyGenerator</servlet-name>
         <servlet-class>com.rainmoon.bs.SurveyGenerator</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>SurveyHandler</servlet-name>
+        <servlet-class>com.rainmoon.bs.SurveyHandler</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>TestServlet</servlet-name>
         <url-pattern>/TestServlet</url-pattern>
     </servlet-mapping>
+    
     <servlet-mapping>
         <servlet-name>SurveyGenerator</servlet-name>
         <url-pattern>/survey</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SurveyHandler</servlet-name>
+        <url-pattern>/handleSurvey</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

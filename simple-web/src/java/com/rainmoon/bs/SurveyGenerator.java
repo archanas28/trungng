@@ -19,15 +19,13 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class SurveyGenerator extends HttpServlet {
 
-    static final String PARAGRAPH_FILE = "WEB-INF/paragraphs.txt";
-    static final String[] OPTIONS = { "very useful", "useful", "useless" };
+    static final String[] OPTIONS = { "very useful", "useful", "somewhat useful", "useless" };
     static final String PARAM_PARAIDS = "paraids";
     List<Paragraph> paragraphs;
 
     @Override
     public void init() throws ServletException {
-        paragraphs = ParagraphsReader.readParagraphs(
-                getServletContext().getResourceAsStream(PARAGRAPH_FILE));
+        paragraphs = ParagraphsFactory.getParagraphs();
     }
 
     /** 
@@ -58,16 +56,11 @@ public class SurveyGenerator extends HttpServlet {
                 out.println("<br />");
                 for (int segmentIdx = 0; segmentIdx < para.segments.size(); segmentIdx++) {
                     String segment = para.segments.get(segmentIdx);
-                    out.println("<span class='segment'>");
-                    out.println(segment);
-                    // segment's name: id_segmentIdx
-                    out.println(String.format("<input type='hidden' name='%s' value='%s' />",
-                            para.id + "_" + segmentIdx, segment));
-                    out.println("</span>");
-                    for (int choice = 0; choice < 3; choice++) {
-                        // checkbox's name: id_segmentIdx_radio
+                    out.println(String.format("<span class='segment'>%s</span>", segment));
+                    for (int choice = 0; choice < OPTIONS.length; choice++) {
+                        // checkbox's name: id_segmentIdx
                         out.print(String.format("<input type='radio' name='%s', value='%d' />",
-                                para.id + "_" + segmentIdx + "_radio", choice + 1));
+                                radioName(para.id, segmentIdx), OPTIONS.length - choice));
                         out.print(OPTIONS[choice]);
                     }
                     out.println("<br />");
@@ -83,6 +76,17 @@ public class SurveyGenerator extends HttpServlet {
         }
     }
 
+    /**
+     * Returns the name of a radio input type given the id of a paragraph and a segment.
+     * 
+     * @param paraId
+     * @param segmentId
+     * @return 
+     */
+    public static String radioName(int paraId, int segmentId) {
+        return paraId + "_" + segmentId;
+    }
+    
     /**
      * Converts a list of param ids to string.
      * 
