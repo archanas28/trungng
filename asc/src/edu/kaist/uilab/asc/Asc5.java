@@ -9,9 +9,10 @@ import java.util.List;
 import java.util.TreeSet;
 import java.util.Vector;
 
+import org.apache.commons.math.special.Gamma;
+
 import edu.kaist.uilab.asc.data.Document;
 import edu.kaist.uilab.asc.util.InvalidArgumentException;
-import edu.kaist.uilab.opt.MathUtils;
 
 /**
  * Asc implementation with the following prior:
@@ -57,7 +58,7 @@ public class Asc5 extends AbstractAscModel {
     super(numTopics, numSenti, wordList, documents, numEnglishDocuments,
         sentiWordsList, alpha, gammas, graphFile);
     initY0();
-//     initPrior();
+    // initPrior();
   }
 
   void initPrior() {
@@ -112,14 +113,12 @@ public class Asc5 extends AbstractAscModel {
     double negLogLikelihood = 0.0;
     for (int j = 0; j < numSenti; j++) {
       for (int k = 0; k < numTopics; k++) {
-        negLogLikelihood += MathUtils
-            .logGamma(sumSTW[j][k] + sumBeta[j][k])
-            - MathUtils.logGamma(sumBeta[j][k]);
+        negLogLikelihood += Gamma.logGamma(sumSTW[j][k] + sumBeta[j][k])
+            - Gamma.logGamma(sumBeta[j][k]);
         for (int i = 0; i < effectiveVocabSize; i++) {
           if (matrixSWT[j].getValue(i, k) > 0) {
-            negLogLikelihood += MathUtils.logGamma(beta[j][k][i])
-                - MathUtils.logGamma(beta[j][k][i]
-                    + matrixSWT[j].getValue(i, k));
+            negLogLikelihood += Gamma.logGamma(beta[j][k][i])
+                - Gamma.logGamma(beta[j][k][i] + matrixSWT[j].getValue(i, k));
           }
         }
       }
@@ -162,14 +161,13 @@ public class Asc5 extends AbstractAscModel {
     // common beta terms for y_ki, y_ji
     for (int j = 0; j < numSenti; j++) {
       for (int k = 0; k < numTopics; k++) {
-        double jk = MathUtils.digamma(sumSTW[j][k] + sumBeta[j][k])
-            - MathUtils.digamma(sumBeta[j][k]);
+        double jk = Gamma.digamma(sumSTW[j][k] + sumBeta[j][k])
+            - Gamma.digamma(sumBeta[j][k]);
         for (int i = 0; i < effectiveVocabSize; i++) {
           betaJki[j][k][i] = jk;
           if (matrixSWT[j].getValue(i, k) > 0) {
-            betaJki[j][k][i] += MathUtils.digamma(beta[j][k][i])
-                - MathUtils.digamma(beta[j][k][i]
-                    + matrixSWT[j].getValue(i, k));
+            betaJki[j][k][i] += Gamma.digamma(beta[j][k][i])
+                - Gamma.digamma(beta[j][k][i] + matrixSWT[j].getValue(i, k));
           }
           betaJki[j][k][i] = beta[j][k][i] * betaJki[j][k][i];
         }
@@ -229,8 +227,8 @@ public class Asc5 extends AbstractAscModel {
 
   @Override
   void extendVars() {
-    double[] newVars = new double[numTopics * effectiveVocabSize
-        + numSenti * effectiveVocabSize];
+    double[] newVars = new double[numTopics * effectiveVocabSize + numSenti
+        * effectiveVocabSize];
     int idx = 0;
     for (int k = 0; k < numTopics; k++) {
       for (int i = 0; i < effectiveVocabSize; i++) {
@@ -274,8 +272,8 @@ public class Asc5 extends AbstractAscModel {
     out = new PrintWriter(new OutputStreamWriter(new FileOutputStream(dir
         + "/wordSenti.csv"), "utf-8"));
     for (int i = 0; i < vocabSize; i++) {
-      out.printf("%s,%.4f,%.4f\n", wordList.get(i),
-          ySentiment[0][i], ySentiment[1][i]);
+      out.printf("%s,%.4f,%.4f\n", wordList.get(i), ySentiment[0][i],
+          ySentiment[1][i]);
     }
     out.close();
   }

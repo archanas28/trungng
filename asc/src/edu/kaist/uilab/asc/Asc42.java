@@ -5,9 +5,10 @@ import java.util.List;
 import java.util.TreeSet;
 import java.util.Vector;
 
+import org.apache.commons.math.special.Gamma;
+
 import edu.kaist.uilab.asc.data.Document;
 import edu.kaist.uilab.asc.util.InvalidArgumentException;
-import edu.kaist.uilab.opt.MathUtils;
 
 /**
  * Asc implementation with the following prior:
@@ -56,8 +57,7 @@ public class Asc42 extends BaseAscModel {
       for (int t = 0; t < numTopics; t++) {
         sumBeta[s][t] = 0;
         for (int w = 0; w < effectiveVocabSize; w++) {
-          beta[s][t][w] = Math.exp(yTopic[t][w] + ySentiment[s][w]
-              + yWord[w]);
+          beta[s][t][w] = Math.exp(yTopic[t][w] + ySentiment[s][w] + yWord[w]);
           sumBeta[s][t] += beta[s][t][w];
         }
       }
@@ -70,20 +70,17 @@ public class Asc42 extends BaseAscModel {
     double negLogLikelihood = 0.0;
     for (int j = 0; j < numSenti; j++) {
       for (int k = 0; k < numTopics; k++) {
-        negLogLikelihood += MathUtils
-            .logGamma(sumSTW[j][k] + sumBeta[j][k])
-            - MathUtils.logGamma(sumBeta[j][k]);
-        double jk = MathUtils.digamma(sumSTW[j][k] + sumBeta[j][k])
-            - MathUtils.digamma(sumBeta[j][k]);
+        negLogLikelihood += Gamma.logGamma(sumSTW[j][k] + sumBeta[j][k])
+            - Gamma.logGamma(sumBeta[j][k]);
+        double jk = Gamma.digamma(sumSTW[j][k] + sumBeta[j][k])
+            - Gamma.digamma(sumBeta[j][k]);
         for (int i = 0; i < effectiveVocabSize; i++) {
           double jki = jk;
           if (matrixSWT[j].getValue(i, k) > 0) {
-            negLogLikelihood += MathUtils.logGamma(beta[j][k][i])
-                - MathUtils.logGamma(beta[j][k][i]
-                    + matrixSWT[j].getValue(i, k));
-            jki += MathUtils.digamma(beta[j][k][i])
-                - MathUtils.digamma(beta[j][k][i]
-                    + matrixSWT[j].getValue(i, k));
+            negLogLikelihood += Gamma.logGamma(beta[j][k][i])
+                - Gamma.logGamma(beta[j][k][i] + matrixSWT[j].getValue(i, k));
+            jki += Gamma.digamma(beta[j][k][i])
+                - Gamma.digamma(beta[j][k][i] + matrixSWT[j].getValue(i, k));
           }
           betaJki[j][k][i] = beta[j][k][i] * jki;
         }
@@ -122,8 +119,7 @@ public class Asc42 extends BaseAscModel {
   }
 
   @Override
-  public double[] computeGradient(double[] x)
-      throws InvalidArgumentException {
+  public double[] computeGradient(double[] x) throws InvalidArgumentException {
     double[] grads = new double[vars.length];
     ArrayList<Integer> neighbors;
     // gradients of y_ki

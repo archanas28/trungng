@@ -11,8 +11,10 @@ public final class SentimentPrior {
   /**
    * Specific prior words that convey sentiment.
    */
-  public static final String sentiWords[] = { "love", "like", "enjoy", "thank",
-      "worth", "recommend", "hate", "annoy", "disappoint", "regret", "wast" };
+  public static final String sentiWords[] = {
+    "love", "like", "enjoy", "thank",
+      "worth", "recommend", "hate", "annoy", "disappoint", "regret", "wast"
+  };
 
   /**
    * Returns true if the given tag is one of the sentiment tags.

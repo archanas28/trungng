@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.Vector;
@@ -16,7 +15,7 @@ import edu.kaist.uilab.bs.Model;
 import edu.kaist.uilab.stemmers.EnglishStemmer;
 
 public class SentiWordNet {
-  private static final String UTF8 = "utf-8";
+  
   private String pathToSWN = "SentiWordNet_3.0.0.txt";
   private HashMap<String, Double> dict;
   private static EnglishStemmer stemmer;
@@ -95,17 +94,33 @@ public class SentiWordNet {
     return "neutral";
   }
 
-  public static void main(String args[]) throws IOException {
-    SentiWordNet swn = new SentiWordNet();
-    ArrayList<String> polarityVerbs = new ArrayList<String>();
-    for (Entry<String, Double> entry : swn.dict.entrySet()) {
-      String key = entry.getKey();
-      if (key.contains("#v") && !key.contains("_")
-          && Math.abs(entry.getValue()) >= 0.5) {
-        polarityVerbs.add(key);
+  /**
+   * Classify the sentiment of a segment (given by its stemmmed words, <code>words</code>
+   * using SentiWordNet).
+   * 
+   * @param words
+   * @return 0 for positive, 1 for negative, -1 for neutral
+   */
+  public int classifySegmentSentiment(String[] words) {
+    Double score = null;
+    for (String word : words) {
+      Double wordScore = getPolarity(word, "a");
+      if (wordScore != null) {
+        if (score == null) {
+          score = 0.0;
+        }
+        score += wordScore;
       }
     }
-    TextFiles.writeCollection(polarityVerbs, "polarityVerbs.txt", "utf-8");
+    
+    if (score == null) {
+      return -1;
+    } else {
+      return score > 0.0 ? 0 : 1;
+    }
+  }
+
+  public static void main(String args[]) throws IOException {
     // classifyWordSentiment();
     // classifyPhraseSentiment();
   }
@@ -183,54 +198,5 @@ public class SentiWordNet {
     }
 
     return list;
-  }
-
-  static void classifyWordSentiment() throws IOException {
-    SentiWordNet wn = new SentiWordNet();
-    String dir = "C:/datasets/bs";
-    HashSet<String> positiveAdjs = new HashSet<String>();
-    HashSet<String> negativeAdjs = new HashSet<String>();
-    for (String word : TextFiles.readUniqueLines(dir + "/pos.txt", UTF8)) {
-      positiveAdjs.add(stemmer.getStem(word));
-    }
-    for (String word : TextFiles.readUniqueLines(dir + "/neg.txt", UTF8)) {
-      negativeAdjs.add(stemmer.getStem(word));
-    }
-    HashSet<String> adjs = new HashSet<String>(positiveAdjs);
-    adjs.addAll(negativeAdjs);
-    int numCorrect = 0, numNotClassified = 0, numPolyByNP = 0;
-    // measure the accuracy
-    for (String word : adjs) {
-      // 0: pos, 1: neg, -1: not classified
-      int classified = -1;
-      Double polarityScore = wn.getPolarity(word, "a");
-      if (polarityScore != null) {
-        if (polarityScore > 0) {
-          classified = 0;
-        } else if (polarityScore < 0) {
-          classified = 1;
-        }
-      }
-      int annotated = -1;
-      if (positiveAdjs.contains(word) && negativeAdjs.contains(word)) {
-        numPolyByNP++;
-      } else if (positiveAdjs.contains(word)) {
-        annotated = 0;
-      } else {
-        annotated = 1;
-      }
-      if (classified == -1 || annotated == -1) {
-        numNotClassified++;
-      } else if (classified == annotated) {
-        numCorrect++;
-      }
-    }
-    System.out.printf("#words in NP: %d (pos = %d, neg = %d)\n", adjs.size(),
-        positiveAdjs.size(), negativeAdjs.size());
-    System.out.printf("#annotated as both positive and negative: %d\n",
-        numPolyByNP);
-    System.out.printf("#not classified by WN: %d\n", numNotClassified);
-    System.out.printf("Classification accuracy: %.2f\n", ((double) numCorrect)
-        / (adjs.size() - numNotClassified));
   }
 }

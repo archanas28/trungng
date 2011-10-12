@@ -34,10 +34,10 @@ import edu.kaist.uilab.asc.data.SentiWord;
 import edu.kaist.uilab.asc.util.DoubleMatrix;
 import edu.kaist.uilab.asc.util.IntegerMatrix;
 import edu.kaist.uilab.asc.util.TextFiles;
-import edu.kaist.uilab.bs.BSUtils;
 import edu.kaist.uilab.bs.CorpusParser;
-import edu.kaist.uilab.bs.DocumentUtils;
 import edu.kaist.uilab.bs.TwogramsCounter;
+import edu.kaist.uilab.bs.util.BSUtils;
+import edu.kaist.uilab.bs.util.DocumentUtils;
 
 /**
  * Implementation of the JST model.
@@ -107,6 +107,75 @@ public class JstModel {
       return newPhi;
     }
 
+    /**
+     * Returns top <code>numWords</code> words for each senti-aspect.
+     * 
+     * @param phi
+     * @param numWords
+     * @return
+     */
+    public String[][][] topWords(ObjectToDoubleMap<String>[][] phi, int numWords) {
+      String[][][] topWords = new String[numSenti][numTopics][numWords];
+      for (int senti = 0; senti < numSenti; senti++) {
+        for (int topic = 0; topic < numTopics; topic++) {
+          List<String> rankedList = phi[senti][topic].keysOrderedByValueList();
+          for (int idx = 0; idx < numWords; idx++) {
+            topWords[senti][topic][idx] = rankedList.get(idx);
+          }
+        }
+      }
+
+      return topWords;
+    }
+
+    /**
+     * Classifies sentiment and topic of a segment.
+     * 
+     * @param segment
+     *          a sequence of words
+     * @return a 2-element array, the first is sentiment and the second is topic
+     */
+    public int[] classifySegment(ObjectToDoubleMap<String>[][] phi,
+        String[] segment) {
+      double maxProb = 0.0;
+      int senti = -1, topic = -1;
+      for (int j = 0; j < numSenti; j++) {
+        for (int k = 0; k < numTopics; k++) {
+          double prob = 1.0;
+          for (String word : segment) {
+            if (phi[j][k].containsKey(word)) {
+              prob *= phi[j][k].getValue(word);
+            }
+          }
+          if (prob != 1.0 && maxProb < prob) {
+            maxProb = prob;
+            senti = j;
+            topic = k;
+          }
+        }
+      }
+
+      return new int[] { senti, topic };
+    }
+
+    /**
+     * Returns the if <code>segment</code> contains at least one of the word in
+     * <code>topWords</code>.
+     * 
+     * @param topWords
+     * @param segment
+     * @return
+     */
+    public boolean segmentContainsTopWords(String[] topWords, String[] segment) {
+      for (String word : segment) {
+        if (BSUtils.isInArray(topWords, word)) {
+          return true;
+        }
+      }
+
+      return false;
+    }
+
     public int getNumUniqueWords() {
       return numUniqueWords;
     }
@@ -131,10 +200,10 @@ public class JstModel {
 
   public static void main(String[] args) throws Exception {
     int numTopics = 7;
-    int numIterations = 1000;
+    int numIterations = 2000;
     int numSenti = 2;
     int numThreads = 1;
-    String dir = "C:/datasets/models/jst/ursa";
+    String dir = "C:/datasets/models/jst/coffeemaker";
     double alpha = 0.1;
     double[] betas = new double[] { 0.01, 0.01, 0.01 };
     double[] gammas = new double[] { 0.1, 0.1 };
@@ -144,13 +213,15 @@ public class JstModel {
     String stopFile = "StopStems_en.txt";
     String sentiStemsFile = "senti.txt";
     List<String> stopStems = TextFiles.readLines(dir + "/" + stopFile, utf8);
-    HashSet<String> sentiStems = (HashSet<String>) TextFiles.readUniqueLines(
-        dir + "/" + sentiStemsFile, utf8);
+    HashSet<String> sentiStems = new HashSet<String>();
+    // (HashSet<String>) TextFiles.readUniqueLines(dir + "/" + sentiStemsFile,
+    // utf8);
     CorpusParser parser = new CorpusParser(dir + "/docs_en.txt", 4, 0, 70,
         sentiStems, stopStems);
-    parser.parse();
+    // parser.parse();
 
-    String sentiFilePrefix = "seedstems";
+    String positiveSeeds = "C:/datasets/models/seedstems/seedstems0(+1).txt";
+    String negativeSeeds = "C:/datasets/models/seedstems/seedstems1(+1).txt";
     String wordListFileName = "WordList.txt";
     String wordDocFileName = "BagOfSentences_en.txt";
     Vector<LocaleWord> wordList = Application.readWordList(dir + "/"
@@ -159,10 +230,8 @@ public class JstModel {
     Application.readDocumentsForJst(documents, dir + "/" + wordDocFileName);
     ArrayList<TreeSet<LocaleWord>> list = new ArrayList<TreeSet<LocaleWord>>(
         numSenti);
-    for (int s = 0; s < numSenti; s++) {
-      list.add(readWords(dir + "/" + sentiFilePrefix + s + "(+1).txt", "utf-8",
-          Locale.ENGLISH));
-    }
+    list.add(readWords(positiveSeeds, "utf-8", Locale.ENGLISH));
+    list.add(readWords(negativeSeeds, "utf-8", Locale.ENGLISH));
     ArrayList<TreeSet<Integer>> sentiClasses = new ArrayList<TreeSet<Integer>>(
         list.size());
     for (Set<LocaleWord> sentiWordsStr : list) {

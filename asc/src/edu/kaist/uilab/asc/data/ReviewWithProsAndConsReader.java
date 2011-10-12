@@ -3,7 +3,7 @@ package edu.kaist.uilab.asc.data;
 import java.io.BufferedReader;
 import java.io.IOException;
 
-import edu.kaist.uilab.bs.DocumentUtils;
+import edu.kaist.uilab.bs.util.DocumentUtils;
 
 /**
  * A reader that reads reviews with pros and cons.

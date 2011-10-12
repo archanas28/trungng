@@ -25,6 +25,8 @@ import com.aliasi.util.Strings;
 
 import edu.kaist.uilab.asc.data.Review;
 import edu.kaist.uilab.asc.data.ReviewReader;
+import edu.kaist.uilab.asc.util.TextFiles;
+import edu.kaist.uilab.bs.util.DocumentUtils;
 import edu.kaist.uilab.stemmers.EnglishStemmer;
 import edu.stanford.nlp.ling.HasWord;
 import edu.stanford.nlp.ling.TaggedWord;
@@ -477,7 +479,32 @@ public class CorpusParserWithTagger {
       return true;
     }
 
+    /**
+     * Returns an instance of this factory using <code>stopStems</code> as the
+     * set of stop stems.
+     * 
+     * @param stopStems
+     * @return
+     */
     public static TokenizerFactory getInstance(HashSet<String> stopStems) {
+      return new StopTokenizerFactory(instance, stopStems);
+    }
+
+    /**
+     * Returns an instance of this factory using the stems from
+     * <code>stopfile</code> as the set of stop stems.
+     * 
+     * @param stopfile
+     * @return
+     */
+    public static TokenizerFactory getInstance(String stopfile) {
+      HashSet<String> stopStems = new HashSet<String>();
+      try {
+        stopStems = new HashSet<String>(TextFiles.readLines(stopfile));
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+
       return new StopTokenizerFactory(instance, stopStems);
     }
   }

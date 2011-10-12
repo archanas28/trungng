@@ -7,8 +7,8 @@ import com.aliasi.util.ObjectToDoubleMap;
 
 import edu.kaist.uilab.asum.AsumModel.AsumModelData;
 import edu.kaist.uilab.asum.JstModel.JstModelData;
-import edu.kaist.uilab.bs.BSUtils;
 import edu.kaist.uilab.bs.Model;
+import edu.kaist.uilab.bs.util.BSUtils;
 
 /**
  * Analysis of topic distributions for different models. TODO(trung): refactor
@@ -235,13 +235,6 @@ public class TopicDistributionsAnalysis {
         .getReferenceAspectDistributions();
     int numTopics = data.getNumTopics();
     double[][] refTopics = new double[numTopics][2];
-    // for (int topic = 0; topic < numTopics; topic++) {
-    // ObjectToDoubleMap<String>[] p = new ObjectToDoubleMap[] { phi[0][topic],
-    // phi[1][topic], phiAspect[topic] };
-    // ObjectToDoubleMap<String>[][] ref = new ObjectToDoubleMap[][] {
-    // refPhi[0], refPhi[1], refPhiAspects };
-    // refTopics[topic] = matchTopic(p, ref);
-    // }
     // compute using another metric where aspect dist is used to determine the
     // matching aspect
     for (int topic = 0; topic < numTopics; topic++) {
@@ -308,22 +301,25 @@ public class TopicDistributionsAnalysis {
   public static void main(String args[]) throws IOException {
     String annotatedFile = "C:/datasets/ursa/ManuallyAnnotated_Corpus.xml";
     String stopStem = "C:/datasets/models/bs/ursa/stop.txt";
-//    String asumDir = "C:/datasets/models/asum/ursa/T10-G0.10-0.10(seed1)/1000";
-//    String jstDir = "C:/datasets/models/jst/ursa/T10-G0.10-0.10(seed1)/1000";
-    String bsDir = "C:/datasets/models/bs/ursa/T6-A0.1-B0.0010-G0.10,0.10-I1000(updateSentimentPrior)/1000";
-//    ReferenceDistributions reference = new ReferenceDistributions(
-//        annotatedFile, stopStem);
-//    AsumModelData asum = (AsumModelData) BSUtils.loadModel(asumDir
-//        + "/model.gz");
-//    analyzeAsum(asum, reference, asumDir + "/ref_asum.csv");
-//    analyzeAsumUsingAverage(asum, reference, asumDir + "/refavg_asum.csv");
-//    JstModelData jst = (JstModelData) BSUtils.loadModel(jstDir + "/model.gz");
-//    analyzeJst(jst, reference, jstDir + "/ref_jst.csv");
-//    analyzeJstUsingAverage(jst, reference, jstDir + "/refavg_jst.csv");
+    // String asumDir =
+    // "C:/datasets/models/asum/ursa/T10-G0.10-0.10(seed1)/1000";
+    // String jstDir = "C:/datasets/models/jst/ursa/T10-G0.10-0.10(seed1)/1000";
+    String bsDir = "C:/datasets/models/bs/ursa/T6-A0.1-B0.0010-G0.10,0.10-I1000(seed1)/1000";
+    // ReferenceDistributions reference = new ReferenceDistributions(
+    // annotatedFile, stopStem);
+    // AsumModelData asum = (AsumModelData) BSUtils.loadModel(asumDir
+    // + "/model.gz");
+    // analyzeAsum(asum, reference, asumDir + "/ref_asum.csv");
+    // analyzeAsumUsingAverage(asum, reference, asumDir + "/refavg_asum.csv");
+    // JstModelData jst = (JstModelData) BSUtils.loadModel(jstDir +
+    // "/model.gz");
+    // analyzeJst(jst, reference, jstDir + "/ref_jst.csv");
+    // analyzeJstUsingAverage(jst, reference, jstDir + "/refavg_jst.csv");
     BSReferenceDistributions bsReference = new BSReferenceDistributions(
         annotatedFile, stopStem);
-//    bsReference.writeTopWords(bsDir + "/empiricalsentiwords.csv", 50);
-//    bsReference.writeTopAspectWords(bsDir + "/empiricalaspectwords.csv", 100);
+    // bsReference.writeTopWords(bsDir + "/empiricalsentiwords.csv", 50);
+    // bsReference.writeTopAspectWords(bsDir + "/empiricalaspectwords.csv",
+    // 100);
     Model bs = (Model) BSUtils.loadModel(bsDir + "/model.gz");
     analyzeBs(bs, bsReference, bsDir + "/ref_senti.csv", bsDir
         + "/ref_aspects.csv");

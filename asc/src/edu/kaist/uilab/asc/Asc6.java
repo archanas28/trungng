@@ -7,9 +7,10 @@ import java.util.List;
 import java.util.TreeSet;
 import java.util.Vector;
 
+import org.apache.commons.math.special.Gamma;
+
 import edu.kaist.uilab.asc.data.Document;
 import edu.kaist.uilab.asc.util.InvalidArgumentException;
-import edu.kaist.uilab.opt.MathUtils;
 
 /**
  * Asc implementation with the following prior:
@@ -89,13 +90,12 @@ public class Asc6 extends AbstractAscModel {
     double negLogLikelihood = 0.0;
     for (int j = 0; j < numSenti; j++) {
       for (int k = 0; k < numTopics; k++) {
-        negLogLikelihood += MathUtils.logGamma(sumSTW[j][k] + sumBeta[j][k])
-            - MathUtils.logGamma(sumBeta[j][k]);
+        negLogLikelihood += Gamma.logGamma(sumSTW[j][k] + sumBeta[j][k])
+            - Gamma.logGamma(sumBeta[j][k]);
         for (int i = 0; i < effectiveVocabSize; i++) {
           if (matrixSWT[j].getValue(i, k) > 0) {
-            negLogLikelihood += MathUtils.logGamma(beta[j][k][i])
-                - MathUtils.logGamma(beta[j][k][i]
-                    + matrixSWT[j].getValue(i, k));
+            negLogLikelihood += Gamma.logGamma(beta[j][k][i])
+                - Gamma.logGamma(beta[j][k][i] + matrixSWT[j].getValue(i, k));
           }
         }
       }
@@ -121,8 +121,7 @@ public class Asc6 extends AbstractAscModel {
   }
 
   @Override
-  public double[] computeGradient(double[] x)
-      throws InvalidArgumentException {
+  public double[] computeGradient(double[] x) throws InvalidArgumentException {
     double[] grads = new double[vars.length];
     ArrayList<Integer> neighbors;
     // gradients of y_ki
@@ -132,12 +131,11 @@ public class Asc6 extends AbstractAscModel {
         grads[idx] = 0.0;
         double betaj = 0.0;
         for (int j = 0; j < numSenti; j++) {
-          betaj = MathUtils.digamma(sumSTW[j][k] + sumBeta[j][k])
-              - MathUtils.digamma(sumBeta[j][k]);
+          betaj = Gamma.digamma(sumSTW[j][k] + sumBeta[j][k])
+              - Gamma.digamma(sumBeta[j][k]);
           if (matrixSWT[j].getValue(i, k) > 0) {
-            betaj += MathUtils.digamma(beta[j][k][i])
-                - MathUtils
-                    .digamma(beta[j][k][i] + matrixSWT[j].getValue(i, k));
+            betaj += Gamma.digamma(beta[j][k][i])
+                - Gamma.digamma(beta[j][k][i] + matrixSWT[j].getValue(i, k));
           }
           grads[idx] += beta[j][k][i] * betaj;
         }

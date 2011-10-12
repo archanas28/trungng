@@ -94,7 +94,7 @@ public class BSReferenceDistributions extends ReferenceDistributions {
         .tagString(sentence));
     for (int topic : sentenceTopics) {
       for (String token : tokenizer.tokenizer(cs, 0, cs.length)) {
-        if (sentiStems.contains(token)) {
+        if (senti != neutral && sentiStems.contains(token)) {
           cnt[senti][topic].increment(token);
           sumCnt[senti][topic]++;
         } else {
@@ -120,7 +120,8 @@ public class BSReferenceDistributions extends ReferenceDistributions {
       String word = token.substring(0, slashPos);
       String tag = token.substring(slashPos + 1);
       String stem = stemmer.getStem(word.toLowerCase());
-      if (SentimentPrior.isSentiTag(tag) || SentimentPrior.isSentiWord(stem)) {
+//      if (SentimentPrior.isSentiTag(tag) || SentimentPrior.isSentiWord(stem)) {
+      if (SentimentPrior.isSentiTag(tag)) {
         if (i > 0 && tokens[i - 1].contains("not/")) {
           set.add("not_" + stem);
         } else {
@@ -166,6 +167,5 @@ public class BSReferenceDistributions extends ReferenceDistributions {
     @SuppressWarnings("unused")
     BSReferenceDistributions reference = new BSReferenceDistributions(
         annotatedFile, stopStem);
-    
   }
 }

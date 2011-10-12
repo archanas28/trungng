@@ -15,13 +15,11 @@ import edu.kaist.uilab.asc.util.IntegerMatrix;
 import edu.kaist.uilab.opt.ObjectiveFunction;
 
 /**
- * A base model for all implementations of the {@link AscGibbsSampler} class. *
+ * A base model for all implementations of the {@link AscGibbsSampler} class.
  * <p>
  * All sub-classes share the same Gibbs sampling implementation (hence the
  * internal data such as hyper-parameters). Each class must provide its own
  * implementation for the optimization of priors (beta and y).
- * 
- * TODO(trung): re-factor the Gibbs sampling dependent data into its own class.
  * 
  * @author trung nguyen (trung.ngvan@gmail.com)
  */

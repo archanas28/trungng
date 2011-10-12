@@ -17,7 +17,7 @@ public class GibbsSampler2 extends GibbsSampler {
   }
 
   @Override
-  void initDocs(int from, int to) {
+  protected void initDocs(int from, int to) {
     int cnt = 0;
     for (int docNo = from; docNo < to; docNo++) {
       Document document = model.getDocuments().get(docNo);
@@ -41,7 +41,7 @@ public class GibbsSampler2 extends GibbsSampler {
    * 
    * @param document
    */
-  void sampleForDoc(Document document) {
+  protected void sampleForDoc(Document document) {
     int docIdx = document.getDocNo();
     for (Sentence sentence : document.getSentences()) {
       if (sentence.hasSentimentWords()) {

@@ -5,9 +5,10 @@ import java.util.List;
 import java.util.TreeSet;
 import java.util.Vector;
 
+import org.apache.commons.math.special.Gamma;
+
 import edu.kaist.uilab.asc.data.Document;
 import edu.kaist.uilab.asc.util.InvalidArgumentException;
-import edu.kaist.uilab.opt.MathUtils;
 
 /**
  * Asc implementation with the following prior:
@@ -16,8 +17,8 @@ import edu.kaist.uilab.opt.MathUtils;
  * <p>
  * This regards <code>y_{v}</code> in James' paper as <code>y_{ji}</code>.
  * Log(beta) is now added the term <code>sumof((y_{0i} + y_{1i})^2))</code>.
- * 
- * <p> This is a more general version of {@link Asc52}.
+ * <p>
+ * This is a more general version of {@link Asc52}.
  * 
  * @author trung nguyen (trung.ngvan@gmail.com)
  */
@@ -62,7 +63,7 @@ public class Asc51 extends Asc5 {
       }
     }
   }
-  
+
   @Override
   public double computeFunction(double[] x) throws InvalidArgumentException {
     // compute L_B = - log likelihood = -log p(w,z,s|alpha, beta)
@@ -71,19 +72,17 @@ public class Asc51 extends Asc5 {
     double negLogLikelihood = 0.0;
     for (int j = 0; j < numSenti; j++) {
       for (int k = 0; k < numTopics; k++) {
-        negLogLikelihood += MathUtils.logGamma(sumSTW[j][k] + sumBeta[j][k])
-            - MathUtils.logGamma(sumBeta[j][k]);
-        double jk = MathUtils.digamma(sumSTW[j][k] + sumBeta[j][k])
-            - MathUtils.digamma(sumBeta[j][k]);
+        negLogLikelihood += Gamma.logGamma(sumSTW[j][k] + sumBeta[j][k])
+            - Gamma.logGamma(sumBeta[j][k]);
+        double jk = Gamma.digamma(sumSTW[j][k] + sumBeta[j][k])
+            - Gamma.digamma(sumBeta[j][k]);
         for (int i = 0; i < effectiveVocabSize; i++) {
           double jki = jk;
           if (matrixSWT[j].getValue(i, k) > 0) {
-            negLogLikelihood += MathUtils.logGamma(beta[j][k][i])
-                - MathUtils.logGamma(beta[j][k][i]
-                    + matrixSWT[j].getValue(i, k));
-            jki += MathUtils.digamma(beta[j][k][i])
-                - MathUtils
-                    .digamma(beta[j][k][i] + matrixSWT[j].getValue(i, k));
+            negLogLikelihood += Gamma.logGamma(beta[j][k][i])
+                - Gamma.logGamma(beta[j][k][i] + matrixSWT[j].getValue(i, k));
+            jki += Gamma.digamma(beta[j][k][i])
+                - Gamma.digamma(beta[j][k][i] + matrixSWT[j].getValue(i, k));
           }
           betaJki[j][k][i] = beta[j][k][i] * jki;
         }

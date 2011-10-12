@@ -37,15 +37,13 @@ import edu.kaist.uilab.asc.data.SentiWord;
 import edu.kaist.uilab.asc.util.DoubleMatrix;
 import edu.kaist.uilab.asc.util.IntegerMatrix;
 import edu.kaist.uilab.asc.util.TextFiles;
-import edu.kaist.uilab.bs.BSUtils;
 import edu.kaist.uilab.bs.CorpusParser;
-import edu.kaist.uilab.bs.DocumentUtils;
 import edu.kaist.uilab.bs.TwogramsCounter;
+import edu.kaist.uilab.bs.util.BSUtils;
+import edu.kaist.uilab.bs.util.DocumentUtils;
 
 /**
- * Implementation of the ASUM model. TODO(trung): currently this model takes the
- * senti vocab from parser. For comparison, this should be computed based on
- * what yohan proposed.
+ * Implementation of the ASUM model.
  * 
  * @author trung
  */
@@ -54,9 +52,9 @@ public class AsumModel {
   public static class AsumModelData implements Serializable {
     private static final long serialVersionUID = 883152456864367315L;
 
-    private int numProbWords = 200;
+    private int numProbWords = 500;
     private int maxSentenceLength = 40;
-    private Integer outputInterval = 500;
+    private Integer outputInterval = 200;
 
     private int numUniqueWords;
     private int numTopics;
@@ -113,6 +111,75 @@ public class AsumModel {
       return newPhi;
     }
 
+    /**
+     * Returns top <code>numWords</code> words for each senti-aspect.
+     * 
+     * @param phi
+     * @param numWords
+     * @return
+     */
+    public String[][][] topWords(ObjectToDoubleMap<String>[][] phi, int numWords) {
+      String[][][] topWords = new String[numSenti][numTopics][numWords];
+      for (int senti = 0; senti < numSenti; senti++) {
+        for (int topic = 0; topic < numTopics; topic++) {
+          List<String> rankedList = phi[senti][topic].keysOrderedByValueList();
+          for (int idx = 0; idx < numWords; idx++) {
+            topWords[senti][topic][idx] = rankedList.get(idx);
+          }
+        }
+      }
+
+      return topWords;
+    }
+
+    /**
+     * Classifies sentiment and topic of a segment.
+     * 
+     * @param segment
+     *          a sequence of words
+     * @return a 2-element array, the first is sentiment and the second is topic
+     */
+    public int[] classifySegment(ObjectToDoubleMap<String>[][] phi,
+        String[] segment) {
+      double maxProb = 0.0;
+      int senti = -1, topic = -1;
+      for (int j = 0; j < numSenti; j++) {
+        for (int k = 0; k < numTopics; k++) {
+          double prob = 1.0;
+          for (String word : segment) {
+            if (phi[j][k].containsKey(word)) {
+              prob *= phi[j][k].getValue(word);
+            }
+          }
+          if (prob != 1.0 && maxProb < prob) {
+            maxProb = prob;
+            senti = j;
+            topic = k;
+          }
+        }
+      }
+
+      return new int[] { senti, topic };
+    }
+
+    /**
+     * Returns the if <code>segment</code> contains at least one of the word in
+     * <code>topWords</code>.
+     * 
+     * @param topWords
+     * @param segment
+     * @return
+     */
+    public boolean segmentContainsTopWords(String[] topWords, String[] segment) {
+      for (String word : segment) {
+        if (BSUtils.isInArray(topWords, word)) {
+          return true;
+        }
+      }
+
+      return false;
+    }
+
     public int getNumUniqueWords() {
       return numUniqueWords;
     }
@@ -128,6 +195,65 @@ public class AsumModel {
     public String getOutputDir() {
       return outputDir;
     }
+
+    public void writeClassificationSummary(String file, List<Document> documents)
+        throws IOException {
+      int numPosCorrect = 0, numNegCorrect = 0;
+      int numPosWrong = 0, numNegWrong = 0;
+      int numNotRated = 0, numNeutral = 0, numPos = 0, numNeg = 0;
+      for (int i = 0; i < numDocuments; i++) {
+        Document document = documents.get(i);
+        double rating = document.getRating();
+        // if (rating != 3.0 && rating != -1.0) {
+        if (rating != -1.0) {
+          int observedSenti = rating >= 3.0 ? 0 : 1;
+          if (observedSenti == 0) {
+            numPos++;
+          } else {
+            numNeg++;
+          }
+          int inferedSenti = Pi.getValue(i, 0) >= Pi.getValue(i, 1) ? 0 : 1;
+          if (inferedSenti == observedSenti) {
+            if (inferedSenti == 0) {
+              numPosCorrect++;
+            } else {
+              numNegCorrect++;
+            }
+          } else {
+            if (inferedSenti == 0) {
+              numPosWrong++;
+            } else {
+              numNegWrong++;
+            }
+          }
+        } else {
+          if (rating == 3.0) {
+            numNeutral++;
+          } else {
+            numNotRated++;
+          }
+        }
+      }
+
+      PrintWriter out = new PrintWriter(file);
+      out.printf("#positive = %d, #negative = %d, #total subjective =%d\n",
+          numPos, numNeg, numPos + numNeg);
+      out.printf("#neutral =%d, #not rated = %d, sum = %d\n", numNeutral,
+          numNotRated, numNeutral + numNotRated);
+      out.printf(
+          "#numPosCorrect = %d, numPosWrong = %d, numNegCorrect=%d, numNegWrong=%d\n",
+          numPosCorrect, numPosWrong, numNegCorrect, numNegWrong);
+      out.printf("accuracy (positive + negative): %.3f\n", (numPosCorrect
+          + numNegCorrect + 0.0)
+          / (numPos + numNeg));
+      out.printf("precision (positive): %.3f\n", (numPosCorrect + 0.0)
+          / (numPosCorrect + numPosWrong));
+      out.printf("recall (positive): %.3f\n", (numPosCorrect + 0.0) / numPos);
+      out.printf("precision (negative): %.3f\n", (numNegCorrect + 0.0)
+          / (numNegCorrect + numNegWrong));
+      out.printf("recall (negative): %.3f\n", (numNegCorrect + 0.0) / numNeg);
+      out.close();
+    }
   }
 
   private AsumModelData data;
@@ -140,8 +266,7 @@ public class AsumModel {
     int numTopics = 7;
     int numIterations = 1000;
     int numSenti = 2;
-    int numThreads = 1;
-    String dir = "C:/datasets/models/asum/ursa";
+    String dir = "C:/datasets/models/asum/vacuum";
     String dicDir = dir;
     double alpha = 0.1;
     double[] betas = new double[] { 0.001, 0.001, 0.000000001 };
@@ -150,15 +275,17 @@ public class AsumModel {
 
     String utf8 = "utf-8";
     String stopFile = "StopStems_en.txt";
-    String sentiStemsFile = "senti.txt";
+//    String sentiStemsFile = "senti.txt";
     List<String> stopStems = TextFiles.readLines(dir + "/" + stopFile, utf8);
-    HashSet<String> sentiStems = (HashSet<String>) TextFiles.readUniqueLines(
-        dir + "/" + sentiStemsFile, utf8);
+    HashSet<String> sentiStems = new HashSet<String>();
+    // (HashSet<String>) TextFiles.readUniqueLines(dir + "/" + sentiStemsFile,
+    // utf8);
     CorpusParser parser = new CorpusParser(dir + "/docs_en.txt", 4, 0, 70,
         sentiStems, stopStems);
-    parser.parse();
+    // parser.parse();
 
-    String sentiFilePrefix = "seedstems";
+    String positiveSeeds = "C:/datasets/models/seedstems/seedstems0(+1).txt";
+    String negativeSeeds = "C:/datasets/models/seedstems/seedstems1(+1).txt";
     String wordListFileName = "WordList.txt";
     String wordDocFileName = "BagOfSentences_en.txt";
     Vector<LocaleWord> wordList = Application.readWordList(dir + "/"
@@ -167,10 +294,9 @@ public class AsumModel {
     Application.readDocuments(documents, dir + "/" + wordDocFileName);
     ArrayList<TreeSet<LocaleWord>> list = new ArrayList<TreeSet<LocaleWord>>(
         numSenti);
-    for (int s = 0; s < numSenti; s++) {
-      list.add(readWords(dir + "/" + sentiFilePrefix + s + "(+1).txt", "utf-8",
-          Locale.ENGLISH));
-    }
+    list.add(readWords(positiveSeeds, "utf-8", Locale.ENGLISH));
+    System.out.println(list.get(0));
+    list.add(readWords(negativeSeeds, "utf-8", Locale.ENGLISH));
     ArrayList<TreeSet<Integer>> sentiClasses = new ArrayList<TreeSet<Integer>>(
         list.size());
     for (Set<LocaleWord> sentiWordsStr : list) {
@@ -188,13 +314,12 @@ public class AsumModel {
     System.out.println("Alpha: " + alpha);
     System.out.println();
     System.out.println("Iterations: " + numIterations);
-    System.out.println("Threads: " + numThreads);
     System.out.println("Input Dir: " + dir);
     System.out.println("Seed words: "
         + (sentiClasses.get(0).size() + sentiClasses.get(1).size()));
     System.out.println("Dictionary Dir: " + dicDir);
     String outputDir = dir
-        + String.format("/T%dG%.2f-%.2f(seed1)", numTopics, gammas[0],
+        + String.format("/T%d-G%.2f-%.2f(seed1-run2)", numTopics, gammas[0],
             gammas[1]);
     new File(outputDir).mkdir();
     System.out.println("Output Dir: " + outputDir);
@@ -205,7 +330,7 @@ public class AsumModel {
         parser.getSentiWordsSet(), annotatedDocuments, numTopics, numSenti,
         wordList, documents, sentiClasses, alpha, betas, gammas, outputDir);
     model.init(randomInit);
-    model.gibbsSampling(numIterations, numThreads);
+    model.gibbsSampling(numIterations);
     model.writeOutput(numIterations);
   }
 
@@ -301,7 +426,7 @@ public class AsumModel {
     System.out.println("Too Long Sentences: " + numTooLongSentences);
   }
 
-  public void gibbsSampling(int numIterations, int numThreads) throws Exception {
+  public void gibbsSampling(int numIterations) throws Exception {
     data.sumAlpha = data.alpha * data.numTopics;
     int numSentiWords = 0;
     for (Set<Integer> sentiWords : data.sentiWordsList)
@@ -320,7 +445,7 @@ public class AsumModel {
       data.sumGamma += gamma;
 
     System.out.println("Gibbs sampling started (Iterations: " + numIterations
-        + ", Threads: " + numThreads + ")");
+        + ")");
 
     long startTime = System.currentTimeMillis();
     for (int i = 0; i < numIterations; i++) {
@@ -476,64 +601,6 @@ public class AsumModel {
     }
   }
 
-  void writeClassificationSummary(DoubleMatrix pi, String file)
-      throws IOException {
-    int numPosCorrect = 0, numNegCorrect = 0;
-    int numPosWrong = 0, numNegWrong = 0;
-    int numNotRated = 0, numNeutral = 0, numPos = 0, numNeg = 0;
-    for (int i = 0; i < data.numDocuments; i++) {
-      Document document = documents.get(i);
-      double rating = document.getRating();
-      if (rating != 3.0 && rating != -1.0) {
-        int observedSenti = rating > 3.0 ? 0 : 1;
-        if (observedSenti == 0) {
-          numPos++;
-        } else {
-          numNeg++;
-        }
-        int inferedSenti = pi.getValue(i, 0) >= pi.getValue(i, 1) ? 0 : 1;
-        if (inferedSenti == observedSenti) {
-          if (inferedSenti == 0) {
-            numPosCorrect++;
-          } else {
-            numNegCorrect++;
-          }
-        } else {
-          if (inferedSenti == 0) {
-            numPosWrong++;
-          } else {
-            numNegWrong++;
-          }
-        }
-      } else {
-        if (rating == 3.0) {
-          numNeutral++;
-        } else {
-          numNotRated++;
-        }
-      }
-    }
-
-    PrintWriter out = new PrintWriter(file);
-    out.printf("#positive = %d, #negative = %d, #total subjective =%d\n",
-        numPos, numNeg, numPos + numNeg);
-    out.printf("#neutral =%d, #not rated = %d, sum = %d\n", numNeutral,
-        numNotRated, numNeutral + numNotRated);
-    out.printf(
-        "#numPosCorrect = %d, numPosWrong = %d, numNegCorrect=%d, numNegWrong=%d\n",
-        numPosCorrect, numPosWrong, numNegCorrect, numNegWrong);
-    out.printf("accuracy (positive + negative): %.3f\n", (numPosCorrect
-        + numNegCorrect + 0.0)
-        / (numPos + numNeg));
-    out.printf("precision (positive): %.3f\n", (numPosCorrect + 0.0)
-        / (numPosCorrect + numPosWrong));
-    out.printf("recall (positive): %.3f\n", (numPosCorrect + 0.0) / numPos);
-    out.printf("precision (negative): %.3f\n", (numNegCorrect + 0.0)
-        / (numNegCorrect + numNegWrong));
-    out.printf("recall (negative): %.3f\n", (numNegCorrect + 0.0) / numNeg);
-    out.close();
-  }
-
   /**
    * Counts the number of sentences for all sentiment classes.
    * 
@@ -632,7 +699,7 @@ public class AsumModel {
     if (annotatedDocuments != null) {
       writeSentenceClassificationSummary(dir + "/sentenceClassification.txt");
     }
-    writeClassificationSummary(data.Pi, dir + "/classification.txt");
+    data.writeClassificationSummary(dir + "/classification.txt", documents);
     // String prefix = "STO2-T" + numTopics + "-S" + numSenti + "("
     // + sentiWordsList.size() + ")-A" + alpha + "-B" + betas[0];
     // for (int i = 1; i < betas.length; i++)
@@ -837,6 +904,7 @@ public class AsumModel {
    * 
    * @return
    */
+  @SuppressWarnings("unused")
   private int[] getCorrespondingTopics() {
     double[][] length = new double[data.numSenti][data.numTopics];
     for (int senti = 0; senti < 2; senti++) {
@@ -871,6 +939,7 @@ public class AsumModel {
     return max;
   }
 
+  @SuppressWarnings("unused")
   private double computeCoherenceScoreWithProb(int[] cor, DoubleMatrix[] phi,
       int[][][] indice, int kSenti, int kAspect) {
     int nSenti = 25, nAspect = 50;

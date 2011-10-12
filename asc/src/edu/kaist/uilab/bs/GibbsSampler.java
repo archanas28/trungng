@@ -9,7 +9,7 @@ import java.io.IOException;
  * @author trung
  */
 public class GibbsSampler {
-  Model model;
+  protected Model model;
 
   /**
    * Creates a Gibbs sampler with the given model.
@@ -32,7 +32,7 @@ public class GibbsSampler {
    */
   public void setOutputDir(String dir) {
     model.outputDir = dir + "(" + model.extraInfo + ")";
-    new File(model.outputDir).mkdir();
+    new File(model.outputDir).mkdirs();
   }
 
   /**
@@ -43,7 +43,7 @@ public class GibbsSampler {
    * @param to
    *          end document index
    */
-  void initDocs(int from, int to) {
+  protected void initDocs(int from, int to) {
     int cnt = 0;
     for (int docNo = from; docNo < to; docNo++) {
       Document document = model.getDocuments().get(docNo);
@@ -62,7 +62,7 @@ public class GibbsSampler {
    * 
    * @param sentence
    */
-  void initSentence(int docNo, Sentence sentence) {
+  protected void initSentence(int docNo, Sentence sentence) {
     int newSenti = -1;
     int numSentenceSenti = 0;
     for (Integer sentiWord : sentence.getSentiWords()) {
@@ -103,7 +103,7 @@ public class GibbsSampler {
       int burnin) throws IOException {
     System.out.printf("Gibbs sampling started (Iterations: %d)\n", numIters);
     if (!model.isExisting) {
-      initDocs(0, model.numDocuments);
+      initDocs(0, model.getNumDocuments());
     }
     double startTime = System.currentTimeMillis();
     for (int iter = startingIter; iter < numIters; iter++) {
@@ -130,7 +130,7 @@ public class GibbsSampler {
    * 
    * @param document
    */
-  void sampleForDoc(Document document) {
+  protected void sampleForDoc(Document document) {
     int docIdx = document.getDocNo();
     for (Sentence sentence : document.getSentences()) {
       if (sentence.getSenti() == -1) {
@@ -146,7 +146,7 @@ public class GibbsSampler {
    * @param docIdx
    * @param sentence
    */
-  void sampleForSentence(int docIdx, Sentence sentence) {
+  protected void sampleForSentence(int docIdx, Sentence sentence) {
     double[][] probTable = new double[model.numTopics][model.numSenti];
     unsetTopic(docIdx, sentence);
     unsetSentiment(docIdx, sentence);
@@ -167,8 +167,9 @@ public class GibbsSampler {
           }
           x = 0;
           for (Integer sentiWord : sentence.getSentiWords()) {
-            prob *= (model.cntSWT[s].getValue(sentiWord, k) + model.betaSenti[s][sentiWord])
-                / (model.sumSTW[s][k] + model.sumBetaSenti[s] + x++);
+            prob *= (model.cntSWT[s].getValue(sentiWord, k) + model
+                .getBetaSenti(s, k, sentiWord))
+                / (model.sumSTW[s][k] + model.getSumBetaSenti(s, k) + x++);
           }
           probTable[k][s] = prob;
           sumProb += prob;
@@ -203,7 +204,7 @@ public class GibbsSampler {
    * @param docIdx
    * @param sentence
    */
-  void unsetSentiment(int docIdx, Sentence sentence) {
+  protected void unsetSentiment(int docIdx, Sentence sentence) {
     int oldTopic = sentence.getTopic();
     int oldSenti = sentence.getSenti();
     model.cntDS.decValue(docIdx, oldSenti);
@@ -220,7 +221,7 @@ public class GibbsSampler {
    * @param docIdx
    * @param sentence
    */
-  void unsetTopic(int docIdx, Sentence sentence) {
+  protected void unsetTopic(int docIdx, Sentence sentence) {
     int oldTopic = sentence.getTopic();
     model.cntDT.decValue(docIdx, oldTopic);
     model.sumDT[docIdx]--;
@@ -238,7 +239,8 @@ public class GibbsSampler {
    * @param topic
    * @param newSenti
    */
-  void setSentiment(int docIdx, Sentence sentence, int topic, int newSenti) {
+  protected void setSentiment(int docIdx, Sentence sentence, int topic,
+      int newSenti) {
     sentence.setSenti(newSenti);
     for (Integer sentiWord : sentence.getSentiWords()) {
       model.cntSWT[newSenti].incValue(sentiWord, topic);
@@ -255,7 +257,7 @@ public class GibbsSampler {
    * @param sentence
    * @param newTopic
    */
-  void setTopic(int docIdx, Sentence sentence, int newTopic) {
+  protected void setTopic(int docIdx, Sentence sentence, int newTopic) {
     sentence.setTopic(newTopic);
     for (Integer aspectWord : sentence.getAspectWords()) {
       model.cntWT.incValue(aspectWord, newTopic);

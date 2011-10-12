@@ -19,6 +19,9 @@ import java.util.Vector;
 
 import edu.kaist.uilab.asc.LocaleCorpusParser.Structure;
 import edu.kaist.uilab.asc.data.Document;
+import edu.kaist.uilab.asc.data.Review;
+import edu.kaist.uilab.asc.data.ReviewReader;
+import edu.kaist.uilab.asc.data.ReviewWithProsAndConsReader;
 import edu.kaist.uilab.asc.data.Sentence;
 import edu.kaist.uilab.asc.data.SentiWord;
 import edu.kaist.uilab.asc.prior.GraphInputProducer;
@@ -38,7 +41,7 @@ public class Application {
   // String inputDir = "C:/datasets/asc/ldatest/MovieReviews";
   // String inputDir = "C:/datasets/asc/reviews/ElectronicsReviews2";
   // String inputDir = "C:/datasets/asc/reviews/BalancedMovieReviews";
-  String inputDir = "C:/datasets/models/asum/ursa";
+  String inputDir = "C:/datasets/models/asum/vacuum";
   // String inputDir = "C:/datasets/asc/reviews/MovieReviews";
   // String inputDir = "C:/datasets/asc/blogs/obama";
   final String dictionaryFile = inputDir + "/en-fr-locale.txt";
@@ -61,7 +64,7 @@ public class Application {
   int maxWordLength = 30;
   int minSentenceLength = 2;
   int maxSentenceLength = 50;
-  int minWordOccur = 4;
+  int minWordOccur = 3;
   int minDocLength = 20; // used 20
 
   int numTopics = 30;
@@ -249,7 +252,8 @@ public class Application {
     english.setWordReplacePattern(new String[] { EN_PATTERN, null });
     english.setStopStems(enStopWordFile);
     english.setStemmer(new EnglishStemmer());
-    parseCorpus(englishCorpus, english);
+    ReviewReader reader = new ReviewWithProsAndConsReader();
+    parseCorpus(englishCorpus, reader, english);
     english.filterWords();
     english.writeStemMap(inputDir + "/Stem_en.txt");
     System.out.println(english);
@@ -389,19 +393,17 @@ public class Application {
     System.out.println(parser);
   }
 
-  void parseCorpus(String corpus, LocaleCorpusParser parser) throws IOException {
+  void parseCorpus(String corpus, ReviewReader reader, LocaleCorpusParser parser) throws IOException {
     BufferedReader in = new BufferedReader(new InputStreamReader(
         new FileInputStream(corpus), UTF8));
-    double rating;
-    String id;
-    while ((id = in.readLine()) != null) {
-      try {
-        rating = Double.parseDouble(in.readLine());
-      } catch (NumberFormatException e) {
-        rating = -1.0;
+    Review review = null;
+    do {
+      review = reader.readReview(in, false);
+      if (review != null) {
+        parser.build(review.getReviewId(), review.getContent(),
+            review.getRating());
       }
-      parser.build(id, in.readLine(), rating);
-    }
+    } while (review != null);
     in.close();
   }
 
@@ -476,7 +478,6 @@ public class Application {
       Document document = new Document(documents.size());
       StringTokenizer st = new StringTokenizer(line);
       document.setExternalId(st.nextToken());
-      st.nextToken(); // ignore the review target id
       document.setRating(Double.valueOf(st.nextToken()));
       int numSentences = Integer.valueOf(st.nextToken());
       for (int s = 0; s < numSentences; s++) {
@@ -497,7 +498,8 @@ public class Application {
 
   /**
    * Reads documents for the JST model. Note that if we treat each sentence as
-   * containing only one word then ASUM becomes JST. 
+   * containing only one word then ASUM becomes JST.
+   * 
    * @param documents
    * @param corpus
    * @throws IOException
@@ -510,7 +512,6 @@ public class Application {
       Document document = new Document(documents.size());
       StringTokenizer st = new StringTokenizer(line);
       document.setExternalId(st.nextToken());
-      st.nextToken(); // ignore the review target id
       document.setRating(Double.valueOf(st.nextToken()));
       int numSentences = Integer.valueOf(st.nextToken());
       for (int s = 0; s < numSentences; s++) {

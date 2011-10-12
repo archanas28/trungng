@@ -20,6 +20,7 @@ import edu.kaist.uilab.asc.Inference;
 import edu.kaist.uilab.asc.util.DoubleMatrix;
 import edu.kaist.uilab.asc.util.IntegerMatrix;
 import edu.kaist.uilab.asc.util.Utils;
+import edu.kaist.uilab.bs.util.BSUtils;
 
 /**
  * Stores all data used in the Gibbs sampling procedure. This model implements
@@ -34,17 +35,17 @@ public class Model implements Serializable {
   private int numProbWords = 100;
 
   boolean isExisting = false;
-  String outputDir = ".";
-  String extraInfo = ""; // extra info about the model
+  protected String outputDir = ".";
+  protected String extraInfo = ""; // extra info about the model
 
-  int numSentiWords; // V'
-  int numAspectWords; // V
-  int numTopics; // K
-  int numSenti; // S
-  int numDocuments; // M
-  private List<Document> documents;
+  protected int numSentiWords; // V'
+  protected int numAspectWords; // V
+  protected int numTopics; // K
+  protected int numSenti; // S
+  private int numDocuments; // M
+  protected List<Document> documents;
   HashMap<String, Document> annotatedDocuments;
-  SymbolTable sentiTable;
+  protected SymbolTable sentiTable;
   SymbolTable aspectTable;
   TwogramsCounter counter;
 
@@ -54,18 +55,18 @@ public class Model implements Serializable {
   double sumGamma;
   double betaAspect;
   double sumBetaAspect;
-  double[][] betaSenti;
-  double[] sumBetaSenti; // sumBeta[senti]
+  private double[][] beta; // beta[senti][word]
+  private double[] sumBeta; // sumBeta[senti]
 
-  HashSet<Integer>[] seedWords;
-  IntegerMatrix cntWT; // cwt[V][T]
-  int[] sumWT; // sumWT[T]
-  IntegerMatrix[] cntSWT; // cstw[S][V'][T]
-  int[][] sumSTW; // sumSTW[S][T]
-  IntegerMatrix cntDT; // cdt[M][T]
-  int[] sumDT; // sumDT[M]
-  IntegerMatrix cntDS;
-  int[] sumDS; // sumDS[D]
+  protected HashSet<Integer>[] seedWords;
+  protected IntegerMatrix cntWT; // cwt[V][T]
+  protected int[] sumWT; // sumWT[T]
+  protected IntegerMatrix[] cntSWT; // cstw[S][V'][T]
+  protected int[][] sumSTW; // sumSTW[S][T]
+  protected IntegerMatrix cntDT; // cdt[M][T]
+  protected int[] sumDT; // sumDT[M]
+  protected IntegerMatrix cntDS;
+  protected int[] sumDS; // sumDS[D]
 
   /**
    * @param numTopics
@@ -96,7 +97,6 @@ public class Model implements Serializable {
     this.seedWords = seedWords;
     this.alpha = alpha;
     this.betaAspect = betaAspect;
-    this.betaSenti = getBetaSenti(betaSenti);
     this.gammas = gammas;
     cntWT = new IntegerMatrix(numAspectWords, numTopics);
     sumWT = new int[numTopics];
@@ -109,7 +109,14 @@ public class Model implements Serializable {
     sumDT = new int[numDocuments];
     cntDS = new IntegerMatrix(numDocuments, numSenti);
     sumDS = new int[numDocuments];
-    initHyperParameters(betaSenti);
+    sumAlpha = alpha * numTopics;
+    sumGamma = 0;
+    for (double gamma : gammas) {
+      sumGamma += gamma;
+    }
+    sumBetaAspect = betaAspect * numAspectWords;
+    initBeta(betaSenti);
+
     this.annotatedDocuments = null;
   }
 
@@ -122,7 +129,7 @@ public class Model implements Serializable {
     annotatedDocuments = documents;
   }
 
-  double[][] getBetaSenti(double betaSenti[]) {
+  protected double[][] getBetaSenti(double betaSenti[]) {
     double[][] ret = new double[numSenti][numSentiWords];
     for (int j = 0; j < numSenti; j++) {
       for (int i = 0; i < numSentiWords; i++) {
@@ -136,7 +143,7 @@ public class Model implements Serializable {
   /**
    * Gets the beta[senti] value for a sentiment word.
    */
-  double getBeta(double[] betaSenti, Integer wordIdx, int s) {
+  protected double getBeta(double[] betaSenti, Integer wordIdx, int s) {
     // same senti
     if (seedWords[s].contains(wordIdx)) {
       return betaSenti[0];
@@ -151,19 +158,14 @@ public class Model implements Serializable {
   /**
    * Initializes hyper parameters and related quantities for Gibbs sampling.
    */
-  void initHyperParameters(double betaSenti[]) {
-    sumAlpha = alpha * numTopics;
-    sumGamma = 0;
-    for (double gamma : gammas) {
-      sumGamma += gamma;
-    }
-    sumBetaAspect = betaAspect * numAspectWords;
-    sumBetaSenti = new double[numSenti];
+  protected void initBeta(double betaSenti[]) {
+    this.beta = getBetaSenti(betaSenti);
+    sumBeta = new double[numSenti];
     int numSeedWords = seedWords[0].size() + seedWords[1].size();
     double sumBetaOther = betaSenti[2] * (numSentiWords - numSeedWords);
     for (int s = 0; s < numSenti; s++) {
       int numSameSentimentWords = seedWords[s].size();
-      sumBetaSenti[s] = sumBetaOther + numSameSentimentWords * betaSenti[0]
+      sumBeta[s] = sumBetaOther + numSameSentimentWords * betaSenti[0]
           + (numSeedWords - numSameSentimentWords) * betaSenti[1];
     }
   }
@@ -202,12 +204,20 @@ public class Model implements Serializable {
     return documents;
   }
 
+  public void setNumDocuments(int numDocuments) {
+    this.numDocuments = numDocuments;
+  }
+
+  public int getNumDocuments() {
+    return numDocuments;
+  }
+
   public int getNumProbWords() {
     return numProbWords;
   }
 
   public DoubleMatrix[] getPhiSenti() {
-    return Inference.computePhiSenti(cntSWT, sumSTW, betaSenti, sumBetaSenti);
+    return Inference.computePhiSenti(cntSWT, sumSTW, beta, sumBeta);
   }
 
   public ObjectToDoubleMap<String>[][] getPhiSentiIndexedByWord() {
@@ -439,7 +449,7 @@ public class Model implements Serializable {
    */
   public void writeSampleSummarizedDocuments(String file,
       String[][][] sentiWords, String[][] aspectWords) throws IOException {
-    int numDocs = 500;
+    int numDocs = 10;
     String[] sentiColors = { "green", "red" };
     PrintWriter out = new PrintWriter(new OutputStreamWriter(
         new FileOutputStream(file), "utf-8"));
@@ -488,8 +498,8 @@ public class Model implements Serializable {
     for (int i = 0; i < numDocuments; i++) {
       Document document = getDocuments().get(i);
       double rating = document.getRating();
-      if (rating != 3.0 && rating != -1.0) {
-//        if (rating != -1.0) {        
+//      if (rating != 3.0 && rating != -1.0) {
+         if (rating != -1.0) {
         int observedSenti = rating >= 3.0 ? 0 : 1;
         if (observedSenti == 0) {
           numPos++;
@@ -772,61 +782,206 @@ public class Model implements Serializable {
    * Classifies topic of a segment given its stemmed words <code>words</code>.
    * <p>
    * This classification does not take into account where the segment comes
-   * from, i.e., it can classify any arbitrary segment of text.
+   * from, i.e., it can classify any arbitrary segment of text. In other words,
+   * it returns <code>k_max = argmax_k(p(k|S))</code>.
    * 
    * @param phiAspect
    *          the per-aspect word distributions
-   * @param phiSenti
-   *          the per-sentiaspect word distributions
    * @param words
    *          the words of the segment
    * @return the topic of this segment or <code>-1</code> if cannot classify
    */
-  public int classifySegmentTopic(double[][] phiAspect,
-      DoubleMatrix[] phiSenti, String[] words) {
+  private int classifySegmentTopic(double[][] phiAspect, String[] words) {
     int maxTopic = -1;
-    double max = -1.0;
+    double max = 0.0;
     for (int topic = 0; topic < numTopics; topic++) {
-      double prob = 1.0;
-      for (String word : words) {
-        double wordProb = getWordProb(word, topic, phiAspect, phiSenti);
-        if (wordProb != 0) {
-          prob *= wordProb;
-        }
-      }
+      double prob = getSegmentProb(phiAspect, words, topic);
       if (max < prob) {
         max = prob;
         maxTopic = topic;
       }
     }
 
-    return max != 1.0 ? maxTopic : -1;
+    return maxTopic;
   }
 
   /**
-   * Gets the probability of <code>word</code> to be in the topic
-   * <code>topic</code>.
+   * Classifies topic of a segment given its stemmed worsd <code>words</code>.
+   * <p>
+   * This does a similar job to {
+   * {@link #classifySegmentTopic(double[][], String[])} but is used for the
+   * segment without an aspect word (i.e., classifySegmentTopic gives -1 for the
+   * segment).
    * 
-   * @param word
-   * @param topic
-   * @param phiAspect
    * @param phiSenti
+   * @param words
    * @return
    */
-  private double getWordProb(String word, int topic, double[][] phiAspect,
-      DoubleMatrix[] phiSenti) {
-    double prob = 0.0;
+  private int classifySegmentTopic(DoubleMatrix[] phiSenti, String[] words) {
+    int maxTopic = -1;
+    double max = 0.0;
+    for (int topic = 0; topic < numTopics; topic++) {
+      double prob = getSentimentProb(phiSenti, words, topic, 0)
+          + getSentimentProb(phiSenti, words, topic, 1);
+      if (max < prob) {
+        max = prob;
+        maxTopic = topic;
+      }
+    }
+
+    return maxTopic;
+  }
+
+  /**
+   * Classifies topic of a segment given its stemmed words <code>words</code>.
+   * <p>
+   * This classifier first classifies the segment only using its aspect words.
+   * If it fails to classify, it classifies using its sentiment words.
+   * 
+   * @param phiAspect
+   * @param phiSenti
+   * @param words
+   * @return
+   */
+  public int classifySegmentTopic(double[][] phiAspect,
+      DoubleMatrix[] phiSenti, String[] words) {
+    int k = classifySegmentTopic(phiAspect, words);
+    if (k < 0) {
+      k = classifySegmentTopic(phiSenti, words);
+    }
+
+    return k;
+  }
+
+  /**
+   * Classifies the sentiment of a segment given its aspect.
+   * <p>
+   * This returns <code>j_max = argmax_j(p(j|k,S)</code>.
+   * 
+   * @param phiSenti
+   * @param words
+   * @param topic
+   * @return 0 for positive, 1 for negative, -1 for neutral (or cannot classify)
+   */
+  public int classifySegmentSentiment(DoubleMatrix[] phiSenti, String[] words,
+      int topic) {
+    double proProb = getSentimentProb(phiSenti, words, topic, 0);
+    double negProb = getSentimentProb(phiSenti, words, topic, 1);
+    if (proProb > negProb) {
+      return 0;
+    } else if (proProb < negProb) {
+      return 1;
+    } else {
+      // consider neutral if proProb == negProb (both could equal 0.0)
+      return -1;
+    }
+  }
+
+  /**
+   * Returns <code>p(S|j, k)</code> where S is a segment (<code>words</code>), k
+   * is a topic, and j is a sentiment.
+   * 
+   * @param phiSenti
+   * @param words
+   * @param topic
+   * @param sentiment
+   * @return
+   */
+  public double getSentimentProb(DoubleMatrix[] phiSenti, String[] words,
+      int topic, int sentiment) {
+    double prob = 1.0;
+    for (String word : words) {
+      double wordProb = getWordProb(phiSenti, word, topic, sentiment);
+      // wordProb == 0 means the word is not in the sentiment vocabulary
+      // its probability is very low across all topics
+      if (wordProb != 0) {
+        prob *= wordProb;
+      }
+    }
+
+    return prob != 1.0 ? prob : 0.0;
+  }
+
+  /**
+   * Returns p(segment | topic) where segment is <code>words</code>.
+   * 
+   * @param phiAspect
+   *          the inferred (approximated) phi aspect
+   * @param phiSenti
+   * @param words
+   * @param k
+   * @return the classified topic; 0 if the segment cannot be classified into
+   *         one of the topics (primarily because it does not contain any aspect
+   *         word)
+   */
+  public double getSegmentProb(double[][] phiAspect, String[] words, int topic) {
+    double prob = 1.0;
+    for (String word : words) {
+      double wordProb = getWordProb(phiAspect, word, topic);
+      // wordProb == 0 means the word is not in the aspect vocabulary
+      // its probability is very low across all topics
+      if (wordProb != 0) {
+        prob *= wordProb;
+      }
+    }
+
+    return prob != 1.0 ? prob : 0.0;
+  }
+
+  /**
+   * Returns true if the given segment (<code>words</code>) contains at least
+   * one of the top words (which could be top aspect words or sentiment words).
+   * 
+   * @param topWords
+   * @param words
+   * @return
+   */
+  public boolean segmentContainsTopWords(String[] topWords, String[] words) {
+    for (String word : words) {
+      if (BSUtils.isInArray(topWords, word)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /**
+   * Returns <code>p(word|topic)</code>.
+   * 
+   * @param phiAspect
+   * @param word
+   * @param topic
+   * @return 0 if the word is not in the aspect vocabulary (actually it is very
+   *         very small)
+   */
+  private double getWordProb(double[][] phiAspect, String word, int topic) {
     int id = aspectTable.symbolToID(word);
     if (id != SymbolTable.UNKNOWN_SYMBOL_ID) {
-      prob = phiAspect[topic][id];
+      return phiAspect[topic][id];
     }
-    // id = sentiTable.symbolToID(word);
-    // if (id != SymbolTable.UNKNOWN_SYMBOL_ID) {
-    // prob += (phiSenti[0].getValue(id, topic) + phiSenti[1]
-    // .getValue(id, topic)) / 2;
-    // }
 
-    return prob;
+    return 0.0;
+  }
+
+  /**
+   * Returns <code>p(word|topic, sentiment)</code>.
+   * 
+   * @param phiSenti
+   * @param word
+   * @param topic
+   * @param sentiment
+   * @return 0 if the word is not in the sentiment vocabulary (actually it is
+   *         very very small)
+   */
+  private double getWordProb(DoubleMatrix[] phiSenti, String word, int topic,
+      int sentiment) {
+    int id = sentiTable.symbolToID(word);
+    if (id != SymbolTable.UNKNOWN_SYMBOL_ID) {
+      return phiSenti[sentiment].getValue(id, topic);
+    }
+
+    return 0.0;
   }
 
   /**
@@ -865,5 +1020,32 @@ public class Model implements Serializable {
     }
 
     return cnt;
+  }
+
+  /**
+   * Returns beta'[s][k][word].
+   * 
+   * @param s
+   *          a sentiment (0 for positive, 1 for negative)
+   * @param k
+   *          a topic
+   * @param sentiWord
+   *          a word index
+   * @return
+   */
+  public double getBetaSenti(int s, int k, int sentiWord) {
+    return beta[s][sentiWord];
+  }
+
+  /**
+   * Returns sumBeta'[s][k] = sumOf(beta'[s][k][w]) for all <code>w</code> in
+   * sentiment words.
+   * 
+   * @param s
+   * @param k
+   * @return
+   */
+  public double getSumBetaSenti(int s, int k) {
+    return sumBeta[s];
   }
 }

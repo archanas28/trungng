@@ -15,16 +15,18 @@ import com.aliasi.symbol.SymbolTable;
 import edu.kaist.uilab.asc.data.ReviewReader;
 import edu.kaist.uilab.asc.data.ReviewWithProsAndConsReader;
 import edu.kaist.uilab.asc.util.TextFiles;
+import edu.kaist.uilab.bs.opt.GibbsSamplerWithOptimizer;
+import edu.kaist.uilab.bs.opt.OptimizationModel;
 
 public class Runner {
 
   public static void main(String args[]) throws Exception {
-//     runNewTraining();
-    runExistingTraining();
+     runNewTraining();
+    //    runExistingTraining();
   }
 
   static void runNewTraining() throws Exception {
-    String dir = "C:/datasets/models/bs/coffeemaker";
+    String dir = "C:/datasets/models/bs/laptop";
     String stopFile = "stop.txt";
     // String positiveSeeds = "seedstems0(+2).txt";
     // String negativeSeeds = "seedstems1(+2).txt";
@@ -33,27 +35,9 @@ public class Runner {
     // String annotatedFile = "annotated.txt";
     int minTokenCount = 3;
     int topWordsToRemove = 0;
-    int topDocumentTokens = 70;
-    int numTopics = 7;
-    int numSenti = 2;
-    double alpha = 0.1;
-    double betaAspect = 0.001;
-    double[] betaSenti = new double[] { 0.001, 0.000000001, 0.001 };
-    double[] gammas = new double[] { 0.1, 0.1 };
-
-    int numIters = 1000;
-    int burnin = 500;
-    int savingInterval = 200;
-    // int numIters = 10;
-    // int burnin = 5;
-    // int savingInterval = 5;
+    int topDocumentTokens = 60;
 
     List<String> stopStems = TextFiles.readLines(dir + "/" + stopFile);
-    // HashSet<String> sentiStems = (HashSet<String>) TextFiles.readUniqueLines(
-    // dir + "/" + sentiStemsFile, utf8);
-    // BSCorpusParser parser = new BSCorpusParser(dir + "/docs.txt",
-    // minTokenCount, topWordsToRemove, topDocumentTokens, sentiStems,
-    // stopStems);
     ReviewReader reader = new ReviewWithProsAndConsReader();
     CorpusParserWithTagger parser = new CorpusParserWithTagger(dir
         + "/docs.txt", reader, minTokenCount, topWordsToRemove,
@@ -64,25 +48,67 @@ public class Runner {
     SymbolTable sentiTable = parser.getSentiSymbolTable();
     seedWords[0] = loadSeedWords(sentiTable, positiveSeeds);
     seedWords[1] = loadSeedWords(sentiTable, negativeSeeds);
+    // run(dir, sentiTable, parser, seedWords);
+    runWithOptimizer(dir, sentiTable, parser, seedWords);
+  }
+
+  static void run(String dir, SymbolTable sentiTable,
+      CorpusParserWithTagger parser, HashSet<Integer>[] seedWords)
+      throws IOException {
+    double alpha = 0.1;
+    double betaAspect = 0.001;
+    double[] betaSenti = new double[] { 0.001, 0.000000001, 0.001 };
+    double[] gammas = new double[] { 0.1, 0.1 };
+    int numIters = 1000;
+    int burnin = 500;
+    int savingInterval = 200;
+    int numTopics = 7;
+    int numSenti = 2;
     Model model = new Model(numTopics, numSenti, sentiTable,
         parser.getAspectSymbolTable(), parser.getTwogramsCounter(),
         parser.getDocuments(), seedWords, alpha, betaAspect, betaSenti, gammas);
-    // model
-    // .setAnnotatedDocuments(getAnnotatedDocuments(dir + "/" + annotatedFile));
-    model.extraInfo = "updateSentimentPrior";
     GibbsSampler sampler = new GibbsSampler(model);
     sampler.setOutputDir(String.format("%s/T%d-A%.1f-B%.4f-G%.2f,%.2f-I%d",
         dir, numTopics, alpha, betaAspect, gammas[0], gammas[1], numIters));
     sampler.gibbsSampling(numIters, 0, savingInterval, burnin);
   }
 
+  static void runWithOptimizer(String dir, SymbolTable sentiTable,
+      CorpusParserWithTagger parser, HashSet<Integer>[] seedWords)
+      throws IOException {
+    double alpha = 0.1;
+    // TODO(trung): try 0.01 for beta
+    double betaAspect = 0.01;
+    double[] betaSenti = new double[] { 0.01, 0.000000001, 0.01 };
+    double[] gammas = new double[] { 0.1, 0.1 };
+    // int numIters = 20;
+    // int burnin = 5;
+    // int savingInterval = 5;
+    // int optimizationInterval = 5;
+    int numIters = 1000;
+    int burnin = 500;
+    int savingInterval = 200;
+    int optimizationInterval = 100;
+    int numTopics = 7;
+    int numSenti = 2;
+    OptimizationModel model = new OptimizationModel(numTopics, numSenti,
+        sentiTable, parser.getAspectSymbolTable(), parser.getTwogramsCounter(),
+        parser.getDocuments(), seedWords, alpha, betaAspect, betaSenti, gammas);
+    GibbsSamplerWithOptimizer sampler = new GibbsSamplerWithOptimizer(model,
+        0.001, optimizationInterval);
+    sampler.setOutputDir(String.format(
+        "%s/optimization2/T%d-A%.1f-B%.4f-G%.2f,%.2f-I%d", dir, numTopics,
+        alpha, betaAspect, gammas[0], gammas[1], numIters));
+    sampler.gibbsSampling(numIters, 0, savingInterval, burnin);
+  }
+
   static void runExistingTraining() throws IOException {
     Model model = Model
-        .loadModel("C:/datasets/models/bs/ursa/T6-A0.1-B0.0010-G0.10,0.10-I1000(updateSentimentPrior)/800/model.gz");
+        .loadModel("C:/datasets/models/bs/ursa/optimization/T7-A0.1-B0.0100-G0.10,0.10-I2000(noPriorSentiment)/1000/model.gz");
     model
         .writeDocumentClassificationSummary(
             model.getPi(),
-            "C:/datasets/models/bs/ursa/T6-A0.1-B0.0010-G0.10,0.10-I1000(updateSentimentPrior)/800/olddocsentiment.txt");
+            "C:/datasets/models/bs/ursa/optimization/T7-A0.1-B0.0100-G0.10,0.10-I2000(noPriorSentiment)/1000/asumstyle-docsentiment.txt");
     // AsumModelData model = (AsumModelData) BSUtils
     // .loadModel("C:/datasets/models/asum/vacuum/T7-G0.10-0.10(seed1)/1000/model.gz");
     // Vector<edu.kaist.uilab.asc.data.Document> documents = new

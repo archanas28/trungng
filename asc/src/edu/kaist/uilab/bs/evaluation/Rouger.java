@@ -1,6 +1,7 @@
 package edu.kaist.uilab.bs.evaluation;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 /**
  * Class for computing the ROUGE evaluation scores.
@@ -25,41 +26,90 @@ public class Rouger {
    *          the candidate summary C
    * @param skipDist
    *          the maximum skip distance
-   * @return an array containing precision, recall, and f1 score in that order
+   * @param recallThreshold
+   *          the minimum recall that a candidate segment must match a reference
+   *          in order for the candidate to be counted as correct (true)
+   *          instance
+   * @param epsilon
+   *          a range where a candidate is considered matching a reference
+   *          summary (i.e., allow multiple references to be matched rather than
+   *          only the one with highest recall)
+   * @return an array containing precision, recall, f1, s-precision, and s-
+   *         recall score in that order
    */
   public double[] computeRougeSU(ArrayList<String[]> refSummary,
-      ArrayList<String[]> candidateSummary, int skipDist) {
-    double[] totalScores = { 0.0, 0.0, 0.0 };
+      ArrayList<String[]> candidateSummary, int skipDist,
+      double recallThreshold, double epsilon) {
+    double[] totalScores = { 0.0, 0.0, 0.0, 0.0, 0.0 };
+    HashSet<Integer> matchedReferences = new HashSet<Integer>();
+    int cntPositiveCandidates = 0;
+    final int recallIdx = 1;
+    int numRefs = refSummary.size();
+    int numCands = candidateSummary.size();
     // compute ROUGE-su for each unit
     for (String[] y : candidateSummary) {
-      double[] maxUnitScores = { 0.0, 0.0, 0.0 };
+      double[] maxUnitScores = { 0.0, 0.0, 0.0 }; // prec, rec, f1
+      double[] rskip = new double[numRefs];
       ArrayList<Bigram> yBigrams = getBigrams(addDummyMarker(y), skipDist);
-      for (String[] x : refSummary) {
-        ArrayList<Bigram> xBigrams = getBigrams(addDummyMarker(x), skipDist);
-        double skip2 = countCommonElements(xBigrams, yBigrams);
-        double pskip2 = skip2 / yBigrams.size();
-        double rskip2 = skip2 / xBigrams.size();
-        double fskip2 = (1 + BETA * BETA) * rskip2 * pskip2
-            / (rskip2 + BETA * BETA * pskip2);
-        double[] unitScores = { pskip2, rskip2, fskip2 };
+      for (int idx = 0; idx < numRefs; idx++) {
+        double[] unitScores = computeRougeSU(
+            getBigrams(addDummyMarker(refSummary.get(idx)), skipDist), yBigrams);
+        rskip[idx] = unitScores[recallIdx];
         // choose the best reference based on recall -- rskip2
         // skip2(y) = argmax skip2(x, y) for x in R
-        if (maxUnitScores[2] < unitScores[2]) {
-          for (int idx = 0; idx < maxUnitScores.length; idx++) {
-            maxUnitScores[idx] = unitScores[idx];
+        if (maxUnitScores[recallIdx] < unitScores[recallIdx]) {
+          for (int i = 0; i < maxUnitScores.length; i++) {
+            maxUnitScores[i] = unitScores[i];
           }
         }
       }
-      for (int idx = 0; idx < totalScores.length; idx++) {
-        totalScores[idx] += maxUnitScores[idx];
+      for (int i = 0; i < 3; i++) {
+        totalScores[i] += maxUnitScores[i];
+      }
+      // TODO(trung): re-factor
+      if (maxUnitScores[recallIdx] >= recallThreshold) {
+        // rskip(y) > recallThreshold
+        for (int idx = 0; idx < refSummary.size(); idx++) {
+          if (maxUnitScores[recallIdx] - epsilon < rskip[idx]) {
+            matchedReferences.add(idx);
+          }
+        }
+        cntPositiveCandidates++;
       }
     }
 
-    for (int idx = 0; idx < totalScores.length; idx++) {
-      totalScores[idx] = totalScores[idx] / candidateSummary.size();
+    for (int i = 0; i < 3; i++) {
+      totalScores[i] = totalScores[i] / candidateSummary.size();
     }
 
+    // coverage s-prec = # positive candidates / # total candidates
+    // coverage s-recall = # matched refs / # total refs
+    totalScores[totalScores.length - 2] = ((double) cntPositiveCandidates)
+        / numCands;
+    totalScores[totalScores.length - 1] = ((double) matchedReferences.size())
+        / numRefs;
+
     return totalScores;
+  }
+
+  /**
+   * Computes skip2 scores for 2 segments.
+   * 
+   * @param xBigrams
+   *          the reference segment
+   * @param yBigrams
+   *          the candidate segment
+   * @return
+   */
+  private double[] computeRougeSU(ArrayList<Bigram> xBigrams,
+      ArrayList<Bigram> yBigrams) {
+    double skip2 = countCommonElements(xBigrams, yBigrams);
+    double pskip2 = skip2 / yBigrams.size();
+    double rskip2 = skip2 / xBigrams.size();
+    double fskip2 = (1 + BETA * BETA) * rskip2 * pskip2
+        / (rskip2 + BETA * BETA * pskip2);
+
+    return new double[] { pskip2, rskip2, fskip2 };
   }
 
   /**
@@ -146,12 +196,14 @@ public class Rouger {
   public static void main(String args[]) {
     Rouger rouger = new Rouger();
     ArrayList<String[]> refSummary = new ArrayList<String[]>();
-    refSummary.add(new String[]{"difficult", "to", "use", "under", "some", "furniture"});
-    refSummary.add(new String[]{"food"});
+    refSummary.add(new String[] { "difficult", "to", "use", "under", "some",
+        "furniture" });
+    refSummary.add(new String[] { "food" });
     ArrayList<String[]> candidateSummary = new ArrayList<String[]>();
-    candidateSummary.add(new String[]{"difficult", "to", "use"});
-    candidateSummary.add(new String[]{"good", "food"});
-    double[] score = rouger.computeRougeSU(refSummary, candidateSummary, 2);
+    candidateSummary.add(new String[] { "difficult", "to", "use" });
+    // candidateSummary.add(new String[]{"good", "food"});
+    double[] score = rouger.computeRougeSU(refSummary, candidateSummary, 2,
+        0.2, 0.1);
     for (double s : score) {
       System.out.printf("%.3f ", s);
     }

@@ -147,7 +147,7 @@ public class ReferenceDistributions {
         }
         node = node.getFirstChild();
       } while (node != null && sentiment == UNKNOWN_SENTIMENT);
-      if (node != null && sentiment < neutral) {
+      if (node != null && sentiment < conflict) {
         updateWordCount(sentiment, sentenceTopics, node.getTextContent());
       }
     }
@@ -166,11 +166,14 @@ public class ReferenceDistributions {
     if (sentenceTopics.size() > 2) {
       sentencesWithMultipleAspects++;
     }
-    for (int topic : sentenceTopics) {
-      char[] cs = sentence.toCharArray();
-      for (String token : tokenizer.tokenizer(cs, 0, cs.length)) {
-        cnt[senti][topic].increment(token);
-        sumCnt[senti][topic]++;
+    // ignore neutral sentences
+    if (senti != neutral) {
+      for (int topic : sentenceTopics) {
+        char[] cs = sentence.toCharArray();
+        for (String token : tokenizer.tokenizer(cs, 0, cs.length)) {
+          cnt[senti][topic].increment(token);
+          sumCnt[senti][topic]++;
+        }
       }
     }
   }

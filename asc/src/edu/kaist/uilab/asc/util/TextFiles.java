@@ -90,8 +90,13 @@ public class TextFiles {
    */
   public static <T> void writeCollection(Collection<T> col, String file,
       String encoding) throws IOException {
-    PrintWriter writer = new PrintWriter(new OutputStreamWriter(
-        new FileOutputStream(file), encoding));
+    PrintWriter writer;
+    if (encoding != null) {
+      writer = new PrintWriter(new OutputStreamWriter(
+          new FileOutputStream(file), encoding));
+    } else {
+      writer = new PrintWriter(file);
+    }
     for (T e : col) {
       writer.println(e);
     }

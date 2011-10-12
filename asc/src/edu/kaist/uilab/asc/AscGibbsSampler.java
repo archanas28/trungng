@@ -18,9 +18,10 @@ import edu.kaist.uilab.asc.util.IntegerMatrix;
 import edu.kaist.uilab.opt.LBFGS;
 
 /**
- * Gibbs sampling for the ASC model.
+ * Gibbs sampling for the ASC model. TODO(trung): move all move-dependent
+ * methods into the Model class.
  * 
- * @author trung nguyen (trung.ngvan@gmail.com)
+ * @author trung
  */
 public class AscGibbsSampler {
   AbstractAscModel model;
@@ -29,16 +30,8 @@ public class AscGibbsSampler {
 
   /**
    * Creates a base asc implementation with provided parameters.
-   * 
-   * @param mTopics
-   * @param mNumSentis
-   * @param data.wordList
-   * @param data.documents
-   * @param numEnglishDocuments
-   * @param sentiWords
-   * @param data.alpha
-   * @param data.gammas
-   * @param graphFile
+   *
+   * @param model
    */
   public AscGibbsSampler(AbstractAscModel model) {
     this.model = model;
@@ -369,8 +362,8 @@ public class AscGibbsSampler {
   void writeModelOutput(int iter) {
     try {
       String dir = model.outputDir + "/" + iter;
-      DoubleMatrix[] phi = Inference.computePhi(model.matrixSWT,
-          model.sumSTW, model.beta, model.sumBeta);
+      DoubleMatrix[] phi = Inference.computePhi(model.matrixSWT, model.sumSTW,
+          model.beta, model.sumBeta);
       writePhi(phi, dir + "/Phi.csv");
       model.writeSampleY(dir);
       writeBeta(dir + "/logbeta.csv");

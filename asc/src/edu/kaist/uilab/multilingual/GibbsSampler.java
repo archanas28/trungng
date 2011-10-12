@@ -11,12 +11,13 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
+import org.apache.commons.math.special.Gamma;
+
 import edu.kaist.uilab.asc.prior.GraphInputProducer;
 import edu.kaist.uilab.asc.prior.SimilarityGraph;
 import edu.kaist.uilab.asc.util.InvalidArgumentException;
 import edu.kaist.uilab.asc.util.Utils;
 import edu.kaist.uilab.opt.LBFGS;
-import edu.kaist.uilab.opt.MathUtils;
 import edu.kaist.uilab.opt.ObjectiveFunction;
 
 /**
@@ -585,12 +586,12 @@ public class GibbsSampler implements ObjectiveFunction {
     // compute L_B = - log likelihood = -log p(w,z,s|alpha, beta)
     double negLogLikelihood = 0.0;
     for (int k = 0; k < mNumTopics; k++) {
-      negLogLikelihood += MathUtils.logGamma(mCwtsum[k] + mSumBeta[k])
-          - MathUtils.logGamma(mSumBeta[k]);
+      negLogLikelihood += Gamma.logGamma(mCwtsum[k] + mSumBeta[k])
+          - Gamma.logGamma(mSumBeta[k]);
       for (int i = 0; i < mEffectiveVocabSize; i++) {
         if (mCwt[i][k] > 0) {
-          negLogLikelihood += MathUtils.logGamma(mBeta[k][i])
-              - MathUtils.logGamma(mBeta[k][i] + mCwt[i][k]);
+          negLogLikelihood += Gamma.logGamma(mBeta[k][i])
+              - Gamma.logGamma(mBeta[k][i] + mCwt[i][k]);
         }
       }
     }
@@ -621,13 +622,13 @@ public class GibbsSampler implements ObjectiveFunction {
     double[][] betaKi = new double[mNumTopics][mEffectiveVocabSize];
     // common beta terms for both y_ki and y_word i
     for (int k = 0; k < mNumTopics; k++) {
-      double kGamma = MathUtils.digamma(mCwtsum[k] + mSumBeta[k])
-          - MathUtils.digamma(mSumBeta[k]);
+      double kGamma = Gamma.digamma(mCwtsum[k] + mSumBeta[k])
+          - Gamma.digamma(mSumBeta[k]);
       for (int i = 0; i < mEffectiveVocabSize; i++) {
         betaKi[k][i] = kGamma;
         if (mCwt[i][k] > 0) {
-          betaKi[k][i] += MathUtils.digamma(mBeta[k][i])
-              - MathUtils.digamma(mBeta[k][i] + mCwt[i][k]);
+          betaKi[k][i] += Gamma.digamma(mBeta[k][i])
+              - Gamma.digamma(mBeta[k][i] + mCwt[i][k]);
         }
         betaKi[k][i] *= mBeta[k][i];
       }

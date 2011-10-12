@@ -7,9 +7,10 @@ import java.util.List;
 import java.util.TreeSet;
 import java.util.Vector;
 
+import org.apache.commons.math.special.Gamma;
+
 import edu.kaist.uilab.asc.data.Document;
 import edu.kaist.uilab.asc.util.InvalidArgumentException;
-import edu.kaist.uilab.opt.MathUtils;
 
 /**
  * Asc implementation with the following prior:
@@ -67,7 +68,7 @@ public class Asc1 extends AbstractAscModel {
       for (int t = 0; t < numTopics; t++) {
         for (int w = 0; w < vocabSize; w++) {
           // asymmetric beta
-          if (sentiWordsList.get(1 - s).contains(w)){
+          if (sentiWordsList.get(1 - s).contains(w)) {
             y[s][t][w] = -5;
           } else {
             y[s][t][w] = 0;
@@ -168,13 +169,12 @@ public class Asc1 extends AbstractAscModel {
     double negLogLikelihood = 0.0;
     for (int j = 0; j < numSenti; j++) {
       for (int k = 0; k < numTopics; k++) {
-        negLogLikelihood += MathUtils.logGamma(sumSTW[j][k] + sumBeta[j][k])
-            - MathUtils.logGamma(sumBeta[j][k]);
+        negLogLikelihood += Gamma.logGamma(sumSTW[j][k] + sumBeta[j][k])
+            - Gamma.logGamma(sumBeta[j][k]);
         for (int i = 0; i < effectiveVocabSize; i++) {
           if (matrixSWT[j].getValue(i, k) > 0) {
-            negLogLikelihood += MathUtils.logGamma(beta[j][k][i])
-                - MathUtils.logGamma(beta[j][k][i]
-                    + matrixSWT[j].getValue(i, k));
+            negLogLikelihood += Gamma.logGamma(beta[j][k][i])
+                - Gamma.logGamma(beta[j][k][i] + matrixSWT[j].getValue(i, k));
           }
         }
       }
@@ -212,12 +212,11 @@ public class Asc1 extends AbstractAscModel {
     for (int j = 0; j < numSenti; j++) {
       for (int k = 0; k < numTopics; k++) {
         for (int i = 0; i < effectiveVocabSize; i++) {
-          tmp = MathUtils.digamma(sumSTW[j][k] + sumBeta[j][k])
-              - MathUtils.digamma(sumBeta[j][k]);
+          tmp = Gamma.digamma(sumSTW[j][k] + sumBeta[j][k])
+              - Gamma.digamma(sumBeta[j][k]);
           if (matrixSWT[j].getValue(i, k) > 0) {
-            tmp += MathUtils.digamma(beta[j][k][i])
-                - MathUtils
-                    .digamma(beta[j][k][i] + matrixSWT[j].getValue(i, k));
+            tmp += Gamma.digamma(beta[j][k][i])
+                - Gamma.digamma(beta[j][k][i] + matrixSWT[j].getValue(i, k));
           }
           betaJki[j][k][i] = beta[j][k][i] * tmp;
         }

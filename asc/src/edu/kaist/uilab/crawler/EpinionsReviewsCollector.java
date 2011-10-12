@@ -179,8 +179,10 @@ public class EpinionsReviewsCollector {
       int reviewPos = reviewLink.indexOf("review/");
       String productId = reviewLink.substring(reviewPos + "review/".length(),
           pos - 1);
-      return new ReviewWithProsAndCons(reviewId, productId, rating, str[2],
-          str[0], str[1]);
+      if (str[2].length() > 50) {
+        return new ReviewWithProsAndCons(reviewId, productId, rating, str[0],
+            str[1], str[2]);
+      }
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -203,17 +205,17 @@ public class EpinionsReviewsCollector {
       if (text.contains("Pros:") && text.contains("Cons:")) {
         text = text.trim();
         int consPos = text.indexOf("Cons:");
-        pros = unescapeAndNormalizeText(text.substring("Pros: ".length(),
-            consPos));
+        pros = unescapeAndNormalizeText(
+            text.substring("Pros: ".length(), consPos), ",");
         int endOfCons = text.indexOf("The Bottom Line: ");
         if (endOfCons == -1) {
           endOfCons = text.length();
         }
-        cons = unescapeAndNormalizeText(text.substring(
-            consPos + "Cons: ".length(), endOfCons));
+        cons = unescapeAndNormalizeText(
+            text.substring(consPos + "Cons: ".length(), endOfCons), ",");
       } else if (text.contains("Recommended:")) {
         int pos = text.indexOf("Recommended:");
-        content = unescapeAndNormalizeText(text.substring(0, pos));
+        content = unescapeAndNormalizeText(text.substring(0, pos), " ");
       }
     }
 
@@ -221,15 +223,17 @@ public class EpinionsReviewsCollector {
   }
 
   /**
-   * Unescapes and normalizes the text by trimming, removing end-of-line
+   * Unescapes and normalizes the text by trimming, replacing end-of-line
    * characters.
    * 
    * @param text
+   * @param replacement
+   *          the string to replace the end-of-line characters
    * @return
    */
-  private String unescapeAndNormalizeText(String text) {
+  private String unescapeAndNormalizeText(String text, String replacement) {
     return StringEscapeUtils.unescapeHtml4(text.trim()).replaceAll(
-        "[\\t\\n\\f\\r]", " ");
+        "[\\t\\n\\f\\r]", replacement);
   }
 
   /**
@@ -303,17 +307,21 @@ public class EpinionsReviewsCollector {
     // collect 50 pages (which gives ~ 50 x 15 products)
     // sample page:
     // http://www.epinions.com/Coffee_and_Espresso_Makers--coffee_maker/sec_~product_list/pp_~1#list
-    String coffeeMaker = "http://www.epinions.com/Coffee_and_Espresso_Makers--coffee_maker/sec_~product_list/pp_~";
-    String bagVacuum = "http://www.epinions.com/Vacuums--bag_filtration/sec_~product_list/pp_~";
+//    String coffeeMaker = "http://www.epinions.com/Coffee_and_Espresso_Makers--coffee_maker/sec_~product_list/pp_~";
+//    String bagVacuum = "http://www.epinions.com/Vacuums--bag_filtration/sec_~product_list/pp_~";
+    String laptop = "http://www.epinions.com/PC_Laptops--ultraportable_laptop/sec_~product_list/pp_~";
     // EpinionsReviewsCollector collector = new EpinionsReviewsCollector();
-    int numPages = 50;
+    int numPages = 100;
     for (int page = 1; page <= numPages; page++) {
-      String listingPage = coffeeMaker + page + "#list";
-      new SmallThread("C:/datasets/epinions/coffeemaker", "coffeemaker", page,
+      String listingPage = laptop + page + "#list";
+      new SmallThread("C:/datasets/epinions/laptop", "ultraportablelaptop", page,
           listingPage).start();
-      listingPage = bagVacuum + page + "#list";
-      new SmallThread("C:/datasets/epinions/vacuum", "vacuum", page,
-          listingPage).start();
+//      String listingPage = coffeeMaker + page + "#list";
+//      new SmallThread("C:/datasets/epinions/coffeemaker", "coffeemaker", page,
+//          listingPage).start();
+//      listingPage = bagVacuum + page + "#list";
+//      new SmallThread("C:/datasets/epinions/vacuum", "vacuum", page,
+//          listingPage).start();
     }
   }
 }
