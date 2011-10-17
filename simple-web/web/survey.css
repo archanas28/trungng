@@ -15,20 +15,66 @@ root {
     display: block;
 }
 
+h1 {
+    width:800px;
+    line-height: 3px;
+}
+
+hr {
+    float: left;
+    width:650px;
+    margin-top: 20px;
+    height: 2px;
+    border-style: solid;
+}
+
+.instruction {
+    width: 600px;
+    margin-left: 10px;
+    margin-top: 20px;
+}
+
+/*
+ Style for content of a review.
+*/
 .paragraph {
     width: 600px;
     margin-left: 15px;
     margin-top: 25px;
 }
 
-.segment {
-    width: 250px;
+/*
+ Style for a summary item.
+*/
+.item {
+    background-color: beige;
+    float: left;
+    width:300px;
+    margin-left: 20px;
+    color: chocolate;
+}
+
+/*
+ Style of radio options for each item.
+*/
+.options {
+    margin-left:20px;
+}
+
+/*
+ Style of a collection of summary items.
+*/
+.items {
+    width: 600px;
     margin-left: 20px;
     margin-right: 20px;
     margin-top: 10px;
     color: chocolate;
 }
 
+/*
+ Style for the word 'Review'.
+*/
 .review {
     font-size: larger;
     font-variant: small-caps;

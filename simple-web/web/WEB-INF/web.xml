@@ -6,24 +6,39 @@
     </servlet>
     <servlet>
         <servlet-name>SurveyGenerator</servlet-name>
-        <servlet-class>com.rainmoon.bs.SurveyGenerator</servlet-class>
+        <servlet-class>com.rainmoon.bs.FirstSurveyGenerator</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>SurveyHandler</servlet-name>
-        <servlet-class>com.rainmoon.bs.SurveyHandler</servlet-class>
+        <servlet-class>com.rainmoon.bs.FirstSurveyHandler</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>SecondSurveyGenerator</servlet-name>
+        <servlet-class>com.rainmoon.bs.SecondSurveyGenerator</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>SecondSurveyHandler</servlet-name>
+        <servlet-class>com.rainmoon.bs.SecondSurveyHandler</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>TestServlet</servlet-name>
         <url-pattern>/TestServlet</url-pattern>
     </servlet-mapping>
-    
     <servlet-mapping>
         <servlet-name>SurveyGenerator</servlet-name>
-        <url-pattern>/survey</url-pattern>
+        <url-pattern>/apple</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>SurveyHandler</servlet-name>
-        <url-pattern>/handleSurvey</url-pattern>
+        <url-pattern>/eatApple</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SecondSurveyGenerator</servlet-name>
+        <url-pattern>/orange</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SecondSurveyHandler</servlet-name>
+        <url-pattern>/eatOrange</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

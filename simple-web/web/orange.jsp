@@ -9,9 +9,9 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Welcome</title>
+        <title>Thank you</title>
     </head>
     <body>
-        <h1>Oops, not the right place to be at. Go <a href="/bs-summary/apple"> HERE </a> instead.</h1>
+        <h1>You deserve this <img src='orange.jpg' alt='Big Apple'/> for completing the survey. Thank you :-) </h1>
     </body>
 </html>

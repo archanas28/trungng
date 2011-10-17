@@ -21,14 +21,14 @@ import javax.servlet.http.HttpServletResponse;
  * 
  * @author trung
  */
-public class SurveyHandler extends HttpServlet {
+public class FirstSurveyHandler extends HttpServlet {
 
-    static final String RESULT_FILE = "WEB-INF/ratings.csv";
-    List<Paragraph> paragraphs;
+    static final String RESULT_FILE = "WEB-INF/first.csv";
+    List<Summary> summaries;
 
     @Override
     public void init() {
-        paragraphs = ParagraphsFactory.getParagraphs();
+        summaries = SummaryFactory.getSummaries(SummaryFactory.FIRST);
     }
 
     /**
@@ -37,26 +37,18 @@ public class SurveyHandler extends HttpServlet {
      * @param request 
      */
     private void handleSurvey(HttpServletRequest request) {
-        request.getHeader("");
-        List<Integer> paraIds = stringToParaIds(request.getParameter(
-                SurveyGenerator.PARAM_PARAIDS));
+        List<Integer> summaryIds = stringToParaIds(request.getParameter(
+                FirstSurveyGenerator.PARAM_SUMMARYIDS));
         String file = getServletContext().getRealPath(RESULT_FILE);
         PrintWriter out = null;
         try {
             out = new PrintWriter(new FileOutputStream(file, true));
-            for (int idx : paraIds) {
-                Paragraph para = paragraphs.get(idx);
-                for (int segmentIdx = 0; segmentIdx < para.segments.size(); segmentIdx++) {
-                    log(request.getParameter(SurveyGenerator.radioName(para.id, segmentIdx)));
-                    String userRating = request.getParameter(SurveyGenerator.radioName(para.id, segmentIdx));
-                    int rating = -1;
-                    if (userRating != null) {
-                        rating = Integer.parseInt(userRating);
-                    }
-                    log(String.format("%s: %s", para.segments.get(segmentIdx), rating));
-                    out.printf("%s,%s,%s,%s\n", now(), para.id,
-                            para.segments.get(segmentIdx), rating);
-                }
+            for (int idx : summaryIds) {
+                Summary summary = summaries.get(idx);
+                writeUserRatings(out, request, summary.id, summary.segments,
+                        Summary.TYPE_SEGMENT);
+                writeUserRatings(out, request, summary.id, summary.wordpairs,
+                        Summary.TYPE_WORDPAIR);
             }
             out.close();
         } catch (Exception e) {
@@ -69,10 +61,10 @@ public class SurveyHandler extends HttpServlet {
     private String now() {
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        
+
         return sdf.format(cal.getTime());
     }
-    
+
     /**
      * Converts a string back into para ids.
      * @param s
@@ -86,6 +78,20 @@ public class SurveyHandler extends HttpServlet {
         return ids;
     }
 
+    /**
+     * Returns 'order' of the next survey to be generated.
+     * @param request
+     * @return 
+     */
+    private int getNextSurveyth(HttpServletRequest request) {
+        String value = request.getParameter(FirstSurveyGenerator.PARAM_SURVEYTH);
+        if (value != null) {
+            return Integer.parseInt(value) + 1;
+        } else {
+            return 1;
+        }
+    }
+
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      * @param request servlet request
@@ -96,19 +102,12 @@ public class SurveyHandler extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         handleSurvey(request);
-        response.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = response.getWriter();
-        try {
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Survey completed!</title>");
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>You deserve this <img src='apple.jpg' alt='Big Apple'/> for completing the survey. Thank you :-) </h1>");
-            out.println("</body>");
-            out.println("</html>");
-        } finally {
-            out.close();
+        int nextSurveyth = getNextSurveyth(request);
+        if (nextSurveyth <= FirstSurveyGenerator.NUM_SURVEYS) {
+            request.setAttribute(FirstSurveyGenerator.ATTR_SURVEYTH, nextSurveyth);
+            request.getRequestDispatcher("/apple").forward(request, response);
+        } else {
+            request.getRequestDispatcher("/apple.jsp").forward(request, response);
         }
     }
 
@@ -147,4 +146,17 @@ public class SurveyHandler extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
+
+    private <T> void writeUserRatings(PrintWriter out, HttpServletRequest request,
+            int summaryId, List<T> list, String summaryType) {
+        for (int segmentIdx = 0; segmentIdx < list.size(); segmentIdx++) {
+            String name = FirstSurveyGenerator.radioName(summaryId,
+                    summaryType, segmentIdx);
+            log(request.getParameter(name));
+            String userRating = request.getParameter(name);
+            log(String.format("%s: %s", list.get(segmentIdx), userRating));
+            out.printf("%s,%s,%s,%s,%s,%s\n", now(), request.getRemoteAddr(), summaryId,
+                    summaryType, list.get(segmentIdx), userRating);
+        }
+    }
 }
