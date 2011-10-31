@@ -49,7 +49,7 @@ hr {
 .item {
     background-color: beige;
     float: left;
-    width:300px;
+    width:350px;
     margin-left: 20px;
     color: chocolate;
 }
@@ -79,4 +79,14 @@ hr {
     font-size: larger;
     font-variant: small-caps;
     margin-right: 5px;
+}
+
+.caution {
+    width: 620px;
+    margin-left: 15px;
+    color: red;
+}
+
+.red {
+    color: red;
 }

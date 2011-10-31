@@ -14,26 +14,22 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Generates surveys.
- * 
+ *
  * @author trung
  */
-public class FirstSurveyGenerator extends HttpServlet {
+public class ThirdSurveyGenerator extends HttpServlet {
 
     static final String[] OPTIONS = {"very useful", "useful", "somewhat useful", "useless"};
-    static final String PARAM_SUMMARY_ID = "com.rainmoon.bs.FirstSurveyGenerator.summaryId";
-    static final String PARAM_SUMMARY_IDS = "com.rainmoon.bs.FirstSurveyGenerator.summaryIds";
-    static final String PARAM_SURVEYTH = "com.rainmoon.bs.FirstSurveyGenerator.survey";
-    static final String ATTR_SUMMARYIDS = "com.rainmoon.bs.FirstSurveyGenerator.summaryIds";
-    static final String ATTR_SURVEYTH = "com.rainmoon.bs.FirstSurveyGenerator.survey";
+    static final String PARAM_SUMMARY_ID = "com.rainmoon.bs.ThirdSurveyGenerator.summaryId";
+    static final String PARAM_SUMMARY_IDS = "com.rainmoon.bs.ThirdSurveyGenerator.summaryIds";
+    static final String PARAM_SURVEYTH = "com.rainmoon.bs.ThirdSurveyGenerator.survey";
+    static final String ATTR_SUMMARYIDS = "com.rainmoon.bs.ThirdSurveyGenerator.summaryIds";
+    static final String ATTR_SURVEYTH = "com.rainmoon.bs.ThirdSurveyGenerator.survey";
     static final int NUM_SURVEYS = 6;
-    static final String INSTR = "<b>Instruction:</b> Below are short reviews about different coffee maker products."
-            + " Each review is followed by several text segments extracted from the review content. Please <span class='red'>read them carefully</span> and give each segment"
-            + " a rating on its usefulness. Your decision should be based on 2 criteria: ";
-    static final String CRITERIA1 = "whether the segment is related to the original review content";
-    static final String CRITERIA2 = "whether the segment is informative to your evaluation of the product";
-    static final String CAUTION = "Caution: We inspect answers in great details so that false/dishonest responses are disqualified for payment. Please make sure you complete this survey properly in order to avoid such situation.";
-    private static final String SURVEY_HANDLER_URL = "/bs-summary/eatApple";
+    static final String INSTR = "<b>Instruction:</b> Below are text segments extracted from reviews of a coffee maker product."
+            + " Please rate a each item on its usefulness, i.e., how much does a text segment help you learn about the coffee maker?";
+
+    private static final String SURVEY_HANDLER_URL = "/bs-summary/done";
     List<Summary> summaries;
 
     @Override
@@ -49,7 +45,7 @@ public class FirstSurveyGenerator extends HttpServlet {
         return (Integer) value;
     }
 
-    /** 
+    /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      * @param request servlet request
      * @param response servlet response
@@ -70,24 +66,21 @@ public class FirstSurveyGenerator extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         try {
-            writeTitleAndCaution(out);
-            out.println(String.format("<h3>Review %d of %d</h3>", surveyth, NUM_SURVEYS));
+            writeTitleAndInstruction(out);
+            out.println(String.format("<h3>Question %d of %d</h3>", surveyth, NUM_SURVEYS));
             out.println("<form id='survey' method='post' action='" + SURVEY_HANDLER_URL + "'>");
             out.println(String.format("<input type='hidden' name='%s' value='%d' />", PARAM_SURVEYTH, surveyth));
             out.println(String.format("<input type='hidden' name='%s' value='%s' />", PARAM_SUMMARY_ID, summary.id));
             out.println(String.format("<input type='hidden' name='%s' value='%s' />",
                     PARAM_SUMMARY_IDS, summaryIdsToString(idxs)));
-            out.println("<p class='paragraph'>");
-            out.println("<span class='review'>Review: </span>" + summary.contents.get(0));
-            out.println("</p>");
             if (surveyth <= NUM_SURVEYS / 2) {
                 generateOptions(out, summary.id, Summary.TYPE_SEGMENT, summary.segments);
                 generateOptions(out, summary.id, Summary.TYPE_WORDPAIR, summary.wordpairs);
             } else {
                 generateOptions(out, summary.id, Summary.TYPE_WORDPAIR, summary.wordpairs);
                 generateOptions(out, summary.id, Summary.TYPE_SEGMENT, summary.segments);
-            }    
-            
+            }
+
             out.println("<div class='paragraph'><span style='margin-left:250px'>");
             String label = "Next question";
             if (surveyth == NUM_SURVEYS) {
@@ -102,18 +95,13 @@ public class FirstSurveyGenerator extends HttpServlet {
         }
     }
 
-    private void writeTitleAndCaution(PrintWriter out) {
+    private void writeTitleAndInstruction(PrintWriter out) {
         out.println("<html><head>");
         out.println("<link rel='stylesheet' type='text/css' href='survey.css'>");
         out.println("<title>Survey about coffee maker reviews</title></head><body>");
         out.println("<p class='instruction'>");
         out.println(INSTR);
-        out.println("<ul>");
-        out.println("<li>" + CRITERIA1 + "</li>");
-        out.println("<li>" + CRITERIA2 + "</li>");
-        out.println("</ul>");
         out.println("</p>");
-        out.println("<div class='caution'>" + CAUTION + "</div>");
         out.println("<hr class='hr'><br />");
     }
 
@@ -124,7 +112,7 @@ public class FirstSurveyGenerator extends HttpServlet {
      * @param summaryId
      * @param summaryType
      *       one of the two summary types available in {@link Summary}
-     * @param items 
+     * @param items
      */
     private <T> void generateOptions(PrintWriter out, int summaryId, String summaryType,
             List<T> items) {
@@ -144,11 +132,11 @@ public class FirstSurveyGenerator extends HttpServlet {
 
     /**
      * Returns the name of a radio input type given the id of a summary and a segment.
-     * 
+     *
      * @param summaryId
      * @param summaryType
      * @param segmentId
-     * @return 
+     * @return
      */
     public static String radioName(int summaryId, String summaryType, int segmentId) {
         return summaryId + "_" + summaryType + "_" + segmentId;
@@ -156,10 +144,10 @@ public class FirstSurveyGenerator extends HttpServlet {
 
     /**
      * Converts a list of summary ids to string.
-     * 
+     *
      * <p> Each id is separated by a underscore '_' character.
      * @param paraIds
-     * @return 
+     * @return
      */
     private String summaryIdsToString(List<Integer> paraIds) {
         StringBuilder builder = new StringBuilder();
@@ -172,7 +160,7 @@ public class FirstSurveyGenerator extends HttpServlet {
 
     /**
      * Returns random summary ids for a user survey.
-     * 
+     *
      * @return
      *       a list of summary ids; the size of the list is the number of surveys
      */
@@ -193,7 +181,7 @@ public class FirstSurveyGenerator extends HttpServlet {
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /** 
+    /**
      * Handles the HTTP <code>GET</code> method.
      * @param request servlet request
      * @param response servlet response
@@ -206,7 +194,7 @@ public class FirstSurveyGenerator extends HttpServlet {
         processRequest(request, response);
     }
 
-    /** 
+    /**
      * Handles the HTTP <code>POST</code> method.
      * @param request servlet request
      * @param response servlet response
@@ -218,4 +206,13 @@ public class FirstSurveyGenerator extends HttpServlet {
             throws ServletException, IOException {
         processRequest(request, response);
     }
+
+    /**
+     * Returns a short description of the servlet.
+     * @return a String containing servlet description
+     */
+    @Override
+    public String getServletInfo() {
+        return "Short description";
+    }// </editor-fold>
 }

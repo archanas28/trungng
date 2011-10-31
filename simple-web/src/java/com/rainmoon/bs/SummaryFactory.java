@@ -25,7 +25,8 @@ public class SummaryFactory implements ServletContextListener {
 
     public static final int FIRST = 1;
     public static final int SECOND = 2;
-    
+    static final int FIRST_DUMMY_SUMMARY_ID = -1;
+    static final int SECOND_DUMMY_SUMMARY_ID = -2;
     private static final int REVIEWS_PER_ENTITY = 6;
     private static final String DELIMITER = ",";
     
@@ -53,7 +54,47 @@ public class SummaryFactory implements ServletContextListener {
 
         return Collections.EMPTY_LIST;
     }
+    
+    /**
+     * Returns a dummy summary.
+     * 
+     * @return 
+     */
+    public static Summary getDummySummary() {
+       Summary dummy = new Summary(FIRST_DUMMY_SUMMARY_ID);
+       dummy.addContent("This is an affordable and fairly basic coffeemaker. It makes very hot coffee. It also keeps the coffee consistently hot through the final cup.");
+       List<String> segments = new ArrayList<String>();
+       segments.add("price is way too expensive");
+       segments.add("design is out of this world");
+       List<String> wordpairs = new ArrayList<String>();
+       wordpairs.add("cheap design");
+       wordpairs.add("poor customer service");
+       dummy.addSegments(segments);
+       dummy.addWordpairs(wordpairs);
+       
+       return dummy;
+    }
 
+    /**
+     * Returns another dummy summary.
+     * 
+     * @return 
+     */
+    public static Summary getSecondDummySummary() {
+       Summary dummy = new Summary(SECOND_DUMMY_SUMMARY_ID);
+       dummy.addContent("This is a highly efficient coffeemaker. I purchased it two months ago and it has never failed to work. The Mr. Coffee CG12 Drip Coffee Maker gets the job done; it offers full control over the brewing process and many extra features that make it worthwhile.");
+       List<String> segments = new ArrayList<String>();
+       segments.add("coffee maker makes terrible coffee");
+       segments.add("coffee tasted lousy");
+       List<String> wordpairs = new ArrayList<String>();
+       wordpairs.add("not recommended");
+       wordpairs.add("poor quality");
+       dummy.addSegments(segments);
+       dummy.addWordpairs(wordpairs);
+       
+       return dummy;
+    }
+    
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         ServletContext context = sce.getServletContext();

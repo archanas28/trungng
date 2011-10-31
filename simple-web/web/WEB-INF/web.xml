@@ -20,6 +20,14 @@
         <servlet-name>SecondSurveyHandler</servlet-name>
         <servlet-class>com.rainmoon.bs.SecondSurveyHandler</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ThirdSurveyGenerator</servlet-name>
+        <servlet-class>com.rainmoon.bs.ThirdSurveyGenerator</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ThirdSurveyHandler</servlet-name>
+        <servlet-class>com.rainmoon.bs.ThirdSurveyHandler</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>TestServlet</servlet-name>
         <url-pattern>/TestServlet</url-pattern>
@@ -39,6 +47,14 @@
     <servlet-mapping>
         <servlet-name>SecondSurveyHandler</servlet-name>
         <url-pattern>/eatOrange</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ThirdSurveyGenerator</servlet-name>
+        <url-pattern>/survey</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ThirdSurveyHandler</servlet-name>
+        <url-pattern>/done</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

@@ -17,13 +17,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Processes user survey.
- * 
+ *
  * @author trung
  */
-public class FirstSurveyHandler extends HttpServlet {
+public class ThirdSurveyHandler extends HttpServlet {
 
-    static final String RESULT_FILE = "WEB-INF/first.csv";
+    static final String RESULT_FILE = "WEB-INF/third.csv";
     List<Summary> summaries;
 
     @Override
@@ -33,12 +32,12 @@ public class FirstSurveyHandler extends HttpServlet {
 
     /**
      * Handles a completed user survey.
-     * 
-     * @param request 
+     *
+     * @param request
      */
     private void handleSurvey(HttpServletRequest request) {
         int summaryId = Integer.parseInt(request.getParameter(
-                FirstSurveyGenerator.PARAM_SUMMARY_ID));
+                ThirdSurveyGenerator.PARAM_SUMMARY_ID));
         String file = getServletContext().getRealPath(RESULT_FILE);
         PrintWriter out = null;
         try {
@@ -59,7 +58,7 @@ public class FirstSurveyHandler extends HttpServlet {
     private <T> void writeUserRatings(PrintWriter out, HttpServletRequest request,
             int summaryId, List<T> list, String summaryType) {
         for (int segmentIdx = 0; segmentIdx < list.size(); segmentIdx++) {
-            String name = FirstSurveyGenerator.radioName(summaryId,
+            String name = ThirdSurveyGenerator.radioName(summaryId,
                     summaryType, segmentIdx);
             log(request.getParameter(name));
             String userRating = request.getParameter(name);
@@ -79,10 +78,10 @@ public class FirstSurveyHandler extends HttpServlet {
     /**
      * Returns 'order' of the next survey to be generated.
      * @param request
-     * @return 
+     * @return
      */
     private int getNextSurveyth(HttpServletRequest request) {
-        String value = request.getParameter(FirstSurveyGenerator.PARAM_SURVEYTH);
+        String value = request.getParameter(ThirdSurveyGenerator.PARAM_SURVEYTH);
         if (value != null) {
             return Integer.parseInt(value) + 1;
         } else {
@@ -102,8 +101,8 @@ public class FirstSurveyHandler extends HttpServlet {
 
         return ids;
     }
-    
-    /** 
+
+    /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      * @param request servlet request
      * @param response servlet response
@@ -114,18 +113,18 @@ public class FirstSurveyHandler extends HttpServlet {
             throws ServletException, IOException {
         handleSurvey(request);
         int nextSurveyth = getNextSurveyth(request);
-        if (nextSurveyth <= FirstSurveyGenerator.NUM_SURVEYS) {
-            request.setAttribute(FirstSurveyGenerator.ATTR_SURVEYTH, nextSurveyth);
-            request.setAttribute(FirstSurveyGenerator.ATTR_SUMMARYIDS, stringToSummaryIds(
-                    request.getParameter(FirstSurveyGenerator.PARAM_SUMMARY_IDS)));
-            request.getRequestDispatcher("/apple").forward(request, response);
+        if (nextSurveyth <= ThirdSurveyGenerator.NUM_SURVEYS) {
+            request.setAttribute(ThirdSurveyGenerator.ATTR_SURVEYTH, nextSurveyth);
+            request.setAttribute(ThirdSurveyGenerator.ATTR_SUMMARYIDS, stringToSummaryIds(
+                    request.getParameter(ThirdSurveyGenerator.PARAM_SUMMARY_IDS)));
+            request.getRequestDispatcher("/survey").forward(request, response);
         } else {
             request.getRequestDispatcher("/apple.jsp").forward(request, response);
         }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /** 
+    /**
      * Handles the HTTP <code>GET</code> method.
      * @param request servlet request
      * @param response servlet response
@@ -138,7 +137,7 @@ public class FirstSurveyHandler extends HttpServlet {
         processRequest(request, response);
     }
 
-    /** 
+    /**
      * Handles the HTTP <code>POST</code> method.
      * @param request servlet request
      * @param response servlet response
@@ -151,7 +150,7 @@ public class FirstSurveyHandler extends HttpServlet {
         processRequest(request, response);
     }
 
-    /** 
+    /**
      * Returns a short description of the servlet.
      * @return a String containing servlet description
      */
