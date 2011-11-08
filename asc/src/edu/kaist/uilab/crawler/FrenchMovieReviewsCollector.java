@@ -116,7 +116,7 @@ public class FrenchMovieReviewsCollector {
   /**
    * Changes the html content into normal text.
    * 
-   * @param content
+   * @param textContent
    * @return
    */
   String normalizeContent(String htmlContent) {

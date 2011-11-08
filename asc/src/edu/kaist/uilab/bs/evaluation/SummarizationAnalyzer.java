@@ -23,6 +23,7 @@ import edu.kaist.uilab.bs.CorpusParserWithTagger.BSTokenizerFactory;
 import edu.kaist.uilab.bs.MaxentTaggerSingleton;
 import edu.kaist.uilab.bs.Model;
 import edu.kaist.uilab.bs.evaluation.SegmentExtractor.Pattern;
+import edu.kaist.uilab.bs.opt.OptimizationModel;
 import edu.kaist.uilab.bs.util.BSUtils;
 import edu.kaist.uilab.bs.util.DocumentUtils;
 import edu.kaist.uilab.stemmers.EnglishStemmer;
@@ -266,33 +267,6 @@ public class SummarizationAnalyzer {
   }
 
   /**
-   * Prints extracted segments for some example paragraphs.
-   * 
-   * @param outfile
-   */
-  public void printExampleParagraphs(String outfile, int category)
-      throws IOException {
-    HashMap<String[], String> map = extractor.getSegmentToTextMap();
-    PrintWriter out = new PrintWriter(outfile);
-    for (Entry<String, ArrayList<Review>> entry : entities.entrySet()) {
-      String entityId = entry.getKey();
-      List<String[]> candidates = filters.filterSegments(
-          SegmentFilters.Filter.BOTH_SENTIMENT, candidateSummary.get(entityId),
-          category);
-      if (candidates.size() > 0) {
-        // assuming each entity has only one review paragraph
-        String para = entry.getValue().get(0).getContent();
-        out.println(para);
-        for (String[] segment : candidates) {
-          out.print(map.get(segment) + ",");
-        }
-        out.println();
-      }
-    }
-    out.close();
-  }
-
-  /**
    * Prints the extracted segments.
    * 
    * @param outfile
@@ -355,10 +329,6 @@ public class SummarizationAnalyzer {
         rouge[4]);
   }
 
-  public void extractSegments(String paragraph) {
-
-  }
-
   /**
    * Outputs the most frequent structures used by users in pros and cons lists.
    * 
@@ -367,8 +337,7 @@ public class SummarizationAnalyzer {
    * @param entities
    *          the mapping between entity (review target) id and its reviews
    */
-  public static void findFrequentStructures(String output,
-      HashMap<String, ArrayList<Review>> entities) throws IOException {
+  public void findFrequentStructures(String output) throws IOException {
     PrintWriter out = new PrintWriter(output);
     ObjectToCounterMap<String> counter = new ObjectToCounterMap<String>();
     for (ArrayList<Review> entityReviews : entities.values()) {
@@ -396,7 +365,7 @@ public class SummarizationAnalyzer {
    * @param texts
    * @return
    */
-  private static ArrayList<String> textsToStructures(String[] texts) {
+  private ArrayList<String> textsToStructures(String[] texts) {
     ArrayList<String> structures = new ArrayList<String>();
     for (String text : texts) {
       structures.add(getGrammaticalStructure(text));
@@ -412,7 +381,7 @@ public class SummarizationAnalyzer {
    * @param text
    * @return
    */
-  private static String getGrammaticalStructure(String text) {
+  private String getGrammaticalStructure(String text) {
     StringBuilder builder = new StringBuilder();
     String[] tokens = tagger.tagString(text).split(" ");
     for (int i = 0; i < tokens.length; i++) {
@@ -425,45 +394,71 @@ public class SummarizationAnalyzer {
     return builder.toString();
   }
 
+  /**
+   * Returns summaries of all reviews; each summary has a list of extracted
+   * segments.
+   * 
+   * @return
+   */
+  public List<Summary> getSummaries() {
+    List<Summary> list = new ArrayList<Summary>();
+    HashMap<String[], String> map = extractor.getSegmentToTextMap();
+    for (Entry<String, ArrayList<Review>> entry : entities.entrySet()) {
+      String entityId = entry.getKey();
+      ArrayList<String[]> candidates = candidateSummary.get(entityId);
+      List<String[]> filteredSegments = filters.filterSegments(
+          SegmentFilters.Filter.ASPECT, candidates, -1);
+//      List<String[]> filteredSegments = filters.filterSegments(
+//          SegmentFilters.Filter.BOTH_SENTIMENT, candidates, 0);
+//      filteredSegments.addAll(filters.filterSegments(
+//          SegmentFilters.Filter.BOTH_SENTIMENT, candidates, 1));
+      if (filteredSegments.size() > 0) {
+        Summary para = new Summary(entry.getValue().get(0).getContent());
+        for (String[] segment : filteredSegments) {
+          para.addSegment(map.get(segment));
+        }
+        list.add(para);
+      }
+    }
+
+    return list;
+  }
+
   public static void main(String args[]) throws IOException {
     // String bs =
-    // "C:/datasets/models/bs/coffeemaker/T5-A0.1-B0.0010-G0.10,0.10-I1000(updateSentimentPrior)";
-    String bs = "C:/datasets/models/bs/optimization/laptop/T7-A0.1-B0.0010-G0.10,0.10-I1000()";
+    // "C:/datasets/models/bs/coffeemaker/optimization/T7-A0.1-B0.0100-G0.10,0.10-I1000()";
     // String bs =
-    // "C:/datasets/models/bs/ursa/T10-A0.1-B0.0010-G0.10,0.10-I1000(updateSentimentPrior)";
+    // "C:/datasets/models/bs/laptop/optimization/T7-A0.1-B0.0100-G0.10,0.10-I1000()";
+    String bs = "C:/datasets/models/bs/ursa/optimization/T7-A0.1-B0.0100-G0.10,0.10-I1000()";
     new File(bs + "/pros").mkdir();
     new File(bs + "/cons").mkdir();
-    Pattern[] patterns = SegmentExtractor.PRODUCT_PATTERNS;
+    Pattern[] patterns = SegmentExtractor.SERVICE_PATTERNS;
     int maxSegmentLength = 6; // use 6 for restaurants (or even less)
     HashMap<String, ArrayList<Review>> entities = BSUtils.readReviews(
-        "C:/datasets/models/bs/laptop/docs.txt",
+        "C:/datasets/models/bs/ursa/docs.txt",
         new ReviewWithProsAndConsReader());
-    Model bsModel = (Model) BSUtils.loadModel(bs + "/1000/model.gz");
+    Model bsModel = (OptimizationModel) BSUtils
+        .loadModel(bs + "/1000/model.gz");
     SegmentFilters filters = new SegmentFilters(bsModel);
-    // entities = changeContentToParagraphs(entities);
     SummarizationAnalyzer analyzer = new SummarizationAnalyzer(filters,
         entities, maxSegmentLength, patterns, bsModel.getNumTopics());
-    // analyzer.printExampleParagraphs(
-    // String.format("%s/paragraphs-%d.txt", bs, 0), 0);
-    // analyzer.printExampleParagraphs(
-    // String.format("%s/paragraphs-%d.txt", bs, 1), 1);
     String outfile = null;
     // filter using top aspect words, sentiment, and top sentiment words
-    outfile = String.format(
-        "%s/pros/bothSentiment-s%d-pros-thres%.2f-top%d-eps%.2f.csv", bs,
-        maxSegmentLength, THRESHOLD, SegmentFilters.TOP_ASPECT_WORDS, EPSILON);
-    analyzer.computeAndPrintRougeScores(SegmentFilters.Filter.BOTH_SENTIMENT,
-        0, outfile);
-    outfile = String.format(
-        "%s/cons/bothSentiment-s%d-cons-thres%.2f-top%d-eps%.2f.csv", bs,
-        maxSegmentLength, THRESHOLD, SegmentFilters.TOP_ASPECT_WORDS, EPSILON);
-    analyzer.computeAndPrintRougeScores(SegmentFilters.Filter.BOTH_SENTIMENT,
-        1, outfile);
+    // outfile = String.format(
+    // "%s/pros/bothSentiment-s%d-pros-thres%.2f-top%d-eps%.2f.csv", bs,
+    // maxSegmentLength, THRESHOLD, SegmentFilters.TOP_ASPECT_WORDS, EPSILON);
+    // analyzer.computeAndPrintRougeScores(SegmentFilters.Filter.BOTH_SENTIMENT,
+    // 0, outfile);
+    // outfile = String.format(
+    // "%s/cons/bothSentiment-s%d-cons-thres%.2f-top%d-eps%.2f.csv", bs,
+    // maxSegmentLength, THRESHOLD, SegmentFilters.TOP_ASPECT_WORDS, EPSILON);
+    // analyzer.computeAndPrintRougeScores(SegmentFilters.Filter.BOTH_SENTIMENT,
+    // 1, outfile);
 
     // no filter - baseline approach
-//    outfile = bs + "/baseline-s6-threshold" + THRESHOLD + ".csv";
-//    analyzer.computeAndPrintRougeScores(SegmentFilters.Filter.NO_FILTER, -1,
-//        outfile);
+    // outfile = bs + "/baseline-s6-threshold" + THRESHOLD + ".csv";
+    // analyzer.computeAndPrintRougeScores(SegmentFilters.Filter.NO_FILTER, -1,
+    // outfile);
 
     // filter using top aspect words
     // outfile = bs + "/aspect-s6-threshold" + THRESHOLD + "-top"
@@ -494,20 +489,20 @@ public class SummarizationAnalyzer {
     // 1, outfile);
 
     // filter using top aspect words and swn for sentiment
-    // outfile = String.format(
-    // "%s/pros/aspectSWN-s%d-pros-thres%.2f-top%d-eps%.2f.csv", bs,
-    // maxSegmentLength, THRESHOLD, SegmentFilters.TOP_ASPECT_WORDS, EPSILON);
-    // analyzer.computeAndPrintRougeScores(SegmentFilters.Filter.ASPECT_SWN, 0,
-    // outfile);
-    // outfile = String.format(
-    // "%s/cons/aspectSWN-s%d-cons-thres%.2f-top%d-eps%.2f.csv", bs,
-    // maxSegmentLength, THRESHOLD, SegmentFilters.TOP_ASPECT_WORDS, EPSILON);
-    // analyzer.computeAndPrintRougeScores(SegmentFilters.Filter.ASPECT_SWN, 1,
-    // outfile);
+    outfile = String.format(
+        "%s/pros/aspectSWN-s%d-pros-thres%.2f-top%d-eps%.2f.csv", bs,
+        maxSegmentLength, THRESHOLD, SegmentFilters.TOP_ASPECT_WORDS, EPSILON);
+    analyzer.computeAndPrintRougeScores(SegmentFilters.Filter.ASPECT_SWN, 0,
+        outfile);
+    outfile = String.format(
+        "%s/cons/aspectSWN-s%d-cons-thres%.2f-top%d-eps%.2f.csv", bs,
+        maxSegmentLength, THRESHOLD, SegmentFilters.TOP_ASPECT_WORDS, EPSILON);
+    analyzer.computeAndPrintRougeScores(SegmentFilters.Filter.ASPECT_SWN, 1,
+        outfile);
 
     // filter using ranked top aspect words and sentiment
     // outfile = String.format(
-    // "%s/pros/aspectSentimentRanked-s%d-pros-thres%.2f-top%d-eps%.2f.csv",
+    // "%s/pros(opt/)aspectSentimentRanked-s%d-pros-thres%.2f-top%d-eps%.2f.csv",
     // bs, maxSegmentLength, THRESHOLD, SegmentFilters.TOP_ASPECT_WORDS,
     // EPSILON);
     // analyzer.computeAndPrintRougeScores(
@@ -520,77 +515,9 @@ public class SummarizationAnalyzer {
     // SegmentFilters.Filter.RANKED_ASPECT_SENTIMENT, 1, outfile);
 
     // summary for individual patterns
-    // int[][] pairs = new int[][] { { 0, 1 }, { 2, 3 }, { 4, 4 }, { 5, 6 },
-    // { 7, 7 } };
+    // int[][] pairs = new int[][] { { 0, 3 }, { 4, 7 }, { 8, 10 }, { 11, 13 },
+    // { 14, 16 } };
     // analyzeIndividualPatterns(analyzer, bs, maxSegmentLength, pairs);
-  }
-
-  /**
-   * Changes the content of an entity from a list of reviews to only a paragraph
-   * for each entity (for outputting example paragraphs).
-   * 
-   * @param entities
-   */
-  static HashMap<String, ArrayList<Review>> changeContentToParagraphs(
-      HashMap<String, ArrayList<Review>> entities) {
-    HashMap<String, ArrayList<Review>> newMap = new HashMap<String, ArrayList<Review>>();
-    for (Entry<String, ArrayList<Review>> entry : entities.entrySet()) {
-      int numReviews = entry.getValue().size();
-      int[] ids;
-      if (numReviews > 5) {
-        ids = new int[] { 0, numReviews / 2, numReviews - 1 };
-      } else {
-        ids = new int[] { 0, numReviews - 1 };
-      }
-      for (int idx : ids) {
-        ReviewWithProsAndCons review = (ReviewWithProsAndCons) entry.getValue()
-            .get(idx);
-        String shortContent = getFewSentences(review.getContent());
-        ReviewWithProsAndCons newReview = new ReviewWithProsAndCons(
-            review.getReviewId(), review.getRestaurantId(), review.getRating(),
-            review.getPros(), review.getCons(), shortContent);
-        ArrayList<Review> newList = new ArrayList<Review>();
-        newList.add(newReview);
-        newMap.put(entry.getKey() + idx, newList);
-      }
-    }
-
-    return newMap;
-  }
-
-  /**
-   * Gets a few sentences from a given review content.
-   * 
-   * @param content
-   * @return
-   */
-  static String getFewSentences(String content) {
-    String[] sentences = content.split("[.!?]");
-    // do not summarize 'bad' reviews - reviews with too many sentences.
-    if (sentences.length > 20) {
-      return "";
-    }
-    StringBuilder builder = new StringBuilder();
-    int start, numSentences;
-    if (sentences.length < 6) {
-      start = 0;
-      numSentences = sentences.length;
-    } else {
-      numSentences = 4 + (int) (Math.random() * 3);
-      start = (int) (Math.random() * (sentences.length - numSentences));
-    }
-    for (int i = start; i < sentences.length; i++) {
-      if (sentences[i].length() > 10 && sentences[i].length() < 150) {
-        builder.append(sentences[i]).append(". ");
-        numSentences--;
-      }
-      if (numSentences == 0) {
-        break;
-      }
-    }
-    System.out.println(builder.toString());
-
-    return builder.toString();
   }
 
   static void runJstAndAsum() throws IOException {
@@ -601,8 +528,8 @@ public class SummarizationAnalyzer {
     String outfile = null;
     int maxSegmentLength = 6;
 
-    String asum = "C:/datasets/models/asum/ursa/T10-G0.10-0.10(seed1)";
-    String jst = "C:/datasets/models/jst/ursa/T10-G0.10-0.10(seed1)";
+    String asum = "C:/datasets/models/asum/ursa/T7-G0.10-0.10(seed1)";
+    String jst = "C:/datasets/models/jst/ursa/T7-G0.10-0.10(seed1)";
     // String asum = "C:/datasets/models/asum/coffeemaker/T7-G0.10-0.10(seed1)";
     // String jst = "C:/datasets/models/jst/coffeemaker/T7-G0.10-0.10(seed1)";
     new File(asum + "/pros").mkdir();
@@ -643,20 +570,16 @@ public class SummarizationAnalyzer {
     String outfile = "";
     for (int idx = 0; idx < pairs.length; idx++) {
       analyzer.extractCandidateSummary(pairs[idx][0], pairs[idx][1]);
-      // outfile = String
-      // .format(
-      // "%s/patterns/bothSentiment-s%d-pros-thres%.2f-top%d-eps%.2f-patt%d-%d.csv",
-      // dir, maxSegmentLength, THRESHOLD,
-      // SegmentFilters.TOP_ASPECT_WORDS, EPSILON, pairs[idx][0],
-      // pairs[idx][1]);
-      // analyzer.computeAndPrintRougeScores(SegmentFilters.Filter.BOTH_SENTIMENT,
-      // 0, outfile);
-      outfile = String
-          .format(
-              "%s/patterns/bothSentiment-s%d-cons-thres%.2f-top%d-eps%.2f-patt%d-%d.csv",
-              dir, maxSegmentLength, THRESHOLD,
-              SegmentFilters.TOP_ASPECT_WORDS, EPSILON, pairs[idx][0],
-              pairs[idx][1]);
+      outfile = String.format(
+          "%s/patterns/bothSentiment-s%d-pros-top%dpatt%d-%d.csv", dir,
+          maxSegmentLength, SegmentFilters.TOP_ASPECT_WORDS, pairs[idx][0],
+          pairs[idx][1]);
+      analyzer.computeAndPrintRougeScores(SegmentFilters.Filter.BOTH_SENTIMENT,
+          0, outfile);
+      outfile = String.format(
+          "%s/patterns/bothSentiment-s%d-cons-top%d-patt%d-%d.csv", dir,
+          maxSegmentLength, SegmentFilters.TOP_ASPECT_WORDS, pairs[idx][0],
+          pairs[idx][1]);
       analyzer.computeAndPrintRougeScores(SegmentFilters.Filter.BOTH_SENTIMENT,
           1, outfile);
     }

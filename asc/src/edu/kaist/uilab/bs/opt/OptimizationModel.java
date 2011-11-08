@@ -16,6 +16,7 @@ import edu.kaist.uilab.asc.util.InvalidArgumentException;
 import edu.kaist.uilab.bs.Document;
 import edu.kaist.uilab.bs.Model;
 import edu.kaist.uilab.bs.TwogramsCounter;
+import edu.kaist.uilab.bs.util.BSUtils;
 import edu.kaist.uilab.opt.LBFGS;
 import edu.kaist.uilab.opt.ObjectiveFunction;
 
@@ -48,6 +49,49 @@ public class OptimizationModel extends Model implements ObjectiveFunction {
     super(numTopics, numSenti, sentiTable, aspectTable, counter, documents,
         seedWords, alpha, betaAspect, betaSenti, gammas);
     betaJki = new double[numSenti][numTopics][numSentiWords];
+  }
+
+  public double[][] getYSentiment() {
+    return ySentiment;
+  }
+
+  /**
+   * Classify segment sentiment using y_{ji}.
+   * 
+   * @param phiSenti
+   *          not used
+   * @param segment
+   * @param topic
+   *          not used
+   * @return
+   */
+  @Override
+  public int classifySegmentSentiment(DoubleMatrix[] phiSenti,
+      String[] segment, int topic) {
+    double score = 0.0;
+    for (int k = 0; k < numTopics; k++) {
+      for (String word : segment) {
+        int sentiWord = sentiTable.symbolToID(word);
+        if (sentiWord >= 0) {
+          score += ySentiment[0][sentiWord] - ySentiment[1][sentiWord];
+        }
+      }
+    }
+
+    double thres = 0.5;
+    int sentiment = -1;
+    if (score >= thres) {
+      sentiment = 0;
+    } else if (score < -thres) {
+      sentiment = 1;
+    }
+
+    // negate the sentiment
+    if (sentiment >= 0 && BSUtils.isInArray(segment, "not")) {
+      sentiment = 1 - sentiment;
+    }
+
+    return sentiment;
   }
 
   @Override

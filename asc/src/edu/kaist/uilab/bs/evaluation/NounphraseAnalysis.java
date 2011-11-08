@@ -2,7 +2,6 @@ package edu.kaist.uilab.bs.evaluation;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -13,6 +12,7 @@ import edu.kaist.uilab.asc.util.DoubleMatrix;
 import edu.kaist.uilab.asc.util.SentiWordNet;
 import edu.kaist.uilab.asc.util.TextFiles;
 import edu.kaist.uilab.bs.Model;
+import edu.kaist.uilab.bs.opt.OptimizationModel;
 import edu.kaist.uilab.stemmers.EnglishStemmer;
 import edu.stanford.nlp.tagger.maxent.MaxentTagger;
 
@@ -23,7 +23,6 @@ import edu.stanford.nlp.tagger.maxent.MaxentTagger;
  */
 public class NounphraseAnalysis {
 
-  private static final String UTF8 = "utf-8";
   private static String model = "D:/java-libs/stanford-postagger-2010-05-26/models/left3words-wsj-0-18.tagger";
   private static String[] adjTags = { "JJ", "JJR", "JJS" };
 
@@ -75,163 +74,6 @@ public class NounphraseAnalysis {
     }
   }
 
-  static void classifyWordSentiment() throws IOException {
-    String dir = "C:/datasets/bs";
-    for (String word : TextFiles.readUniqueLines(dir + "/pos.txt", UTF8)) {
-      positiveAdjs.add(stemmer.getStem(word));
-    }
-    for (String word : TextFiles.readUniqueLines(dir + "/neg.txt", UTF8)) {
-      negativeAdjs.add(stemmer.getStem(word));
-    }
-    HashSet<String> adjs = new HashSet<String>(positiveAdjs);
-    adjs.addAll(negativeAdjs);
-    Model model = Model.loadModel(dir
-        + "/ursa/T50-A0.1-B0.0010-G0.10,0.10-I1000(newstop)/800/model.gz");
-    int numWords = 100; // top words to take
-    String[][][] sentiWords = model.getTopSentiWords(numWords);
-    int numTopics = model.getNumTopics();
-    // get all positive sentiment words
-    @SuppressWarnings("unchecked")
-    HashMap<String, Integer>[] map = new HashMap[2];
-    for (int s = 0; s < model.getNumSentiments(); s++) {
-      map[s] = new HashMap<String, Integer>();
-      for (int t = 0; t < numTopics; t++) {
-        for (int w = 0; w < numWords; w++) {
-          String word = sentiWords[s][t][w];
-          Integer cnt = map[s].get(word);
-          if (cnt == null) {
-            map[s].put(word, 1);
-          } else {
-            map[s].put(word, cnt + 1);
-          }
-        }
-      }
-    }
-    int numCorrect = 0, numNotClassified = 0, numPolyByBS = 0, numPolyByNP = 0;
-    // measure the accuracy
-    for (String word : adjs) {
-      // 0: pos, 1: neg, -1: not classified, 2: in both
-      int classified = -1;
-      Integer cntPos = map[0].get(word);
-      Integer cntNeg = map[1].get(word);
-      if (cntPos != null && cntNeg == null) {
-        classified = 0;
-      } else if (cntPos == null && cntNeg != null) {
-        classified = 1;
-      } else if (cntPos != null && cntNeg != null) {
-        classified = cntPos > cntNeg ? 0 : 1;
-        numPolyByBS++;
-        System.out.printf("%s(%d, %d) ", word, cntPos, cntNeg);
-      } else {
-        classified = -1;
-      }
-      int annotated = -1;
-      if (positiveAdjs.contains(word) && negativeAdjs.contains(word)) {
-        numPolyByNP++;
-      } else if (positiveAdjs.contains(word)) {
-        annotated = 0;
-      } else {
-        annotated = 1;
-      }
-      if (classified == -1 || annotated == -1) {
-        numNotClassified++;
-      } else if (classified == annotated) {
-        numCorrect++;
-      }
-    }
-    System.out.printf(
-        "\nNum per-topic top words used for classification: %d\n", numWords);
-    System.out.printf("Total words in NP: %d (pos = %d, neg = %d)\n",
-        adjs.size(), positiveAdjs.size(), negativeAdjs.size());
-    System.out.printf("Annotated as both positive and negative: %d\n",
-        numPolyByNP);
-    System.out.printf("Classified as both positive and negative: %d\n",
-        numPolyByBS);
-    System.out.printf("Not classified by BS: %d\n", numNotClassified);
-    System.out.printf("Classification accuracy: %.2f\n", ((double) numCorrect)
-        / (adjs.size() - numNotClassified));
-  }
-
-  static void classifyWordSentiment2() throws IOException {
-    String dir = "C:/datasets/bs";
-    for (String word : TextFiles.readUniqueLines(dir + "/pos.txt", UTF8)) {
-      positiveAdjs.add(stemmer.getStem(word));
-    }
-    for (String word : TextFiles.readUniqueLines(dir + "/neg.txt", UTF8)) {
-      negativeAdjs.add(stemmer.getStem(word));
-    }
-    HashSet<String> adjs = new HashSet<String>(positiveAdjs);
-    adjs.addAll(negativeAdjs);
-    Model model = Model.loadModel(dir
-        + "/ursa/T50-A0.1-B0.0010-G0.10,0.10-I1000(newstop)/800/model.gz");
-    DoubleMatrix[] phi = model.getPhiSentiByTermscore();
-    int numWords = 100; // top words to take
-    int[][][] indice = model.getIndiceOfTopSentiWords(phi, numWords);
-    SymbolTable table = model.getSentiTable();
-    int numTopics = model.getNumTopics();
-    // get all positive sentiment words
-    @SuppressWarnings("unchecked")
-    HashMap<String, Double>[] map = new HashMap[2];
-    for (int s = 0; s < model.getNumSentiments(); s++) {
-      map[s] = new HashMap<String, Double>();
-      for (int t = 0; t < numTopics; t++) {
-        double topWordProb = phi[s].getValue(indice[s][t][0], t);
-        for (int w = 0; w < numWords; w++) {
-          String word = table.idToSymbol(indice[s][t][w]);
-          Double cnt = map[s].get(word);
-          if (cnt == null) {
-            cnt = 0.0;
-          }
-          double incValue = phi[s].getValue(indice[s][t][w], t) / topWordProb;
-          map[s].put(word, cnt + incValue);
-        }
-      }
-    }
-    int numCorrect = 0, numNotClassified = 0, numPolyByBS = 0, numPolyByNP = 0;
-    // measure the accuracy
-    for (String word : adjs) {
-      // 0: pos, 1: neg, -1: not classified, 2: in both
-      int classified = -1;
-      Double pos = map[0].get(word);
-      Double neg = map[1].get(word);
-      if (pos != null && neg == null) {
-        classified = 0;
-      } else if (pos == null && neg != null) {
-        classified = 1;
-      } else if (pos != null && neg != null) {
-        classified = pos > neg ? 0 : 1;
-        numPolyByBS++;
-        System.out.printf("%s(%.2f, %.2f) ", word, pos, neg);
-      } else {
-        classified = -1;
-      }
-      int annotated = -1;
-      if (positiveAdjs.contains(word) && negativeAdjs.contains(word)) {
-        numPolyByNP++;
-      } else if (positiveAdjs.contains(word)) {
-        annotated = 0;
-      } else {
-        annotated = 1;
-      }
-      if (classified == -1 || annotated == -1) {
-        numNotClassified++;
-      } else if (classified == annotated) {
-        numCorrect++;
-      }
-    }
-    System.out.printf(
-        "\nNum per-topic top words used for classification: %d\n", numWords);
-    System.out.printf("Total words in NP: %d (pos = %d, neg = %d)\n",
-        adjs.size(), positiveAdjs.size(), negativeAdjs.size());
-    System.out.printf("Annotated as both positive and negative: %d\n",
-        numPolyByNP);
-    System.out.printf("Classified as both positive and negative: %d\n",
-        numPolyByBS);
-    System.out.printf("Not classified by BS: %d\n", numNotClassified);
-    System.out.printf("Classification accuracy: %.2f\n", ((double) numCorrect)
-        / (adjs.size() - numNotClassified));
-  }
-
   static void classifyByWordnet(HashSet<String> phrases, String sentiClass,
       int senti) throws IOException {
     SentiWordNet wn = new SentiWordNet();
@@ -251,9 +93,9 @@ public class NounphraseAnalysis {
       }
       if (hasChanged) {
         int classifiedSenti = -1;
-        if (score > 0) {
+        if (score >= 0) {
           classifiedSenti = 0;
-        } else if (score < 0) {
+        } else if (score < -0) {
           classifiedSenti = 1;
         }
         if (classifiedSenti == senti) {
@@ -280,11 +122,16 @@ public class NounphraseAnalysis {
         .readUniqueLinesAsLowerCase(dir + "/pos.data");
     HashSet<String> negPhrases = (HashSet<String>) TextFiles
         .readUniqueLinesAsLowerCase(dir + "/neg.data");
-    Model model = Model.loadModel(dir
-        + "/ursa/T7-A0.1-B0.0010-G0.10,0.10-I1000/1000/model.gz");
+    Model model = Model
+        .loadModel(dir
+            + "/ursa/optimization/T7-A0.1-B0.0100-G0.10,0.10-I1000()/2000/model.gz");
     System.err.println("\nClassification using model:");
-    posPhrases.removeAll(classify(model, posPhrases, "positive", 0));
-    negPhrases.removeAll(classify(model, negPhrases, "negative", 1));
+//    posPhrases.removeAll(classify(model, posPhrases, "positive", 0));
+//    negPhrases.removeAll(classify(model, negPhrases, "negative", 1));
+    posPhrases
+        .removeAll(classifyWithoutModel(model, posPhrases, "positive", 0));
+    negPhrases
+        .removeAll(classifyWithoutModel(model, negPhrases, "negative", 1));
 
     System.err.println("\nClassification using SentiWordNet: ");
     classifyByWordnet(posPhrases, "positive", 0);
@@ -293,12 +140,8 @@ public class NounphraseAnalysis {
 
   static HashSet<String> classify(Model model, HashSet<String> phrases,
       String sentiClass, int senti) {
-    int numWords = 100;
-    System.out.println("Using " + numWords + " words");
     DoubleMatrix[] phiSenti = model.getPhiSentiByTermscore();
-    int[][][] sentiIndice = model.getIndiceOfTopSentiWords(phiSenti, numWords);
     double[][] phiAspect = model.getPhiAspectByTermscore();
-    int[][] aspectIndice = model.getIndiceOfTopAspectWords(phiAspect, numWords);
     SymbolTable sentiTable = model.getSentiTable();
     SymbolTable aspectTable = model.getAspectTable();
     int numCorrect = 0, numWrong = 0;
@@ -308,34 +151,19 @@ public class NounphraseAnalysis {
     for (String phrase : phrases) {
       words = stemPhrase(phrase);
       double[] score = new double[model.getNumSentiments()];
-      // score = sumOfProb((senti, aspect|topic k)) for all topic k and every
-      // possible pair contained in the original phrase
-      for (int i = 0; i < words.size() - 1; i++) {
-        for (int j = i + 1; j < words.size(); j++) {
-          int sentiWord = sentiTable.symbolToID(words.get(i));
-          int aspectWord = aspectTable.symbolToID(words.get(j));
-          if (sentiWord >= 0 && aspectWord >= 0) {
-            for (int k = 0; k < model.getNumTopics(); k++) {
-              // method 2: use all words
-              for (int s = 0; s < model.getNumSentiments(); s++) {
-                score[s] += phiSenti[s].getValue(sentiWord, k)
-                    * phiAspect[k][aspectWord];
-              }
-              // method 1: use only top words
-              // if (isInArray(aspectIndice[k], aspectWord)) {
-              // for (int s = 0; s < model.getNumSentiments(); s++) {
-              // if (isInArray(sentiIndice[s][k], sentiWord)) {
-              // score[s] += phiSenti[s].getValue(sentiWord, k)
-              // * phiAspect[k][aspectWord];
-              // }
-              // }
-              // }
+      for (int s = 0; s < model.getNumSentiments(); s++) {
+        score[s] = 0;
+        for (int k = 0; k < model.getNumTopics(); k++) {
+          double prob = 1.0;
+          for (int i = 0; i < words.size() - 1; i++) {
+            int sentiWord = sentiTable.symbolToID(words.get(i));
+            if (sentiWord >= 0) {
+              prob *= phiSenti[s].getValue(sentiWord, k);
             }
           }
+          score[s] += prob;
         }
       }
-      // TODO(trung): what if the phrase is in the corpus but not in the
-      // senti-aspect pair? this should not happen if we take all words
       if (score[0] > 0 || score[1] > 0) {
         int classifiedSenti = score[0] >= score[1] ? 0 : 1;
         if (classifiedSenti == senti) {
@@ -358,18 +186,47 @@ public class NounphraseAnalysis {
     return notClassifiedPhrases;
   }
 
-  /**
-   * Returns true if <code>value</code> is in <code>array</code>.
-   * 
-   * @return
-   */
-  private static boolean isInArray(int[] array, int value) {
-    for (int element : array) {
-      if (element == value)
-        return true;
+  static HashSet<String> classifyWithoutModel(Model model,
+      HashSet<String> phrases, String sentiClass, int senti) {
+    SymbolTable sentiTable = model.getSentiTable();
+    OptimizationModel m = (OptimizationModel) model;
+    double[][] ySentiment = m.getYSentiment();
+    int numCorrect = 0, numWrong = 0;
+    int numNotClassified = 0;
+    ArrayList<String> words;
+    HashSet<String> notClassifiedPhrases = new HashSet<String>();
+    for (String phrase : phrases) {
+      words = stemPhrase(phrase);
+      double score = 0.0;
+      for (int k = 0; k < model.getNumTopics(); k++) {
+        for (int i = 0; i < words.size() - 1; i++) {
+          int sentiWord = sentiTable.symbolToID(words.get(i));
+          if (sentiWord >= 0) {
+            score += ySentiment[0][sentiWord] - ySentiment[1][sentiWord];
+          }
+        }
+      }
+      double thres = 0.2;
+      if (score >= thres || score <= -thres) {
+        int classifiedSenti = score >= thres ? 0 : 1;
+        if (classifiedSenti == senti) {
+          numCorrect++;
+        } else {
+          numWrong++;
+        }
+      } else {
+        numNotClassified++;
+        notClassifiedPhrases.add(phrase);
+      }
     }
+    System.out.printf("#%s phrases: %d\n", sentiClass, phrases.size());
+    System.out.printf("#phrases not classified: %d\n", numNotClassified);
+    System.out
+        .printf("#numCorrect = %d, numWrong = %d\n", numCorrect, numWrong);
+    System.out.printf("accuracy (%s): %.3f\n", sentiClass, (numCorrect + 0.0)
+        / (phrases.size() - numNotClassified));
 
-    return false;
+    return notClassifiedPhrases;
   }
 
   /**
@@ -390,7 +247,6 @@ public class NounphraseAnalysis {
   }
 
   public static void main(String args[]) throws Exception {
-    String dir = "C:/datasets/models/bs";
     // tagger = new MaxentTagger(model);
     classifyPhraseSentiment();
   }

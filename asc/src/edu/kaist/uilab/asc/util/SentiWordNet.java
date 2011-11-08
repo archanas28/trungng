@@ -12,6 +12,7 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 
 import edu.kaist.uilab.bs.Model;
+import edu.kaist.uilab.bs.util.BSUtils;
 import edu.kaist.uilab.stemmers.EnglishStemmer;
 
 public class SentiWordNet {
@@ -113,11 +114,15 @@ public class SentiWordNet {
       }
     }
     
-    if (score == null) {
-      return -1;
-    } else {
-      return score > 0.0 ? 0 : 1;
+    int sentiment = -1;
+    if (score != null) {
+      sentiment = score > 0.0 ? 0 : 1;
     }
+    if (sentiment >= 0 && BSUtils.isInArray(words, "not")) {
+      sentiment = 1 - sentiment;
+    }
+    
+    return sentiment;
   }
 
   public static void main(String args[]) throws IOException {

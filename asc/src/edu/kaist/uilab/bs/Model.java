@@ -32,6 +32,7 @@ import edu.kaist.uilab.bs.util.BSUtils;
 public class Model implements Serializable {
 
   private static final long serialVersionUID = 1L;
+  private static final double EPSILON = 10e-5;
   private int numProbWords = 100;
 
   boolean isExisting = false;
@@ -498,8 +499,8 @@ public class Model implements Serializable {
     for (int i = 0; i < numDocuments; i++) {
       Document document = getDocuments().get(i);
       double rating = document.getRating();
-//      if (rating != 3.0 && rating != -1.0) {
-         if (rating != -1.0) {
+      // if (rating != 3.0 && rating != -1.0) {
+      if (rating != -1.0) {
         int observedSenti = rating >= 3.0 ? 0 : 1;
         if (observedSenti == 0) {
           numPos++;
@@ -781,60 +782,6 @@ public class Model implements Serializable {
   /**
    * Classifies topic of a segment given its stemmed words <code>words</code>.
    * <p>
-   * This classification does not take into account where the segment comes
-   * from, i.e., it can classify any arbitrary segment of text. In other words,
-   * it returns <code>k_max = argmax_k(p(k|S))</code>.
-   * 
-   * @param phiAspect
-   *          the per-aspect word distributions
-   * @param words
-   *          the words of the segment
-   * @return the topic of this segment or <code>-1</code> if cannot classify
-   */
-  private int classifySegmentTopic(double[][] phiAspect, String[] words) {
-    int maxTopic = -1;
-    double max = 0.0;
-    for (int topic = 0; topic < numTopics; topic++) {
-      double prob = getSegmentProb(phiAspect, words, topic);
-      if (max < prob) {
-        max = prob;
-        maxTopic = topic;
-      }
-    }
-
-    return maxTopic;
-  }
-
-  /**
-   * Classifies topic of a segment given its stemmed worsd <code>words</code>.
-   * <p>
-   * This does a similar job to {
-   * {@link #classifySegmentTopic(double[][], String[])} but is used for the
-   * segment without an aspect word (i.e., classifySegmentTopic gives -1 for the
-   * segment).
-   * 
-   * @param phiSenti
-   * @param words
-   * @return
-   */
-  private int classifySegmentTopic(DoubleMatrix[] phiSenti, String[] words) {
-    int maxTopic = -1;
-    double max = 0.0;
-    for (int topic = 0; topic < numTopics; topic++) {
-      double prob = getSentimentProb(phiSenti, words, topic, 0)
-          + getSentimentProb(phiSenti, words, topic, 1);
-      if (max < prob) {
-        max = prob;
-        maxTopic = topic;
-      }
-    }
-
-    return maxTopic;
-  }
-
-  /**
-   * Classifies topic of a segment given its stemmed words <code>words</code>.
-   * <p>
    * This classifier first classifies the segment only using its aspect words.
    * If it fails to classify, it classifies using its sentiment words.
    * 
@@ -845,12 +792,19 @@ public class Model implements Serializable {
    */
   public int classifySegmentTopic(double[][] phiAspect,
       DoubleMatrix[] phiSenti, String[] words) {
-    int k = classifySegmentTopic(phiAspect, words);
-    if (k < 0) {
-      k = classifySegmentTopic(phiSenti, words);
+    int maxTopic = -1;
+    double max = 0.0;
+    for (int topic = 0; topic < numTopics; topic++) {
+      double prob = getSegmentProb(phiAspect, words, topic)
+          * getSentimentProb(phiSenti, words, topic, 0)
+          * getSentimentProb(phiSenti, words, topic, 1);
+      if (max < prob) {
+        max = prob;
+        maxTopic = topic;
+      }
     }
 
-    return k;
+    return maxTopic;
   }
 
   /**
@@ -867,14 +821,18 @@ public class Model implements Serializable {
       int topic) {
     double proProb = getSentimentProb(phiSenti, words, topic, 0);
     double negProb = getSentimentProb(phiSenti, words, topic, 1);
+    int sentiment = -1;
     if (proProb > negProb) {
-      return 0;
+      sentiment = 0;
     } else if (proProb < negProb) {
-      return 1;
-    } else {
-      // consider neutral if proProb == negProb (both could equal 0.0)
-      return -1;
+      sentiment = 1;
     }
+
+    if (sentiment >= 0 && BSUtils.isInArray(words, "not")) {
+      sentiment = 1 - sentiment;
+    }
+
+    return sentiment;
   }
 
   /**
@@ -899,7 +857,7 @@ public class Model implements Serializable {
       }
     }
 
-    return prob != 1.0 ? prob : 0.0;
+    return prob != 1.0 ? prob : EPSILON;
   }
 
   /**
@@ -907,12 +865,8 @@ public class Model implements Serializable {
    * 
    * @param phiAspect
    *          the inferred (approximated) phi aspect
-   * @param phiSenti
    * @param words
-   * @param k
-   * @return the classified topic; 0 if the segment cannot be classified into
-   *         one of the topics (primarily because it does not contain any aspect
-   *         word)
+   * @param topic
    */
   public double getSegmentProb(double[][] phiAspect, String[] words, int topic) {
     double prob = 1.0;
@@ -925,7 +879,7 @@ public class Model implements Serializable {
       }
     }
 
-    return prob != 1.0 ? prob : 0.0;
+    return prob != 1.0 ? prob : EPSILON;
   }
 
   /**

@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 
 import com.aliasi.symbol.SymbolTable;
 
+import edu.kaist.uilab.asc.data.Review;
 import edu.kaist.uilab.asc.data.ReviewReader;
 import edu.kaist.uilab.asc.data.ReviewWithProsAndConsReader;
 import edu.kaist.uilab.asc.util.TextFiles;
@@ -21,12 +22,36 @@ import edu.kaist.uilab.bs.opt.OptimizationModel;
 public class Runner {
 
   public static void main(String args[]) throws Exception {
-     runNewTraining();
-    //    runExistingTraining();
+//    runNewTraining();
+//     runExistingTraining();
+    String corpus = "C:/datasets/epinions/vacuum.txt";
+    int numReviews = 0;
+    int numSentences = 0;
+    int numWords = 0;
+    ReviewReader reader = new ReviewWithProsAndConsReader();
+    BufferedReader in = new BufferedReader(new InputStreamReader(
+        new FileInputStream(corpus), "utf-8"));
+    Review review = null;
+    do {
+      review = reader.readReview(in, false);
+      if (review != null) {
+        numReviews++;
+        String[] sentences = review.getContent().split("[.?!]");
+        numSentences += sentences.length;
+        for (String sentence : sentences) {
+          String[] words = sentence.split("[ \\t]");
+          numWords += words.length;
+        }
+      }
+    } while (review != null);
+    in.close();
+    System.out.println("\n#reviews: " + numReviews); 
+    System.out.printf("\n# sentences per reviews: %.2f", numSentences * 1.0 / numReviews);
+    System.out.printf("\n# words per sentence: %.2f", numWords * 1.0 / numSentences);
   }
 
   static void runNewTraining() throws Exception {
-    String dir = "C:/datasets/models/bs/laptop";
+    String dir = "C:/datasets/models/bs/coffeemaker";
     String stopFile = "stop.txt";
     // String positiveSeeds = "seedstems0(+2).txt";
     // String negativeSeeds = "seedstems1(+2).txt";
@@ -77,7 +102,6 @@ public class Runner {
       CorpusParserWithTagger parser, HashSet<Integer>[] seedWords)
       throws IOException {
     double alpha = 0.1;
-    // TODO(trung): try 0.01 for beta
     double betaAspect = 0.01;
     double[] betaSenti = new double[] { 0.01, 0.000000001, 0.01 };
     double[] gammas = new double[] { 0.1, 0.1 };
@@ -89,7 +113,7 @@ public class Runner {
     int burnin = 500;
     int savingInterval = 200;
     int optimizationInterval = 100;
-    int numTopics = 7;
+    int numTopics = 5;
     int numSenti = 2;
     OptimizationModel model = new OptimizationModel(numTopics, numSenti,
         sentiTable, parser.getAspectSymbolTable(), parser.getTwogramsCounter(),
@@ -97,29 +121,21 @@ public class Runner {
     GibbsSamplerWithOptimizer sampler = new GibbsSamplerWithOptimizer(model,
         0.001, optimizationInterval);
     sampler.setOutputDir(String.format(
-        "%s/optimization2/T%d-A%.1f-B%.4f-G%.2f,%.2f-I%d", dir, numTopics,
+        "%s/optimization/T%d-A%.1f-B%.4f-G%.2f,%.2f-I%d", dir, numTopics,
         alpha, betaAspect, gammas[0], gammas[1], numIters));
     sampler.gibbsSampling(numIters, 0, savingInterval, burnin);
   }
 
   static void runExistingTraining() throws IOException {
+    int optimizationInterval = 100;
+    int numIters = 2000;
+    int burnin = 500;
+    int savingInterval = 200;
     Model model = Model
-        .loadModel("C:/datasets/models/bs/ursa/optimization/T7-A0.1-B0.0100-G0.10,0.10-I2000(noPriorSentiment)/1000/model.gz");
-    model
-        .writeDocumentClassificationSummary(
-            model.getPi(),
-            "C:/datasets/models/bs/ursa/optimization/T7-A0.1-B0.0100-G0.10,0.10-I2000(noPriorSentiment)/1000/asumstyle-docsentiment.txt");
-    // AsumModelData model = (AsumModelData) BSUtils
-    // .loadModel("C:/datasets/models/asum/vacuum/T7-G0.10-0.10(seed1)/1000/model.gz");
-    // Vector<edu.kaist.uilab.asc.data.Document> documents = new
-    // Vector<edu.kaist.uilab.asc.data.Document>();
-    // Application.readDocuments(documents,
-    // "C:/datasets/models/asum/coffeemaker/BagOfSentences_en.txt");
-    //
-    // model
-    // .writeClassificationSummary(
-    // "C:/datasets/models/asum/vacuum/T7-G0.10-0.10(seed1)/1000/docclassification2.txt",
-    // documents);
+        .loadModel("C:/datasets/models/bs/ursa/optimization/T7-A0.1-B0.0100-G0.10,0.10-I1000()/1000/model.gz");
+    GibbsSamplerWithOptimizer sampler = new GibbsSamplerWithOptimizer(model,
+        0.001, optimizationInterval);
+    sampler.gibbsSampling(numIters, 1000, savingInterval, burnin);
   }
 
   public static HashMap<String, Document> getAnnotatedDocuments(String file)

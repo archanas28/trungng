@@ -4,19 +4,32 @@
 	<classpathentry kind="src" path="tests"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
-	<classpathentry kind="lib" path="D:/java-libs/stanford-postagger-2010-05-26/stanford-postagger.jar"/>
-	<classpathentry kind="lib" path="C:/workspace/asc/lib/filterbuilder.jar"/>
-	<classpathentry kind="lib" path="C:/workspace/asc/lib/htmllexer.jar"/>
-	<classpathentry kind="lib" path="C:/workspace/asc/lib/htmlparser.jar"/>
-	<classpathentry kind="lib" path="C:/workspace/asc/lib/sitecapturer.jar"/>
-	<classpathentry kind="lib" path="C:/workspace/asc/lib/thumbelina.jar"/>
-	<classpathentry kind="lib" path="C:/workspace/asc/lib/apache-mime4j-0.6.jar"/>
-	<classpathentry kind="lib" path="C:/workspace/asc/lib/commons-codec-1.3.jar"/>
-	<classpathentry kind="lib" path="C:/workspace/asc/lib/commons-logging-1.1.1.jar"/>
-	<classpathentry kind="lib" path="C:/workspace/asc/lib/httpclient-4.0.1.jar"/>
-	<classpathentry kind="lib" path="C:/workspace/asc/lib/httpcore-4.0.1.jar"/>
-	<classpathentry kind="lib" path="C:/workspace/asc/lib/httpmime-4.0.1.jar"/>
-	<classpathentry kind="lib" path="D:/java-libs/lingpipe-4.0.1/lingpipe-4.0.1.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/optimization"/>
+	<classpathentry kind="lib" path="lib/apache-mime4j-0.6.jar"/>
+	<classpathentry kind="lib" path="lib/commons-codec-1.3.jar"/>
+	<classpathentry kind="lib" path="lib/commons-lang3-3.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/commons-logging-1.1.1.jar"/>
+	<classpathentry kind="lib" path="lib/commons-math-2.2.jar" sourcepath="D:/java-libs/commons-math-2.2/commons-math-2.2-sources.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="file:/D:/java-libs/commons-math-2.2/docs/apidocs/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/filterbuilder.jar"/>
+	<classpathentry kind="lib" path="lib/htmllexer.jar"/>
+	<classpathentry kind="lib" path="lib/htmlparser.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="http://htmlparser.sourceforge.net/javadoc/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/httpclient-4.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/httpcore-4.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/httpmime-4.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/sitecapturer.jar"/>
+	<classpathentry kind="lib" path="lib/stanford-postagger.jar"/>
+	<classpathentry kind="lib" path="lib/thumbelina.jar"/>
+	<classpathentry kind="lib" path="lib/lingpipe-4.0.1.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="file:/D:/java-libs/lingpipe-4.0.1/docs/api/"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

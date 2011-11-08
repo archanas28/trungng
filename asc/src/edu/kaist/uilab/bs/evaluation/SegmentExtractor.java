@@ -35,79 +35,172 @@ public class SegmentExtractor {
    * Pre-defined extraction patterns for services.
    */
   public static final Pattern[] SERVICE_PATTERNS = new Pattern[] {
+      // 1. n vb adv* adj n
+      // coffee maker makes great coffee
+      new Pattern(new Part[] { Part.NOUN, Part.ADV, Part.VERB, Part.DT,
+          Part.ADV, Part.ADJ, Part.NOUN }, new int[] { 1, 0, 1, 0, 0, 1, 1 }),
+
+      // 1'. (prp) vb adv* adj n
+      // it makes great coffee / appreciate the stainless steel
+      new Pattern(new Part[] { Part.VERB, Part.DT, Part.ADV, Part.ADJ,
+          Part.NOUN }, new int[] { 1, 0, 0, 1, 1 }),
+
+      // negation of 1' for regular verb
+      new Pattern(new Part[] { Part.NOT, Part.VERB, Part.DT, Part.ADV,
+          Part.ADJ, Part.NOUN }, new int[] { 1, 1, 0, 0, 1, 1 }),
+      // negation of 1' for to be
+      new Pattern(new Part[] { Part.VERB, Part.NOT, Part.DT, Part.ADV,
+          Part.ADJ, Part.NOUN }, new int[] { 1, 1, 0, 0, 1, 1 }),
+
+      // 3. n vb adv* adj
+      // food is good, table looks great
+      new Pattern(new Part[] { Part.NOUN, Part.VERB, Part.ADV, Part.ADJ },
+          new int[] { 1, 1, 0, 1 }),
+      // because we separate 'not' and other adverbs
+      new Pattern(new Part[] { Part.NOUN, Part.VERB, Part.NOT, Part.ADJ },
+          new int[] { 1, 1, 0, 1 }),
+      // 3' (prp) vb adv* adj
+      new Pattern(new Part[] { Part.VERB, Part.ADV, Part.ADJ }, new int[] { 1,
+          0, 1 }),
+
+      // 5. adv* adj n
       // very good food
       new Pattern(new Part[] { Part.ADV, Part.ADJ, Part.NOUN }, new int[] { 1,
           1, 1 }),
-      // good food (same as the previous one but without adv)
+      // 5'. good food
       new Pattern(new Part[] { Part.ADJ, Part.NOUN }, new int[] { 1, 1 }),
-      // food is good, table looks great
-      new Pattern(
-          new Part[] { Part.NOUN, Part.STATE_VERB, Part.ADV, Part.ADJ },
-          new int[] { 1, 1, 0, 1 }),
-      // actually state verb other than tobe
-      new Pattern(
-          new Part[] { Part.NOUN, Part.ACTION_VERB, Part.ADV, Part.ADJ },
-          new int[] { 1, 1, 0, 1 }), };
+      // negation of 5
+      new Pattern(new Part[] { Part.NOT, Part.ADV, Part.ADJ, Part.NOUN },
+          new int[] { 1, 1, 1, 1 }),
+
+  };
 
   /**
    * Pre-defined extraction patterns for products.
    */
   public static final Pattern[] PRODUCT_PATTERNS = new Pattern[] {
-      // 0.1 makes great coffee
-      new Pattern(new Part[] { Part.ACTION_VERB, Part.DT, Part.ADV, Part.ADJ,
-          Part.NOUN }, new int[] { 1, 0, 0, 1, 1 }),
-      // 0.1 is a very good design
-      new Pattern(new Part[] { Part.STATE_VERB, Part.DT, Part.ADV, Part.ADJ,
-          Part.NOUN }, new int[] { 1, 0, 0, 1, 1 }),
-      // 2-3.very good food
-      new Pattern(new Part[] { Part.ADV, Part.ADJ, Part.NOUN }, new int[] { 1,
-          1, 1 }),
-      // 2-3.good food (same as the previous one but without adv)
-      // new Pattern(new Part[] { Part.ADJ, Part.NOUN }, new int[] { 1, 1 }),
-      // 4-4.easy to push
-      new Pattern(
-          new Part[] { Part.ADJ, Part.TO, Part.ACTION_VERB, Part.NOUN },
-          new int[] { 1, 1, 1, 0 }),
-      // 5-6.food is good, table looks great
-      new Pattern(
-          new Part[] { Part.NOUN, Part.STATE_VERB, Part.ADV, Part.ADJ },
-          new int[] { 1, 1, 0, 1 }),
-      // 5-6.actually state verb other than tobe
-      new Pattern(
-          new Part[] { Part.NOUN, Part.ACTION_VERB, Part.ADV, Part.ADJ },
-          new int[] { 1, 1, 0, 1 }),
-  // 7.looks incredibly good
-  // new Pattern(new Part[] { Part.ACTION_VERB, Part.ADV, Part.ADJ },
-  // new int[] { 1, 0, 1 }),
-  };
+      // 1. n vb adv* adj n
+      // coffee maker makes great coffee
+      new Pattern(new Part[] { Part.NOUN, Part.VERB, Part.DT, Part.ADV,
+          Part.ADJ, Part.NOUN }, new int[] { 1, 1, 0, 0, 1, 1 }),
 
-  public static final Pattern[] ALL_PRODUCT_PATTERNS = new Pattern[] {
-      // 0.1 is a very good design
-      new Pattern(new Part[] { Part.ACTION_VERB, Part.DT, Part.ADV, Part.ADJ,
+      // 1'. (prp) vb adv* adj n
+      // it makes great coffee / appreciate the stainless steel
+      new Pattern(new Part[] { Part.VERB, Part.DT, Part.ADV, Part.ADJ,
           Part.NOUN }, new int[] { 1, 0, 0, 1, 1 }),
-      // 0.1 is a very good design
-      new Pattern(new Part[] { Part.STATE_VERB, Part.DT, Part.ADV, Part.ADJ,
-          Part.NOUN }, new int[] { 1, 0, 0, 1, 1 }),
-      // 2-3.very good food
+
+      // negation of 1' for regular verb
+      new Pattern(new Part[] { Part.NOT, Part.VERB, Part.DT, Part.ADV,
+          Part.ADJ, Part.NOUN }, new int[] { 1, 1, 0, 0, 1, 1 }),
+      // negation of 1' for to be
+      new Pattern(new Part[] { Part.VERB, Part.NOT, Part.DT, Part.ADV,
+          Part.ADJ, Part.NOUN }, new int[] { 1, 1, 0, 0, 1, 1 }),
+
+      // 2. n vb adv* adj to vb
+      // coffee maker is hard to use
+      new Pattern(new Part[] { Part.NOUN, Part.VERB, Part.ADV, Part.ADJ,
+          Part.TO, Part.VERB }, new int[] { 1, 1, 0, 1, 1, 1 }),
+      // 2'. (prp) vb adv* adj to vb
+      // is difficult to use
+      new Pattern(new Part[] { Part.VERB, Part.ADV, Part.ADJ, Part.TO,
+          Part.VERB }, new int[] { 1, 0, 1, 1, 1 }),
+
+      // negation of 2
+      new Pattern(new Part[] { Part.NOUN, Part.VERB, Part.NOT, Part.ADV,
+          Part.ADJ, Part.TO, Part.VERB }, new int[] { 1, 1, 1, 0, 1, 1, 1 }),
+      // negation of 2'
+      new Pattern(new Part[] { Part.VERB, Part.NOT, Part.ADV, Part.ADJ,
+          Part.TO, Part.VERB }, new int[] { 1, 1, 0, 1, 1, 1 }),
+
+      // 3. n vb adv* adj
+      // food is good, table looks great
+      new Pattern(new Part[] { Part.NOUN, Part.VERB, Part.ADV, Part.ADJ },
+          new int[] { 1, 1, 0, 1 }),
+      // because we separate 'not' and other adverbs
+      new Pattern(new Part[] { Part.NOUN, Part.VERB, Part.NOT, Part.ADJ },
+          new int[] { 1, 1, 0, 1 }),
+
+      // 4. adv* adj to vb n*
+      // very easy to push
+      new Pattern(new Part[] { Part.ADV, Part.ADJ, Part.TO, Part.VERB,
+          Part.NOUN }, new int[] { 1, 1, 1, 1, 0 }),
+      new Pattern(new Part[] { Part.ADJ, Part.TO, Part.VERB, Part.NOUN },
+          new int[] { 1, 1, 1, 0 }),
+      // negation of 4
+      new Pattern(new Part[] { Part.NOT, Part.ADJ, Part.TO, Part.VERB,
+          Part.NOUN }, new int[] { 1, 1, 1, 1, 0 }),
+
+      // 5. adv* adj n
+      // very good food
       new Pattern(new Part[] { Part.ADV, Part.ADJ, Part.NOUN }, new int[] { 1,
           1, 1 }),
-      // 2-3.good food (same as the previous one but without adv)
-      new Pattern(new Part[] { Part.ADJ, Part.NOUN }, new int[] { 1, 1 }),
-      // 4-4.easy to push
-      new Pattern(
-          new Part[] { Part.ADJ, Part.TO, Part.ACTION_VERB, Part.NOUN },
+      new Pattern(new Part[] { Part.NOT, Part.ADV, Part.ADJ, Part.NOUN },
+          new int[] { 1, 1, 1, 1 }), };
+
+  public static final Pattern[] ALL_PATTERNS = new Pattern[] {
+      // 1. n vb adv* adj n
+      // coffee maker makes great coffee
+      new Pattern(new Part[] { Part.NOUN, Part.VERB, Part.DT, Part.ADV,
+          Part.ADJ, Part.NOUN }, new int[] { 1, 1, 0, 0, 1, 1 }),
+
+      // 1'. (prp) vb adv* adj n
+      // it makes great coffee / appreciate the stainless steel
+      new Pattern(new Part[] { Part.VERB, Part.DT, Part.ADV, Part.ADJ,
+          Part.NOUN }, new int[] { 1, 0, 0, 1, 1 }),
+
+      // negation of 1' for regular verb
+      new Pattern(new Part[] { Part.NOT, Part.VERB, Part.DT, Part.ADV,
+          Part.ADJ, Part.NOUN }, new int[] { 1, 1, 0, 0, 1, 1 }),
+      // negation of 1' for to be
+      new Pattern(new Part[] { Part.VERB, Part.NOT, Part.DT, Part.ADV,
+          Part.ADJ, Part.NOUN }, new int[] { 1, 1, 0, 0, 1, 1 }),
+
+      // 2. n vb adv* adj to vb
+      // coffee maker is hard to use
+      new Pattern(new Part[] { Part.NOUN, Part.VERB, Part.ADV, Part.ADJ,
+          Part.TO, Part.VERB }, new int[] { 1, 1, 0, 1, 1, 1 }),
+      // 2'. (prp) vb adv* adj to vb
+      // is difficult to use
+      new Pattern(new Part[] { Part.VERB, Part.ADV, Part.ADJ, Part.TO,
+          Part.VERB }, new int[] { 1, 0, 1, 1, 1 }),
+
+      // negation of 2
+      new Pattern(new Part[] { Part.NOUN, Part.VERB, Part.NOT, Part.ADV,
+          Part.ADJ, Part.TO, Part.VERB }, new int[] { 1, 1, 1, 0, 1, 1, 1 }),
+      // negation of 2'
+      new Pattern(new Part[] { Part.VERB, Part.NOT, Part.ADV, Part.ADJ,
+          Part.TO, Part.VERB }, new int[] { 1, 1, 0, 1, 1, 1 }),
+
+      // 3. n vb adv* adj
+      // food is good, table looks great
+      new Pattern(new Part[] { Part.NOUN, Part.VERB, Part.ADV, Part.ADJ },
+          new int[] { 1, 1, 0, 1 }),
+      // because we separate 'not' and other adverbs
+      new Pattern(new Part[] { Part.NOUN, Part.VERB, Part.NOT, Part.ADJ },
+          new int[] { 1, 1, 0, 1 }),
+      // 3' (prp) vb adv* adj
+      new Pattern(new Part[] { Part.VERB, Part.ADV, Part.ADJ }, new int[] { 1,
+          0, 1 }),
+
+      // 4. adv* adj to vb n*
+      // very easy to push
+      new Pattern(new Part[] { Part.ADV, Part.ADJ, Part.TO, Part.VERB,
+          Part.NOUN }, new int[] { 1, 1, 1, 1, 0 }),
+      new Pattern(new Part[] { Part.ADJ, Part.TO, Part.VERB, Part.NOUN },
           new int[] { 1, 1, 1, 0 }),
-      // 5-6.food is good, table looks great
-      new Pattern(
-          new Part[] { Part.NOUN, Part.STATE_VERB, Part.ADV, Part.ADJ },
-          new int[] { 1, 1, 0, 1 }),
-      // 5-6.actually state verb other than tobe
-      new Pattern(
-          new Part[] { Part.NOUN, Part.ACTION_VERB, Part.ADV, Part.ADJ },
-          new int[] { 1, 1, 0, 1 }),
-      // 7.looks incredibly good
-      new Pattern(new Part[] { Part.ACTION_VERB, Part.ADV, Part.ADJ },
-          new int[] { 1, 0, 1 }), };
+      // negation of 4
+      new Pattern(new Part[] { Part.NOT, Part.ADJ, Part.TO, Part.VERB,
+          Part.NOUN }, new int[] { 1, 1, 1, 1, 0 }),
+
+      // 5. adv* adj n
+      // very good food
+      new Pattern(new Part[] { Part.ADV, Part.ADJ, Part.NOUN }, new int[] { 1,
+          1, 1 }),
+      // 5'. good food
+      new Pattern(new Part[] { Part.ADJ, Part.NOUN }, new int[] { 1, 1 }),
+      // negation of 5
+      new Pattern(new Part[] { Part.NOT, Part.ADV, Part.ADJ, Part.NOUN },
+          new int[] { 1, 1, 1, 1 }), };
 
   static final String STOP_STEMS = "C:/datasets/models/bs/stop.txt";
   static final EnglishStemmer stemmer = new EnglishStemmer();
@@ -131,6 +224,7 @@ public class SegmentExtractor {
   /**
    * Returns all extraction patterns in the given sentence.
    * 
+   * @param patterns
    * @param sentence
    * @param maxLength
    *          maximum length of extracted fragments
@@ -152,12 +246,18 @@ public class SegmentExtractor {
         if (part == pattern.syntacticParts[0]) {
           int end = match(sentence, currentPos, pattern, 0,
               pattern.minAppearance[0]);
-          // once a pattern is matched, the matched string cannot be used to
-          // match any other patterns
-          // TODO(trung): uncomment when not working with paragraphs
-          if (end >= 0 && end - currentPos <= maxLength
-              && matchLastPattern(sentence.get(end - 1).tag(), pattern)) {
-            // if (end >= 0 && end - currentPos <= maxLength) {
+          if (end >= 0 && end - currentPos <= maxLength) {
+            // remove non-meaningful parts (dt, prep)
+            while (!Pattern.isSemanticPart(sentence.get(end - 1).tag())) {
+              end -= 1;
+            }
+            // to be at the beginning of the phrase can be removed
+            if (BSUtils
+                .isInArray(Pattern.TOBE, sentence.get(currentPos).word())) {
+              currentPos += 1;
+            }
+            // once a pattern is matched, the matched string cannot be used to
+            // match any other patterns
             map.put(sentence.subList(currentPos, end), pattern);
             currentPos = end;
             posChanged = true;
@@ -290,7 +390,7 @@ public class SegmentExtractor {
     }
     Part part = Pattern.tagToPart(sentence.get(wordIdx).tag(),
         sentence.get(wordIdx).word());
-    // determiners and prepositions are 'attached' to nouns without
+    // determiners and prepositions are 'attached' to noun without
     // explicitly matching with the pattern
     if (pattern.syntacticParts[pattIdx] == Part.NOUN
         && (part == Part.DT || part == Part.IN)) {
@@ -328,14 +428,14 @@ public class SegmentExtractor {
     static final String prepositionTag = "IN";
     static final String toTag = "TO";
     static final String[] TOBE = new String[] { "is", "am", "are", "be",
-        "been", "was", "were", "'s", "'re" };
+        "been", "was", "were", "'s", "'re", "'m" };
 
     /**
      * The constituent parts.
      */
     public enum Part {
-      NOUN("noun"), ADJ("adj"), ADV("adv"), STATE_VERB("state verb"), ACTION_VERB(
-          "action verb"), TO("to"), UNKNOWN("unknown"), DT("dt"), IN("prep");
+      NOUN("noun"), ADJ("adj"), ADV("adv"), VERB("verb"), TO("to"), UNKNOWN(
+          "unknown"), DT("dt"), IN("prep"), NOT("not");
 
       private String representation;
 
@@ -366,6 +466,17 @@ public class SegmentExtractor {
     }
 
     /**
+     * Returns true if the given tag is not one of the functional tags including
+     * determiners, prepositions, and conjunctions.
+     * 
+     * @param tag
+     * @return
+     */
+    public static boolean isSemanticPart(String tag) {
+      return (!tag.equals(prepositionTag) && !tag.equals(determinerTag));
+    }
+
+    /**
      * Returns the corresponding part of the given tag.
      * 
      * @param tag
@@ -376,17 +487,17 @@ public class SegmentExtractor {
         return Part.ADJ;
       }
       if (tag.startsWith(advTag)) {
-        return Part.ADV;
+        if (word.equals("not")) {
+          return Part.NOT;
+        } else {
+          return Part.ADV;
+        }
       }
       if (tag.startsWith(nounTag)) {
         return Part.NOUN;
       }
       if (tag.startsWith(verbTag)) {
-        if (BSUtils.isInArray(TOBE, word)) {
-          return Part.STATE_VERB;
-        } else {
-          return Part.ACTION_VERB;
-        }
+        return Part.VERB;
       }
       if (tag.equals(toTag)) {
         return Part.TO;
@@ -394,7 +505,9 @@ public class SegmentExtractor {
       if (tag.equals(determinerTag)) {
         return Part.DT;
       }
-      if (tag.equals(prepositionTag)) {
+      if (tag.equals(prepositionTag)
+          && !(word.equals("as") || word.equals("if"))) {
+        // 'as' and 'if' is not part of a noun group/phrase
         return Part.IN;
       }
 
@@ -435,7 +548,7 @@ public class SegmentExtractor {
         for (ArrayList<? extends HasWord> tSentence : tSentences) {
           ArrayList<TaggedWord> sentence = tagger.tagSentence(tSentence);
           HashMap<List<TaggedWord>, Pattern> patts = extractor.extractPatterns(
-              patterns, sentence, 5, 0, patterns.length - 1);
+              patterns, sentence, 7, 0, patterns.length - 1);
           for (Entry<List<TaggedWord>, Pattern> entry : patts.entrySet()) {
             map.get(entry.getValue()).add(entry.getKey());
           }
@@ -448,16 +561,45 @@ public class SegmentExtractor {
     }
   }
 
+  static void countPatternOccurences(String dataset) throws IOException {
+    int[][] pairs = new int[][] { { 0, 3 }, { 4, 7 }, { 8, 10 }, { 11, 13 },
+        { 14, 16 } };
+    int[] cnt = new int[pairs.length];
+    SegmentExtractor extractor = new SegmentExtractor();
+    MaxentTagger tagger = MaxentTaggerSingleton.getInstance();
+    HashMap<String, ArrayList<Review>> entityMap = BSUtils.readReviews(dataset,
+        new ReviewWithProsAndConsReader());
+    for (int idx = 0; idx < pairs.length; idx++) {
+      for (Entry<String, ArrayList<Review>> entry : entityMap.entrySet()) {
+        for (Review review : entry.getValue()) {
+          List<ArrayList<? extends HasWord>> sentences = MaxentTagger
+              .tokenizeText(new BufferedReader(new StringReader(review
+                  .getContent())));
+          for (ArrayList<? extends HasWord> tSentence : sentences) {
+            cnt[idx] += extractor.extractSegmentsAsArrays(ALL_PATTERNS,
+                tagger.tagSentence(tSentence), 7, pairs[idx][0], pairs[idx][1])
+                .size();
+          }
+        }
+      }
+    }
+    for (int idx = 0; idx < pairs.length; idx++) {
+      System.out.println(cnt[idx]);
+    }
+  }
+
   public static void main(String args[]) throws IOException {
-//    String dataset = "C:/datasets/models/bs/laptop/docs.txt";
-    Pattern[] patterns = PRODUCT_PATTERNS;
-//    writeAllExtractedPatterns(patterns, dataset);
+//    String dataset = "C:/datasets/models/bs/ursa/docs.txt";
+//    countPatternOccurences(dataset);
+    Pattern[] patterns = ALL_PATTERNS;
+    // writeAllExtractedPatterns(patterns, dataset);
 
     SegmentExtractor extractor = new SegmentExtractor();
     MaxentTagger tagger = MaxentTaggerSingleton.getInstance();
     List<ArrayList<? extends HasWord>> tSentences = MaxentTagger
-        .tokenizeText(new BufferedReader(new StringReader(
-            "Touchpad is nice and touchpad buttons are too strong.")));
+        .tokenizeText(new BufferedReader(
+            new StringReader(
+                "am saving a ton of money")));
     for (ArrayList<? extends HasWord> tSentence : tSentences) {
       ArrayList<TaggedWord> sentence = tagger.tagSentence(tSentence);
       System.out.println(sentence);

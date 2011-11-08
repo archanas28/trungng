@@ -26,7 +26,9 @@ public class GibbsSamplerWithOptimizer extends GibbsSampler {
   public void gibbsSampling(int numIters, int startingIter, int savingInterval,
       int burnin) throws IOException {
     System.out.printf("Gibbs sampling started (Iterations: %d)\n", numIters);
-    initDocs(0, model.getNumDocuments());
+    if (startingIter == 0) {
+      initDocs(0, model.getNumDocuments());
+    }  
     double startTime = System.currentTimeMillis();
     for (int iter = startingIter; iter < numIters; iter++) {
       int realIter = iter + 1;
