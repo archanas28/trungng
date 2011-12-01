@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/home_root"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <LinearLayout style="@style/TitleBar">
+        <ImageView style="@style/TitleBarLogo"
+            android:contentDescription="@string/description_logo"
+            android:src="@drawable/title_logo" />
+
+        <View style="@style/TitleBarSpring" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:padding="6dip">
+        <EditText
+        	android:id="@+id/input_username"
+        	android:hint="Username"
+        	android:layout_width="fill_parent"
+        	android:layout_height="wrap_content"
+        	android:inputType="text"
+        	android:padding="15dip" />
+        <EditText
+        	android:id="@+id/input_password"
+        	android:hint="Password"
+        	android:layout_width="fill_parent"
+        	android:layout_height="wrap_content"
+        	android:inputType="textPassword"
+        	android:padding="15dip" />
+				        	
+        <!-- Login and Clear button -->
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+            	android:orientation="horizontal"
+            	android:layout_width="wrap_content"
+            	android:layout_height="wrap_content"
+            	android:layout_centerHorizontal="true">
+	            <Button android:id="@+id/btn_login"
+	              android:onClick="onLoginClick"
+	              android:text="@string/btn_login"
+	              android:layout_width="100dip"
+	              android:layout_height="wrap_content" />
+	            <Button android:id="@+id/btn_clear"
+	              android:onClick="onClearClick"
+	              android:text="@string/btn_clear"
+	              android:layout_width="100dip"
+	              android:layout_height="wrap_content"
+	              android:paddingLeft="15dip" />
+            </LinearLayout>  
+        </RelativeLayout>
+        
+        <!-- Link to signup activity section -->
+        <LinearLayout
+        	android:orientation="horizontal"
+        	android:layout_width="fill_parent"
+        	android:layout_height="wrap_content"
+        	android:paddingTop="15dip">
+	        <TextView
+	        	android:text="@string/no_account"
+	        	android:layout_width="wrap_content"
+	        	android:layout_height="wrap_content"
+	        	android:paddingLeft="5dip" />
+	        <TextView
+	        	android:text="@string/sign_up"
+	        	android:clickable="true"
+	        	android:onClick="onSignupClick"
+	        	android:textStyle="bold"
+	        	android:textColor="@color/text_blue"
+	        	android:layout_width="wrap_content"
+	        	android:layout_height="wrap_content"
+	        	android:paddingLeft="10dip" />
+        </LinearLayout>		
+    </LinearLayout>
+</LinearLayout>

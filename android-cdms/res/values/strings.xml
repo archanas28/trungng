@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_name">Android CDMS</string>
+
+    <string name="description_logo">Android CDMS</string>
+    <string name="description_home">Home</string>
+    <string name="description_search">Search</string>
+    <string name="description_refresh">Refresh</string>
+
+		<string name="title_friends">Friends</string>
+		<string name="title_courses">Courses</string>
+		<string name="title_subscribed">Subscribed Courses</string>
+		<string name="title_notifications">Notifications</string>
+    <string name="title_search">Search</string>
+    <string name="title_file_detail">File</string>
+    <string name="title_friend_detail">Friend</string>
+    <string name="title_login">Login</string>
+    <string name="title_logout">Log out</string>
+    <string name="title_download">Download</string>
+    <string name="title_edit">Edit info</string>
+    <string name="title_select_location">Choose a location to save file</string>
+    <string name="title_done">Done</string>
+    <string name="title_search_query">Search for \'<xliff:g id="query">%1$s</xliff:g>\'</string>
+    <string name="title_edit_file">Edit file info</string>
+    <string name="title_signup">Sign up</string>
+
+    <string name="btn_friends">Friends</string>
+    <string name="btn_courses">Courses</string>
+    <string name="btn_notifications">Notifications</string>
+    <string name="btn_login">Login</string>
+    <string name="btn_clear">Clear</string>
+    <string name="btn_signup">Sign up</string>
+    <string name="btn_subscribed">Subscribed Courses</string>
+    <string name="btn_accept">Accept</string>
+    <string name="btn_ignore">Ignore</string>
+    <string name="btn_view_file">View file</string>
+    <string name="btn_submit">Submit</string>
+
+    <string name="empty_search">No search results found</string>
+
+    <string name="search_label">Android CDMS</string>
+    <string name="search_hint">search by files, people</string>
+    <string name="file_name">Name:</string>
+    <string name="file_desc">Description:</string>
+    <string name="file_tags">Tags:</string>
+    <string name="no_permission1">You do not have permission to view the content of this course.</string>
+    <string name="course_no_resource">This course does not have any resource yet.</string>
+    <string name="no_notifications">No notifications.</string>
+    <string name="no_account">Don\'t have an account?</string>
+    <string name="no_courses">No courses.</string>
+    <string name="no_friends">No friends.</string>
+    <string name="sign_up">Sign up</string>
+</resources>

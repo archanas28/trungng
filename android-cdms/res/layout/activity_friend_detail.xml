@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <LinearLayout style="@style/TitleBar">
+        <ImageButton style="@style/TitleBarAction"
+            android:contentDescription="@string/description_home"
+            android:src="@drawable/ic_title_home"
+            android:onClick="onHomeClick" />
+
+        <ImageView style="@style/TitleBarSeparator" />
+        <TextView style="@style/TitleBarText" />
+
+        <ImageView style="@style/TitleBarSeparator" />
+        <ImageButton style="@style/TitleBarAction"
+            android:contentDescription="@string/description_search"
+            android:src="@drawable/ic_title_search"
+            android:onClick="onSearchClick" />
+    </LinearLayout>
+
+		<!-- User info section -->
+		<LinearLayout
+			android:orientation="horizontal"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:padding="5dip">
+			<ImageView
+				android:id="@+id/img_friend_avatar"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_weight="0.2"
+				/>
+			<TextView
+				android:id="@+id/txt_friend_name"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:textStyle="bold"
+				android:textSize="@dimen/text_size_medium"
+				android:textColor="@color/text_blue"
+				android:layout_weight="0.7"
+				android:paddingTop="5dip"
+				/>
+			<ImageView
+				android:id="@+id/btn_add_friend"
+				android:clickable="true"
+				android:src="@drawable/ic_title_add_friend"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_weight="0.1"
+				android:padding="5dip"
+				android:visibility="invisible"
+				android:onClick="onAddClick" />
+		</LinearLayout>
+		
+		<!-- List view section -->    
+		<ExpandableListView
+    	android:id="@android:id/list"
+    	android:layout_width="fill_parent"
+    	android:layout_height="fill_parent"
+    	android:layout_weight="1"
+    	android:padding="5dip"
+    	android:paddingTop="10dip" />
+</LinearLayout>

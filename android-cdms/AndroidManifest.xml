@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+	package="edu.kaist.cs408.cdms" android:versionCode="1"
+	android:versionName="0.1">
+
+	<uses-sdk android:minSdkVersion="7" android:targetSdkVersion="7" />
+
+	<uses-permission android:name="android.permission.INTERNET" />
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+	
+	<application android:label="@string/app_name" android:icon="@drawable/ic_launcher">
+
+		<activity android:name=".ui.HomeActivity" android:theme="@style/Theme.IOSched"
+			android:label="@string/app_name" android:icon="@drawable/ic_launcher">
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
+				<category android:name="android.intent.category.LAUNCHER" />
+			</intent-filter>
+		</activity>
+
+		<activity android:name=".ui.LoginActivity" android:theme="@style/Theme.IOSched"
+			android:label="@string/title_login" />
+
+		<activity android:name=".ui.SignupActivity" android:theme="@style/Theme.IOSched"
+			android:label="@string/title_signup" />
+			
+		<activity android:name=".ui.FriendsActivity" android:theme="@style/Theme.IOSched"
+			android:label="@string/title_friends" />
+
+		<activity android:name=".ui.CoursesActivity" android:theme="@style/Theme.IOSched"
+			android:label="@string/title_courses" />
+		<activity android:name=".ui.CourseDetailActivity" android:theme="@style/Theme.IOSched" />
+
+		<activity android:name=".ui.SubscribedCoursesActivity" android:theme="@style/Theme.IOSched"
+			android:label="@string/title_subscribed" />
+
+		<activity android:name=".ui.NotificationsActivity"
+		  android:theme="@style/Theme.IOSched" android:label="@string/title_notifications" />
+
+		<activity android:name=".ui.FileDetailActivity"
+			android:theme="@style/Theme.IOSched" android:label="@string/title_file_detail" />
+
+		<activity android:name=".ui.EditFileInfoActivity"
+			android:theme="@style/Theme.IOSched" android:label="@string/title_edit_file" />
+			
+		<activity android:name=".ui.FriendDetailActivity"
+			android:theme="@style/Theme.IOSched" android:label="@string/title_friend_detail" />
+		
+		<activity android:name=".ui.SearchActivity" android:theme="@style/Theme.IOSched"
+			android:label="@string/title_search" android:launchMode="singleTop">
+			<intent-filter>
+				<action android:name="android.intent.action.SEARCH" />
+				<category android:name="android.intent.category.DEFAULT" />
+			</intent-filter>
+			<meta-data android:name="android.app.searchable"
+				android:resource="@xml/searchable" />
+		</activity>
+
+		<meta-data android:name="android.app.default_searchable"
+			android:value=".ui.SearchActivity" />
+
+		<service android:name=".service.MonitoringService" />
+	</application>
+</manifest>

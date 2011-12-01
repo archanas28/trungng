@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <LinearLayout style="@style/TitleBar">
+        <ImageButton style="@style/TitleBarAction"
+            android:contentDescription="@string/description_home"
+            android:src="@drawable/ic_title_home"
+            android:onClick="onHomeClick" />
+
+        <ImageView style="@style/TitleBarSeparator" />
+        <TextView style="@style/TitleBarText" />
+
+        <ImageView style="@style/TitleBarSeparator" />
+        <ImageButton style="@style/TitleBarAction"
+            android:contentDescription="@string/description_search"
+            android:src="@drawable/ic_title_search"
+            android:onClick="onSearchClick" />
+    </LinearLayout>
+
+    <LinearLayout
+      android:orientation="vertical"
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:padding="6dip"
+      android:layout_marginTop="10dip">
+      <TextView
+      	android:layout_width="wrap_content"
+      	android:layout_height="wrap_content"
+      	android:text="@string/file_name" />
+      <EditText
+       	android:id="@+id/input_file_name"
+       	android:layout_width="fill_parent"
+       	android:layout_height="wrap_content"
+       	android:inputType="text" />
+		</LinearLayout>
+
+    <LinearLayout
+      android:orientation="vertical"
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:padding="6dip"
+      android:layout_marginTop="10dip">
+      <TextView
+      	android:layout_width="wrap_content"
+      	android:layout_height="wrap_content"
+      	android:text="@string/file_desc" />
+      <EditText
+       	android:id="@+id/input_file_desc"
+       	android:layout_width="fill_parent"
+       	android:layout_height="wrap_content"
+       	android:inputType="text"
+       	android:minLines="2" />
+		</LinearLayout>
+
+    <LinearLayout
+      android:orientation="vertical"
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:padding="6dip"
+      android:layout_marginTop="10dip">
+      <TextView
+      	android:layout_width="wrap_content"
+      	android:layout_height="wrap_content"
+      	android:text="@string/file_tags" />
+      <EditText
+       	android:id="@+id/input_file_tags"
+       	android:layout_width="fill_parent"
+       	android:layout_height="wrap_content"
+       	android:inputType="text"
+       	android:maxLines="2" />
+		</LinearLayout>
+
+    <RelativeLayout
+       android:layout_width="fill_parent"
+       android:layout_height="wrap_content"
+       android:padding="6dip"
+       android:layout_marginTop="10dip">
+    	<LinearLayout
+    		android:orientation="horizontal"
+    		android:layout_width="wrap_content"
+    		android:layout_height="wrap_content"
+    		android:layout_centerHorizontal="true">
+	    	<Button
+	    		android:id="@+id/btn_editfile_save"
+	    		android:onClick="onSaveClick"
+	    		android:text="Save"
+	    		android:layout_width="130dip"
+	    		android:layout_height="wrap_content"
+	    		android:padding="5dip"/>
+	    	<Button
+	    		android:id="@+id/btn_editfile_cancel"
+	    		android:onClick="onCancelClick"
+	    		android:text="Cancel"
+	    		android:layout_width="130dip"
+	    		android:layout_height="wrap_content"
+	    		android:padding="5dip"/>
+    	</LinearLayout>
+    </RelativeLayout>
+</LinearLayout>
