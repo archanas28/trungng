@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.Locale;
 
 /**
- * A locale word contains its string value and its locale (the language).
+ * A locale word contains its string value and its locale (i.e, the language).
  * 
  * @author trung nguyen (trung.ngvan@gmail.com)
  */
