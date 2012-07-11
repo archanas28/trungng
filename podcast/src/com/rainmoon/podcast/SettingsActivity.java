@@ -19,8 +19,6 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 
-import com.raindmoon.podcast.R;
-
 /**
  * This preference activity has in its manifest declaration an intent filter for
  * the ACTION_MANAGE_NETWORK_USAGE action. This activity provides a settings UI

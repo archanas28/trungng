@@ -7,8 +7,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.widget.Toast;
 
-import com.raindmoon.podcast.R;
-
 /**
  * 
  * This BroadcastReceiver intercepts the

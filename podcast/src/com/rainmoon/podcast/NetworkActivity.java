@@ -40,7 +40,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.webkit.WebView;
 
-import com.raindmoon.podcast.R;
 import com.rainmoon.podcast.StackOverflowXmlParser.Entry;
 
 /**
