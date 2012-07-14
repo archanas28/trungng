@@ -23,23 +23,21 @@
  *
  */
 
-package com.rainmoon.podcast;
+package com.rainmoon.podcast.preference;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
-import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
-import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceActivity;
-import android.preference.PreferenceManager;
 
+import com.rainmoon.podcast.MainTabActivity;
+import com.rainmoon.podcast.R;
+import com.rainmoon.podcast.Strings;
 import com.rainmoon.podcast.service.RefreshService;
 
-public class ApplicationPreferencesActivity extends PreferenceActivity {
+public class PreferencesActivityCompatability extends PreferenceActivity {
+
   @SuppressWarnings("deprecation")
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -53,12 +51,12 @@ public class ApplicationPreferencesActivity extends PreferenceActivity {
         if (Boolean.TRUE.equals(newValue)) {
           new Thread() {
             public void run() {
-              startService(new Intent(ApplicationPreferencesActivity.this,
+              startService(new Intent(PreferencesActivityCompatability.this,
                   RefreshService.class));
             }
           }.start();
         } else {
-          stopService(new Intent(ApplicationPreferencesActivity.this,
+          stopService(new Intent(PreferencesActivityCompatability.this,
               RefreshService.class));
         }
         return true;
@@ -73,43 +71,6 @@ public class ApplicationPreferencesActivity extends PreferenceActivity {
               .equals(newValue));
         }
         return true;
-      }
-    });
-
-    preference = (Preference) findPreference(Strings.SETTINGS_EFFICIENTFEEDPARSING);
-    preference.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
-      public boolean onPreferenceChange(final Preference preference,
-          Object newValue) {
-        if (newValue.equals(Boolean.FALSE)) {
-          AlertDialog.Builder builder = new AlertDialog.Builder(
-              ApplicationPreferencesActivity.this);
-
-          builder.setIcon(android.R.drawable.ic_dialog_alert);
-          builder.setTitle(android.R.string.dialog_alert_title);
-          builder.setPositiveButton(android.R.string.ok, new OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-              Editor editor = PreferenceManager.getDefaultSharedPreferences(
-                  ApplicationPreferencesActivity.this).edit();
-
-              editor.putBoolean(Strings.SETTINGS_EFFICIENTFEEDPARSING,
-                  Boolean.FALSE);
-              editor.commit();
-              ((CheckBoxPreference) preference).setChecked(false);
-              dialog.dismiss();
-            }
-          });
-          builder.setNegativeButton(android.R.string.cancel,
-              new OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                  dialog.dismiss();
-                }
-              });
-          builder.setMessage(R.string.warning_moretraffic);
-          builder.show();
-          return false;
-        } else {
-          return true;
-        }
       }
     });
   }

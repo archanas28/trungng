@@ -82,7 +82,8 @@
                 <data android:mimeType="vnd.android.cursor.item/vnd.feeddata.entry" />
             </intent-filter>
         </activity>
-        <activity android:name=".ApplicationPreferencesActivity" />
+        <activity android:name=".preference.PreferencesActivityCompatability" />
+        <activity android:name=".preference.PreferencesActivityV11" />
         <activity android:name=".widget.WidgetConfigActivity" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />

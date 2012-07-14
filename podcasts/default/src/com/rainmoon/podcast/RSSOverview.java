@@ -42,8 +42,10 @@ import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -62,6 +64,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.rainmoon.podcast.preference.PreferencesActivityCompatability;
+import com.rainmoon.podcast.preference.PreferencesActivityV11;
+import com.rainmoon.podcast.preference.PrefsFragment;
 import com.rainmoon.podcast.provider.FeedData;
 import com.rainmoon.podcast.provider.OPML;
 import com.rainmoon.podcast.service.RefreshService;
@@ -92,8 +97,6 @@ public class RSSOverview extends ListActivity {
   private static final int CONTEXTMENU_DELETEALLENTRIES_ID = 9;
 
   private static final int CONTEXTMENU_RESETUPDATEDATE_ID = 10;
-
-  private static final int ACTIVITY_APPLICATIONPREFERENCES_ID = 1;
 
   private static final Uri CANGELOG_URI = Uri
       .parse("http://code.google.com/p/sparserss/wiki/Changelog");
@@ -267,7 +270,6 @@ public class RSSOverview extends ListActivity {
     return true;
   }
 
-  @SuppressWarnings("deprecation")
   @Override
   public boolean onMenuItemSelected(int featureId, final MenuItem item) {
     setFeedSortEnabled(false);
@@ -479,9 +481,17 @@ public class RSSOverview extends ListActivity {
     }
 
     case R.id.menu_settings: {
-      startActivityForResult(new Intent(this,
-          ApplicationPreferencesActivity.class),
-          ACTIVITY_APPLICATIONPREFERENCES_ID);
+      if (Build.VERSION.SDK_INT < 11) {
+        startActivity(new Intent(this, PreferencesActivityCompatability.class));
+      } else {
+        Intent intent = new Intent(this, PreferencesActivityV11.class);
+        // do not show header because currently there is only 1
+        intent.putExtra(PreferenceActivity.EXTRA_NO_HEADERS, true);
+        intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT,
+            PrefsFragment.class.getName());
+        startActivity(intent);
+      }
+
       break;
     }
     case R.id.menu_allread: {
@@ -520,6 +530,7 @@ public class RSSOverview extends ListActivity {
                 }
               });
           builder.setItems(fileNames, new DialogInterface.OnClickListener() {
+            @SuppressWarnings("deprecation")
             public void onClick(DialogInterface dialog, int which) {
               try {
                 OPML.importFromFile(
