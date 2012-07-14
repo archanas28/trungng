@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Layout to view an entry -->
 <LinearLayout
     android:orientation="vertical"
     android:layout_width="fill_parent"
@@ -12,7 +13,7 @@
             android:paddingTop="2pt"
             android:layout_height="wrap_content"
             android:id="@+id/entry_date"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_gravity="fill"
             android:layout_weight="1" />
         <ImageView
@@ -27,7 +28,7 @@
     <RelativeLayout
         android:id="@+id/entry_content"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="0dp"
         android:layout_gravity="fill"
         android:layout_weight="1" >
         <ViewFlipper
@@ -50,7 +51,7 @@
             <ImageButton 
                 android:layout_height="wrap_content"
                 android:id="@+id/url_button"
-                android:layout_width="fill_parent"
+                android:layout_width="0dp"
                 android:layout_gravity="fill"
                 android:layout_weight="1"
                 android:background="#7C000000"

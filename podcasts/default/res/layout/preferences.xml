@@ -85,18 +85,14 @@
             android:summary="@string/settings_fetchpictures_description"
             android:key="pictures.fetch" 
             android:dependency="pictures.disable"/>
+        <!-- 
         <CheckBoxPreference
-            android:title="@string/settings_lighttheme"
+            android:title="@string/settings_blacktheme"
             android:defaultValue="false"
-            android:summary="@string/settings_lighttheme_description"
-            android:key="lighttheme" 
+            android:summary="@string/settings_blacktheme_description"
+            android:key="blacktheme" 
             android:disableDependentsState="true"/>
-        <CheckBoxPreference
-            android:title="@string/settings_blacktextwhite"
-            android:defaultValue="false"
-            android:summary="@string/settings_blacktextwhite_description"
-            android:key="blacktextonwhite" 
-            android:dependency="lighttheme"/>
+         -->    
         <ListPreference
             android:name="@string/settings_fontsize"
             android:title="@string/settings_fontsize"
