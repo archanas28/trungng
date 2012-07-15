@@ -48,6 +48,7 @@ import android.widget.TextView;
 
 import com.rainmoon.podcast.provider.FeedData;
 
+@SuppressWarnings("deprecation")
 public class MainTabActivity extends TabActivity {
   private static final int DIALOG_LICENSEAGREEMENT = 0;
 
