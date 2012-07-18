@@ -3,12 +3,8 @@ package com.rainmoon.podcast;
 import java.io.File;
 import java.io.FilenameFilter;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.NotificationManager;
-import android.app.AlertDialog.Builder;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -17,6 +13,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
+import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -27,7 +24,12 @@ import com.rainmoon.podcast.preference.PrefsFragment;
 import com.rainmoon.podcast.provider.FeedData;
 import com.rainmoon.podcast.provider.OPML;
 
-public class RssOverviewActivity extends Activity {
+/**
+ * Note that we must extend FragmentActivity instead of Activity.
+ * @author trung nguyen
+ *
+ */
+public class RssOverviewActivity extends FragmentActivity {
 
   private static final int DIALOG_ERROR_FEEDIMPORT = 3;
 
@@ -42,13 +44,12 @@ public class RssOverviewActivity extends Activity {
   private static final Uri CANGELOG_URI = Uri
       .parse("http://code.google.com/p/sparserss/wiki/Changelog");
 
-
   /** Called when the activity is first created. */
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
-    setContentView(R.layout.main);
+    setContentView(R.layout.rssoverview);
   }
 
   @Override
@@ -68,8 +69,8 @@ public class RssOverviewActivity extends Activity {
       new Thread() {
         public void run() {
           sendBroadcast(new Intent(Strings.ACTION_REFRESHFEEDS).putExtra(
-              Strings.SETTINGS_OVERRIDEWIFIONLY,
-              PreferenceManager.getDefaultSharedPreferences(RSSOverview.this)
+              Strings.SETTINGS_OVERRIDEWIFIONLY, PreferenceManager
+                  .getDefaultSharedPreferences(RssOverviewActivity.this)
                   .getBoolean(Strings.SETTINGS_OVERRIDEWIFIONLY, false)));
         }
       }.start();
@@ -88,21 +89,6 @@ public class RssOverviewActivity extends Activity {
         startActivity(intent);
       }
 
-      break;
-    }
-    case R.id.menu_allread: {
-      new Thread() {
-        public void run() {
-          if (getContentResolver().update(
-              FeedData.EntryColumns.CONTENT_URI,
-              getReadContentValues(),
-              new StringBuilder(FeedData.EntryColumns.READDATE).append(
-                  Strings.DB_ISNULL).toString(), null) > 0) {
-            getContentResolver().notifyChange(FeedData.FeedColumns.CONTENT_URI,
-                null);
-          }
-        }
-      }.start();
       break;
     }
     case R.id.menu_about: {
@@ -132,7 +118,8 @@ public class RssOverviewActivity extends Activity {
                 OPML.importFromFile(
                     new StringBuilder(Environment.getExternalStorageDirectory()
                         .toString()).append(File.separator)
-                        .append(fileNames[which]).toString(), RSSOverview.this);
+                        .append(fileNames[which]).toString(),
+                    RssOverviewActivity.this);
               } catch (Exception e) {
                 showDialog(DIALOG_ERROR_FEEDIMPORT);
               }
@@ -170,18 +157,6 @@ public class RssOverviewActivity extends Activity {
       }
       break;
     }
-    case R.id.menu_deleteread: {
-      FeedData.deletePicturesOfFeedAsync(this,
-          FeedData.EntryColumns.CONTENT_URI, Strings.READDATE_GREATERZERO);
-      getContentResolver().delete(FeedData.EntryColumns.CONTENT_URI,
-          Strings.READDATE_GREATERZERO, null);
-//      ((RSSOverviewListAdapter) getListAdapter()).notifyDataSetChanged();
-      break;
-    }
-    case R.id.menu_deleteallentries: {
-      showDeleteAllEntriesQuestion(this, FeedData.EntryColumns.CONTENT_URI);
-      break;
-    }
     }
     return true;
   }
@@ -212,7 +187,6 @@ public class RssOverviewActivity extends Activity {
 
       builder.setIcon(android.R.drawable.ic_dialog_info);
       builder.setTitle(R.string.menu_about);
-      MainTabActivity.INSTANCE.setupLicenseText(builder);
       builder.setPositiveButton(android.R.string.ok,
           new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
@@ -242,32 +216,4 @@ public class RssOverviewActivity extends Activity {
     builder.setPositiveButton(android.R.string.ok, null);
     return builder.create();
   }
-
-  private static void showDeleteAllEntriesQuestion(final Context context,
-      final Uri uri) {
-    Builder builder = new AlertDialog.Builder(context);
-
-    builder.setIcon(android.R.drawable.ic_dialog_alert);
-    builder.setTitle(R.string.contextmenu_deleteallentries);
-    builder.setMessage(R.string.question_areyousure);
-    builder.setPositiveButton(android.R.string.yes,
-        new DialogInterface.OnClickListener() {
-          public void onClick(DialogInterface dialog, int which) {
-            new Thread() {
-              public void run() {
-                FeedData.deletePicturesOfFeed(context, uri,
-                    Strings.DB_EXCUDEFAVORITE);
-                if (context.getContentResolver().delete(uri,
-                    Strings.DB_EXCUDEFAVORITE, null) > 0) {
-                  context.getContentResolver().notifyChange(
-                      FeedData.FeedColumns.CONTENT_URI, null);
-                }
-              }
-            }.start();
-          }
-        });
-    builder.setNegativeButton(android.R.string.no, null);
-    builder.show();
-  }
-  
 }

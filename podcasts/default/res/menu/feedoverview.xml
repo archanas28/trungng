@@ -12,21 +12,11 @@
         android:showAsAction="withText"
         android:title="@string/menu_refresh"/>
     <item
-        android:id="@+id/menu_allread"
-        android:icon="@android:drawable/ic_menu_revert"
-        android:title="@string/menu_allread"/>
-    <item
         android:id="@+id/menu_import"
         android:title="@string/menu_import"/>
     <item
         android:id="@+id/menu_export"
         android:title="@string/menu_export"/>
-    <item
-        android:id="@+id/menu_deleteread"
-        android:title="@string/contextmenu_deleteread"/>
-    <item
-        android:id="@+id/menu_deleteallentries"
-        android:title="@string/contextmenu_deleteallentries"/>
     <item
         android:id="@+id/menu_about"
         android:icon="@android:drawable/ic_menu_info_details"

@@ -129,8 +129,8 @@ public class EntriesListActivity extends ListActivity {
             BitmapFactory.decodeByteArray(iconBytes, 0, iconBytes.length)));
       }
     }
-    if (RSSOverview.notificationManager != null) {
-      RSSOverview.notificationManager.cancel(0);
+    if (RSSOverviewFragment.notificationManager != null) {
+      RSSOverviewFragment.notificationManager.cancel(0);
     }
 
     getListView().setOnCreateContextMenuListener(
@@ -186,7 +186,7 @@ public class EntriesListActivity extends ListActivity {
     case R.id.menu_markasread: {
       new Thread() { // the update process takes some time
         public void run() {
-          getContentResolver().update(uri, RSSOverview.getReadContentValues(),
+          getContentResolver().update(uri, RSSOverviewFragment.getReadContentValues(),
               null, null);
         }
       }.start();
@@ -197,7 +197,7 @@ public class EntriesListActivity extends ListActivity {
       new Thread() { // the update process takes some time
         public void run() {
           getContentResolver().update(uri,
-              RSSOverview.getUnreadContentValues(), null, null);
+              RSSOverviewFragment.getUnreadContentValues(), null, null);
         }
       }.start();
       entriesListAdapter.markAsUnread();
@@ -263,7 +263,7 @@ public class EntriesListActivity extends ListActivity {
       long id = ((AdapterView.AdapterContextMenuInfo) item.getMenuInfo()).id;
 
       getContentResolver().update(ContentUris.withAppendedId(uri, id),
-          RSSOverview.getReadContentValues(), null, null);
+          RSSOverviewFragment.getReadContentValues(), null, null);
       entriesListAdapter.markAsRead(id);
       break;
     }
@@ -271,7 +271,7 @@ public class EntriesListActivity extends ListActivity {
       long id = ((AdapterView.AdapterContextMenuInfo) item.getMenuInfo()).id;
 
       getContentResolver().update(ContentUris.withAppendedId(uri, id),
-          RSSOverview.getUnreadContentValues(), null, null);
+          RSSOverviewFragment.getUnreadContentValues(), null, null);
       entriesListAdapter.markAsUnread(id);
       break;
     }

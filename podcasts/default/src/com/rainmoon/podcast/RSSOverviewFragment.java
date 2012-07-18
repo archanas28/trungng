@@ -28,9 +28,7 @@ package com.rainmoon.podcast;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
-import android.app.Dialog;
 import android.app.NotificationManager;
-import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -57,7 +55,7 @@ import android.widget.TextView;
 import com.rainmoon.podcast.provider.FeedData;
 import com.rainmoon.podcast.service.RefreshService;
 
-public class RSSOverview extends ListFragment {
+public class RSSOverviewFragment extends ListFragment {
 
   private static final int CONTEXTMENU_EDIT_ID = 3;
 
@@ -90,7 +88,6 @@ public class RSSOverview extends ListFragment {
 
     listAdapter = new RSSOverviewListAdapter((Activity) mContext);
     setListAdapter(listAdapter);
-    getListView().setOnCreateContextMenuListener(new MyContextMenuListener());
     if (PreferenceManager.getDefaultSharedPreferences(mContext).getBoolean(
         Strings.SETTINGS_REFRESHENABLED, false)) {
       // starts the service independent of this activity
@@ -99,6 +96,19 @@ public class RSSOverview extends ListFragment {
     } else {
       mContext.stopService(new Intent(mContext, RefreshService.class));
     }
+  }
+
+  @Override
+  public void onActivityCreated(Bundle savedInstanceState) {
+    super.onActivityCreated(savedInstanceState);
+    getListView().setOnCreateContextMenuListener(new MyContextMenuListener());
+  }
+
+  @Override
+  public View onCreateView(LayoutInflater inflater, ViewGroup container,
+      Bundle savedInstanceState) {
+    super.onCreateView(inflater, container, savedInstanceState);
+    return inflater.inflate(R.layout.main, container, false);
   }
 
   final class MyContextMenuListener implements OnCreateContextMenuListener {
@@ -125,15 +135,9 @@ public class RSSOverview extends ListFragment {
   }
 
   @Override
-  public View onCreateView(LayoutInflater inflater, ViewGroup container,
-      Bundle savedInstanceState) {
-    return inflater.inflate(R.layout.main, container, false);
-  }
-
-  @Override
   public void onResume() {
     super.onResume();
-    if (RSSOverview.notificationManager != null) {
+    if (RSSOverviewFragment.notificationManager != null) {
       notificationManager.cancel(0);
     }
   }
@@ -322,8 +326,8 @@ public class RSSOverview extends ListFragment {
           builder.setNeutralButton(R.string.button_alwaysokforall,
               new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
-                  PreferenceManager
-                      .getDefaultSharedPreferences(mContext).edit()
+                  PreferenceManager.getDefaultSharedPreferences(mContext)
+                      .edit()
                       .putBoolean(Strings.SETTINGS_OVERRIDEWIFIONLY, true)
                       .commit();
                   intent.putExtra(Strings.SETTINGS_OVERRIDEWIFIONLY, true);

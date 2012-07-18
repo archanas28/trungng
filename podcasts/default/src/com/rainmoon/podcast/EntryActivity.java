@@ -251,8 +251,8 @@ public class EntryActivity extends Activity {
         .getColumnIndex(FeedData.EntryColumns.ENCLOSURE);
 
     entryCursor.close();
-    if (RSSOverview.notificationManager == null) {
-      RSSOverview.notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+    if (RSSOverviewFragment.notificationManager == null) {
+      RSSOverviewFragment.notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
     }
 
     buttonPanel = (LinearLayout) findViewById(R.id.button_panel);
@@ -368,8 +368,8 @@ public class EntryActivity extends Activity {
   @Override
   protected void onResume() {
     super.onResume();
-    if (RSSOverview.notificationManager != null) {
-      RSSOverview.notificationManager.cancel(0);
+    if (RSSOverviewFragment.notificationManager != null) {
+      RSSOverviewFragment.notificationManager.cancel(0);
     }
     uri = getIntent().getData();
     parentUri = FeedData.EntryColumns.PARENT_URI(uri.getPath());

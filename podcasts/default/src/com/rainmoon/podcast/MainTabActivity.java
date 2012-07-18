@@ -26,27 +26,24 @@
 package com.rainmoon.podcast;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
+import android.app.ActivityManager;
+import android.app.ActivityManager.RunningServiceInfo;
 import android.app.TabActivity;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnKeyListener;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences.Editor;
+import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.text.util.Linkify;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ScrollView;
 import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
-import android.widget.TextView;
 
 import com.rainmoon.podcast.provider.FeedData;
+import com.rainmoon.podcast.service.FetcherService;
 
 @SuppressWarnings("deprecation")
 public class MainTabActivity extends TabActivity {
@@ -61,81 +58,99 @@ public class MainTabActivity extends TabActivity {
   private static final String TAG_FAVORITE = "favorite";
 
   public static MainTabActivity INSTANCE;
-
-  public static final boolean POSTGINGERBREAD = !Build.VERSION.RELEASE
-      .startsWith("1") && !Build.VERSION.RELEASE.startsWith("2"); // this way
-                                                                  // around is
-                                                                  // future save
-
   private Menu menu;
+  private boolean hasContent = false;
+  
+  public static final boolean POSTGINGERBREAD = !Build.VERSION.RELEASE
+      .startsWith("1") && !Build.VERSION.RELEASE.startsWith("2");
 
-  private boolean hasContent;
+  private BroadcastReceiver refreshReceiver = new BroadcastReceiver() {
+    @Override
+    public void onReceive(Context context, Intent intent) {
+      setProgressBarIndeterminateVisibility(true);
+    }
+  };
 
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.tabs);
     INSTANCE = this;
-    hasContent = false;
-    if (getPreferences(MODE_PRIVATE).getBoolean(
-        Strings.PREFERENCE_LICENSEACCEPTED, false)) {
-      setContent();
-    } else {
-      /* Workaround for android issue 4499 on 1.5 devices */
-      getTabHost().addTab(
-          getTabHost().newTabSpec(Strings.EMPTY).setIndicator(Strings.EMPTY)
-              .setContent(new Intent(this, EmptyActivity.class)));
-
-      showDialog(DIALOG_LICENSEAGREEMENT);
-    }
+    setContent();
   }
 
   @Override
-  protected Dialog onCreateDialog(int id) {
-    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+  protected void onResume() {
+    super.onResume();
+    setProgressBarIndeterminateVisibility(isCurrentlyRefreshing());
+    registerReceiver(refreshReceiver, new IntentFilter(
+        "com.rainmoon.podcast.REFRESH"));
+  }
 
-    builder.setIcon(android.R.drawable.ic_dialog_alert);
-    builder.setTitle(R.string.dialog_licenseagreement);
-    builder.setNegativeButton(R.string.button_decline,
-        new DialogInterface.OnClickListener() {
-          public void onClick(DialogInterface dialog, int which) {
-            dialog.cancel();
-            finish();
-          }
-        });
-    builder.setPositiveButton(R.string.button_accept,
-        new DialogInterface.OnClickListener() {
-          public void onClick(DialogInterface dialog, int which) {
-            dialog.dismiss();
+  @Override
+  protected void onPause() {
+    unregisterReceiver(refreshReceiver);
+    super.onPause();
+  }
 
-            Editor editor = getPreferences(MODE_PRIVATE).edit();
-
-            editor.putBoolean(Strings.PREFERENCE_LICENSEACCEPTED, true);
-            editor.commit();
-
-            /* Part of workaround for android issue 4499 on 1.5 devices */
-            getTabHost().clearAllTabs();
-
-            /* we only want to invoke actions if the license is accepted */
-            setContent();
-          }
-        });
-    setupLicenseText(builder);
-    builder.setOnKeyListener(new OnKeyListener() {
-      public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-          dialog.cancel();
-          finish();
-        }
+  private boolean isCurrentlyRefreshing() {
+    ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+    for (RunningServiceInfo service : manager
+        .getRunningServices(Integer.MAX_VALUE)) {
+      if (FetcherService.class.getName().equals(service.service.getClassName())) {
         return true;
       }
-    });
-    return builder.create();
+    }
+    return false;
+  }
+
+  private void setContent() {
+    TabHost tabHost = getTabHost();
+    hasContent = true;
+    tabHost.addTab(tabHost.newTabSpec(TAG_NORMAL)
+        .setIndicator(getString(R.string.overview))
+        .setContent(new Intent(this, RssOverviewActivity.class)));
+    if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean(
+        Strings.SETTINGS_SHOWTABS, false)) {
+      tabHost.addTab(tabHost
+          .newTabSpec(TAG_ALL)
+          .setIndicator(getString(R.string.all))
+          .setContent(
+              new Intent(Intent.ACTION_VIEW, FeedData.EntryColumns.CONTENT_URI)
+                  .putExtra(EntriesListActivity.EXTRA_SHOWFEEDINFO, true)));
+
+      tabHost.addTab(tabHost
+          .newTabSpec(TAG_FAVORITE)
+          .setIndicator(getString(R.string.favorites),
+              getResources().getDrawable(android.R.drawable.star_big_on))
+          .setContent(
+              new Intent(Intent.ACTION_VIEW,
+                  FeedData.EntryColumns.FAVORITES_CONTENT_URI).putExtra(
+                  EntriesListActivity.EXTRA_SHOWFEEDINFO, true).putExtra(
+                  EntriesListActivity.EXTRA_AUTORELOAD, true)));
+      tabsAdded = true;
+    }
+    getTabWidget().setVisibility(View.VISIBLE);
+    if (POSTGINGERBREAD) {
+      /* Change the menu also on ICS when tab is changed */
+      tabHost.setOnTabChangedListener(new OnTabChangeListener() {
+        public void onTabChanged(String tabId) {
+          if (menu != null) {
+            menu.clear();
+            onCreateOptionsMenu(menu);
+          }
+        }
+      });
+      if (menu != null) {
+        menu.clear();
+        onCreateOptionsMenu(menu);
+      }
+    }
   }
 
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
     this.menu = menu;
-
+    // to get the activity associated with selected tab and its menu
     Activity activity = getCurrentActivity();
 
     if (hasContent && activity != null) {
@@ -168,51 +183,6 @@ public class MainTabActivity extends TabActivity {
     }
   }
 
-  private void setContent() {
-    TabHost tabHost = getTabHost();
-
-    tabHost.addTab(tabHost.newTabSpec(TAG_NORMAL)
-        .setIndicator(getString(R.string.overview))
-        .setContent(new Intent().setClass(this, RSSOverview.class)));
-    hasContent = true;
-    if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean(
-        Strings.SETTINGS_SHOWTABS, false)) {
-      tabHost.addTab(tabHost
-          .newTabSpec(TAG_ALL)
-          .setIndicator(getString(R.string.all))
-          .setContent(
-              new Intent(Intent.ACTION_VIEW, FeedData.EntryColumns.CONTENT_URI)
-                  .putExtra(EntriesListActivity.EXTRA_SHOWFEEDINFO, true)));
-
-      tabHost.addTab(tabHost
-          .newTabSpec(TAG_FAVORITE)
-          .setIndicator(getString(R.string.favorites),
-              getResources().getDrawable(android.R.drawable.star_big_on))
-          .setContent(
-              new Intent(Intent.ACTION_VIEW,
-                  FeedData.EntryColumns.FAVORITES_CONTENT_URI).putExtra(
-                  EntriesListActivity.EXTRA_SHOWFEEDINFO, true).putExtra(
-                  EntriesListActivity.EXTRA_AUTORELOAD, true)));
-      tabsAdded = true;
-      getTabWidget().setVisibility(View.VISIBLE);
-    }
-    if (POSTGINGERBREAD) {
-      /* Change the menu also on ICS when tab is changed */
-      tabHost.setOnTabChangedListener(new OnTabChangeListener() {
-        public void onTabChanged(String tabId) {
-          if (menu != null) {
-            menu.clear();
-            onCreateOptionsMenu(menu);
-          }
-        }
-      });
-      if (menu != null) {
-        menu.clear();
-        onCreateOptionsMenu(menu);
-      }
-    }
-  }
-
   public void setTabWidgetVisible(boolean visible) {
     if (visible) {
       if (!tabsAdded) {
@@ -241,26 +211,4 @@ public class MainTabActivity extends TabActivity {
     }
 
   }
-
-  void setupLicenseText(AlertDialog.Builder builder) {
-    ScrollView scrollView = new ScrollView(this);
-
-    TextView textView = new TextView(this);
-
-    scrollView.addView(textView);
-    scrollView.setPadding(0, 0, 2, 0);
-
-    textView.setTextColor(textView.getTextColors().getDefaultColor()); // disables
-                                                                       // color
-                                                                       // change
-                                                                       // on
-                                                                       // selection
-    textView.setPadding(5, 0, 5, 0);
-    textView.setTextSize(15);
-    textView.setAutoLinkMask(Linkify.EMAIL_ADDRESSES | Linkify.WEB_URLS);
-    textView.setText(new StringBuilder(getString(R.string.license_intro))
-        .append(Strings.THREENEWLINES).append(getString(R.string.license)));
-    builder.setView(scrollView);
-  }
-
 }
