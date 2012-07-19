@@ -41,9 +41,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 
 import android.app.IntentService;
-import android.app.Notification;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -52,15 +50,12 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.Build;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.util.Xml;
 
 import com.rainmoon.podcast.BASE64;
-import com.rainmoon.podcast.MainTabActivity;
-import com.rainmoon.podcast.R;
 import com.rainmoon.podcast.Strings;
 import com.rainmoon.podcast.handler.RSSHandler;
 import com.rainmoon.podcast.provider.FeedData;
@@ -142,62 +137,6 @@ public class FetcherService extends IntentService {
         }
       } else {
         proxy = null;
-      }
-
-      int newCount = FetcherService.refreshFeedsStatic(FetcherService.this,
-          intent.getStringExtra(Strings.FEEDID), networkInfo,
-          intent.getBooleanExtra(Strings.SETTINGS_OVERRIDEWIFIONLY, false));
-
-      if (newCount > 0) {
-        if (preferences
-            .getBoolean(Strings.SETTINGS_NOTIFICATIONSENABLED, false)) {
-          Cursor cursor = getContentResolver().query(
-              FeedData.EntryColumns.CONTENT_URI,
-              new String[] { COUNT },
-              new StringBuilder(FeedData.EntryColumns.READDATE).append(
-                  Strings.DB_ISNULL).toString(), null, null);
-
-          cursor.moveToFirst();
-          newCount = cursor.getInt(0);
-          cursor.close();
-
-          String text = new StringBuilder().append(newCount).append(' ')
-              .append(getString(R.string.newentries)).toString();
-
-          Notification notification = new Notification(
-              PRIOR_GINGERBREAD ? R.drawable.ic_statusbar_rss
-                  : R.drawable.ic_statusbar_rss_23, text,
-              System.currentTimeMillis());
-
-          Intent notificationIntent = new Intent(FetcherService.this,
-              MainTabActivity.class);
-
-          PendingIntent contentIntent = PendingIntent.getActivity(
-              FetcherService.this, 0, notificationIntent,
-              PendingIntent.FLAG_UPDATE_CURRENT);
-
-          if (preferences.getBoolean(Strings.SETTINGS_NOTIFICATIONSVIBRATE,
-              false)) {
-            notification.defaults = Notification.DEFAULT_VIBRATE;
-          }
-          notification.flags = Notification.FLAG_AUTO_CANCEL
-              | Notification.FLAG_SHOW_LIGHTS;
-          notification.ledARGB = 0xffffffff;
-          notification.ledOnMS = 300;
-          notification.ledOffMS = 1000;
-
-          String ringtone = preferences.getString(
-              Strings.SETTINGS_NOTIFICATIONSRINGTONE, null);
-
-          if (ringtone != null && ringtone.length() > 0) {
-            notification.sound = Uri.parse(ringtone);
-          }
-          notification.setLatestEventInfo(FetcherService.this,
-              getString(R.string.rss_feeds), text, contentIntent);
-          notificationManager.notify(0, notification);
-        } else {
-          notificationManager.cancel(0);
-        }
       }
     }
   }

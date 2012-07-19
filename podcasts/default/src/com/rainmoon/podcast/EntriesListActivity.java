@@ -99,7 +99,7 @@ public class EntriesListActivity extends ListActivity {
       cursor.close();
     }
 
-    if (!MainTabActivity.POSTGINGERBREAD && iconBytes != null
+    if (!StaticMethods.POSTGINGERBREAD && iconBytes != null
         && iconBytes.length > 0) { // we cannot insert the icon here because it
                                    // would be overwritten, but we have to
                                    // reserve the icon here
@@ -121,7 +121,7 @@ public class EntriesListActivity extends ListActivity {
       setTitle(title);
     }
     if (iconBytes != null && iconBytes.length > 0) {
-      if (MainTabActivity.POSTGINGERBREAD) {
+      if (StaticMethods.POSTGINGERBREAD) {
         CompatibilityHelper.setActionBarDrawable(this, new BitmapDrawable(
             BitmapFactory.decodeByteArray(iconBytes, 0, iconBytes.length)));
       } else {
@@ -183,7 +183,7 @@ public class EntriesListActivity extends ListActivity {
     case R.id.menu_markasread: {
       new Thread() { // the update process takes some time
         public void run() {
-          getContentResolver().update(uri, RSSOverviewFragment.getReadContentValues(),
+          getContentResolver().update(uri, AllSubscriptionsFragment.getReadContentValues(),
               null, null);
         }
       }.start();
@@ -194,7 +194,7 @@ public class EntriesListActivity extends ListActivity {
       new Thread() { // the update process takes some time
         public void run() {
           getContentResolver().update(uri,
-              RSSOverviewFragment.getUnreadContentValues(), null, null);
+              AllSubscriptionsFragment.getUnreadContentValues(), null, null);
         }
       }.start();
       entriesListAdapter.markAsUnread();
@@ -260,7 +260,7 @@ public class EntriesListActivity extends ListActivity {
       long id = ((AdapterView.AdapterContextMenuInfo) item.getMenuInfo()).id;
 
       getContentResolver().update(ContentUris.withAppendedId(uri, id),
-          RSSOverviewFragment.getReadContentValues(), null, null);
+          AllSubscriptionsFragment.getReadContentValues(), null, null);
       entriesListAdapter.markAsRead(id);
       break;
     }
@@ -268,7 +268,7 @@ public class EntriesListActivity extends ListActivity {
       long id = ((AdapterView.AdapterContextMenuInfo) item.getMenuInfo()).id;
 
       getContentResolver().update(ContentUris.withAppendedId(uri, id),
-          RSSOverviewFragment.getUnreadContentValues(), null, null);
+          AllSubscriptionsFragment.getUnreadContentValues(), null, null);
       entriesListAdapter.markAsUnread(id);
       break;
     }

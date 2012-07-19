@@ -31,14 +31,12 @@ import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceActivity;
 
-import com.rainmoon.podcast.MainTabActivity;
 import com.rainmoon.podcast.R;
 import com.rainmoon.podcast.Strings;
 import com.rainmoon.podcast.service.RefreshService;
 
 public class PreferencesActivityCompatability extends PreferenceActivity {
 
-  @SuppressWarnings("deprecation")
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -58,17 +56,6 @@ public class PreferencesActivityCompatability extends PreferenceActivity {
         } else {
           stopService(new Intent(PreferencesActivityCompatability.this,
               RefreshService.class));
-        }
-        return true;
-      }
-    });
-
-    preference = (Preference) findPreference(Strings.SETTINGS_SHOWTABS);
-    preference.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
-      public boolean onPreferenceChange(Preference preference, Object newValue) {
-        if (MainTabActivity.INSTANCE != null) {
-          MainTabActivity.INSTANCE.setTabWidgetVisible(Boolean.TRUE
-              .equals(newValue));
         }
         return true;
       }

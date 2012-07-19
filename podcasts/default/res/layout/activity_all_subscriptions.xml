@@ -6,7 +6,7 @@
 
     <fragment
         android:id="@+id/frag_all_subscriptions"
-        android:name="com.rainmoon.podcast.RSSOverviewFragment"
+        android:name="com.rainmoon.podcast.AllSubscriptionsFragment"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" />
 

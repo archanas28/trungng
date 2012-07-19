@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 
-import com.rainmoon.podcast.MainTabActivity;
 import com.rainmoon.podcast.R;
 import com.rainmoon.podcast.Strings;
 import com.rainmoon.podcast.service.RefreshService;
@@ -50,10 +49,6 @@ public class PrefsFragment extends PreferenceFragment {
           }.start();
         } else {
           mContext.stopService(new Intent(mContext, RefreshService.class));
-        }
-      } else if (key.equals(Strings.SETTINGS_SHOWTABS)) {
-        if (MainTabActivity.INSTANCE != null) {
-          MainTabActivity.INSTANCE.setTabWidgetVisible(newValue);
         }
       }
     }

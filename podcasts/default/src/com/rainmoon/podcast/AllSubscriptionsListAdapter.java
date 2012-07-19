@@ -41,7 +41,7 @@ import android.widget.TextView;
 
 import com.rainmoon.podcast.provider.FeedData;
 
-public class RSSOverviewListAdapter extends ResourceCursorAdapter {
+public class AllSubscriptionsListAdapter extends ResourceCursorAdapter {
   private static final String COUNT_UNREAD = "COUNT(*) - COUNT(readdate)";
 
   private static final String COUNT = "COUNT(*)";
@@ -66,7 +66,7 @@ public class RSSOverviewListAdapter extends ResourceCursorAdapter {
 
   private SimpleTask updateTask;
 
-  public RSSOverviewListAdapter(Activity activity) {
+  public AllSubscriptionsListAdapter(Activity activity) {
     super(activity, R.layout.feedlistitem, activity.managedQuery(
         FeedData.FeedColumns.CONTENT_URI, null, null, null, null));
     nameColumnPosition = getCursor().getColumnIndex(FeedData.FeedColumns.NAME);
@@ -81,7 +81,7 @@ public class RSSOverviewListAdapter extends ResourceCursorAdapter {
     updateTask = new SimpleTask() {
       @Override
       public void runControlled() {
-        RSSOverviewListAdapter.super.onContentChanged();
+        AllSubscriptionsListAdapter.super.onContentChanged();
         cancel(); // cancel the task such that it does not run more than once
                   // without explicit intention
       }

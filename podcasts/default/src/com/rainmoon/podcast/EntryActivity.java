@@ -194,7 +194,7 @@ public class EntryActivity extends Activity {
 
     int titleId = -1;
 
-    if (MainTabActivity.POSTGINGERBREAD) {
+    if (StaticMethods.POSTGINGERBREAD) {
       canShowIcon = true;
       setContentView(R.layout.entry);
       try {
@@ -442,7 +442,7 @@ public class EntryActivity extends Activity {
 
         if (canShowIcon) {
           if (iconBytes != null && iconBytes.length > 0) {
-            if (MainTabActivity.POSTGINGERBREAD) {
+            if (StaticMethods.POSTGINGERBREAD) {
               CompatibilityHelper.setActionBarDrawable(
                   this,
                   new BitmapDrawable(BitmapFactory.decodeByteArray(iconBytes,
@@ -463,7 +463,7 @@ public class EntryActivity extends Activity {
               iconBytes = iconCursor.getBlob(1);
 
               if (iconBytes != null && iconBytes.length > 0) {
-                if (MainTabActivity.POSTGINGERBREAD) {
+                if (StaticMethods.POSTGINGERBREAD) {
                   CompatibilityHelper.setActionBarDrawable(
                       this,
                       new BitmapDrawable(BitmapFactory.decodeByteArray(

@@ -39,28 +39,6 @@
             android:title="@string/settings_enclosuredownloadwarning" />
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="@string/settings_category_notofications" >
-
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="notifications.enabled"
-            android:summary="@string/settings_notificationsenabled_description"
-            android:title="@string/settings_enabled" />
-
-        <RingtonePreference
-            android:dependency="notifications.enabled"
-            android:key="notifications.ringtone"
-            android:ringtoneType="notification"
-            android:summary="@string/settings_notificationsringtone_description"
-            android:title="@string/settings_notificationsringtone" />
-
-        <CheckBoxPreference
-            android:dependency="notifications.enabled"
-            android:key="notifications.vibrate"
-            android:summary="@string/settings_notificationsvibrate_description"
-            android:title="@string/settings_notificationsvibrate" />
-    </PreferenceCategory>
-
     <PreferenceCategory android:title="@string/settings_category_contentpresentation" >
 
         <CheckBoxPreference

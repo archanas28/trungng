@@ -39,13 +39,18 @@ public class NavigationFragment extends ListFragment {
   public void onActivityCreated(Bundle savedInstanceState) {
     // onCreateView() calls this method so the view and activity is ready
     super.onActivityCreated(savedInstanceState);
+    TextView header = (TextView) getActivity().getLayoutInflater().inflate(
+        R.layout.header, null);
+    header.setText(R.string.home);
+    getListView().addHeaderView(header);
+
     List<String> navigation = new ArrayList<String>();
-    final String overview = getResources().getString(R.string.overview);
-    final String all = getResources().getString(R.string.all);
+    final String all = getResources().getString(R.string.all_items);
     final String favorites = getResources().getString(R.string.favorites);
-    navigation.add(overview);
+    final String explore = getResources().getString(R.string.explore);
     navigation.add(all);
     navigation.add(favorites);
+    navigation.add(explore);
     // have to setListAdapter() here
     setListAdapter(new ArrayAdapter<String>(getActivity(),
         R.layout.navigation_item, navigation));
@@ -55,8 +60,9 @@ public class NavigationFragment extends ListFragment {
           long arg3) {
         try {
           TextView item = (TextView) view;
-          if (item.getText().equals(overview)) {
-            Intent intent = new Intent(getActivity(), RssOverviewActivity.class);
+          if (item.getText().equals(explore)) {
+            // TODO(trung): replace with Explore activity
+            Intent intent = new Intent(getActivity(), AllSubscriptionsActivity.class);
             startActivity(intent);
           } else if (item.getText().equals(all)) {
             Intent intent = new Intent(Intent.ACTION_VIEW,

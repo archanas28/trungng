@@ -32,7 +32,7 @@ import com.rainmoon.podcast.provider.OPML;
  * @author trung nguyen
  *
  */
-public class RssOverviewActivity extends FragmentActivity {
+public class AllSubscriptionsActivity extends FragmentActivity {
 
   private static final int DIALOG_ERROR_FEEDIMPORT = 3;
 
@@ -58,7 +58,7 @@ public class RssOverviewActivity extends FragmentActivity {
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
     super.onCreateOptionsMenu(menu);
-    getMenuInflater().inflate(R.menu.feedoverview, menu);
+    getMenuInflater().inflate(R.menu.all_subscriptions, menu);
     return true;
   }
 
@@ -75,7 +75,7 @@ public class RssOverviewActivity extends FragmentActivity {
         public void run() {
           sendBroadcast(new Intent(Strings.ACTION_REFRESHFEEDS).putExtra(
               Strings.SETTINGS_OVERRIDEWIFIONLY, PreferenceManager
-                  .getDefaultSharedPreferences(RssOverviewActivity.this)
+                  .getDefaultSharedPreferences(AllSubscriptionsActivity.this)
                   .getBoolean(Strings.SETTINGS_OVERRIDEWIFIONLY, false)));
         }
       }.start();
@@ -124,7 +124,7 @@ public class RssOverviewActivity extends FragmentActivity {
                     new StringBuilder(Environment.getExternalStorageDirectory()
                         .toString()).append(File.separator)
                         .append(fileNames[which]).toString(),
-                    RssOverviewActivity.this);
+                    AllSubscriptionsActivity.this);
               } catch (Exception e) {
                 showDialog(DIALOG_ERROR_FEEDIMPORT);
               }

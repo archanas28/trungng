@@ -3,7 +3,7 @@
     package="com.rainmoon.podcast"
     android:installLocation="auto"
     android:versionCode="1"
-    android:versionName="1" >
+    android:versionName="1.0" >
 
     <uses-sdk
         android:minSdkVersion="8"
@@ -57,7 +57,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".RssOverviewActivity"
+            android:name=".AllSubscriptionsActivity"
             android:launchMode="singleTask" />
         <activity android:name=".EmptyActivity" />
         <activity
