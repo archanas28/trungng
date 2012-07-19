@@ -56,7 +56,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainTabActivity" />
         <activity
             android:name=".RssOverviewActivity"
             android:launchMode="singleTask" />

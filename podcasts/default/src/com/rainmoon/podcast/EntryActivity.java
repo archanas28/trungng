@@ -31,10 +31,8 @@ import java.util.Date;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
-import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -251,9 +249,6 @@ public class EntryActivity extends Activity {
         .getColumnIndex(FeedData.EntryColumns.ENCLOSURE);
 
     entryCursor.close();
-    if (RSSOverviewFragment.notificationManager == null) {
-      RSSOverviewFragment.notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-    }
 
     buttonPanel = (LinearLayout) findViewById(R.id.button_panel);
     nextButton = (ImageButton) findViewById(R.id.next_button);
@@ -368,9 +363,6 @@ public class EntryActivity extends Activity {
   @Override
   protected void onResume() {
     super.onResume();
-    if (RSSOverviewFragment.notificationManager != null) {
-      RSSOverviewFragment.notificationManager.cancel(0);
-    }
     uri = getIntent().getData();
     parentUri = FeedData.EntryColumns.PARENT_URI(uri.getPath());
     reload();

@@ -26,6 +26,9 @@ import com.rainmoon.podcast.provider.OPML;
 
 /**
  * Note that we must extend FragmentActivity instead of Activity.
+ * 
+ * TODO(trung): make this activity work properly
+ * 
  * @author trung nguyen
  *
  */
@@ -49,16 +52,18 @@ public class RssOverviewActivity extends FragmentActivity {
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
-    setContentView(R.layout.rssoverview);
+    setContentView(R.layout.activity_all_subscriptions);
   }
 
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
+    super.onCreateOptionsMenu(menu);
     getMenuInflater().inflate(R.menu.feedoverview, menu);
     return true;
   }
 
   public boolean onOptionsItemSelected(final MenuItem item) {
+    super.onOptionsItemSelected(item);
     switch (item.getItemId()) {
     case R.id.menu_addfeed: {
       startActivity(new Intent(Intent.ACTION_INSERT)

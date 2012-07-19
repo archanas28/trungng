@@ -129,9 +129,6 @@ public class EntriesListActivity extends ListActivity {
             BitmapFactory.decodeByteArray(iconBytes, 0, iconBytes.length)));
       }
     }
-    if (RSSOverviewFragment.notificationManager != null) {
-      RSSOverviewFragment.notificationManager.cancel(0);
-    }
 
     getListView().setOnCreateContextMenuListener(
         new OnCreateContextMenuListener() {

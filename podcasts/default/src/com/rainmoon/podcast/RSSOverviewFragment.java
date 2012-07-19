@@ -28,7 +28,6 @@ package com.rainmoon.podcast;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
-import android.app.NotificationManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -55,6 +54,12 @@ import android.widget.TextView;
 import com.rainmoon.podcast.provider.FeedData;
 import com.rainmoon.podcast.service.RefreshService;
 
+/**
+ * Fragment showing the list of all subscriptions.
+ * 
+ * @author trung nguyen
+ * 
+ */
 public class RSSOverviewFragment extends ListFragment {
 
   private static final int CONTEXTMENU_EDIT_ID = 3;
@@ -71,23 +76,29 @@ public class RSSOverviewFragment extends ListFragment {
 
   private static final int CONTEXTMENU_RESETUPDATEDATE_ID = 10;
 
-  private RSSOverviewListAdapter listAdapter;
+  private RSSOverviewListAdapter mListAdapter;
   private Context mContext;
-  static NotificationManager notificationManager; // package scope
 
   /** Called when the activity is first created. */
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     mContext = getActivity();
+  }
 
-    if (notificationManager == null) {
-      notificationManager = (NotificationManager) mContext
-          .getSystemService(Context.NOTIFICATION_SERVICE);
-    }
+  @Override
+  public View onCreateView(LayoutInflater inflater, ViewGroup container,
+      Bundle savedInstanceState) {
+    super.onCreateView(inflater, container, savedInstanceState);
+    return inflater.inflate(R.layout.main, container, false);
+  }
 
-    listAdapter = new RSSOverviewListAdapter((Activity) mContext);
-    setListAdapter(listAdapter);
+  @Override
+  public void onActivityCreated(Bundle savedInstanceState) {
+    super.onActivityCreated(savedInstanceState);
+    getListView().setOnCreateContextMenuListener(new MyContextMenuListener());
+    mListAdapter = new RSSOverviewListAdapter((Activity) mContext);
+    setListAdapter(mListAdapter);
     if (PreferenceManager.getDefaultSharedPreferences(mContext).getBoolean(
         Strings.SETTINGS_REFRESHENABLED, false)) {
       // starts the service independent of this activity
@@ -96,19 +107,6 @@ public class RSSOverviewFragment extends ListFragment {
     } else {
       mContext.stopService(new Intent(mContext, RefreshService.class));
     }
-  }
-
-  @Override
-  public void onActivityCreated(Bundle savedInstanceState) {
-    super.onActivityCreated(savedInstanceState);
-    getListView().setOnCreateContextMenuListener(new MyContextMenuListener());
-  }
-
-  @Override
-  public View onCreateView(LayoutInflater inflater, ViewGroup container,
-      Bundle savedInstanceState) {
-    super.onCreateView(inflater, container, savedInstanceState);
-    return inflater.inflate(R.layout.main, container, false);
   }
 
   final class MyContextMenuListener implements OnCreateContextMenuListener {
@@ -135,15 +133,9 @@ public class RSSOverviewFragment extends ListFragment {
   }
 
   @Override
-  public void onResume() {
-    super.onResume();
-    if (RSSOverviewFragment.notificationManager != null) {
-      notificationManager.cancel(0);
-    }
-  }
-
-  @Override
   public boolean onContextItemSelected(final MenuItem item) {
+    super.onContextItemSelected(item);
+
     switch (item.getItemId()) {
     case CONTEXTMENU_EDIT_ID: {
       startActivity(new Intent(Intent.ACTION_EDIT)
@@ -360,6 +352,7 @@ public class RSSOverviewFragment extends ListFragment {
   @Override
   public void onListItemClick(ListView listView, View view, int position,
       long id) {
+    super.onListItemClick(listView, view, position, id);
     Intent intent = new Intent(Intent.ACTION_VIEW,
         FeedData.EntryColumns.CONTENT_URI(Long.toString(id)));
 
