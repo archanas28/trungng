@@ -183,8 +183,8 @@ public class EntriesListActivity extends ListActivity {
     case R.id.menu_markasread: {
       new Thread() { // the update process takes some time
         public void run() {
-          getContentResolver().update(uri, AllSubscriptionsFragment.getReadContentValues(),
-              null, null);
+          getContentResolver().update(uri,
+              AllSubscriptionsFragment.getReadContentValues(), null, null);
         }
       }.start();
       entriesListAdapter.markAsRead();

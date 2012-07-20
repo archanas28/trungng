@@ -34,18 +34,20 @@ import android.graphics.drawable.Drawable;
 import com.rainmoon.podcast.R;
 
 public class CompatibilityHelper {
-	private static final String METHOD_GETACTIONBAR = "getActionBar";
-	
-	private static final String METHOD_SETICON = "setIcon";
-	
-	public static void setActionBarDrawable(Activity activity, Drawable drawable) {
-		try {
-			Object actionBar = Activity.class.getMethod(METHOD_GETACTIONBAR).invoke(activity);
-			
-			actionBar.getClass().getMethod(METHOD_SETICON, Drawable.class).invoke(actionBar, drawable);
-		} catch (Exception e) {
-			
-		}
+  private static final String METHOD_GETACTIONBAR = "getActionBar";
 
-	}
+  private static final String METHOD_SETICON = "setIcon";
+
+  public static void setActionBarDrawable(Activity activity, Drawable drawable) {
+    try {
+      Object actionBar = Activity.class.getMethod(METHOD_GETACTIONBAR).invoke(
+          activity);
+
+      actionBar.getClass().getMethod(METHOD_SETICON, Drawable.class)
+          .invoke(actionBar, drawable);
+    } catch (Exception e) {
+
+    }
+
+  }
 }
