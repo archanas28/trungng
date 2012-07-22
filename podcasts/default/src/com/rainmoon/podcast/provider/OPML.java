@@ -57,7 +57,7 @@ public class OPML {
   private static final String OUTLINE_XMLURL = "\" type=\"rss\" xmlUrl=\"";
 
   private static final String ATTRIBUTE_CATEGORY_VALUE = "/"
-      + FeedData.FeedColumns.WIFIONLY;
+      + FeedData.SubscriptionColumns.WIFIONLY;
 
   private static final String OUTLINE_CATEGORY = "\" category=\"";
 
@@ -84,9 +84,9 @@ public class OPML {
 
       /** This is ok since the database is empty */
       database.execSQL(new StringBuilder("UPDATE ")
-          .append(FeedDataContentProvider.TABLE_FEEDS).append(" SET ")
-          .append(FeedData.FeedColumns.PRIORITY).append('=')
-          .append(FeedData.FeedColumns._ID).append("-1").toString());
+          .append(FeedDataContentProvider.TABLE_SUBSCRIPTIONS).append(" SET ")
+          .append(FeedData.SubscriptionColumns.PRIORITY).append('=')
+          .append(FeedData.SubscriptionColumns._ID).append("-1").toString());
       database.setTransactionSuccessful();
     } catch (Exception e) {
 
@@ -106,9 +106,9 @@ public class OPML {
   public static void exportToFile(String filename, Context context)
       throws IOException {
     Cursor cursor = context.getContentResolver().query(
-        FeedData.FeedColumns.CONTENT_URI,
-        new String[] { FeedData.FeedColumns._ID, FeedData.FeedColumns.NAME,
-            FeedData.FeedColumns.URL, FeedData.FeedColumns.WIFIONLY }, null,
+        FeedData.SubscriptionColumns.CONTENT_URI,
+        new String[] { FeedData.SubscriptionColumns._ID, FeedData.SubscriptionColumns.NAME,
+            FeedData.SubscriptionColumns.URL, FeedData.SubscriptionColumns.WIFIONLY }, null,
         null, null);
 
     try {
@@ -119,9 +119,9 @@ public class OPML {
   }
 
   protected static void exportToFile(String filename, SQLiteDatabase database) {
-    Cursor cursor = database.query(FeedDataContentProvider.TABLE_FEEDS,
-        new String[] { FeedData.FeedColumns._ID, FeedData.FeedColumns.NAME,
-            FeedData.FeedColumns.URL, FeedData.FeedColumns.WIFIONLY }, null,
+    Cursor cursor = database.query(FeedDataContentProvider.TABLE_SUBSCRIPTIONS,
+        new String[] { FeedData.SubscriptionColumns._ID, FeedData.SubscriptionColumns.NAME,
+            FeedData.SubscriptionColumns.URL, FeedData.SubscriptionColumns.WIFIONLY }, null,
         null, null, null, FeedData.FEED_DEFAULTSORTORDER);
 
     try {
@@ -194,27 +194,27 @@ public class OPML {
 
           ContentValues values = new ContentValues();
 
-          values.put(FeedData.FeedColumns.URL, url);
-          values.put(FeedData.FeedColumns.NAME, title != null
+          values.put(FeedData.SubscriptionColumns.URL, url);
+          values.put(FeedData.SubscriptionColumns.NAME, title != null
               && title.length() > 0 ? title : null);
-          values.put(FeedData.FeedColumns.WIFIONLY,
+          values.put(FeedData.SubscriptionColumns.WIFIONLY,
               ATTRIBUTE_CATEGORY_VALUE.equals(attributes.getValue(
                   Strings.EMPTY, ATTRIBUTE_CATEGORY)) ? 1 : 0);
 
           if (context != null) {
             Cursor cursor = context.getContentResolver().query(
-                FeedData.FeedColumns.CONTENT_URI,
+                FeedData.SubscriptionColumns.CONTENT_URI,
                 null,
-                new StringBuilder(FeedData.FeedColumns.URL).append(
+                new StringBuilder(FeedData.SubscriptionColumns.URL).append(
                     Strings.DB_ARG).toString(), new String[] { url }, null);
 
             if (!cursor.moveToFirst()) {
               context.getContentResolver().insert(
-                  FeedData.FeedColumns.CONTENT_URI, values);
+                  FeedData.SubscriptionColumns.CONTENT_URI, values);
             }
             cursor.close();
           } else { // this happens only, if the db is new and therefore empty
-            database.insert(FeedDataContentProvider.TABLE_FEEDS, null, values);
+            database.insert(FeedDataContentProvider.TABLE_SUBSCRIPTIONS, null, values);
           }
         }
       }

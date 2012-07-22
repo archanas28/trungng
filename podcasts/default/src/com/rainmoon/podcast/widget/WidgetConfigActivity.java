@@ -42,7 +42,7 @@ import com.rainmoon.podcast.provider.FeedData;
 public class WidgetConfigActivity extends PreferenceActivity {
 	private int widgetId;
 	
-	private static final String NAMECOLUMN = new StringBuilder("ifnull(").append(FeedData.FeedColumns.NAME).append(',').append(FeedData.FeedColumns.URL).append(") as title").toString();
+	private static final String NAMECOLUMN = new StringBuilder("ifnull(").append(FeedData.SubscriptionColumns.NAME).append(',').append(FeedData.SubscriptionColumns.URL).append(") as title").toString();
 	
 	public static final String ZERO = "0";
 	
@@ -67,7 +67,7 @@ public class WidgetConfigActivity extends PreferenceActivity {
         final PreferenceCategory feedsPreferenceCategory = (PreferenceCategory) findPreference("widget.visiblefeeds");
         
 		
-		Cursor cursor = this.getContentResolver().query(FeedData.FeedColumns.CONTENT_URI, new String[] {FeedData.FeedColumns._ID, NAMECOLUMN}, null, null, null);
+		Cursor cursor = this.getContentResolver().query(FeedData.SubscriptionColumns.CONTENT_URI, new String[] {FeedData.SubscriptionColumns._ID, NAMECOLUMN}, null, null, null);
 		
 		if (cursor.moveToFirst()) {
 			int[] ids = new int[cursor.getCount()+1];

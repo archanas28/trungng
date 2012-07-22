@@ -124,29 +124,29 @@ public class FetcherService extends IntentService {
 
     if (!overrideWifiOnly
         && networkInfo.getType() != ConnectivityManager.TYPE_WIFI) {
-      selection = new StringBuilder(FeedData.FeedColumns.WIFIONLY)
-          .append("=0 or ").append(FeedData.FeedColumns.WIFIONLY)
+      selection = new StringBuilder(FeedData.SubscriptionColumns.WIFIONLY)
+          .append("=0 or ").append(FeedData.SubscriptionColumns.WIFIONLY)
           .append(" IS NULL").toString(); // "IS NOT 1" does not work on 2.1
     }
 
     Cursor cursor = context.getContentResolver().query(
-        feedId == null ? FeedData.FeedColumns.CONTENT_URI
-            : FeedData.FeedColumns.CONTENT_URI(feedId), null, selection, null,
+        feedId == null ? FeedData.SubscriptionColumns.CONTENT_URI
+            : FeedData.SubscriptionColumns.subscriptionContentUri(feedId), null, selection, null,
         null); // no managed query here
 
-    int urlPosition = cursor.getColumnIndex(FeedData.FeedColumns.URL);
+    int urlPosition = cursor.getColumnIndex(FeedData.SubscriptionColumns.URL);
 
-    int idPosition = cursor.getColumnIndex(FeedData.FeedColumns._ID);
+    int idPosition = cursor.getColumnIndex(FeedData.SubscriptionColumns._ID);
 
     int lastUpdatePosition = cursor
-        .getColumnIndex(FeedData.FeedColumns.REALLASTUPDATE);
+        .getColumnIndex(FeedData.SubscriptionColumns.REALLASTUPDATE);
 
-    int titlePosition = cursor.getColumnIndex(FeedData.FeedColumns.NAME);
+    int titlePosition = cursor.getColumnIndex(FeedData.SubscriptionColumns.NAME);
 
     int fetchmodePosition = cursor
-        .getColumnIndex(FeedData.FeedColumns.FETCHMODE);
+        .getColumnIndex(FeedData.SubscriptionColumns.FETCHMODE);
 
-    int iconPosition = cursor.getColumnIndex(FeedData.FeedColumns.ICON);
+    int iconPosition = cursor.getColumnIndex(FeedData.SubscriptionColumns.ICON);
 
     boolean imposeUserAgent = !preferences.getBoolean(
         Strings.SETTINGS_STANDARDUSERAGENT, false);
@@ -221,9 +221,9 @@ public class FetcherService extends IntentService {
                       url = new StringBuilder(feedUrl).append('/').append(url)
                           .toString();
                     }
-                    values.put(FeedData.FeedColumns.URL, url);
+                    values.put(FeedData.SubscriptionColumns.URL, url);
                     context.getContentResolver().update(
-                        FeedData.FeedColumns.CONTENT_URI(id), values, null,
+                        FeedData.SubscriptionColumns.subscriptionContentUri(id), values, null,
                         null);
                     connection.disconnect();
                     connection = setupConnection(url, imposeUserAgent,
@@ -293,9 +293,9 @@ public class FetcherService extends IntentService {
 
           ContentValues values = new ContentValues();
 
-          values.put(FeedData.FeedColumns.FETCHMODE, fetchMode);
+          values.put(FeedData.SubscriptionColumns.FETCHMODE, fetchMode);
           context.getContentResolver().update(
-              FeedData.FeedColumns.CONTENT_URI(id), values, null, null);
+              FeedData.SubscriptionColumns.subscriptionContentUri(id), values, null, null);
         }
 
         /* check and optionally find favicon */
@@ -313,16 +313,16 @@ public class FetcherService extends IntentService {
             iconBytes = getBytes(iconURLConnection.getInputStream());
             ContentValues values = new ContentValues();
 
-            values.put(FeedData.FeedColumns.ICON, iconBytes);
+            values.put(FeedData.SubscriptionColumns.ICON, iconBytes);
             context.getContentResolver().update(
-                FeedData.FeedColumns.CONTENT_URI(id), values, null, null);
+                FeedData.SubscriptionColumns.subscriptionContentUri(id), values, null, null);
           } catch (Exception e) {
             ContentValues values = new ContentValues();
 
-            values.put(FeedData.FeedColumns.ICON, new byte[0]); // no icon found
+            values.put(FeedData.SubscriptionColumns.ICON, new byte[0]); // no icon found
                                                                 // or error
             context.getContentResolver().update(
-                FeedData.FeedColumns.CONTENT_URI(id), values, null, null);
+                FeedData.SubscriptionColumns.subscriptionContentUri(id), values, null, null);
           } finally {
             iconURLConnection.disconnect();
           }
@@ -411,12 +411,12 @@ public class FetcherService extends IntentService {
       } catch (Throwable e) {
         if (!handler.isDone() && !handler.isCancelled()) {
           ContentValues values = new ContentValues();
-          values.put(FeedData.FeedColumns.FETCHMODE, 0); // resets the fetchmode
+          values.put(FeedData.SubscriptionColumns.FETCHMODE, 0); // resets the fetchmode
                                                          // to determine it
                                                          // again later
-          values.put(FeedData.FeedColumns.ERROR, e.getMessage());
+          values.put(FeedData.SubscriptionColumns.ERROR, e.getMessage());
           context.getContentResolver().update(
-              FeedData.FeedColumns.CONTENT_URI(id), values, null, null);
+              FeedData.SubscriptionColumns.subscriptionContentUri(id), values, null, null);
         }
       } finally {
         if (connection != null) {

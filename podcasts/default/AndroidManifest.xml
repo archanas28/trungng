@@ -89,7 +89,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".FeedConfigActivity"
+            android:name=".EditSubscriptionActivity"
             android:theme="@style/Theme.Dialog" >
             <intent-filter>
                 <action android:name="android.intent.action.EDIT" />

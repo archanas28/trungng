@@ -40,26 +40,18 @@ public class FeedData {
   public static final String AUTHORITY = "com.rainmoon.podcast.provider.FeedData";
 
   private static final String TYPE_PRIMARY_KEY = "INTEGER PRIMARY KEY AUTOINCREMENT";
-
   protected static final String TYPE_TEXT = "TEXT";
-
   protected static final String TYPE_DATETIME = "DATETIME";
-
   protected static final String TYPE_INT = "INT";
-
   protected static final String TYPE_BOOLEAN = "INTEGER(1)";
 
-  public static final String FEED_DEFAULTSORTORDER = FeedColumns.PRIORITY;
+  public static final String FEED_DEFAULTSORTORDER = SubscriptionColumns.PRIORITY;
 
   /**
-   * Table for Subscriptions. This is stored at content://authority/feeds.
+   * Contract data and table for Subscriptions.
+   * This is stored at content://authority/feeds.
    */
-  public static class FeedColumns implements BaseColumns {
-    /**
-     * All subscriptions
-     */
-    public static final Uri CONTENT_URI = Uri.parse(new StringBuilder(CONTENT)
-        .append(AUTHORITY).append("/feeds").toString());
+  public static class SubscriptionColumns implements BaseColumns {
 
     public static final String URL = "url";
     public static final String NAME = "name";
@@ -79,22 +71,25 @@ public class FeedData {
         TYPE_INT, TYPE_DATETIME, TYPE_BOOLEAN };
 
     /**
-     * A subscription with given ID
-     * 
-     * @param feedId
-     * @return
+     * All subscriptions
      */
-    public static final Uri CONTENT_URI(String feedId) {
+    public static final Uri CONTENT_URI = Uri.parse(new StringBuilder(CONTENT)
+        .append(AUTHORITY).append("/feeds").toString());
+    
+    /**
+     * A subscription with given ID (input as string)
+     * TODO(trung): use withAppendedId
+     */
+    public static final Uri subscriptionContentUri(String feedId) {
       return Uri.parse(new StringBuilder(CONTENT).append(AUTHORITY)
           .append("/feeds/").append(feedId).toString());
     }
 
     /**
-     * A subscription with given id
-     * @param feedId
-     * @return
+     * A subscription with given id (input as long)
+     * TODO(trung): use withAppendedId
      */
-    public static final Uri CONTENT_URI(long feedId) {
+    public static final Uri subscriptionContentUri(long feedId) {
       return Uri.parse(new StringBuilder(CONTENT).append(AUTHORITY)
           .append("/feeds/").append(feedId).toString());
     }
@@ -107,7 +102,7 @@ public class FeedData {
    * TODO(trung): add table for recently viewed (played)
    * content://authority/recent 
    */
-  public static class EntryColumns implements BaseColumns {
+  public static class ItemColumns implements BaseColumns {
     public static final String FEED_ID = "feedid";
     public static final String TITLE = "title";
     public static final String ABSTRACT = "abstract";
@@ -126,9 +121,9 @@ public class FeedData {
         TYPE_TEXT, TYPE_BOOLEAN, TYPE_TEXT, TYPE_TEXT };
 
     /**
-     * All entries (feed items)
+     * All feed items
      */
-    public static Uri CONTENT_URI = Uri.parse(new StringBuilder(CONTENT)
+    public static Uri ALL_ITEMS_CONTENT_URI = Uri.parse(new StringBuilder(CONTENT)
         .append(AUTHORITY).append("/entries").toString());
 
     /**
@@ -138,19 +133,26 @@ public class FeedData {
         CONTENT).append(AUTHORITY).append("/favorites").toString());
 
     /**
-     * All entries of a particular subscription (feed) with given id
+     * All favorite feed items
      */
-    public static Uri CONTENT_URI(String feedId) {
+    public static Uri RECENTLY_VIEWED_CONTENT_URI = Uri.parse(new StringBuilder(
+        CONTENT).append(AUTHORITY).append("/recent").toString());
+    
+    /**
+     * All entries of a particular subscription (feed) with given id
+     * TODO(trung): use withAppendedId
+     */
+    public static Uri subscriptionItemsContentUri(String subscriptionId) {
       return Uri.parse(new StringBuilder(CONTENT).append(AUTHORITY)
-          .append("/feeds/").append(feedId).append("/entries").toString());
+          .append("/feeds/").append(subscriptionId).append("/entries").toString());
     }
 
     /**
      * A feed item
      */
-    public static Uri ENTRY_CONTENT_URI(String entryId) {
+    public static Uri itemContentUri(String itemId) {
       return Uri.parse(new StringBuilder(CONTENT).append(AUTHORITY)
-          .append("/entries/").append(entryId).toString());
+          .append("/entries/").append(itemId).toString());
     }
 
     public static Uri PARENT_URI(String path) {
@@ -160,7 +162,7 @@ public class FeedData {
 
   }
 
-  private static String[] IDPROJECTION = new String[] { FeedData.EntryColumns._ID };
+  private static String[] IDPROJECTION = new String[] { FeedData.ItemColumns._ID };
 
   public static void deletePicturesOfFeedAsync(final Context context,
       final Uri entriesUri, final String selection) {

@@ -216,9 +216,9 @@ public class RSSHandler extends DefaultHandler {
 		keepDateBorder = new Date(keepDateBorderTime);
 		this.lastUpdateDate = lastUpdateDate;
 		this.id = id;
-		feedEntiresUri = FeedData.EntryColumns.CONTENT_URI(id);
+		feedEntiresUri = FeedData.ItemColumns.subscriptionItemsContentUri(id);
 		
-		final String query = new StringBuilder(FeedData.EntryColumns.DATE).append('<').append(keepDateBorderTime).append(DB_FAVORITE).toString();
+		final String query = new StringBuilder(FeedData.ItemColumns.DATE).append('<').append(keepDateBorderTime).append(DB_FAVORITE).toString();
 		
 		FeedData.deletePicturesOfFeed(context, feedEntiresUri, query);
 		
@@ -272,17 +272,17 @@ public class RSSHandler extends DefaultHandler {
 				ContentValues values = new ContentValues();
 					
 				if (feedTitle == null && title != null && title.length() > 0) {
-					values.put(FeedData.FeedColumns.NAME, title.toString().trim());
+					values.put(FeedData.SubscriptionColumns.NAME, title.toString().trim());
 				}
-				values.put(FeedData.FeedColumns.ERROR, (String) null);
-				values.put(FeedData.FeedColumns.LASTUPDATE, System.currentTimeMillis() - 1000);
+				values.put(FeedData.SubscriptionColumns.ERROR, (String) null);
+				values.put(FeedData.SubscriptionColumns.LASTUPDATE, System.currentTimeMillis() - 1000);
 				if (lastBuildDate != null) {
 					realLastUpdate = Math.max(entryDate != null && entryDate.after(lastBuildDate) ? entryDate.getTime() : lastBuildDate.getTime(), realLastUpdate);
 				} else {
 					realLastUpdate = Math.max(entryDate != null ? entryDate.getTime() : System.currentTimeMillis() - 1000, realLastUpdate);
 				}
-				values.put(FeedData.FeedColumns.REALLASTUPDATE, realLastUpdate);
-				context.getContentResolver().update(FeedData.FeedColumns.CONTENT_URI(id), values, null, null);
+				values.put(FeedData.SubscriptionColumns.REALLASTUPDATE, realLastUpdate);
+				context.getContentResolver().update(FeedData.SubscriptionColumns.subscriptionContentUri(id), values, null, null);
 				title = null;
 				feedRefreshed = true;
 			}
@@ -402,16 +402,16 @@ public class RSSHandler extends DefaultHandler {
 				if (entryDate != null && entryDate.getTime() > realLastUpdate) {
 					realLastUpdate = entryDate.getTime();
 					
-					values.put(FeedData.FeedColumns.REALLASTUPDATE, realLastUpdate);
-					context.getContentResolver().update(FeedData.FeedColumns.CONTENT_URI(id), values, null, null);
+					values.put(FeedData.SubscriptionColumns.REALLASTUPDATE, realLastUpdate);
+					context.getContentResolver().update(FeedData.SubscriptionColumns.subscriptionContentUri(id), values, null, null);
 					values.clear();
 				}
 				
 				if (entryDate != null) {
-					values.put(FeedData.EntryColumns.DATE, entryDate.getTime());
-					values.putNull(FeedData.EntryColumns.READDATE);
+					values.put(FeedData.ItemColumns.DATE, entryDate.getTime());
+					values.putNull(FeedData.ItemColumns.READDATE);
 				}
-				values.put(FeedData.EntryColumns.TITLE, unescapeTitle(title.toString().trim()));
+				values.put(FeedData.ItemColumns.TITLE, unescapeTitle(title.toString().trim()));
 				
 				Vector<String> images = null;
 				
@@ -431,26 +431,26 @@ public class RSSHandler extends DefaultHandler {
 								descriptionString = descriptionString.replace(match, new StringBuilder(Strings.FILEURL).append(FeedDataContentProvider.IMAGEFOLDER).append(Strings.IMAGEID_REPLACEMENT).append(match.substring(match.lastIndexOf('/')+1)).toString());
 							}
 						}
-						values.put(FeedData.EntryColumns.ABSTRACT, descriptionString); 
+						values.put(FeedData.ItemColumns.ABSTRACT, descriptionString); 
 					}
 				}
 				
 				String enclosureString = null;
 				
-				StringBuilder existanceStringBuilder = new StringBuilder(FeedData.EntryColumns.LINK).append(Strings.DB_ARG);
+				StringBuilder existanceStringBuilder = new StringBuilder(FeedData.ItemColumns.LINK).append(Strings.DB_ARG);
 				
 				if (enclosure != null) {
 					enclosureString = enclosure.toString();
-					values.put(FeedData.EntryColumns.ENCLOSURE, enclosureString);
-					existanceStringBuilder.append(Strings.DB_AND).append(FeedData.EntryColumns.ENCLOSURE).append(Strings.DB_ARG);
+					values.put(FeedData.ItemColumns.ENCLOSURE, enclosureString);
+					existanceStringBuilder.append(Strings.DB_AND).append(FeedData.ItemColumns.ENCLOSURE).append(Strings.DB_ARG);
 				}
 				
 				String guidString = null;
 				
 				if (guid != null && guid.length() > 0) {
 					guidString = guid.toString();
-					values.put(FeedData.EntryColumns.GUID, guidString);
-					existanceStringBuilder.append(Strings.DB_AND).append(FeedData.EntryColumns.GUID).append(Strings.DB_ARG);
+					values.put(FeedData.ItemColumns.GUID, guidString);
+					existanceStringBuilder.append(Strings.DB_AND).append(FeedData.ItemColumns.GUID).append(Strings.DB_ARG);
 				}
 				
 				String entryLinkString = entryLink.toString().trim();
@@ -462,11 +462,11 @@ public class RSSHandler extends DefaultHandler {
 				String[] existanceValues = enclosureString != null ? (guidString != null ? new String[] {entryLinkString, enclosureString, guidString}: new String[] {entryLinkString, enclosureString}) : (guidString != null ? new String[] {entryLinkString, guidString} : new String[] {entryLinkString});
 				
 				if (entryLinkString.length() == 0 || context.getContentResolver().update(feedEntiresUri, values, existanceStringBuilder.toString(), existanceValues) == 0) {
-					values.put(FeedData.EntryColumns.LINK, entryLinkString);
+					values.put(FeedData.ItemColumns.LINK, entryLinkString);
 					if (entryDate == null) {
-						values.put(FeedData.EntryColumns.DATE, now--);
+						values.put(FeedData.ItemColumns.DATE, now--);
 					} else {
-						values.remove(FeedData.EntryColumns.READDATE);
+						values.remove(FeedData.ItemColumns.READDATE);
 					}
 					
 					String entryId = context.getContentResolver().insert(feedEntiresUri, values).getLastPathSegment();

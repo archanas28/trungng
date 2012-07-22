@@ -18,14 +18,14 @@ public class StaticMethods {
   public static final ContentValues getReadContentValues() {
     ContentValues values = new ContentValues();
 
-    values.put(FeedData.EntryColumns.READDATE, System.currentTimeMillis());
+    values.put(FeedData.ItemColumns.READDATE, System.currentTimeMillis());
     return values;
   }
 
   public static final ContentValues getUnreadContentValues() {
     ContentValues values = new ContentValues();
 
-    values.putNull(FeedData.EntryColumns.READDATE);
+    values.putNull(FeedData.ItemColumns.READDATE);
     return values;
   }
 

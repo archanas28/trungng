@@ -101,8 +101,8 @@ public class AllSubscriptionsFragment extends ListFragment {
     switch (item.getItemId()) {
     case CONTEXTMENU_EDIT_ID: {
       startActivity(new Intent(Intent.ACTION_EDIT)
-          .setData(FeedData.FeedColumns
-              .CONTENT_URI(((AdapterView.AdapterContextMenuInfo) item
+          .setData(FeedData.SubscriptionColumns
+              .subscriptionContentUri(((AdapterView.AdapterContextMenuInfo) item
                   .getMenuInfo()).id)));
       break;
     }
@@ -126,12 +126,12 @@ public class AllSubscriptionsFragment extends ListFragment {
       // .getMenuInfo()).id);
       //
       // if (getActivity().getContentResolver().update(
-      // FeedData.EntryColumns.CONTENT_URI(id),
+      // FeedData.ItemColumns.ALL_ITEMS_CONTENT_URI(id),
       // getReadContentValues(),
-      // new StringBuilder(FeedData.EntryColumns.READDATE).append(
+      // new StringBuilder(FeedData.ItemColumns.READDATE).append(
       // Strings.DB_ISNULL).toString(), null) > 0) {
       // getActivity().getContentResolver().notifyChange(
-      // FeedData.FeedColumns.CONTENT_URI(id), null);
+      // FeedData.SubscriptionColumns.CONTENT_URI(id), null);
       // }
       // }
       // }.start();
@@ -144,10 +144,10 @@ public class AllSubscriptionsFragment extends ListFragment {
       // .getMenuInfo()).id);
       //
       // if (getActivity().getContentResolver().update(
-      // FeedData.EntryColumns.CONTENT_URI(id), getUnreadContentValues(),
+      // FeedData.ItemColumns.ALL_ITEMS_CONTENT_URI(id), getUnreadContentValues(),
       // null, null) > 0) {
       // getActivity().getContentResolver().notifyChange(
-      // FeedData.FeedColumns.CONTENT_URI(id), null);
+      // FeedData.SubscriptionColumns.CONTENT_URI(id), null);
       // ;
       // }
       // }
@@ -160,7 +160,7 @@ public class AllSubscriptionsFragment extends ListFragment {
       // String id = Long.toString(((AdapterView.AdapterContextMenuInfo) item
       // .getMenuInfo()).id);
       //
-      // Uri uri = FeedData.EntryColumns.CONTENT_URI(id);
+      // Uri uri = FeedData.ItemColumns.ALL_ITEMS_CONTENT_URI(id);
       //
       // String selection = Strings.READDATE_GREATERZERO + Strings.DB_AND
       // + " (" + Strings.DB_EXCUDEFAVORITE + ")";
@@ -169,7 +169,7 @@ public class AllSubscriptionsFragment extends ListFragment {
       // if (getActivity().getContentResolver().delete(uri, selection, null) >
       // 0) {
       // getActivity().getContentResolver().notifyChange(
-      // FeedData.FeedColumns.CONTENT_URI(id), null);
+      // FeedData.SubscriptionColumns.CONTENT_URI(id), null);
       // }
       // }
       // }.start();
@@ -178,10 +178,10 @@ public class AllSubscriptionsFragment extends ListFragment {
       // case CONTEXTMENU_RESETUPDATEDATE_ID: {
       // ContentValues values = new ContentValues();
       //
-      // values.put(FeedData.FeedColumns.LASTUPDATE, 0);
-      // values.put(FeedData.FeedColumns.REALLASTUPDATE, 0);
+      // values.put(FeedData.SubscriptionColumns.LASTUPDATE, 0);
+      // values.put(FeedData.SubscriptionColumns.REALLASTUPDATE, 0);
       // getActivity().getContentResolver().update(
-      // FeedData.FeedColumns.CONTENT_URI(Long
+      // FeedData.SubscriptionColumns.CONTENT_URI(Long
       // .toString(((AdapterView.AdapterContextMenuInfo) item
       // .getMenuInfo()).id)), values, null, null);
       // break;
@@ -198,8 +198,8 @@ public class AllSubscriptionsFragment extends ListFragment {
    */
   private void unsubscribe(final MenuItem item, String id) {
     Cursor cursor = getActivity().getContentResolver().query(
-        FeedData.FeedColumns.CONTENT_URI(id),
-        new String[] { FeedData.FeedColumns.NAME }, null, null, null);
+        FeedData.SubscriptionColumns.subscriptionContentUri(id),
+        new String[] { FeedData.SubscriptionColumns.NAME }, null, null, null);
     cursor.moveToFirst();
 
     Builder builder = new AlertDialog.Builder(mContext);
@@ -213,7 +213,7 @@ public class AllSubscriptionsFragment extends ListFragment {
             new Thread() {
               public void run() {
                 getActivity().getContentResolver().delete(
-                    FeedData.FeedColumns.CONTENT_URI(Long
+                    FeedData.SubscriptionColumns.subscriptionContentUri(Long
                         .toString(((AdapterView.AdapterContextMenuInfo) item
                             .getMenuInfo()).id)), null, null);
                 getActivity().sendBroadcast(
@@ -259,8 +259,8 @@ public class AllSubscriptionsFragment extends ListFragment {
         thread.start();
       } else {
         Cursor cursor = mContext.getContentResolver().query(
-            FeedData.FeedColumns.CONTENT_URI(id),
-            new String[] { FeedData.FeedColumns.WIFIONLY }, null, null, null);
+            FeedData.SubscriptionColumns.subscriptionContentUri(id),
+            new String[] { FeedData.SubscriptionColumns.WIFIONLY }, null, null, null);
 
         cursor.moveToFirst();
 
@@ -304,9 +304,9 @@ public class AllSubscriptionsFragment extends ListFragment {
       long id) {
     super.onListItemClick(listView, view, position, id);
     Intent intent = new Intent(Intent.ACTION_VIEW,
-        FeedData.EntryColumns.CONTENT_URI(Long.toString(id)));
+        FeedData.ItemColumns.subscriptionItemsContentUri(Long.toString(id)));
 
-    intent.putExtra(FeedData.FeedColumns._ID, id);
+    intent.putExtra(FeedData.SubscriptionColumns._ID, id);
     startActivity(intent);
   }
 

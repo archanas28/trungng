@@ -74,14 +74,14 @@ public class AllSubscriptionsListAdapter extends ResourceCursorAdapter {
 
   public AllSubscriptionsListAdapter(Activity activity) {
     super(activity, R.layout.feedlistitem, activity.managedQuery(
-        FeedData.FeedColumns.CONTENT_URI, null, null, null, null));
-    nameColumnPosition = getCursor().getColumnIndex(FeedData.FeedColumns.NAME);
+        FeedData.SubscriptionColumns.CONTENT_URI, null, null, null, null));
+    nameColumnPosition = getCursor().getColumnIndex(FeedData.SubscriptionColumns.NAME);
     lastUpdateColumn = getCursor().getColumnIndex(
-        FeedData.FeedColumns.LASTUPDATE);
-    idPosition = getCursor().getColumnIndex(FeedData.FeedColumns._ID);
-    linkPosition = getCursor().getColumnIndex(FeedData.FeedColumns.URL);
-    errorPosition = getCursor().getColumnIndex(FeedData.FeedColumns.ERROR);
-    iconPosition = getCursor().getColumnIndex(FeedData.FeedColumns.ICON);
+        FeedData.SubscriptionColumns.LASTUPDATE);
+    idPosition = getCursor().getColumnIndex(FeedData.SubscriptionColumns._ID);
+    linkPosition = getCursor().getColumnIndex(FeedData.SubscriptionColumns.URL);
+    errorPosition = getCursor().getColumnIndex(FeedData.SubscriptionColumns.ERROR);
+    iconPosition = getCursor().getColumnIndex(FeedData.SubscriptionColumns.ICON);
     COLON = activity.getString(R.string.colon);
     handler = new Handler();
     updateTask = new SimpleTask() {
@@ -108,7 +108,7 @@ public class AllSubscriptionsListAdapter extends ResourceCursorAdapter {
     textView.setSingleLine();
 
     Cursor countCursor = context.getContentResolver().query(
-        FeedData.EntryColumns.CONTENT_URI(cursor.getString(idPosition)),
+        FeedData.ItemColumns.subscriptionItemsContentUri(cursor.getString(idPosition)),
         new String[] { COUNT_UNREAD, COUNT }, null, null, null);
 
     countCursor.moveToFirst();

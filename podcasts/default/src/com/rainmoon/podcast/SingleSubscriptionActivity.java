@@ -58,27 +58,21 @@ import com.rainmoon.podcast.provider.FeedData;
  * 
  */
 public class SingleSubscriptionActivity extends ListActivity {
+  
   private static final int CONTEXTMENU_MARKASREAD_ID = 6;
-
   private static final int CONTEXTMENU_MARKASUNREAD_ID = 7;
-
   private static final int CONTEXTMENU_DELETE_ID = 8;
-
   private static final int CONTEXTMENU_COPYURL = 9;
 
   public static final String EXTRA_SHOWREAD = "show_read";
-
   public static final String EXTRA_SHOWFEEDINFO = "show_feedinfo";
-
   public static final String EXTRA_AUTORELOAD = "autoreload";
 
-  private static final String[] FEED_PROJECTION = { FeedData.FeedColumns.NAME,
-      FeedData.FeedColumns.URL, FeedData.FeedColumns.ICON };
+  private static final String[] FEED_PROJECTION = { FeedData.SubscriptionColumns.NAME,
+      FeedData.SubscriptionColumns.URL, FeedData.SubscriptionColumns.ICON };
 
   private Uri uri;
-
   private SingleSubscriptionAdapter entriesListAdapter;
-
   private byte[] iconBytes;
 
   @Override
@@ -86,41 +80,31 @@ public class SingleSubscriptionActivity extends ListActivity {
     super.onCreate(savedInstanceState);
 
     String title = null;
-
     iconBytes = null;
-
     Intent intent = getIntent();
-
-    long feedId = intent.getLongExtra(FeedData.FeedColumns._ID, 0);
-
+    long feedId = intent.getLongExtra(FeedData.SubscriptionColumns._ID, 0);
     if (feedId > 0) {
       Cursor cursor = getContentResolver().query(
-          FeedData.FeedColumns.CONTENT_URI(feedId), FEED_PROJECTION, null,
-          null, null);
-
+          FeedData.SubscriptionColumns.subscriptionContentUri(feedId),
+          FEED_PROJECTION, null, null, null);
       if (cursor.moveToFirst()) {
         title = cursor.isNull(0) ? cursor.getString(1) : cursor.getString(0);
         iconBytes = cursor.getBlob(2);
       }
       cursor.close();
     }
-
-    if (!StaticMethods.POSTGINGERBREAD && iconBytes != null
-        && iconBytes.length > 0) { // we cannot insert the icon here because it
-                                   // would be overwritten, but we have to
-                                   // reserve the icon here
+    // we cannot insert the icon here because it would be overwritten,
+    // but we have to reserve the icon here
+    if (!StaticMethods.POSTGINGERBREAD && iconBytes != null && iconBytes.length > 0) {
       if (!requestWindowFeature(Window.FEATURE_LEFT_ICON)) {
         iconBytes = null;
       }
     }
 
     setContentView(R.layout.entries);
-
     uri = intent.getData();
-
-    entriesListAdapter = new SingleSubscriptionAdapter(this, uri,
-        intent.getBooleanExtra(EXTRA_SHOWFEEDINFO, false),
-        intent.getBooleanExtra(EXTRA_AUTORELOAD, false));
+    entriesListAdapter = new SingleSubscriptionAdapter(this, uri, intent.getBooleanExtra(
+        EXTRA_SHOWFEEDINFO, false), intent.getBooleanExtra(EXTRA_AUTORELOAD, false));
     setListAdapter(entriesListAdapter);
 
     if (title != null) {
@@ -128,48 +112,41 @@ public class SingleSubscriptionActivity extends ListActivity {
     }
     if (iconBytes != null && iconBytes.length > 0) {
       if (StaticMethods.POSTGINGERBREAD) {
-        CompatibilityHelper.setActionBarDrawable(this, new BitmapDrawable(
-            BitmapFactory.decodeByteArray(iconBytes, 0, iconBytes.length)));
+        CompatibilityHelper.setActionBarDrawable(this,
+            new BitmapDrawable(BitmapFactory.decodeByteArray(iconBytes, 0, iconBytes.length)));
       } else {
-        setFeatureDrawable(Window.FEATURE_LEFT_ICON, new BitmapDrawable(
-            BitmapFactory.decodeByteArray(iconBytes, 0, iconBytes.length)));
+        setFeatureDrawable(Window.FEATURE_LEFT_ICON,
+            new BitmapDrawable(BitmapFactory.decodeByteArray(iconBytes, 0, iconBytes.length)));
       }
     }
 
-    getListView().setOnCreateContextMenuListener(
-        new OnCreateContextMenuListener() {
-          public void onCreateContextMenu(ContextMenu menu, View view,
-              ContextMenuInfo menuInfo) {
-            menu.setHeaderTitle(((TextView) ((AdapterView.AdapterContextMenuInfo) menuInfo).targetView
-                .findViewById(android.R.id.text1)).getText());
-            menu.add(0, CONTEXTMENU_MARKASREAD_ID, Menu.NONE,
-                R.string.contextmenu_markasread).setIcon(
-                android.R.drawable.ic_menu_manage);
-            menu.add(0, CONTEXTMENU_MARKASUNREAD_ID, Menu.NONE,
-                R.string.contextmenu_markasunread).setIcon(
-                android.R.drawable.ic_menu_manage);
-            menu.add(0, CONTEXTMENU_DELETE_ID, Menu.NONE,
-                R.string.contextmenu_delete).setIcon(
-                android.R.drawable.ic_menu_delete);
-            menu.add(0, CONTEXTMENU_COPYURL, Menu.NONE,
-                R.string.contextmenu_copyurl).setIcon(
-                android.R.drawable.ic_menu_share);
-          }
-        });
+    getListView().setOnCreateContextMenuListener(new OnCreateContextMenuListener() {
+      public void onCreateContextMenu(ContextMenu menu, View view, ContextMenuInfo menuInfo) {
+        menu.setHeaderTitle(((TextView) ((AdapterView.AdapterContextMenuInfo) menuInfo).targetView
+            .findViewById(android.R.id.text1)).getText());
+        menu.add(0, CONTEXTMENU_MARKASREAD_ID, Menu.NONE, R.string.contextmenu_markasread).setIcon(
+            android.R.drawable.ic_menu_manage);
+        menu.add(0, CONTEXTMENU_MARKASUNREAD_ID, Menu.NONE, R.string.contextmenu_markasunread)
+            .setIcon(android.R.drawable.ic_menu_manage);
+        menu.add(0, CONTEXTMENU_DELETE_ID, Menu.NONE, R.string.contextmenu_delete).setIcon(
+            android.R.drawable.ic_menu_delete);
+        menu.add(0, CONTEXTMENU_COPYURL, Menu.NONE, R.string.contextmenu_copyurl).setIcon(
+            android.R.drawable.ic_menu_share);
+      }
+    });
   }
 
   @Override
-  protected void onListItemClick(ListView listView, View view, int position,
-      long id) {
+  protected void onListItemClick(ListView listView, View view, int position, long id) {
     TextView textView = (TextView) view.findViewById(android.R.id.text1);
 
     textView.setTypeface(Typeface.DEFAULT);
     textView.setEnabled(false);
     view.findViewById(android.R.id.text2).setEnabled(false);
     entriesListAdapter.neutralizeReadState();
-    startActivity(new Intent(Intent.ACTION_VIEW, ContentUris.withAppendedId(
-        uri, id)).putExtra(EXTRA_SHOWREAD, entriesListAdapter.isShowRead())
-        .putExtra(FeedData.FeedColumns.ICON, iconBytes));
+    startActivity(new Intent(Intent.ACTION_VIEW, ContentUris.withAppendedId(uri, id)).putExtra(
+        EXTRA_SHOWREAD, entriesListAdapter.isShowRead()).putExtra(
+        FeedData.SubscriptionColumns.ICON, iconBytes));
   }
 
   @Override
@@ -184,13 +161,13 @@ public class SingleSubscriptionActivity extends ListActivity {
     return true;
   }
 
+  @SuppressWarnings("deprecation")
   public boolean onMenuItemSelected(int featureId, MenuItem item) {
     switch (item.getItemId()) {
     case R.id.menu_markasread: {
       new Thread() { // the update process takes some time
         public void run() {
-          getContentResolver().update(uri,
-              StaticMethods.getReadContentValues(), null, null);
+          getContentResolver().update(uri, StaticMethods.getReadContentValues(), null, null);
         }
       }.start();
       entriesListAdapter.markAsRead();
@@ -199,8 +176,7 @@ public class SingleSubscriptionActivity extends ListActivity {
     case R.id.menu_markasunread: {
       new Thread() { // the update process takes some time
         public void run() {
-          getContentResolver().update(uri,
-              StaticMethods.getUnreadContentValues(), null, null);
+          getContentResolver().update(uri, StaticMethods.getUnreadContentValues(), null, null);
         }
       }.start();
       entriesListAdapter.markAsUnread();
@@ -221,12 +197,11 @@ public class SingleSubscriptionActivity extends ListActivity {
     case R.id.menu_deleteread: {
       new Thread() { // the delete process takes some time
         public void run() {
-          String selection = Strings.READDATE_GREATERZERO + Strings.DB_AND
-              + " (" + Strings.DB_EXCUDEFAVORITE + ")";
+          String selection = Strings.READDATE_GREATERZERO + Strings.DB_AND + " ("
+              + Strings.DB_EXCUDEFAVORITE + ")";
 
           getContentResolver().delete(uri, selection, null);
-          FeedData.deletePicturesOfFeed(SingleSubscriptionActivity.this, uri,
-              selection);
+          FeedData.deletePicturesOfFeed(SingleSubscriptionActivity.this, uri, selection);
           runOnUiThread(new Runnable() {
             public void run() {
               entriesListAdapter.getCursor().requery();
@@ -242,22 +217,20 @@ public class SingleSubscriptionActivity extends ListActivity {
       builder.setIcon(android.R.drawable.ic_dialog_alert);
       builder.setTitle(R.string.contextmenu_deleteallentries);
       builder.setMessage(R.string.question_areyousure);
-      builder.setPositiveButton(android.R.string.yes,
-          new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-              new Thread() {
+      builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+        public void onClick(DialogInterface dialog, int which) {
+          new Thread() {
+            public void run() {
+              getContentResolver().delete(uri, Strings.DB_EXCUDEFAVORITE, null);
+              runOnUiThread(new Runnable() {
                 public void run() {
-                  getContentResolver().delete(uri, Strings.DB_EXCUDEFAVORITE,
-                      null);
-                  runOnUiThread(new Runnable() {
-                    public void run() {
-                      entriesListAdapter.getCursor().requery();
-                    }
-                  });
+                  entriesListAdapter.getCursor().requery();
                 }
-              }.start();
+              });
             }
-          });
+          }.start();
+        }
+      });
       builder.setNegativeButton(android.R.string.no, null);
       builder.show();
       break;
@@ -281,16 +254,15 @@ public class SingleSubscriptionActivity extends ListActivity {
     case CONTEXTMENU_DELETE_ID: {
       long id = ((AdapterView.AdapterContextMenuInfo) item.getMenuInfo()).id;
 
-      getContentResolver().delete(ContentUris.withAppendedId(uri, id), null,
-          null);
+      getContentResolver().delete(ContentUris.withAppendedId(uri, id), null, null);
       FeedData.deletePicturesOfEntry(Long.toString(id));
       entriesListAdapter.getCursor().requery(); // he have no other choice
       break;
     }
     case CONTEXTMENU_COPYURL: {
       ((ClipboardManager) getSystemService(CLIPBOARD_SERVICE))
-          .setText(((AdapterView.AdapterContextMenuInfo) item.getMenuInfo()).targetView
-              .getTag().toString());
+          .setText(((AdapterView.AdapterContextMenuInfo) item.getMenuInfo()).targetView.getTag()
+              .toString());
       break;
     }
 

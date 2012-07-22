@@ -232,27 +232,27 @@ public class FeedItemActivity extends Activity {
     }
 
     uri = getIntent().getData();
-    parentUri = FeedData.EntryColumns.PARENT_URI(uri.getPath());
+    parentUri = FeedData.ItemColumns.PARENT_URI(uri.getPath());
     showRead = getIntent().getBooleanExtra(SingleSubscriptionActivity.EXTRA_SHOWREAD,
         true);
-    iconBytes = getIntent().getByteArrayExtra(FeedData.FeedColumns.ICON);
+    iconBytes = getIntent().getByteArrayExtra(FeedData.SubscriptionColumns.ICON);
     feedId = 0;
 
     Cursor entryCursor = getContentResolver()
         .query(uri, null, null, null, null);
 
-    titlePosition = entryCursor.getColumnIndex(FeedData.EntryColumns.TITLE);
-    datePosition = entryCursor.getColumnIndex(FeedData.EntryColumns.DATE);
+    titlePosition = entryCursor.getColumnIndex(FeedData.ItemColumns.TITLE);
+    datePosition = entryCursor.getColumnIndex(FeedData.ItemColumns.DATE);
     abstractPosition = entryCursor
-        .getColumnIndex(FeedData.EntryColumns.ABSTRACT);
-    linkPosition = entryCursor.getColumnIndex(FeedData.EntryColumns.LINK);
-    feedIdPosition = entryCursor.getColumnIndex(FeedData.EntryColumns.FEED_ID);
+        .getColumnIndex(FeedData.ItemColumns.ABSTRACT);
+    linkPosition = entryCursor.getColumnIndex(FeedData.ItemColumns.LINK);
+    feedIdPosition = entryCursor.getColumnIndex(FeedData.ItemColumns.FEED_ID);
     favoritePosition = entryCursor
-        .getColumnIndex(FeedData.EntryColumns.FAVORITE);
+        .getColumnIndex(FeedData.ItemColumns.FAVORITE);
     readDatePosition = entryCursor
-        .getColumnIndex(FeedData.EntryColumns.READDATE);
+        .getColumnIndex(FeedData.ItemColumns.READDATE);
     enclosurePosition = entryCursor
-        .getColumnIndex(FeedData.EntryColumns.ENCLOSURE);
+        .getColumnIndex(FeedData.ItemColumns.ENCLOSURE);
 
     entryCursor.close();
 
@@ -370,7 +370,7 @@ public class FeedItemActivity extends Activity {
   protected void onResume() {
     super.onResume();
     uri = getIntent().getData();
-    parentUri = FeedData.EntryColumns.PARENT_URI(uri.getPath());
+    parentUri = FeedData.ItemColumns.PARENT_URI(uri.getPath());
     reload();
   }
 
@@ -410,7 +410,7 @@ public class FeedItemActivity extends Activity {
 
     ContentValues values = new ContentValues();
 
-    values.put(FeedData.EntryColumns.READDATE, System.currentTimeMillis());
+    values.put(FeedData.ItemColumns.READDATE, System.currentTimeMillis());
 
     Cursor entryCursor = getContentResolver()
         .query(uri, null, null, null, null);
@@ -422,7 +422,7 @@ public class FeedItemActivity extends Activity {
         getContentResolver().update(
             uri,
             values,
-            new StringBuilder(FeedData.EntryColumns.READDATE).append(
+            new StringBuilder(FeedData.ItemColumns.READDATE).append(
                 Strings.DB_ISNULL).toString(), null);
       }
       if (abstractText == null) {
@@ -461,9 +461,9 @@ public class FeedItemActivity extends Activity {
             }
           } else {
             Cursor iconCursor = getContentResolver().query(
-                FeedData.FeedColumns.CONTENT_URI(Integer.toString(feedId)),
-                new String[] { FeedData.FeedColumns._ID,
-                    FeedData.FeedColumns.ICON }, null, null, null);
+                FeedData.SubscriptionColumns.subscriptionContentUri(Integer.toString(feedId)),
+                new String[] { FeedData.SubscriptionColumns._ID,
+                    FeedData.SubscriptionColumns.ICON }, null, null, null);
 
             if (iconCursor.moveToFirst()) {
               iconBytes = iconCursor.getBlob(1);
@@ -504,7 +504,7 @@ public class FeedItemActivity extends Activity {
                 : android.R.drawable.star_off);
             ContentValues values = new ContentValues();
 
-            values.put(FeedData.EntryColumns.FAVORITE, favorite ? 1 : 0);
+            values.put(FeedData.ItemColumns.FAVORITE, favorite ? 1 : 0);
             getContentResolver().update(uri, values, null, null);
           }
         });
@@ -680,7 +680,7 @@ public class FeedItemActivity extends Activity {
     }
 
     Cursor cursor = getContentResolver().query(parentUri,
-        new String[] { FeedData.EntryColumns._ID }, queryString.toString(),
+        new String[] { FeedData.ItemColumns._ID }, queryString.toString(),
         null, successor ? DESC : ASC);
 
     if (cursor.moveToFirst()) {

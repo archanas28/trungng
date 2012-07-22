@@ -43,12 +43,6 @@
 
         <CheckBoxPreference
             android:defaultValue="false"
-            android:key="tabs.show"
-            android:summary="@string/settings_showtabs_description"
-            android:title="@string/settings_showtabs" />
-
-        <CheckBoxPreference
-            android:defaultValue="false"
             android:key="contentpresentation.prioritize"
             android:summary="@string/settings_prioritize_description"
             android:title="@string/settings_prioritize" />
@@ -76,14 +70,6 @@
             android:key="pictures.fetch"
             android:summary="@string/settings_fetchpictures_description"
             android:title="@string/settings_fetchpictures" />
-        <!--
-        <CheckBoxPreference
-            android:title="@string/settings_blacktheme"
-            android:defaultValue="false"
-            android:summary="@string/settings_blacktheme_description"
-            android:key="blacktheme" 
-            android:disableDependentsState="true"/>
-        -->
 
         <ListPreference
             android:name="@string/settings_fontsize"

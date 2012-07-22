@@ -92,7 +92,7 @@ public class SparseRSSAppWidgetProvider extends AppWidgetProvider {
     StringBuilder selection = new StringBuilder();
 
     if (hideRead) {
-      selection.append(FeedData.EntryColumns.READDATE)
+      selection.append(FeedData.ItemColumns.READDATE)
           .append(Strings.DB_ISNULL);
     }
 
@@ -100,17 +100,17 @@ public class SparseRSSAppWidgetProvider extends AppWidgetProvider {
       if (selection.length() > 0) {
         selection.append(Strings.DB_AND);
       }
-      selection.append(FeedData.EntryColumns.FEED_ID).append(" IN (" + feedIds)
+      selection.append(FeedData.ItemColumns.FEED_ID).append(" IN (" + feedIds)
           .append(')');
     }
 
     Cursor cursor = context.getContentResolver().query(
-        FeedData.EntryColumns.CONTENT_URI,
-        new String[] { FeedData.EntryColumns.TITLE, FeedData.EntryColumns._ID,
-            FeedData.FeedColumns.ICON },
+        FeedData.ItemColumns.ALL_ITEMS_CONTENT_URI,
+        new String[] { FeedData.ItemColumns.TITLE, FeedData.ItemColumns._ID,
+            FeedData.SubscriptionColumns.ICON },
         selection.toString(),
         null,
-        new StringBuilder(FeedData.EntryColumns.DATE).append(Strings.DB_DESC)
+        new StringBuilder(FeedData.ItemColumns.DATE).append(Strings.DB_DESC)
             .append(LIMIT).append(entryCount).toString());
 
     RemoteViews views = new RemoteViews(context.getPackageName(),
@@ -155,8 +155,8 @@ public class SparseRSSAppWidgetProvider extends AppWidgetProvider {
       views.setOnClickPendingIntent(IDS[k++], PendingIntent.getActivity(
           context,
           0,
-          new Intent(Intent.ACTION_VIEW, FeedData.EntryColumns
-              .ENTRY_CONTENT_URI(cursor.getString(1))),
+          new Intent(Intent.ACTION_VIEW, FeedData.ItemColumns
+              .itemContentUri(cursor.getString(1))),
           PendingIntent.FLAG_CANCEL_CURRENT));
     }
     cursor.close();

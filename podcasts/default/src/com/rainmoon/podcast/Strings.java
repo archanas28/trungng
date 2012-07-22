@@ -93,8 +93,8 @@ public final class Strings {
   public static final String DB_AND = " AND ";
 
   public static final String DB_EXCUDEFAVORITE = new StringBuilder(
-      FeedData.EntryColumns.FAVORITE).append(Strings.DB_ISNULL).append(" OR ")
-      .append(FeedData.EntryColumns.FAVORITE).append("=0").toString();
+      FeedData.ItemColumns.FAVORITE).append(Strings.DB_ISNULL).append(" OR ")
+      .append(FeedData.ItemColumns.FAVORITE).append("=0").toString();
 
   public static final String EMPTY = "";
 
@@ -148,7 +148,7 @@ public final class Strings {
 
   protected static final String FALSE = "false";
 
-  public static final String READDATE_GREATERZERO = FeedData.EntryColumns.READDATE
+  public static final String READDATE_GREATERZERO = FeedData.ItemColumns.READDATE
       + ">0";
 
   public static final String COUNT = "count";
