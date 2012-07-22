@@ -41,7 +41,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 
 import android.app.IntentService;
-import android.app.NotificationManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -50,8 +49,6 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Build;
-import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.util.Xml;
 
@@ -62,42 +59,21 @@ import com.rainmoon.podcast.provider.FeedData;
 
 public class FetcherService extends IntentService {
   private static final int FETCHMODE_DIRECT = 1;
-
   private static final int FETCHMODE_REENCODE = 2;
-
   private static final String KEY_USERAGENT = "User-agent";
-
   private static final String VALUE_USERAGENT = "Mozilla/5.0";
-
   private static final String CHARSET = "charset=";
-
-  private static final String COUNT = "COUNT(*)";
-
   private static final String CONTENT_TYPE_TEXT_HTML = "text/html";
-
   private static final String LINK_RSS = "<link rel=\"alternate\" ";
-
   private static final String LINK_RSS_SLOPPY = "<link rel=alternate ";
-
   private static final String HREF = "href=\"";
-
   private static final String HTML_BODY = "<body";
-
   private static final String ENCODING = "encoding=\"";
-
   private static final String SERVICENAME = "RssFetcherService";
-
-  private NotificationManager notificationManager;
 
   private static SharedPreferences preferences = null;
 
   private static Proxy proxy;
-
-  private static final boolean PRIOR_GINGERBREAD = Build.VERSION.RELEASE
-      .startsWith("1")
-      || Build.VERSION.RELEASE.startsWith("2.0")
-      || Build.VERSION.RELEASE.startsWith("2.1")
-      || Build.VERSION.RELEASE.startsWith("2.2");
 
   public FetcherService() {
     super(SERVICENAME);
@@ -133,23 +109,13 @@ public class FetcherService extends IntentService {
               Integer.parseInt(preferences.getString(
                   Strings.SETTINGS_PROXYPORT, Strings.DEFAULTPROXYPORT))));
         } catch (Exception e) {
-          proxy = null;
+          // ignore exception
         }
-      } else {
-        proxy = null;
       }
+      FetcherService.refreshFeedsStatic(FetcherService.this,
+          intent.getStringExtra(Strings.FEEDID), networkInfo,
+          intent.getBooleanExtra(Strings.SETTINGS_OVERRIDEWIFIONLY, false));
     }
-  }
-
-  @Override
-  public IBinder onBind(Intent intent) {
-    return null;
-  }
-
-  @Override
-  public void onCreate() {
-    super.onCreate();
-    notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
   }
 
   private static int refreshFeedsStatic(Context context, String feedId,

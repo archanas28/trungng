@@ -788,7 +788,7 @@ public class FeedItemActivity extends Activity {
       if (link != null) {
         startActivity(Intent.createChooser(new Intent(Intent.ACTION_SEND)
             .putExtra(Intent.EXTRA_TEXT, link).setType(TEXTPLAIN),
-            getString(R.string.menu_share)));
+            getString(R.string.contextmenu_share)));
       }
       break;
     }

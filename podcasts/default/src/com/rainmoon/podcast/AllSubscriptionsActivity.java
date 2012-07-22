@@ -191,7 +191,7 @@ public class AllSubscriptionsActivity extends FragmentActivity {
       AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
       builder.setIcon(android.R.drawable.ic_dialog_info);
-      builder.setTitle(R.string.menu_about);
+      builder.setTitle(R.string.option_about);
       builder.setPositiveButton(android.R.string.ok,
           new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
