@@ -32,17 +32,31 @@
     <string name="subscriptions">Subscriptions</string>
     <string name="all_items">All Items</string>
     <string name="explore">Explore</string>
-    <string name="menu_addfeed">Add feed</string>
-    <string name="norssfeeds">No RSS feeds</string>
-    <string name="noentries">No entries</string>
-    <string name="menu_refresh">Refresh</string>
-    <string name="contextmenu_delete">Delete</string>
     <string name="favorites">Favorites</string>
-    <string name="editfeed_title">Edit feed</string>
-    <string name="newfeed_title">New feed</string>
-    <string name="contextmenu_edit">Edit</string>
+    <string name="select_file">Select file (SD-root)</string>
+    
+    <!-- Titles -->
+    <string name="title_editsubscription">Edit subscription</string>
+    <string name="title_newsubscription">New subscription</string>
+    <string name="title_feed">Title</string>
+    
+    <string name="button_accept">Accept</string>
+    <string name="button_decline">Decline</string>
+    <string name="button_alwaysokforall">Always ok for all</string>
+    
+    <!-- Option menus -->
+    <string name="option_addfeed">Add feed</string>
+    <string name="option_refresh">Refresh</string>
+    <string name="option_settings">Settings</string>
+    <string name="option_allread">Mark all as read</string>
+    <string name="option_import">Import from OPML</string>
+    <string name="option_export">Export to OPML</string>
+    <string name="option_about">About</string>
+    <string name="option_share">Share</string>
+    <!-- Context menu -->
+    <string name="contextmenu_edit">Edit subscription</string>
     <string name="contextmenu_refresh">Refresh</string>
-    <string name="menu_settings">Settings</string>
+    <string name="contextmenu_unsubscribe">Unsubscribe</string>
     <string name="contextmenu_markasread">Mark as read</string>
     <string name="contextmenu_markasunread">Mark as unread</string>
     <string name="contextmenu_hideread">Hide read entries</string>
@@ -51,40 +65,25 @@
     <string name="contextmenu_deleteread">Delete read entries</string>
     <string name="contextmenu_deleteallentries">Delete all entries</string>
     <string name="contextmenu_resetupdatedate">Reset update-date</string>
-    <string name="menu_allread">Mark all as read</string>
-    <string name="menu_import">Import from OPML</string>
-    <string name="menu_export">Export to OPML</string>
-    <string name="menu_about">About</string>
-    <string name="menu_enablefeedsort">Enable feed sort</string>
-    <string name="menu_disablefeedsort">Disable feed sort</string>
-    <string name="menu_share">Share</string>
+    
+    <!-- Text -->
+    <string name="norssfeeds">No RSS feeds</string>
+    <string name="noentries">No entries</string>
+    <string name="never">never</string>
+    <string name="update">Update</string>
+    <string name="colon">:\u00A0</string>
+    <string name="unread">unread</string>
+    <string name="newentries">new entries</string>
+    <string name="rss_feeds">RSS feeds</string>
+    <string name="error">Error</string>
+    <string name="priority">Priority</string>
+    <string name="select_feeds">Select feeds</string>
+    <string name="all_feeds">All feeds (incl. future)</string>
+    <string name="all">All</string>
+    <string name="overview">Overview</string>
+    <string name="kb">kb</string>
 
-    <!-- For translators: you don't need to translate or include the following string -->
-    <string name="license">Copyright &#169; 2010-2012 Stefan Handschuh (handschuh.stefan@googlemail.com)\n\n
-        Translators\n
-         - Dutch: Eelko Berkenpies\n
-         - Spanish: Sergio Martín\n
-         - French: &lt;unnamed&gt;\n
-         - Turkish: &lt;unnamed&gt;\n
-         - Russian: Igor Nedoboy
-         \n\nPermission is hereby granted, free of charge, to any person obtaining a copy
-        of this software and associated documentation files (the "Software"), to deal
-        in the Software without restriction, including without limitation the rights
-        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-        copies of the Software, and to permit persons to whom the Software is
-        furnished to do so, subject to the following conditions:
-        \n\n
-        The above copyright notice and this permission notice shall be included in
-        all copies or substantial portions of the Software.
-        \n\n
-        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-        THE SOFTWARE.</string>
-    <string name="license_intro">This software is distributed under the MIT open source license and its source code is available under http://code.google.com/p/sparserss</string>
+    <!-- Preferences -->
     <string name="settings_category_refresh">Automated refresh</string>
     <string name="settings_enabled">Enabled</string>
     <string name="settings_refreshenabled_description">This setting controls the automatic refresh of all feeds</string>
@@ -138,29 +137,44 @@
     <string name="settings_proxy_wifionly_description">Use Proxy only for wifi</string>
     <string name="settings_proxy_host">Host</string>
     <string name="settings_proxy_port">Port</string>
-    <string name="never">never</string>
-    <string name="update">Update</string>
-    <string name="colon">:\u00A0</string>
-    <string name="unread">unread</string>
-    <string name="newentries">new entries</string>
-    <string name="rss_feeds">RSS feeds</string>
-    <string name="error">Error</string>
-    <string name="priority">Priority</string>
-    <string name="select_feeds">Select feeds</string>
-    <string name="all_feeds">All feeds (incl. future)</string>
-    <string name="all">All</string>
-    <string name="overview">Overview</string>
-    <string name="kb">kb</string>
+
+    <!-- Errors -->
     <string name="error_feedurlexists">The URL already exists.</string>
     <string name="error_feedimport">The selected file could not be imported.</string>
     <string name="error_feedexport">The export has failed. Make sure you have a writable SD-card mounted.</string>
     <string name="error_invalidimportfile">The selected file is not valid for import.</string>
     <string name="error_externalstoragenotavailable">The external storage (e.g. SD-card)  is not available.</string>
+    
+    <!-- For translators: you don't need to translate or include the following string -->
+    <string name="license">Copyright &#169; 2010-2012 Stefan Handschuh (handschuh.stefan@googlemail.com)\n\n
+        Translators\n
+         - Dutch: Eelko Berkenpies\n
+         - Spanish: Sergio Martín\n
+         - French: &lt;unnamed&gt;\n
+         - Turkish: &lt;unnamed&gt;\n
+         - Russian: Igor Nedoboy
+         \n\nPermission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+        \n\n
+        The above copyright notice and this permission notice shall be included in
+        all copies or substantial portions of the Software.
+        \n\n
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+        THE SOFTWARE.</string>
+    <string name="license_intro">This software is distributed under the MIT open source license and its source code is available under http://code.google.com/p/sparserss</string>
+    
     <string name="feed_url">URL</string>
     <string name="optional">(optional)</string>
     <string name="websiteorfeed">(website or feed)</string>
-    <string name="feed_title">Title</string>
-    <string name="select_file">Select file (SD-root)</string>
     <string name="refreshonwifionly">Refresh only over Wifi</string>
     <string name="changelog">Changelog</string>
     <string name="red">Red</string>
@@ -172,9 +186,6 @@
     <string name="question_areyousure">Are you sure?</string>
     <string name="question_playenclosure">Do you want to download and play the file %1$s of alleged size of %2$s?\nThis may cause a lot of traffic!</string>
     <string name="warning_moretraffic">Disabling this option causes  more traffic.</string>
-    <string name="button_accept">Accept</string>
-    <string name="button_decline">Decline</string>
-    <string name="button_alwaysokforall">Always ok for all</string>
     <string name="message_exportedto">Exported into %s.</string>
     <string name="dialog_licenseagreement">License</string>
     <string name="dialog_hint">Hint</string>

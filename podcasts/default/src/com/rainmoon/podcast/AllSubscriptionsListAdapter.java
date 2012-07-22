@@ -41,6 +41,12 @@ import android.widget.TextView;
 
 import com.rainmoon.podcast.provider.FeedData;
 
+/**
+ * Adapter for {@link AllSubscriptionsFragment}.
+ * 
+ * @author trung nguyen
+ * 
+ */
 public class AllSubscriptionsListAdapter extends ResourceCursorAdapter {
   private static final String COUNT_UNREAD = "COUNT(*) - COUNT(readdate)";
 
@@ -122,7 +128,7 @@ public class AllSubscriptionsListAdapter extends ResourceCursorAdapter {
       updateTextView.setText(new StringBuilder(context
           .getString(R.string.update)).append(COLON).append(
           date == 0 ? context.getString(R.string.never) : new StringBuilder(
-              EntriesListAdapter.DATEFORMAT.format(new Date(date)))
+              SingleSubscriptionAdapter.DATEFORMAT.format(new Date(date)))
               .append(COMMA).append(unreadCount).append('/').append(count)
               .append(' ').append(context.getString(R.string.unread))));
     } else {

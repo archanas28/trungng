@@ -25,12 +25,11 @@ import com.rainmoon.podcast.provider.FeedData;
 import com.rainmoon.podcast.provider.OPML;
 
 /**
- * Note that we must extend FragmentActivity instead of Activity.
+ * Activity for showing list of all subscriptions. Note that we must extend
+ * FragmentActivity instead of Activity.
  * 
  * TODO(trung): make this activity work properly
  * 
- * @author trung nguyen
- *
  */
 public class AllSubscriptionsActivity extends FragmentActivity {
 
@@ -65,12 +64,12 @@ public class AllSubscriptionsActivity extends FragmentActivity {
   public boolean onOptionsItemSelected(final MenuItem item) {
     super.onOptionsItemSelected(item);
     switch (item.getItemId()) {
-    case R.id.menu_addfeed: {
+    case R.id.option_addfeed: {
       startActivity(new Intent(Intent.ACTION_INSERT)
           .setData(FeedData.FeedColumns.CONTENT_URI));
       break;
     }
-    case R.id.menu_refresh: {
+    case R.id.option_refresh: {
       new Thread() {
         public void run() {
           sendBroadcast(new Intent(Strings.ACTION_REFRESHFEEDS).putExtra(
@@ -82,7 +81,7 @@ public class AllSubscriptionsActivity extends FragmentActivity {
       break;
     }
 
-    case R.id.menu_settings: {
+    case R.id.option_settings: {
       if (Build.VERSION.SDK_INT < 11) {
         startActivity(new Intent(this, PreferencesActivityCompatability.class));
       } else {
@@ -96,11 +95,11 @@ public class AllSubscriptionsActivity extends FragmentActivity {
 
       break;
     }
-    case R.id.menu_about: {
+    case R.id.option_about: {
       showDialog(DIALOG_ABOUT);
       break;
     }
-    case R.id.menu_import: {
+    case R.id.option_import: {
       if (Environment.getExternalStorageState().equals(
           Environment.MEDIA_MOUNTED)
           || Environment.getExternalStorageState().equals(
@@ -140,12 +139,13 @@ public class AllSubscriptionsActivity extends FragmentActivity {
 
       break;
     }
-    case R.id.menu_export: {
+    case R.id.option_export: {
       if (Environment.getExternalStorageState().equals(
           Environment.MEDIA_MOUNTED)
           || Environment.getExternalStorageState().equals(
               Environment.MEDIA_MOUNTED_READ_ONLY)) {
         try {
+          // TODO
           String filename = new StringBuilder(Environment
               .getExternalStorageDirectory().toString()).append("/sparse_rss_")
               .append(System.currentTimeMillis()).append(".opml").toString();

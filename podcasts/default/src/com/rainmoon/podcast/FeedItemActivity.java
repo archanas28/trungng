@@ -69,7 +69,13 @@ import android.widget.ViewFlipper;
 
 import com.rainmoon.podcast.provider.FeedData;
 
-public class EntryActivity extends Activity {
+/**
+ * Activity for showing a single feed item.
+ * 
+ * @author trung nguyen
+ * 
+ */
+public class FeedItemActivity extends Activity {
   /*
    * private static final String NEWLINE = "\n";
    * 
@@ -227,7 +233,7 @@ public class EntryActivity extends Activity {
 
     uri = getIntent().getData();
     parentUri = FeedData.EntryColumns.PARENT_URI(uri.getPath());
-    showRead = getIntent().getBooleanExtra(EntriesListActivity.EXTRA_SHOWREAD,
+    showRead = getIntent().getBooleanExtra(SingleSubscriptionActivity.EXTRA_SHOWREAD,
         true);
     iconBytes = getIntent().getByteArrayExtra(FeedData.FeedColumns.ICON);
     feedId = 0;
@@ -569,7 +575,7 @@ public class EntryActivity extends Activity {
 
               if (preferences.getBoolean(
                   Strings.SETTINGS_ENCLOSUREWARNINGSENABLED, true)) {
-                Builder builder = new AlertDialog.Builder(EntryActivity.this);
+                Builder builder = new AlertDialog.Builder(FeedItemActivity.this);
 
                 builder.setTitle(R.string.question_areyousure);
                 builder.setIcon(android.R.drawable.ic_dialog_alert);
@@ -656,7 +662,7 @@ public class EntryActivity extends Activity {
                                                                         // handle
                                                                         // this
       } catch (Throwable t) {
-        Toast.makeText(EntryActivity.this, t.getMessage(), Toast.LENGTH_LONG)
+        Toast.makeText(FeedItemActivity.this, t.getMessage(), Toast.LENGTH_LONG)
             .show();
       }
     }
@@ -670,7 +676,7 @@ public class EntryActivity extends Activity {
 
     if (!showRead) {
       queryString.append(Strings.DB_AND).append(
-          EntriesListAdapter.READDATEISNULL);
+          SingleSubscriptionAdapter.READDATEISNULL);
     }
 
     Cursor cursor = getContentResolver().query(parentUri,

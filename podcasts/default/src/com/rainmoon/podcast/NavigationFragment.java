@@ -67,13 +67,13 @@ public class NavigationFragment extends ListFragment {
           } else if (item.getText().equals(all)) {
             Intent intent = new Intent(Intent.ACTION_VIEW,
                 FeedData.EntryColumns.CONTENT_URI);
-            intent.putExtra(EntriesListActivity.EXTRA_SHOWFEEDINFO, true);
+            intent.putExtra(SingleSubscriptionActivity.EXTRA_SHOWFEEDINFO, true);
             startActivity(intent);
           } else if (item.getText().equals(favorites)) {
             Intent intent = new Intent(Intent.ACTION_VIEW,
                 FeedData.EntryColumns.FAVORITES_CONTENT_URI);
-            intent.putExtra(EntriesListActivity.EXTRA_SHOWFEEDINFO, true);
-            intent.putExtra(EntriesListActivity.EXTRA_AUTORELOAD, true);
+            intent.putExtra(SingleSubscriptionActivity.EXTRA_SHOWFEEDINFO, true);
+            intent.putExtra(SingleSubscriptionActivity.EXTRA_AUTORELOAD, true);
             startActivity(intent);
           }
         } catch (ClassCastException e) {

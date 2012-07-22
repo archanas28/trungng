@@ -47,7 +47,13 @@ import android.widget.TextView;
 
 import com.rainmoon.podcast.provider.FeedData;
 
-public class EntriesListAdapter extends ResourceCursorAdapter {
+/**
+ * Adapter for {@link SingleSubscriptionActivity}.
+ * 
+ * @author trung nguyen
+ *
+ */
+public class SingleSubscriptionAdapter extends ResourceCursorAdapter {
   private static final int STATE_NEUTRAL = 0;
 
   private static final int STATE_ALLREAD = 1;
@@ -95,7 +101,7 @@ public class EntriesListAdapter extends ResourceCursorAdapter {
 
   private Vector<Long> unfavorited;
 
-  public EntriesListAdapter(Activity context, Uri uri, boolean showFeedInfo,
+  public SingleSubscriptionAdapter(Activity context, Uri uri, boolean showFeedInfo,
       boolean autoreload) {
     super(context, R.layout.entrylistitem, createManagedCursor(context, uri,
         true), autoreload);

@@ -3,14 +3,12 @@ package com.rainmoon.podcast;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ListFragment;
@@ -31,25 +29,16 @@ import com.rainmoon.podcast.service.RefreshService;
 
 /**
  * Fragment showing the list of all subscriptions.
+ *  TODO(trung): currently update
+ * of data is handled via broadcasting Intent...
  * 
  * @author trung nguyen
  * 
  */
 public class AllSubscriptionsFragment extends ListFragment {
 
-  private static final int CONTEXTMENU_EDIT_ID = 3;
-
-  private static final int CONTEXTMENU_REFRESH_ID = 4;
-
-  private static final int CONTEXTMENU_DELETE_ID = 5;
-
-  private static final int CONTEXTMENU_MARKASREAD_ID = 6;
-
-  private static final int CONTEXTMENU_MARKASUNREAD_ID = 7;
-
-  private static final int CONTEXTMENU_DELETEREAD_ID = 8;
-
-  private static final int CONTEXTMENU_RESETUPDATEDATE_ID = 10;
+  private static final int CONTEXTMENU_EDIT_ID = 1;
+  private static final int CONTEXTMENU_UNSUBSCRIBE = 2;
 
   private AllSubscriptionsListAdapter mListAdapter;
   private Context mContext;
@@ -77,7 +66,7 @@ public class AllSubscriptionsFragment extends ListFragment {
         R.layout.header, null);
     header.setText(R.string.subscriptions);
     getListView().addHeaderView(header);
-    
+
     mListAdapter = new AllSubscriptionsListAdapter((Activity) mContext);
     setListAdapter(mListAdapter);
     if (PreferenceManager.getDefaultSharedPreferences(mContext).getBoolean(
@@ -97,18 +86,10 @@ public class AllSubscriptionsFragment extends ListFragment {
         ContextMenuInfo menuInfo) {
       menu.setHeaderTitle(((TextView) ((AdapterView.AdapterContextMenuInfo) menuInfo).targetView
           .findViewById(android.R.id.text1)).getText());
-      menu.add(0, CONTEXTMENU_REFRESH_ID, Menu.NONE,
-          R.string.contextmenu_refresh);
-      menu.add(0, CONTEXTMENU_MARKASREAD_ID, Menu.NONE,
-          R.string.contextmenu_markasread);
-      menu.add(0, CONTEXTMENU_MARKASUNREAD_ID, Menu.NONE,
-          R.string.contextmenu_markasunread);
-      menu.add(0, CONTEXTMENU_DELETEREAD_ID, Menu.NONE,
-          R.string.contextmenu_deleteread);
-      menu.add(0, CONTEXTMENU_EDIT_ID, Menu.NONE, R.string.contextmenu_edit);
-      menu.add(0, CONTEXTMENU_RESETUPDATEDATE_ID, Menu.NONE,
-          R.string.contextmenu_resetupdatedate);
-      menu.add(0, CONTEXTMENU_DELETE_ID, Menu.NONE, R.string.contextmenu_delete);
+      menu.add(Menu.NONE, CONTEXTMENU_EDIT_ID, Menu.NONE,
+          R.string.contextmenu_edit);
+      menu.add(Menu.NONE, CONTEXTMENU_UNSUBSCRIBE, Menu.NONE,
+          R.string.contextmenu_unsubscribe);
     }
 
   }
@@ -125,85 +106,86 @@ public class AllSubscriptionsFragment extends ListFragment {
                   .getMenuInfo()).id)));
       break;
     }
-    case CONTEXTMENU_REFRESH_ID: {
-      final String id = Long
-          .toString(((AdapterView.AdapterContextMenuInfo) item.getMenuInfo()).id);
-      refresh(id);
-      break;
-    }
-    case CONTEXTMENU_DELETE_ID: {
+      // case CONTEXTMENU_REFRESH_ID: {
+      // final String id = Long
+      // .toString(((AdapterView.AdapterContextMenuInfo)
+      // item.getMenuInfo()).id);
+      // refresh(id);
+      // break;
+      // }
+    case CONTEXTMENU_UNSUBSCRIBE: {
       String id = Long.toString(((AdapterView.AdapterContextMenuInfo) item
           .getMenuInfo()).id);
-      delete(item, id);
+      unsubscribe(item, id);
       break;
     }
-    case CONTEXTMENU_MARKASREAD_ID: {
-      new Thread() {
-        public void run() {
-          String id = Long.toString(((AdapterView.AdapterContextMenuInfo) item
-              .getMenuInfo()).id);
-
-          if (getActivity().getContentResolver().update(
-              FeedData.EntryColumns.CONTENT_URI(id),
-              getReadContentValues(),
-              new StringBuilder(FeedData.EntryColumns.READDATE).append(
-                  Strings.DB_ISNULL).toString(), null) > 0) {
-            getActivity().getContentResolver().notifyChange(
-                FeedData.FeedColumns.CONTENT_URI(id), null);
-          }
-        }
-      }.start();
-      break;
-    }
-    case CONTEXTMENU_MARKASUNREAD_ID: {
-      new Thread() {
-        public void run() {
-          String id = Long.toString(((AdapterView.AdapterContextMenuInfo) item
-              .getMenuInfo()).id);
-
-          if (getActivity().getContentResolver().update(
-              FeedData.EntryColumns.CONTENT_URI(id), getUnreadContentValues(),
-              null, null) > 0) {
-            getActivity().getContentResolver().notifyChange(
-                FeedData.FeedColumns.CONTENT_URI(id), null);
-            ;
-          }
-        }
-      }.start();
-      break;
-    }
-    case CONTEXTMENU_DELETEREAD_ID: {
-      new Thread() {
-        public void run() {
-          String id = Long.toString(((AdapterView.AdapterContextMenuInfo) item
-              .getMenuInfo()).id);
-
-          Uri uri = FeedData.EntryColumns.CONTENT_URI(id);
-
-          String selection = Strings.READDATE_GREATERZERO + Strings.DB_AND
-              + " (" + Strings.DB_EXCUDEFAVORITE + ")";
-
-          FeedData.deletePicturesOfFeed(mContext, uri, selection);
-          if (getActivity().getContentResolver().delete(uri, selection, null) > 0) {
-            getActivity().getContentResolver().notifyChange(
-                FeedData.FeedColumns.CONTENT_URI(id), null);
-          }
-        }
-      }.start();
-      break;
-    }
-    case CONTEXTMENU_RESETUPDATEDATE_ID: {
-      ContentValues values = new ContentValues();
-
-      values.put(FeedData.FeedColumns.LASTUPDATE, 0);
-      values.put(FeedData.FeedColumns.REALLASTUPDATE, 0);
-      getActivity().getContentResolver().update(
-          FeedData.FeedColumns.CONTENT_URI(Long
-              .toString(((AdapterView.AdapterContextMenuInfo) item
-                  .getMenuInfo()).id)), values, null, null);
-      break;
-    }
-
+      // case CONTEXTMENU_MARKASREAD_ID: {
+      // new Thread() {
+      // public void run() {
+      // String id = Long.toString(((AdapterView.AdapterContextMenuInfo) item
+      // .getMenuInfo()).id);
+      //
+      // if (getActivity().getContentResolver().update(
+      // FeedData.EntryColumns.CONTENT_URI(id),
+      // getReadContentValues(),
+      // new StringBuilder(FeedData.EntryColumns.READDATE).append(
+      // Strings.DB_ISNULL).toString(), null) > 0) {
+      // getActivity().getContentResolver().notifyChange(
+      // FeedData.FeedColumns.CONTENT_URI(id), null);
+      // }
+      // }
+      // }.start();
+      // break;
+      // }
+      // case CONTEXTMENU_MARKASUNREAD_ID: {
+      // new Thread() {
+      // public void run() {
+      // String id = Long.toString(((AdapterView.AdapterContextMenuInfo) item
+      // .getMenuInfo()).id);
+      //
+      // if (getActivity().getContentResolver().update(
+      // FeedData.EntryColumns.CONTENT_URI(id), getUnreadContentValues(),
+      // null, null) > 0) {
+      // getActivity().getContentResolver().notifyChange(
+      // FeedData.FeedColumns.CONTENT_URI(id), null);
+      // ;
+      // }
+      // }
+      // }.start();
+      // break;
+      // }
+      // case CONTEXTMENU_DELETEREAD_ID: {
+      // new Thread() {
+      // public void run() {
+      // String id = Long.toString(((AdapterView.AdapterContextMenuInfo) item
+      // .getMenuInfo()).id);
+      //
+      // Uri uri = FeedData.EntryColumns.CONTENT_URI(id);
+      //
+      // String selection = Strings.READDATE_GREATERZERO + Strings.DB_AND
+      // + " (" + Strings.DB_EXCUDEFAVORITE + ")";
+      //
+      // FeedData.deletePicturesOfFeed(mContext, uri, selection);
+      // if (getActivity().getContentResolver().delete(uri, selection, null) >
+      // 0) {
+      // getActivity().getContentResolver().notifyChange(
+      // FeedData.FeedColumns.CONTENT_URI(id), null);
+      // }
+      // }
+      // }.start();
+      // break;
+      // }
+      // case CONTEXTMENU_RESETUPDATEDATE_ID: {
+      // ContentValues values = new ContentValues();
+      //
+      // values.put(FeedData.FeedColumns.LASTUPDATE, 0);
+      // values.put(FeedData.FeedColumns.REALLASTUPDATE, 0);
+      // getActivity().getContentResolver().update(
+      // FeedData.FeedColumns.CONTENT_URI(Long
+      // .toString(((AdapterView.AdapterContextMenuInfo) item
+      // .getMenuInfo()).id)), values, null, null);
+      // break;
+      // }
     }
     return true;
   }
@@ -214,7 +196,7 @@ public class AllSubscriptionsFragment extends ListFragment {
    * @param item
    * @param id
    */
-  private void delete(final MenuItem item, String id) {
+  private void unsubscribe(final MenuItem item, String id) {
     Cursor cursor = getActivity().getContentResolver().query(
         FeedData.FeedColumns.CONTENT_URI(id),
         new String[] { FeedData.FeedColumns.NAME }, null, null, null);
@@ -250,6 +232,7 @@ public class AllSubscriptionsFragment extends ListFragment {
    * 
    * @param id
    */
+  @SuppressWarnings("unused")
   private void refresh(String id) {
     ConnectivityManager connectivityManager = (ConnectivityManager) mContext
         .getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -314,20 +297,6 @@ public class AllSubscriptionsFragment extends ListFragment {
       }
 
     }
-  }
-
-  public static final ContentValues getReadContentValues() {
-    ContentValues values = new ContentValues();
-
-    values.put(FeedData.EntryColumns.READDATE, System.currentTimeMillis());
-    return values;
-  }
-
-  public static final ContentValues getUnreadContentValues() {
-    ContentValues values = new ContentValues();
-
-    values.putNull(FeedData.EntryColumns.READDATE);
-    return values;
   }
 
   @Override

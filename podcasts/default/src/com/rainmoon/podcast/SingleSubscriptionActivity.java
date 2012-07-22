@@ -51,7 +51,13 @@ import android.widget.TextView;
 
 import com.rainmoon.podcast.provider.FeedData;
 
-public class EntriesListActivity extends ListActivity {
+/**
+ * Activity for showing list of feed items for a singler subscription.
+ * 
+ * @author trung nguyen
+ * 
+ */
+public class SingleSubscriptionActivity extends ListActivity {
   private static final int CONTEXTMENU_MARKASREAD_ID = 6;
 
   private static final int CONTEXTMENU_MARKASUNREAD_ID = 7;
@@ -71,7 +77,7 @@ public class EntriesListActivity extends ListActivity {
 
   private Uri uri;
 
-  private EntriesListAdapter entriesListAdapter;
+  private SingleSubscriptionAdapter entriesListAdapter;
 
   private byte[] iconBytes;
 
@@ -112,7 +118,7 @@ public class EntriesListActivity extends ListActivity {
 
     uri = intent.getData();
 
-    entriesListAdapter = new EntriesListAdapter(this, uri,
+    entriesListAdapter = new SingleSubscriptionAdapter(this, uri,
         intent.getBooleanExtra(EXTRA_SHOWFEEDINFO, false),
         intent.getBooleanExtra(EXTRA_AUTORELOAD, false));
     setListAdapter(entriesListAdapter);
@@ -184,7 +190,7 @@ public class EntriesListActivity extends ListActivity {
       new Thread() { // the update process takes some time
         public void run() {
           getContentResolver().update(uri,
-              AllSubscriptionsFragment.getReadContentValues(), null, null);
+              StaticMethods.getReadContentValues(), null, null);
         }
       }.start();
       entriesListAdapter.markAsRead();
@@ -194,7 +200,7 @@ public class EntriesListActivity extends ListActivity {
       new Thread() { // the update process takes some time
         public void run() {
           getContentResolver().update(uri,
-              AllSubscriptionsFragment.getUnreadContentValues(), null, null);
+              StaticMethods.getUnreadContentValues(), null, null);
         }
       }.start();
       entriesListAdapter.markAsUnread();
@@ -219,7 +225,7 @@ public class EntriesListActivity extends ListActivity {
               + " (" + Strings.DB_EXCUDEFAVORITE + ")";
 
           getContentResolver().delete(uri, selection, null);
-          FeedData.deletePicturesOfFeed(EntriesListActivity.this, uri,
+          FeedData.deletePicturesOfFeed(SingleSubscriptionActivity.this, uri,
               selection);
           runOnUiThread(new Runnable() {
             public void run() {
@@ -260,7 +266,7 @@ public class EntriesListActivity extends ListActivity {
       long id = ((AdapterView.AdapterContextMenuInfo) item.getMenuInfo()).id;
 
       getContentResolver().update(ContentUris.withAppendedId(uri, id),
-          AllSubscriptionsFragment.getReadContentValues(), null, null);
+          StaticMethods.getReadContentValues(), null, null);
       entriesListAdapter.markAsRead(id);
       break;
     }
@@ -268,7 +274,7 @@ public class EntriesListActivity extends ListActivity {
       long id = ((AdapterView.AdapterContextMenuInfo) item.getMenuInfo()).id;
 
       getContentResolver().update(ContentUris.withAppendedId(uri, id),
-          AllSubscriptionsFragment.getUnreadContentValues(), null, null);
+          StaticMethods.getUnreadContentValues(), null, null);
       entriesListAdapter.markAsUnread(id);
       break;
     }

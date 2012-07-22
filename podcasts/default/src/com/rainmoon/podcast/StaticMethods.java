@@ -1,5 +1,8 @@
 package com.rainmoon.podcast;
 
+import com.rainmoon.podcast.provider.FeedData;
+
+import android.content.ContentValues;
 import android.os.Build;
 
 /**
@@ -11,5 +14,19 @@ import android.os.Build;
 public class StaticMethods {
   public static final boolean POSTGINGERBREAD = !Build.VERSION.RELEASE
       .startsWith("1") && !Build.VERSION.RELEASE.startsWith("2");
+
+  public static final ContentValues getReadContentValues() {
+    ContentValues values = new ContentValues();
+
+    values.put(FeedData.EntryColumns.READDATE, System.currentTimeMillis());
+    return values;
+  }
+
+  public static final ContentValues getUnreadContentValues() {
+    ContentValues values = new ContentValues();
+
+    values.putNull(FeedData.EntryColumns.READDATE);
+    return values;
+  }
 
 }

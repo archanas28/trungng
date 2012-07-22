@@ -1,32 +1,34 @@
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
-    <ImageView
-        android:layout_width="fill_parent"
-        android:layout_height="1dip"
-        android:scaleType="fitXY"
-        android:src="@android:drawable/divider_horizontal_dark"/>
-    <include layout="@layout/feedsettings_content"/>
-    <LinearLayout
+    android:orientation="vertical" >
+
+    <include
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        style="@style/ButtonBar">
+        layout="@layout/feedsettings_content" />
+
+    <LinearLayout
+        style="@style/ButtonBar"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
         <Button
             android:id="@+id/button_ok"
+            style="@style/Widget.Button.Dialog"
             android:layout_width="0dip"
             android:layout_height="wrap_content"
-            android:text="@android:string/ok"
-            android:layout_weight="0.5"
-            style="@style/Widget.Button.Dialog"/>
+            android:layout_weight="1"
+            android:text="@android:string/ok" />
+
         <Button
             android:id="@+id/button_cancel"
+            style="@style/Widget.Button.Dialog"
             android:layout_width="0dip"
             android:layout_height="wrap_content"
-            android:text="@android:string/cancel"
-            android:layout_weight="0.5"
-            style="@style/Widget.Button.Dialog"/>
+            android:layout_weight="1"
+            android:text="@android:string/cancel" />
     </LinearLayout>
+
 </LinearLayout>
