@@ -5,7 +5,10 @@
     android:orientation="vertical"
     android:showDividers="middle" >
 
-    <include layout="@layout/feedsettings_content" />
+    <include
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        layout="@layout/edit_subscription_main" />
 
     <LinearLayout
         style="@style/ButtonBar"
@@ -18,7 +21,7 @@
             style="@style/Widget.Button.Dialog"
             android:layout_width="0dip"
             android:layout_height="wrap_content"
-            android:layout_weight="0.5"
+            android:layout_weight="1"
             android:text="@android:string/cancel" />
 
         <Button
@@ -26,7 +29,7 @@
             style="@style/Widget.Button.Dialog"
             android:layout_width="0dip"
             android:layout_height="wrap_content"
-            android:layout_weight="0.5"
+            android:layout_weight="1"
             android:text="@android:string/ok" />
     </LinearLayout>
 
