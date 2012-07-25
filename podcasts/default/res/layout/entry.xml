@@ -1,73 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Layout to view an entry -->
-<LinearLayout
-    android:orientation="vertical"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android" >
-    <LinearLayout
-        android:paddingLeft="4pt"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/item_title"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_width="fill_parent">
+        android:ellipsize="marquee"
+        android:marqueeRepeatLimit="1"
+        android:paddingLeft="4dp"
+        android:paddingTop="2dp"
+        android:scrollHorizontally="true"
+        android:singleLine="true"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="4dp" >
+
         <TextView
-            android:paddingTop="2pt"
-            android:layout_height="wrap_content"
             android:id="@+id/entry_date"
             android:layout_width="0dp"
-            android:layout_gravity="fill"
-            android:layout_weight="1" />
-        <ImageView
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@android:id/icon"/>
+            android:layout_gravity="fill"
+            android:layout_weight="1"
+            android:paddingTop="2pt" />
+
+        <ImageView
+            android:id="@android:id/icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
     </LinearLayout>
-    <View 
-        android:background="@android:drawable/title_bar"
-        android:layout_width="fill_parent"
-        android:layout_height="1dp" />
+
     <RelativeLayout
         android:id="@+id/entry_content"
         android:layout_width="fill_parent"
         android:layout_height="0dp"
         android:layout_gravity="fill"
         android:layout_weight="1" >
+
         <ViewFlipper
             android:id="@+id/content_flipper"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="fill"/>
+            android:layout_gravity="fill" />
+
         <LinearLayout
             android:id="@+id/button_panel"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_alignParentBottom="true">
-            <ImageButton 
-                android:layout_height="fill_parent"
+            android:layout_alignParentBottom="true"
+            android:background="#7C000000"
+            android:orientation="horizontal" >
+
+            <ImageButton
                 android:id="@+id/prev_button"
-                android:layout_width="70dp"
-                android:background="#7C000000"
-                android:src="@android:drawable/ic_media_previous"/>
-            <ImageButton 
-                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:contentDescription="@string/previous_entry"
+                android:src="@android:drawable/ic_media_previous" />
+
+            <ImageButton
                 android:id="@+id/url_button"
                 android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:layout_gravity="fill"
                 android:layout_weight="1"
-                android:background="#7C000000"
-                android:src="@android:drawable/ic_menu_view"/>
-            <ImageButton 
-                android:layout_height="fill_parent"
+                android:contentDescription="@string/open_in_browser"
+                android:src="@android:drawable/ic_menu_view" />
+
+            <ImageButton
                 android:id="@+id/play_button"
-                android:layout_width="wrap_content"
-                android:background="#7C000000"
-                android:src="@android:drawable/ic_media_play"/>
-            <ImageButton 
+                android:layout_width="0dp"
                 android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:contentDescription="@string/play"
+                android:src="@android:drawable/ic_media_play" />
+
+            <ImageButton
                 android:id="@+id/next_button"
-                android:layout_width="70dp"
-                android:background="#7C000000"
-                android:src="@android:drawable/ic_media_next"/>
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:contentDescription="@string/next_entry"
+                android:src="@android:drawable/ic_media_next" />
         </LinearLayout>
     </RelativeLayout>
+
 </LinearLayout>

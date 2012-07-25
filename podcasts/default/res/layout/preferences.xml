@@ -80,12 +80,6 @@
             android:numeric="integer"
             android:summary="@string/settings_fontsize_description"
             android:title="@string/settings_fontsize" />
-
-        <CheckBoxPreference
-            android:defaultValue="true"
-            android:key="gestures.enabled"
-            android:summary="@string/settings_gestures_description"
-            android:title="@string/settings_gestures" />
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/settings_category_network" >

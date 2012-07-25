@@ -9,11 +9,20 @@
         android:name="com.rainmoon.podcast.NavigationFragment"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" />
-    <!-- To be used for Tablet 
+    <!--
+    To be used for Tablet 
     <fragment
         android:id="@+id/frag_all_subscriptions"
         android:name="com.rainmoon.podcast.AllSubscriptionsFragment"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" />
-     -->
+    -->
+
+    <!-- TODO(trung): move to FeedItemActivity -->
+    <fragment
+        android:id="@+id/frag_player"
+        android:name="com.rainmoon.podcast.PodcastPlayerFragment"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" />
+
 </LinearLayout>
