@@ -56,6 +56,8 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".PodcastPlayerActivity" />
+        <activity
             android:name=".AllSubscriptionsActivity"
             android:launchMode="singleTask" />
         <activity android:name=".EmptyActivity" />

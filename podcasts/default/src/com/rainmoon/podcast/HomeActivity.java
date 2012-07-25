@@ -2,7 +2,9 @@ package com.rainmoon.podcast;
 
 import android.app.Dialog;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -13,14 +15,23 @@ import android.view.MenuItem;
  * 
  */
 public class HomeActivity extends FragmentActivity {
-  
+
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    
+
     setContentView(R.layout.activity_home);
+    Fragment playerFragment = getSupportFragmentManager().findFragmentById(
+        R.id.frag_player);
+    
+    try {
+      OnFeedItemChangeListener listener = (OnFeedItemChangeListener) playerFragment;
+      listener.onUrlChange("http://www.nhaccuatui.com/nghe?L=NJZ8I0EKsoJV");
+    } catch (ClassCastException e) {
+      Log.e("HomeActivity", "Fragment does not implement required interface");
+    }
   }
-  
+
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
     super.onCreateOptionsMenu(menu);

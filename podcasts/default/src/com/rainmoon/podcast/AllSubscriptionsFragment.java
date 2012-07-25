@@ -28,8 +28,7 @@ import com.rainmoon.podcast.provider.FeedData;
 import com.rainmoon.podcast.service.RefreshService;
 
 /**
- * Fragment showing the list of all subscriptions.
- *  TODO(trung): currently update
+ * Fragment showing the list of all subscriptions. TODO(trung): currently update
  * of data is handled via broadcasting Intent...
  * 
  * @author trung nguyen
@@ -51,8 +50,7 @@ public class AllSubscriptionsFragment extends ListFragment {
   }
 
   @Override
-  public View onCreateView(LayoutInflater inflater, ViewGroup container,
-      Bundle savedInstanceState) {
+  public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     super.onCreateView(inflater, container, savedInstanceState);
     return inflater.inflate(R.layout.main, container, false);
   }
@@ -62,8 +60,7 @@ public class AllSubscriptionsFragment extends ListFragment {
     super.onActivityCreated(savedInstanceState);
     ListView lv = getListView();
     lv.setOnCreateContextMenuListener(new MyContextMenuListener());
-    TextView header = (TextView) getActivity().getLayoutInflater().inflate(
-        R.layout.header, null);
+    TextView header = (TextView) getActivity().getLayoutInflater().inflate(R.layout.header, null);
     header.setText(R.string.subscriptions);
     getListView().addHeaderView(header);
 
@@ -82,14 +79,11 @@ public class AllSubscriptionsFragment extends ListFragment {
   final class MyContextMenuListener implements OnCreateContextMenuListener {
 
     @Override
-    public void onCreateContextMenu(ContextMenu menu, View v,
-        ContextMenuInfo menuInfo) {
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
       menu.setHeaderTitle(((TextView) ((AdapterView.AdapterContextMenuInfo) menuInfo).targetView
           .findViewById(android.R.id.text1)).getText());
-      menu.add(Menu.NONE, CONTEXTMENU_EDIT_ID, Menu.NONE,
-          R.string.contextmenu_edit);
-      menu.add(Menu.NONE, CONTEXTMENU_UNSUBSCRIBE, Menu.NONE,
-          R.string.contextmenu_unsubscribe);
+      menu.add(Menu.NONE, CONTEXTMENU_EDIT_ID, Menu.NONE, R.string.contextmenu_edit);
+      menu.add(Menu.NONE, CONTEXTMENU_UNSUBSCRIBE, Menu.NONE, R.string.contextmenu_unsubscribe);
     }
 
   }
@@ -100,92 +94,15 @@ public class AllSubscriptionsFragment extends ListFragment {
 
     switch (item.getItemId()) {
     case CONTEXTMENU_EDIT_ID: {
-      startActivity(new Intent(Intent.ACTION_EDIT)
-          .setData(FeedData.SubscriptionColumns
-              .subscriptionContentUri(((AdapterView.AdapterContextMenuInfo) item
-                  .getMenuInfo()).id)));
+      startActivity(new Intent(Intent.ACTION_EDIT).setData(FeedData.SubscriptionColumns
+          .subscriptionContentUri(((AdapterView.AdapterContextMenuInfo) item.getMenuInfo()).id)));
       break;
     }
-      // case CONTEXTMENU_REFRESH_ID: {
-      // final String id = Long
-      // .toString(((AdapterView.AdapterContextMenuInfo)
-      // item.getMenuInfo()).id);
-      // refresh(id);
-      // break;
-      // }
     case CONTEXTMENU_UNSUBSCRIBE: {
-      String id = Long.toString(((AdapterView.AdapterContextMenuInfo) item
-          .getMenuInfo()).id);
+      String id = Long.toString(((AdapterView.AdapterContextMenuInfo) item.getMenuInfo()).id);
       unsubscribe(item, id);
       break;
     }
-      // case CONTEXTMENU_MARKASREAD_ID: {
-      // new Thread() {
-      // public void run() {
-      // String id = Long.toString(((AdapterView.AdapterContextMenuInfo) item
-      // .getMenuInfo()).id);
-      //
-      // if (getActivity().getContentResolver().update(
-      // FeedData.ItemColumns.ALL_ITEMS_CONTENT_URI(id),
-      // getReadContentValues(),
-      // new StringBuilder(FeedData.ItemColumns.READDATE).append(
-      // Strings.DB_ISNULL).toString(), null) > 0) {
-      // getActivity().getContentResolver().notifyChange(
-      // FeedData.SubscriptionColumns.CONTENT_URI(id), null);
-      // }
-      // }
-      // }.start();
-      // break;
-      // }
-      // case CONTEXTMENU_MARKASUNREAD_ID: {
-      // new Thread() {
-      // public void run() {
-      // String id = Long.toString(((AdapterView.AdapterContextMenuInfo) item
-      // .getMenuInfo()).id);
-      //
-      // if (getActivity().getContentResolver().update(
-      // FeedData.ItemColumns.ALL_ITEMS_CONTENT_URI(id), getUnreadContentValues(),
-      // null, null) > 0) {
-      // getActivity().getContentResolver().notifyChange(
-      // FeedData.SubscriptionColumns.CONTENT_URI(id), null);
-      // ;
-      // }
-      // }
-      // }.start();
-      // break;
-      // }
-      // case CONTEXTMENU_DELETEREAD_ID: {
-      // new Thread() {
-      // public void run() {
-      // String id = Long.toString(((AdapterView.AdapterContextMenuInfo) item
-      // .getMenuInfo()).id);
-      //
-      // Uri uri = FeedData.ItemColumns.ALL_ITEMS_CONTENT_URI(id);
-      //
-      // String selection = Strings.READDATE_GREATERZERO + Strings.DB_AND
-      // + " (" + Strings.DB_EXCUDEFAVORITE + ")";
-      //
-      // FeedData.deletePicturesOfFeed(mContext, uri, selection);
-      // if (getActivity().getContentResolver().delete(uri, selection, null) >
-      // 0) {
-      // getActivity().getContentResolver().notifyChange(
-      // FeedData.SubscriptionColumns.CONTENT_URI(id), null);
-      // }
-      // }
-      // }.start();
-      // break;
-      // }
-      // case CONTEXTMENU_RESETUPDATEDATE_ID: {
-      // ContentValues values = new ContentValues();
-      //
-      // values.put(FeedData.SubscriptionColumns.LASTUPDATE, 0);
-      // values.put(FeedData.SubscriptionColumns.REALLASTUPDATE, 0);
-      // getActivity().getContentResolver().update(
-      // FeedData.SubscriptionColumns.CONTENT_URI(Long
-      // .toString(((AdapterView.AdapterContextMenuInfo) item
-      // .getMenuInfo()).id)), values, null, null);
-      // break;
-      // }
     }
     return true;
   }
@@ -207,21 +124,19 @@ public class AllSubscriptionsFragment extends ListFragment {
     builder.setIcon(android.R.drawable.ic_dialog_alert);
     builder.setTitle(cursor.getString(0));
     builder.setMessage(R.string.question_deletefeed);
-    builder.setPositiveButton(android.R.string.yes,
-        new DialogInterface.OnClickListener() {
-          public void onClick(DialogInterface dialog, int which) {
-            new Thread() {
-              public void run() {
-                getActivity().getContentResolver().delete(
-                    FeedData.SubscriptionColumns.subscriptionContentUri(Long
-                        .toString(((AdapterView.AdapterContextMenuInfo) item
-                            .getMenuInfo()).id)), null, null);
-                getActivity().sendBroadcast(
-                    new Intent(Strings.ACTION_UPDATEWIDGET));
-              }
-            }.start();
+    builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+      public void onClick(DialogInterface dialog, int which) {
+        new Thread() {
+          public void run() {
+            getActivity().getContentResolver().delete(
+                FeedData.SubscriptionColumns.subscriptionContentUri(Long
+                    .toString(((AdapterView.AdapterContextMenuInfo) item.getMenuInfo()).id)), null,
+                null);
+            getActivity().sendBroadcast(new Intent(Strings.ACTION_UPDATEWIDGET));
           }
-        });
+        }.start();
+      }
+    });
     builder.setNegativeButton(android.R.string.no, null);
     cursor.close();
     builder.show();
@@ -239,12 +154,10 @@ public class AllSubscriptionsFragment extends ListFragment {
 
     final NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
 
-    if (networkInfo != null
-        && networkInfo.getState() == NetworkInfo.State.CONNECTED) {
+    if (networkInfo != null && networkInfo.getState() == NetworkInfo.State.CONNECTED) {
       // since we have acquired the networkInfo, we use it for
       // basic checks
-      final Intent intent = new Intent(Strings.ACTION_REFRESHFEEDS).putExtra(
-          Strings.FEEDID, id);
+      final Intent intent = new Intent(Strings.ACTION_REFRESHFEEDS).putExtra(Strings.FEEDID, id);
 
       final Thread thread = new Thread() {
         public void run() {
@@ -253,8 +166,8 @@ public class AllSubscriptionsFragment extends ListFragment {
       };
 
       if (networkInfo.getType() == ConnectivityManager.TYPE_WIFI
-          || PreferenceManager.getDefaultSharedPreferences(mContext)
-              .getBoolean(Strings.SETTINGS_OVERRIDEWIFIONLY, false)) {
+          || PreferenceManager.getDefaultSharedPreferences(mContext).getBoolean(
+              Strings.SETTINGS_OVERRIDEWIFIONLY, false)) {
         intent.putExtra(Strings.SETTINGS_OVERRIDEWIFIONLY, true);
         thread.start();
       } else {
@@ -272,20 +185,17 @@ public class AllSubscriptionsFragment extends ListFragment {
           builder.setIcon(android.R.drawable.ic_dialog_alert);
           builder.setTitle(R.string.dialog_hint);
           builder.setMessage(R.string.question_refreshwowifi);
-          builder.setPositiveButton(android.R.string.yes,
-              new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                  intent.putExtra(Strings.SETTINGS_OVERRIDEWIFIONLY, true);
-                  thread.start();
-                }
-              });
+          builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+              intent.putExtra(Strings.SETTINGS_OVERRIDEWIFIONLY, true);
+              thread.start();
+            }
+          });
           builder.setNeutralButton(R.string.button_alwaysokforall,
               new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
-                  PreferenceManager.getDefaultSharedPreferences(mContext)
-                      .edit()
-                      .putBoolean(Strings.SETTINGS_OVERRIDEWIFIONLY, true)
-                      .commit();
+                  PreferenceManager.getDefaultSharedPreferences(mContext).edit()
+                      .putBoolean(Strings.SETTINGS_OVERRIDEWIFIONLY, true).commit();
                   intent.putExtra(Strings.SETTINGS_OVERRIDEWIFIONLY, true);
                   thread.start();
                 }
@@ -300,8 +210,7 @@ public class AllSubscriptionsFragment extends ListFragment {
   }
 
   @Override
-  public void onListItemClick(ListView listView, View view, int position,
-      long id) {
+  public void onListItemClick(ListView listView, View view, int position, long id) {
     super.onListItemClick(listView, view, position, id);
     Intent intent = new Intent(Intent.ACTION_VIEW,
         FeedData.ItemColumns.subscriptionItemsContentUri(Long.toString(id)));

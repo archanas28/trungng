@@ -42,10 +42,8 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.text.ClipboardManager;
-import android.text.TextUtils;
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnGestureListener;
 import android.view.KeyEvent;
@@ -83,196 +81,87 @@ public class FeedItemActivity extends Activity {
    */
 
   private static final String TEXT_HTML = "text/html";
-
   private static final String UTF8 = "utf-8";
-
   private static final String OR_DATE = " or date ";
-
   private static final String DATE = "(date=";
-
   private static final String AND_ID = " and _id";
-
   private static final String ASC = "date asc, _id desc limit 1";
-
   private static final String DESC = "date desc, _id asc limit 1";
 
   private static final String CSS = "<head><style type=\"text/css\">body {max-width: 100%}\nimg {max-width: 100%; height: auto;}\npre {white-space: pre-wrap;}</style></head>";
-
-  private static final String FONT_START = CSS
-      + "<body link=\"#97ACE5\" text=\"#C0C0C0\">";
-
-  private static final String FONT_FONTSIZE_START = CSS
-      + "<body link=\"#97ACE5\" text=\"#C0C0C0\"><font size=\"+";
-
   private static final String FONTSIZE_START = "<font size=\"+";
-
   private static final String FONTSIZE_MIDDLE = "\">";
-
   private static final String FONTSIZE_END = "</font>";
-
-  private static final String FONT_END = "</font></body>";
-
   private static final String BODY_START = "<body>";
-
   private static final String BODY_END = "</body>";
 
-  private static final int BUTTON_ALPHA = 180;
-
   private static final String IMAGE_ENCLOSURE = "[@]image/";
-
   private static final String TEXTPLAIN = "text/plain";
 
-  private int titlePosition;
-
-  private int datePosition;
-
-  private int abstractPosition;
-
-  private int linkPosition;
-
-  private int feedIdPosition;
-
-  private int favoritePosition;
-
-  private int readDatePosition;
-
-  private int enclosurePosition;
+  private int mTitleColumnIdx;
+  private int mDateColumnIdx;
+  private int mAbstractColumnIdx;
+  private int mLinkColumnIdx;
+  private int mFeedIdColumnIdx;
+  private int mFavoriteColumnIdx;
+  private int mReadDateColumnIdx;
+  private int mEnclosureColumnIdx;
 
   private String _id;
-
   private String _nextId;
-
   private String _previousId;
 
   private Uri uri;
-
   private Uri parentUri;
-
   private int feedId;
-
   boolean favorite;
-
   private boolean showRead;
-
   private boolean canShowIcon;
-
   private byte[] iconBytes;
 
   private WebView webView;
-
   private WebView webView0; // only needed for the animation
-
   private ViewFlipper viewFlipper;
+  private View content;
 
+  LinearLayout buttonPanel;
   private ImageButton nextButton;
-
   private ImageButton urlButton;
-
   private ImageButton previousButton;
-
   private ImageButton playButton;
 
   int scrollX;
-
   int scrollY;
 
   private String link;
-
   private LayoutParams layoutParams;
 
-  LinearLayout buttonPanel;
-
-  private Handler handler;
-
-  private SimpleTask buttonHideTask;
-
-  private View content;
-
   private SharedPreferences preferences;
-
   private boolean localPictures;
-
-  private TextView titleTextView;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-
-    int titleId = -1;
-
-    if (StaticMethods.POSTGINGERBREAD) {
-      canShowIcon = true;
-      setContentView(R.layout.entry);
-      try {
-        /*
-         * This is a trick as com.android.internal.R.id.action_bar_title is not
-         * directly accessible
-         */
-        titleId = (Integer) Class.forName("com.android.internal.R$id")
-            .getField("action_bar_title").get(null);
-      } catch (Exception exception) {
-
-      }
-    } else {
-      canShowIcon = requestWindowFeature(Window.FEATURE_LEFT_ICON);
-      setContentView(R.layout.entry);
-      titleId = android.R.id.title;
-    }
-
-    try {
-      titleTextView = (TextView) findViewById(titleId);
-      titleTextView.setSingleLine(true);
-      titleTextView.setHorizontallyScrolling(true);
-      titleTextView.setMarqueeRepeatLimit(1);
-      titleTextView.setEllipsize(TextUtils.TruncateAt.MARQUEE);
-      titleTextView.setFocusable(true);
-      titleTextView.setFocusableInTouchMode(true);
-    } catch (Exception e) {
-      // just in case for non standard android, nullpointer etc
-    }
-
+    setContentView(R.layout.entry);
     uri = getIntent().getData();
     parentUri = FeedData.ItemColumns.PARENT_URI(uri.getPath());
-    showRead = getIntent().getBooleanExtra(SingleSubscriptionActivity.EXTRA_SHOWREAD,
-        true);
-    iconBytes = getIntent().getByteArrayExtra(FeedData.SubscriptionColumns.ICON);
+    showRead = getIntent().getBooleanExtra(
+        SingleSubscriptionActivity.EXTRA_SHOWREAD, true);
+    iconBytes = getIntent()
+        .getByteArrayExtra(FeedData.SubscriptionColumns.ICON);
     feedId = 0;
-
-    Cursor entryCursor = getContentResolver()
-        .query(uri, null, null, null, null);
-
-    titlePosition = entryCursor.getColumnIndex(FeedData.ItemColumns.TITLE);
-    datePosition = entryCursor.getColumnIndex(FeedData.ItemColumns.DATE);
-    abstractPosition = entryCursor
-        .getColumnIndex(FeedData.ItemColumns.ABSTRACT);
-    linkPosition = entryCursor.getColumnIndex(FeedData.ItemColumns.LINK);
-    feedIdPosition = entryCursor.getColumnIndex(FeedData.ItemColumns.FEED_ID);
-    favoritePosition = entryCursor
-        .getColumnIndex(FeedData.ItemColumns.FAVORITE);
-    readDatePosition = entryCursor
-        .getColumnIndex(FeedData.ItemColumns.READDATE);
-    enclosurePosition = entryCursor
-        .getColumnIndex(FeedData.ItemColumns.ENCLOSURE);
-
-    entryCursor.close();
-
+    setupFeedColumnIndice();
     buttonPanel = (LinearLayout) findViewById(R.id.button_panel);
     nextButton = (ImageButton) findViewById(R.id.next_button);
     urlButton = (ImageButton) findViewById(R.id.url_button);
-    urlButton.setAlpha(BUTTON_ALPHA + 30);
     previousButton = (ImageButton) findViewById(R.id.prev_button);
     playButton = (ImageButton) findViewById(R.id.play_button);
-    playButton.setAlpha(BUTTON_ALPHA);
-
     viewFlipper = (ViewFlipper) findViewById(R.id.content_flipper);
 
     layoutParams = new LayoutParams(LayoutParams.FILL_PARENT,
         LayoutParams.FILL_PARENT);
-
     webView = new WebView(this);
-
     viewFlipper.addView(webView, layoutParams);
-
     OnKeyListener onKeyEventListener = new OnKeyListener() {
       public boolean onKey(View v, int keyCode, KeyEvent event) {
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
@@ -290,80 +179,81 @@ public class FeedItemActivity extends Activity {
     webView.setOnKeyListener(onKeyEventListener);
 
     content = findViewById(R.id.entry_content);
-
     webView0 = new WebView(this);
     webView0.setOnKeyListener(onKeyEventListener);
 
     preferences = PreferenceManager.getDefaultSharedPreferences(this);
-
-    final boolean gestures = preferences.getBoolean(
-        Strings.SETTINGS_GESTURESENABLED, true);
-
     final GestureDetector gestureDetector = new GestureDetector(this,
-        new OnGestureListener() {
-          public boolean onDown(MotionEvent e) {
-            showButtons();
-            return false;
-          }
+        new SimpleGestureListener());
 
-          public boolean onFling(MotionEvent e1, MotionEvent e2,
-              float velocityX, float velocityY) {
-            if (gestures) {
-              if (Math.abs(velocityY) < Math.abs(velocityX)) {
-                if (velocityX > 800) {
-                  if (previousButton.isEnabled()) {
-                    previousEntry(true);
-                  }
-                } else if (velocityX < -800) {
-                  if (nextButton.isEnabled()) {
-                    nextEntry(true);
-                  }
-                }
-              }
-            }
-            return false;
-          }
-
-          public void onLongPress(MotionEvent e) {
-            showButtons();
-          }
-
-          public boolean onScroll(MotionEvent e1, MotionEvent e2,
-              float distanceX, float distanceY) {
-            showButtons();
-            return false;
-          }
-
-          public void onShowPress(MotionEvent e) {
-
-          }
-
-          public boolean onSingleTapUp(MotionEvent e) {
-            return false;
-          }
-        });
-
-    OnTouchListener onTouchListener = new OnTouchListener() {
+    OnTouchListener touchListener = new OnTouchListener() {
       public boolean onTouch(View v, MotionEvent event) {
         return gestureDetector.onTouchEvent(event);
       }
     };
-
-    webView.setOnTouchListener(onTouchListener);
-
+    webView.setOnTouchListener(touchListener);
+    webView0.setOnTouchListener(touchListener);
     content.setOnTouchListener(new OnTouchListener() {
       public boolean onTouch(View v, MotionEvent event) {
         gestureDetector.onTouchEvent(event);
         return true; // different to the above one!
       }
     });
-
-    webView0.setOnTouchListener(onTouchListener);
-
     scrollX = 0;
     scrollY = 0;
+  }
 
-    handler = new Handler();
+  private void setupFeedColumnIndice() {
+    Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+    mTitleColumnIdx = cursor.getColumnIndex(FeedData.ItemColumns.TITLE);
+    mDateColumnIdx = cursor.getColumnIndex(FeedData.ItemColumns.DATE);
+    mAbstractColumnIdx = cursor.getColumnIndex(FeedData.ItemColumns.ABSTRACT);
+    mLinkColumnIdx = cursor.getColumnIndex(FeedData.ItemColumns.LINK);
+    mFeedIdColumnIdx = cursor.getColumnIndex(FeedData.ItemColumns.FEED_ID);
+    mFavoriteColumnIdx = cursor.getColumnIndex(FeedData.ItemColumns.FAVORITE);
+    mReadDateColumnIdx = cursor.getColumnIndex(FeedData.ItemColumns.READDATE);
+    mEnclosureColumnIdx = cursor.getColumnIndex(FeedData.ItemColumns.ENCLOSURE);
+    cursor.close();
+  }
+
+  /**
+   * Simple Gesture listener to handle sliding.
+   */
+  private class SimpleGestureListener implements OnGestureListener {
+    public boolean onDown(MotionEvent e) {
+      return false;
+    }
+
+    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
+        float velocityY) {
+      if (Math.abs(velocityY) < Math.abs(velocityX)) {
+        if (velocityX > 800) {
+          if (previousButton.isEnabled()) {
+            previousEntry(true);
+          }
+        } else if (velocityX < -800) {
+          if (nextButton.isEnabled()) {
+            nextEntry(true);
+          }
+        }
+      }
+      return false;
+    }
+
+    public void onLongPress(MotionEvent e) {
+    }
+
+    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
+        float distanceY) {
+      return false;
+    }
+
+    public void onShowPress(MotionEvent e) {
+    }
+
+    public boolean onSingleTapUp(MotionEvent e) {
+      return false;
+    }
   }
 
   @Override
@@ -380,45 +270,18 @@ public class FeedItemActivity extends Activity {
     setIntent(intent);
   }
 
-  private void showButtons() {
-    buttonPanel.setVisibility(View.VISIBLE);
-
-    if (buttonHideTask != null) {
-      buttonHideTask.cancel();
-    }
-    buttonHideTask = generateHideTimerTask();
-    handler.postDelayed(buttonHideTask, 2000);
-  }
-
-  private SimpleTask generateHideTimerTask() {
-    return new SimpleTask() {
-      @Override
-      public void runControlled() {
-        if (webView.getBottom() > buttonPanel.getTop()) {
-          buttonPanel.setVisibility(View.GONE);
-        }
-      }
-    };
-  }
-
   private void reload() {
     if (_id != null && _id.equals(uri.getLastPathSegment())) {
       return;
     }
-
     _id = uri.getLastPathSegment();
-
     ContentValues values = new ContentValues();
-
     values.put(FeedData.ItemColumns.READDATE, System.currentTimeMillis());
-
     Cursor entryCursor = getContentResolver()
         .query(uri, null, null, null, null);
-
     if (entryCursor.moveToFirst()) {
-      String abstractText = entryCursor.getString(abstractPosition);
-
-      if (entryCursor.isNull(readDatePosition)) {
+      String abstractText = entryCursor.getString(mAbstractColumnIdx);
+      if (entryCursor.isNull(mReadDateColumnIdx)) {
         getContentResolver().update(
             uri,
             values,
@@ -426,96 +289,33 @@ public class FeedItemActivity extends Activity {
                 Strings.DB_ISNULL).toString(), null);
       }
       if (abstractText == null) {
-        String link = entryCursor.getString(linkPosition);
-
+        String link = entryCursor.getString(mLinkColumnIdx);
         entryCursor.close();
         finish();
         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(link)));
       } else {
-        setTitle(entryCursor.getString(titlePosition));
-        if (titleTextView != null) {
-          titleTextView.requestFocus(); // restart ellipsize
-        }
-
-        int _feedId = entryCursor.getInt(feedIdPosition);
-
+        ((TextView) findViewById(R.id.item_title)).setText(entryCursor
+            .getString(mTitleColumnIdx));
+        int _feedId = entryCursor.getInt(mFeedIdColumnIdx);
         if (feedId != _feedId) {
           if (feedId != 0) {
             iconBytes = null; // triggers re-fetch of the icon
           }
           feedId = _feedId;
         }
+        drawIcon();
 
-        if (canShowIcon) {
-          if (iconBytes != null && iconBytes.length > 0) {
-            if (StaticMethods.POSTGINGERBREAD) {
-              CompatibilityHelper.setActionBarDrawable(
-                  this,
-                  new BitmapDrawable(BitmapFactory.decodeByteArray(iconBytes,
-                      0, iconBytes.length)));
-            } else {
-              setFeatureDrawable(
-                  Window.FEATURE_LEFT_ICON,
-                  new BitmapDrawable(BitmapFactory.decodeByteArray(iconBytes,
-                      0, iconBytes.length)));
-            }
-          } else {
-            Cursor iconCursor = getContentResolver().query(
-                FeedData.SubscriptionColumns.subscriptionContentUri(Integer.toString(feedId)),
-                new String[] { FeedData.SubscriptionColumns._ID,
-                    FeedData.SubscriptionColumns.ICON }, null, null, null);
-
-            if (iconCursor.moveToFirst()) {
-              iconBytes = iconCursor.getBlob(1);
-
-              if (iconBytes != null && iconBytes.length > 0) {
-                if (StaticMethods.POSTGINGERBREAD) {
-                  CompatibilityHelper.setActionBarDrawable(
-                      this,
-                      new BitmapDrawable(BitmapFactory.decodeByteArray(
-                          iconBytes, 0, iconBytes.length)));
-                } else {
-                  setFeatureDrawable(
-                      Window.FEATURE_LEFT_ICON,
-                      new BitmapDrawable(BitmapFactory.decodeByteArray(
-                          iconBytes, 0, iconBytes.length)));
-                }
-              }
-            }
-            iconCursor.close();
-          }
-        }
-
-        long date = entryCursor.getLong(datePosition);
-
+        long date = entryCursor.getLong(mDateColumnIdx);
         ((TextView) findViewById(R.id.entry_date)).setText(DateFormat
             .getDateTimeInstance().format(new Date(date)));
+        drawFavoriteButton(entryCursor);
 
-        final ImageView imageView = (ImageView) findViewById(android.R.id.icon);
-
-        favorite = entryCursor.getInt(favoritePosition) == 1;
-
-        imageView.setImageResource(favorite ? android.R.drawable.star_on
-            : android.R.drawable.star_off);
-        imageView.setOnClickListener(new OnClickListener() {
-          public void onClick(View view) {
-            favorite = !favorite;
-            imageView.setImageResource(favorite ? android.R.drawable.star_on
-                : android.R.drawable.star_off);
-            ContentValues values = new ContentValues();
-
-            values.put(FeedData.ItemColumns.FAVORITE, favorite ? 1 : 0);
-            getContentResolver().update(uri, values, null, null);
-          }
-        });
         // loadData does not recognize the encoding without correct html-header
         localPictures = abstractText.indexOf(Strings.IMAGEID_REPLACEMENT) > -1;
-
         if (localPictures) {
           abstractText = abstractText.replace(Strings.IMAGEID_REPLACEMENT, _id
               + Strings.IMAGEFILE_IDSEPARATOR);
         }
-
         if (preferences.getBoolean(Strings.SETTINGS_DISABLEPICTURES, false)) {
           abstractText = abstractText.replaceAll(Strings.HTML_IMG_REGEX,
               Strings.EMPTY);
@@ -526,12 +326,6 @@ public class FeedItemActivity extends Activity {
 
         int fontsize = Integer.parseInt(preferences.getString(
             Strings.SETTINGS_FONTSIZE, Strings.ONE));
-
-        /*
-         * if (abstractText.indexOf('<') > -1 && abstractText.indexOf('>') > -1)
-         * { abstractText = abstractText.replace(NEWLINE, BR); }
-         */
-
         if (fontsize > 0) {
           webView.loadDataWithBaseURL(null, new StringBuilder(FONTSIZE_START)
               .append(fontsize).append(FONTSIZE_MIDDLE).append(abstractText)
@@ -543,108 +337,152 @@ public class FeedItemActivity extends Activity {
         }
         webView.setBackgroundColor(Color.WHITE);
         content.setBackgroundColor(Color.WHITE);
-
-        link = entryCursor.getString(linkPosition);
-
-        if (link != null && link.length() > 0) {
-          urlButton.setEnabled(true);
-          urlButton.setOnClickListener(new OnClickListener() {
-            public void onClick(View view) {
-              startActivityForResult(
-                  new Intent(Intent.ACTION_VIEW, Uri.parse(link)), 0);
-            }
-          });
-        } else {
-          urlButton.setEnabled(false);
-        }
-
-        final String enclosure = entryCursor.getString(enclosurePosition);
-
-        if (enclosure != null && enclosure.length() > 6
-            && enclosure.indexOf(IMAGE_ENCLOSURE) == -1) {
-          playButton.setVisibility(View.VISIBLE);
-          playButton.setOnClickListener(new OnClickListener() {
-            public void onClick(View v) {
-              final int position1 = enclosure
-                  .indexOf(Strings.ENCLOSURE_SEPARATOR);
-
-              final int position2 = enclosure.indexOf(
-                  Strings.ENCLOSURE_SEPARATOR, position1 + 3);
-
-              final Uri uri = Uri.parse(enclosure.substring(0, position1));
-
-              if (preferences.getBoolean(
-                  Strings.SETTINGS_ENCLOSUREWARNINGSENABLED, true)) {
-                Builder builder = new AlertDialog.Builder(FeedItemActivity.this);
-
-                builder.setTitle(R.string.question_areyousure);
-                builder.setIcon(android.R.drawable.ic_dialog_alert);
-                if (position2 + 4 > enclosure.length()) {
-                  builder.setMessage(getString(
-                      R.string.question_playenclosure,
-                      uri,
-                      position2 + 4 > enclosure.length() ? Strings.QUESTIONMARKS
-                          : enclosure.substring(position2 + 3)));
-                } else {
-                  try {
-                    builder.setMessage(getString(
-                        R.string.question_playenclosure,
-                        uri,
-                        (Integer.parseInt(enclosure.substring(position2 + 3)) / 1024f)
-                            + getString(R.string.kb)));
-                  } catch (Exception e) {
-                    builder.setMessage(getString(
-                        R.string.question_playenclosure, uri,
-                        enclosure.substring(position2 + 3)));
-                  }
-                }
-                builder.setCancelable(true);
-                builder.setPositiveButton(android.R.string.ok,
-                    new DialogInterface.OnClickListener() {
-                      public void onClick(DialogInterface dialog, int which) {
-                        showEnclosure(uri, enclosure, position1, position2);
-                      }
-                    });
-                builder.setNeutralButton(R.string.button_alwaysokforall,
-                    new DialogInterface.OnClickListener() {
-                      public void onClick(DialogInterface dialog, int which) {
-                        preferences
-                            .edit()
-                            .putBoolean(
-                                Strings.SETTINGS_ENCLOSUREWARNINGSENABLED,
-                                false).commit();
-                        showEnclosure(uri, enclosure, position1, position2);
-                      }
-                    });
-                builder.setNegativeButton(android.R.string.cancel,
-                    new DialogInterface.OnClickListener() {
-                      public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                      }
-                    });
-                builder.show();
-              } else {
-                showEnclosure(uri, enclosure, position1, position2);
-              }
-            }
-          });
-        } else {
-          playButton.setVisibility(View.GONE);
-        }
-        entryCursor.close();
-        setupButton(previousButton, false, date);
-        setupButton(nextButton, true, date);
+        setupButtonPanel(entryCursor, date);
         webView.scrollTo(scrollX, scrollY); // resets the scrolling
-        showButtons();
       }
+    }
+    entryCursor.close();
+  }
+
+  private void setupButtonPanel(Cursor entryCursor, long date) {
+    link = entryCursor.getString(mLinkColumnIdx);
+
+    if (link != null && link.length() > 0) {
+      urlButton.setEnabled(true);
+      urlButton.setOnClickListener(new OnClickListener() {
+        public void onClick(View view) {
+          startActivityForResult(
+              new Intent(Intent.ACTION_VIEW, Uri.parse(link)), 0);
+        }
+      });
     } else {
-      entryCursor.close();
+      urlButton.setEnabled(false);
     }
 
-    /*
-     * new Thread() { public void run() { sendBroadcast(new
-     * Intent(Strings.ACTION_UPDATEWIDGET)); // this is slow } }.start();
-     */
+    final String enclosure = entryCursor.getString(mEnclosureColumnIdx);
+
+    if (enclosure != null && enclosure.length() > 6
+        && enclosure.indexOf(IMAGE_ENCLOSURE) == -1) {
+      playButton.setVisibility(View.VISIBLE);
+      playButton.setOnClickListener(new OnClickListener() {
+        public void onClick(View v) {
+          final int position1 = enclosure.indexOf(Strings.ENCLOSURE_SEPARATOR);
+
+          final int position2 = enclosure.indexOf(Strings.ENCLOSURE_SEPARATOR,
+              position1 + 3);
+
+          final Uri uri = Uri.parse(enclosure.substring(0, position1));
+
+          if (preferences.getBoolean(Strings.SETTINGS_ENCLOSUREWARNINGSENABLED,
+              true)) {
+            Builder builder = new AlertDialog.Builder(FeedItemActivity.this);
+
+            builder.setTitle(R.string.question_areyousure);
+            builder.setIcon(android.R.drawable.ic_dialog_alert);
+            if (position2 + 4 > enclosure.length()) {
+              builder.setMessage(getString(R.string.question_playenclosure,
+                  uri,
+                  position2 + 4 > enclosure.length() ? Strings.QUESTIONMARKS
+                      : enclosure.substring(position2 + 3)));
+            } else {
+              try {
+                builder.setMessage(getString(
+                    R.string.question_playenclosure,
+                    uri,
+                    (Integer.parseInt(enclosure.substring(position2 + 3)) / 1024f)
+                        + getString(R.string.kb)));
+              } catch (Exception e) {
+                builder.setMessage(getString(R.string.question_playenclosure,
+                    uri, enclosure.substring(position2 + 3)));
+              }
+            }
+            builder.setCancelable(true);
+            builder.setPositiveButton(android.R.string.ok,
+                new DialogInterface.OnClickListener() {
+                  public void onClick(DialogInterface dialog, int which) {
+                    showEnclosure(uri, enclosure, position1, position2);
+                  }
+                });
+            builder.setNeutralButton(R.string.button_alwaysokforall,
+                new DialogInterface.OnClickListener() {
+                  public void onClick(DialogInterface dialog, int which) {
+                    preferences
+                        .edit()
+                        .putBoolean(Strings.SETTINGS_ENCLOSUREWARNINGSENABLED,
+                            false).commit();
+                    showEnclosure(uri, enclosure, position1, position2);
+                  }
+                });
+            builder.setNegativeButton(android.R.string.cancel,
+                new DialogInterface.OnClickListener() {
+                  public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                  }
+                });
+            builder.show();
+          } else {
+            showEnclosure(uri, enclosure, position1, position2);
+          }
+        }
+      });
+    } else {
+      playButton.setVisibility(View.GONE);
+    }
+    setupButton(previousButton, false, date);
+    setupButton(nextButton, true, date);
+  }
+
+  // draw the favorite button
+  private void drawFavoriteButton(Cursor cursor) {
+    final ImageView imageView = (ImageView) findViewById(android.R.id.icon);
+    favorite = cursor.getInt(mFavoriteColumnIdx) == 1;
+    imageView.setImageResource(favorite ? android.R.drawable.star_on
+        : android.R.drawable.star_off);
+    imageView.setOnClickListener(new OnClickListener() {
+      public void onClick(View view) {
+        favorite = !favorite;
+        imageView.setImageResource(favorite ? android.R.drawable.star_on
+            : android.R.drawable.star_off);
+        ContentValues values = new ContentValues();
+        values.put(FeedData.ItemColumns.FAVORITE, favorite ? 1 : 0);
+        getContentResolver().update(uri, values, null, null);
+      }
+    });
+  }
+
+  private void drawIcon() {
+    if (canShowIcon) {
+      if (iconBytes != null && iconBytes.length > 0) {
+        drawIconBytes();
+      } else {
+        Cursor iconCursor = getContentResolver().query(
+            FeedData.SubscriptionColumns.subscriptionContentUri(Integer
+                .toString(feedId)),
+            new String[] { FeedData.SubscriptionColumns._ID,
+                FeedData.SubscriptionColumns.ICON }, null, null, null);
+        if (iconCursor.moveToFirst()) {
+          iconBytes = iconCursor.getBlob(1);
+          if (iconBytes != null && iconBytes.length > 0) {
+            drawIconBytes();
+          }
+        }
+        iconCursor.close();
+      }
+    }
+  }
+
+  private void drawIconBytes() {
+    if (StaticMethods.POSTGINGERBREAD) {
+      CompatibilityHelper.setActionBarDrawable(
+          this,
+          new BitmapDrawable(getResources(), BitmapFactory.decodeByteArray(
+              iconBytes, 0, iconBytes.length)));
+    } else {
+      setFeatureDrawable(
+          Window.FEATURE_LEFT_ICON,
+          new BitmapDrawable(getResources(), BitmapFactory.decodeByteArray(
+              iconBytes, 0, iconBytes.length)));
+    }
   }
 
   private void showEnclosure(Uri uri, String enclosure, int position1,
@@ -655,14 +493,10 @@ public class FeedItemActivity extends Activity {
               enclosure.substring(position1 + 3, position2)), 0);
     } catch (Exception e) {
       try {
-        startActivityForResult(new Intent(Intent.ACTION_VIEW, uri), 0); // fallbackmode
-                                                                        // - let
-                                                                        // the
-                                                                        // browser
-                                                                        // handle
-                                                                        // this
+        startActivityForResult(new Intent(Intent.ACTION_VIEW, uri), 0);
       } catch (Throwable t) {
-        Toast.makeText(FeedItemActivity.this, t.getMessage(), Toast.LENGTH_LONG)
+        Toast
+            .makeText(FeedItemActivity.this, t.getMessage(), Toast.LENGTH_LONG)
             .show();
       }
     }
@@ -685,8 +519,6 @@ public class FeedItemActivity extends Activity {
 
     if (cursor.moveToFirst()) {
       button.setEnabled(true);
-      button.setAlpha(BUTTON_ALPHA);
-
       final String id = cursor.getString(0);
 
       if (successor) {
@@ -705,7 +537,6 @@ public class FeedItemActivity extends Activity {
       });
     } else {
       button.setEnabled(false);
-      button.setAlpha(60);
     }
     cursor.close();
   }
@@ -758,6 +589,7 @@ public class FeedItemActivity extends Activity {
     return true;
   }
 
+  @SuppressWarnings("deprecation")
   @Override
   public boolean onMenuItemSelected(int featureId, MenuItem item) {
     switch (item.getItemId()) {
@@ -772,7 +604,6 @@ public class FeedItemActivity extends Activity {
       if (localPictures) {
         FeedData.deletePicturesOfEntry(_id);
       }
-
       if (nextButton.isEnabled()) {
         nextButton.performClick();
       } else {

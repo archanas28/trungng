@@ -415,7 +415,7 @@ public class FeedDataContentProvider extends ContentProvider {
       sortOrder = FeedData.FEED_DEFAULTSORTORDER;
     }
     if (option == URI_RECENT_ITEMS) {
-      sortOrder = FeedData.ItemColumns.READDATE;
+      sortOrder = FeedData.ItemColumns.READDATE + " DESC";
     }
 
     switch (option) {
