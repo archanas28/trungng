@@ -17,12 +17,4 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" />
     -->
-
-    <!-- TODO(trung): move to FeedItemActivity -->
-    <fragment
-        android:id="@+id/frag_player"
-        android:name="com.rainmoon.podcast.PodcastPlayerFragment"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content" />
-
 </LinearLayout>

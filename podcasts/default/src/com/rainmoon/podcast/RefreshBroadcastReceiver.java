@@ -28,7 +28,7 @@ package com.rainmoon.podcast;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import com.rainmoon.podcast.R;
+
 import com.rainmoon.podcast.service.FetcherService;
 
 public class RefreshBroadcastReceiver extends BroadcastReceiver {

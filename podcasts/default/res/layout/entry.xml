@@ -15,7 +15,9 @@
         android:paddingTop="2dp"
         android:scrollHorizontally="true"
         android:singleLine="true"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:textColor="@color/color_blue"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <LinearLayout
         android:layout_width="fill_parent"
@@ -28,12 +30,41 @@
             android:layout_height="wrap_content"
             android:layout_gravity="fill"
             android:layout_weight="1"
-            android:paddingTop="2pt" />
+            android:paddingTop="2dp" />
 
         <ImageView
             android:id="@android:id/icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="4dp"
+        android:paddingTop="2dp" >
+
+        <TextView
+            android:id="@+id/btn_view"
+            style="@android:style/TextAppearance.DeviceDefault.Widget.Button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:drawableLeft="@android:drawable/ic_menu_view"
+            android:text="View in browser"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/btn_play"
+            style="@android:style/TextAppearance.DeviceDefault.Widget.Button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:drawableLeft="@android:drawable/ic_media_play"
+            android:text="Listen now"
+            android:textStyle="bold" />
     </LinearLayout>
 
     <RelativeLayout
@@ -43,53 +74,18 @@
         android:layout_gravity="fill"
         android:layout_weight="1" >
 
-        <ViewFlipper
-            android:id="@+id/content_flipper"
+        <WebView
+            android:id="@+id/content"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="fill" />
+            android:gravity="fill" />
 
-        <LinearLayout
-            android:id="@+id/button_panel"
+        <fragment
+            android:id="@+id/frag_player"
+            android:name="com.rainmoon.podcast.PodcastPlayerFragment"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:background="#7C000000"
-            android:orientation="horizontal" >
-
-            <ImageButton
-                android:id="@+id/prev_button"
-                android:layout_width="0dp"
-                android:layout_height="fill_parent"
-                android:layout_weight="1"
-                android:contentDescription="@string/previous_entry"
-                android:src="@android:drawable/ic_media_previous" />
-
-            <ImageButton
-                android:id="@+id/url_button"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="fill"
-                android:layout_weight="1"
-                android:contentDescription="@string/open_in_browser"
-                android:src="@android:drawable/ic_menu_view" />
-
-            <ImageButton
-                android:id="@+id/play_button"
-                android:layout_width="0dp"
-                android:layout_height="fill_parent"
-                android:layout_weight="1"
-                android:contentDescription="@string/play"
-                android:src="@android:drawable/ic_media_play" />
-
-            <ImageButton
-                android:id="@+id/next_button"
-                android:layout_width="0dp"
-                android:layout_height="fill_parent"
-                android:layout_weight="1"
-                android:contentDescription="@string/next_entry"
-                android:src="@android:drawable/ic_media_next" />
-        </LinearLayout>
+            android:layout_alignParentBottom="true" />
     </RelativeLayout>
 
 </LinearLayout>

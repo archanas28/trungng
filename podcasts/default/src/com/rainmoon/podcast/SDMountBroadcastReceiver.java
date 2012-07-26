@@ -31,7 +31,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.preference.PreferenceManager;
-import com.rainmoon.podcast.R;
+
 import com.rainmoon.podcast.service.RefreshService;
 
 public class SDMountBroadcastReceiver extends BroadcastReceiver {

@@ -60,8 +60,8 @@ public class SingleSubscriptionAdapter extends ResourceCursorAdapter {
 
   private static final int STATE_ALLUNREAD = 2;
 
-  public static DateFormat DATEFORMAT = DateFormat.getDateTimeInstance(DateFormat.SHORT,
-      DateFormat.SHORT);
+  public static DateFormat DATEFORMAT = DateFormat.getDateTimeInstance(
+      DateFormat.SHORT, DateFormat.SHORT);
 
   private int titleColumnPosition;
 
@@ -101,9 +101,10 @@ public class SingleSubscriptionAdapter extends ResourceCursorAdapter {
 
   private Vector<Long> unfavorited;
 
-  public SingleSubscriptionAdapter(Activity context, Uri uri, boolean showFeedInfo,
-      boolean autoreload) {
-    super(context, R.layout.entrylistitem, createManagedCursor(context, uri, true), autoreload);
+  public SingleSubscriptionAdapter(Activity context, Uri uri,
+      boolean showFeedInfo, boolean autoreload) {
+    super(context, R.layout.entrylistitem, createManagedCursor(context, uri,
+        true), autoreload);
     showRead = true;
     this.context = context;
     this.uri = uri;
@@ -136,7 +137,8 @@ public class SingleSubscriptionAdapter extends ResourceCursorAdapter {
 
     TextView dateTextView = (TextView) view.findViewById(android.R.id.text2);
 
-    final ImageView imageView = (ImageView) view.findViewById(android.R.id.icon);
+    final ImageView imageView = (ImageView) view
+        .findViewById(android.R.id.icon);
 
     final long id = cursor.getLong(idColumn);
 
@@ -145,7 +147,8 @@ public class SingleSubscriptionAdapter extends ResourceCursorAdapter {
     final boolean favorite = !unfavorited.contains(id)
         && (cursor.getInt(favoriteColumn) == 1 || favorited.contains(id));
 
-    imageView.setImageResource(favorite ? android.R.drawable.star_on : android.R.drawable.star_off);
+    imageView.setImageResource(favorite ? android.R.drawable.star_on
+        : android.R.drawable.star_off);
     imageView.setTag(favorite ? Strings.TRUE : Strings.FALSE);
     imageView.setOnClickListener(new OnClickListener() {
       public void onClick(View view) {
@@ -168,10 +171,14 @@ public class SingleSubscriptionAdapter extends ResourceCursorAdapter {
         values.put(FeedData.ItemColumns.FAVORITE, newFavorite ? 1 : 0);
         view.getContext()
             .getContentResolver()
-            .update(uri, values,
-                new StringBuilder(FeedData.ItemColumns._ID).append(Strings.DB_ARG).toString(),
+            .update(
+                uri,
+                values,
+                new StringBuilder(FeedData.ItemColumns._ID).append(
+                    Strings.DB_ARG).toString(),
                 new String[] { Long.toString(id) });
-        context.getContentResolver().notifyChange(FeedData.ItemColumns.FAVORITES_CONTENT_URI, null);
+        context.getContentResolver().notifyChange(
+            FeedData.ItemColumns.FAVORITES_CONTENT_URI, null);
       }
     });
 
@@ -179,24 +186,28 @@ public class SingleSubscriptionAdapter extends ResourceCursorAdapter {
       byte[] iconBytes = cursor.getBlob(feedIconColumn);
 
       if (iconBytes != null && iconBytes.length > 0) {
-        Bitmap bitmap = BitmapFactory.decodeByteArray(iconBytes, 0, iconBytes.length);
+        Bitmap bitmap = BitmapFactory.decodeByteArray(iconBytes, 0,
+            iconBytes.length);
 
         if (bitmap != null) {
           if (bitmap.getHeight() > 16) {
             bitmap = Bitmap.createScaledBitmap(bitmap, 16, 16, false);
           }
-          dateTextView.setText(" " + DATEFORMAT.format(new Date(cursor.getLong(dateColumn))) + ", "
+          dateTextView.setText(" "
+              + DATEFORMAT.format(new Date(cursor.getLong(dateColumn))) + ", "
               + cursor.getString(feedNameColumn)); // bad style
         } else {
-          dateTextView.setText(DATEFORMAT.format(new Date(cursor.getLong(dateColumn))) + ", "
-              + cursor.getString(feedNameColumn));
+          dateTextView.setText(DATEFORMAT.format(new Date(cursor
+              .getLong(dateColumn))) + ", " + cursor.getString(feedNameColumn));
         }
-        dateTextView.setCompoundDrawablesWithIntrinsicBounds(new BitmapDrawable(bitmap), null,
-            null, null);
+        dateTextView.setCompoundDrawablesWithIntrinsicBounds(
+            new BitmapDrawable(context.getResources(), bitmap), null, null,
+            null);
       } else {
-        dateTextView.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
-        dateTextView.setText(DATEFORMAT.format(new Date(cursor.getLong(dateColumn))) + ", "
-            + cursor.getString(feedNameColumn));
+        dateTextView.setCompoundDrawablesWithIntrinsicBounds(null, null, null,
+            null);
+        dateTextView.setText(DATEFORMAT.format(new Date(cursor
+            .getLong(dateColumn))) + ", " + cursor.getString(feedNameColumn));
       }
 
     } else {
@@ -231,15 +242,18 @@ public class SingleSubscriptionAdapter extends ResourceCursorAdapter {
   }
 
   @SuppressWarnings("deprecation")
-  private static Cursor createManagedCursor(Activity context, Uri uri, boolean showRead) {
+  private static Cursor createManagedCursor(Activity context, Uri uri,
+      boolean showRead) {
     return context.managedQuery(
         uri,
         null,
         showRead ? null : READDATEISNULL,
         null,
-        new StringBuilder(PreferenceManager.getDefaultSharedPreferences(context).getBoolean(
-            Strings.SETTINGS_PRIORITIZE, false) ? SQLREAD : Strings.EMPTY)
-            .append(FeedData.ItemColumns.DATE).append(Strings.DB_DESC).toString());
+        new StringBuilder(PreferenceManager
+            .getDefaultSharedPreferences(context).getBoolean(
+                Strings.SETTINGS_PRIORITIZE, false) ? SQLREAD : Strings.EMPTY)
+            .append(FeedData.ItemColumns.DATE).append(Strings.DB_DESC)
+            .toString());
   }
 
   public void markAsRead() {

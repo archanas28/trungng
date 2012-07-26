@@ -10,8 +10,6 @@ import android.view.MenuItem;
  * Activity for showing list of all subscriptions. Note that we must extend
  * FragmentActivity instead of Activity.
  * 
- * TODO(trung): make this activity work properly
- * 
  */
 public class AllSubscriptionsActivity extends FragmentActivity {
 

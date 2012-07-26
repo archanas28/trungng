@@ -31,7 +31,6 @@ package com.rainmoon.podcast;
 
 import android.app.Activity;
 import android.graphics.drawable.Drawable;
-import com.rainmoon.podcast.R;
 
 public class CompatibilityHelper {
   private static final String METHOD_GETACTIONBAR = "getActionBar";

@@ -27,7 +27,6 @@ package com.rainmoon.podcast;
 
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
-import com.rainmoon.podcast.R;
 
 public class Animations {
   /** Slide in from right */
