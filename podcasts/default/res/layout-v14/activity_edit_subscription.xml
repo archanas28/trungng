@@ -1,36 +1,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:divider="?android:attr/dividerHorizontal"
-    android:orientation="vertical"
-    android:showDividers="middle" >
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
 
     <include
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         layout="@layout/dialog_edit_subscription" />
 
-    <LinearLayout
-        style="@style/ButtonBar"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal" >
-
-        <Button
-            android:id="@+id/button_cancel"
-            style="@style/Widget.Button.Dialog"
-            android:layout_width="0dip"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@android:string/cancel" />
-
-        <Button
-            android:id="@+id/button_ok"
-            style="@style/Widget.Button.Dialog"
-            android:layout_width="0dip"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@android:string/ok" />
-    </LinearLayout>
+    <include layout="@layout/button_bar_okcancel" />
 
 </LinearLayout>
