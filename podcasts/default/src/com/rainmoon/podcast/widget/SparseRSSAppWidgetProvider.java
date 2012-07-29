@@ -114,7 +114,7 @@ public class SparseRSSAppWidgetProvider extends AppWidgetProvider {
             .append(LIMIT).append(entryCount).toString());
 
     RemoteViews views = new RemoteViews(context.getPackageName(),
-        R.layout.homescreenwidget);
+        R.layout.widget_homescreen);
 
     views.setOnClickPendingIntent(R.id.feed_icon, PendingIntent.getActivity(
         context, 0, new Intent(context, HomeActivity.class), 0));

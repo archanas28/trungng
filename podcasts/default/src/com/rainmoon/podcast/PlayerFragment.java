@@ -91,9 +91,7 @@ public class PlayerFragment extends Fragment implements
               .getString(R.string.buffering), true);
           player.prepareAsync();
         }
-      } catch (IOException e) {
-        Log.e(TAG, "Could not open file " + mUrl + " for playback.", e);
-      } catch (IllegalArgumentException e) {
+      } catch (Exception e) {
         Log.e(TAG, "Could not open file " + mUrl + " for playback.", e);
       }
 

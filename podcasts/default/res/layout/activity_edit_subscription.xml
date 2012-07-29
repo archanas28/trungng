@@ -3,12 +3,60 @@
     android:layout_height="fill_parent"
     android:orientation="vertical" >
 
-    <include
+    <TextView
         android:layout_width="fill_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        layout="@layout/dialog_edit_subscription" />
+        android:layout_height="wrap_content"
+        android:paddingLeft="5dp"
+        android:paddingTop="5dp"
+        android:text="@string/title_feed" />
 
-    <include layout="@layout/button_bar_okcancel" />
+    <EditText
+        android:id="@+id/feed_title"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/optional"
+        android:singleLine="true" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="5dp"
+        android:paddingTop="5dp"
+        android:text="@string/feed_url" />
+
+    <EditText
+        android:id="@+id/feed_url"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/websiteorfeed"
+        android:inputType="textUri"
+        android:singleLine="true" />
+
+    <CheckBox
+        android:id="@+id/wifionlycheckbox"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="5dp"
+        android:text="@string/refreshonwifionly" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/button_cancel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@android:string/cancel" />
+
+        <Button
+            android:id="@+id/button_ok"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@android:string/ok" />
+    </LinearLayout>
 
 </LinearLayout>
