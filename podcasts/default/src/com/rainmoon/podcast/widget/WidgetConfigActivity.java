@@ -60,7 +60,7 @@ public class WidgetConfigActivity extends PreferenceActivity {
             finish();
         }
         addPreferencesFromResource(R.layout.widgetpreferences);
-        setContentView(R.layout.widgetconfig);
+        setContentView(R.layout.activity_widgetconfig);
         
         final ListPreference entryCountPreference = (ListPreference) findPreference("widget.entrycount");
         

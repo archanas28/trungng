@@ -37,7 +37,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -57,6 +56,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.rainmoon.podcast.provider.FeedData;
+import com.rainmoon.podcast.utils.StaticMethods;
+import com.rainmoon.podcast.utils.Strings;
 
 /**
  * Activity for showing a single feed item.
@@ -67,11 +68,21 @@ import com.rainmoon.podcast.provider.FeedData;
  * 
  */
 public class FeedItemActivity extends FragmentActivity {
-  /*
-   * private static final String NEWLINE = "\n";
-   * 
-   * private static final String BR = "<br/>";
+
+  /**
+   * The listener that is used to request a media player to play from an
+   * external button.
    */
+  public interface OnPlayButtonClickedListener {
+
+    /**
+     * This event is called when a play button is clicked.
+     * 
+     * @param url
+     *          the url of the audio in this feed item
+     */
+    public void onPlayClicked(String url);
+  }
 
   private static final String TEXT_HTML = "text/html";
   private static final String UTF8 = "utf-8";
@@ -104,7 +115,6 @@ public class FeedItemActivity extends FragmentActivity {
   private byte[] iconBytes;
 
   private WebView webView;
-  private View content;
   private TextView urlButton;
   private TextView playButton;
   private OnPlayButtonClickedListener listener;
@@ -118,7 +128,7 @@ public class FeedItemActivity extends FragmentActivity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.entry);
+    setContentView(R.layout.activity_feeditem);
     uri = getIntent().getData();
     iconBytes = getIntent()
         .getByteArrayExtra(FeedData.SubscriptionColumns.ICON);
@@ -147,7 +157,6 @@ public class FeedItemActivity extends FragmentActivity {
       }
     };
     webView.setOnKeyListener(onKeyEventListener);
-    content = findViewById(R.id.entry_content);
     preferences = PreferenceManager.getDefaultSharedPreferences(this);
     scrollX = 0;
     scrollY = 0;

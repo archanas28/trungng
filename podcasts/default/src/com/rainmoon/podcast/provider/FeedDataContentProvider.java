@@ -27,8 +27,8 @@ package com.rainmoon.podcast.provider;
 
 import java.io.File;
 
-import com.rainmoon.podcast.Strings;
 import com.rainmoon.podcast.provider.FeedData.ItemColumns;
+import com.rainmoon.podcast.utils.Strings;
 
 import android.content.ContentProvider;
 import android.content.ContentUris;

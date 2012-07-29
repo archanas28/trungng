@@ -10,8 +10,8 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 
 import com.rainmoon.podcast.R;
-import com.rainmoon.podcast.Strings;
 import com.rainmoon.podcast.service.RefreshService;
+import com.rainmoon.podcast.utils.Strings;
 
 @TargetApi(11)
 public class PrefsFragment extends PreferenceFragment {

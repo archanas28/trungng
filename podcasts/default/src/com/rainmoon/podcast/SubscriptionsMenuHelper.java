@@ -22,6 +22,7 @@ import com.rainmoon.podcast.preference.PreferencesActivityV11;
 import com.rainmoon.podcast.preference.PrefsFragment;
 import com.rainmoon.podcast.provider.FeedData;
 import com.rainmoon.podcast.provider.OPML;
+import com.rainmoon.podcast.utils.Strings;
 
 /**
  * Common class to handle menu options for activities that show a list of

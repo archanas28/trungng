@@ -2,95 +2,101 @@ package com.rainmoon.podcast;
 
 import java.io.IOException;
 
-import android.content.Context;
+import com.rainmoon.podcast.FeedItemActivity.OnPlayButtonClickedListener;
+import com.rainmoon.podcast.receiver.NetworkReceiver;
+import com.rainmoon.podcast.utils.StaticMethods;
+
+import android.app.ProgressDialog;
+import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnErrorListener;
 import android.media.MediaPlayer.OnPreparedListener;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.LinearLayout;
-import android.widget.MediaController;
 import android.widget.MediaController.MediaPlayerControl;
 
 /**
  * Fragment showing the Podcast player.
  * 
- * TODO(TRUNG): add this fragment to FeedItemActivity
+ * TODO(TRUNG): handle media playback button; see
+ * http://developer.android.com/training/managing-audio/volume-playback.html
+ * TODO(trung): make this a service (play in background)
  * 
  * @author trung nguyen
  * 
  */
-public class PodcastPlayerFragment extends Fragment implements
+public class PlayerFragment extends Fragment implements
     OnPlayButtonClickedListener {
 
-  private static final String TAG = "PodcastPlayerFragment";
+  private static final String TAG = "PlayerFragment";
   private String mUrl = "";
 
-  private MediaController mMediaController;
-  private PodcastPlayer mPlayer;
+  private AlwaysOnMediaController mMediaController;
+  private PlayerController mPlayer;
+  private ProgressDialog mDialog;
+  private NetworkReceiver mNetworkReceiver;
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    mPlayer = new PodcastPlayer();
-    //mMediaController = new AlwaysOnMediaController(getActivity());
-    mMediaController = new MediaController(getActivity());
+    mPlayer = new PlayerController();
+    mMediaController = new AlwaysOnMediaController(getActivity());
     mMediaController.setMediaPlayer(mPlayer);
+    mMediaController.setVisibility(View.GONE);
+    mNetworkReceiver = new NetworkReceiver();
+    getActivity().setVolumeControlStream(AudioManager.STREAM_MUSIC);
   }
 
-  public class AlwaysOnMediaController extends MediaController {
-    public AlwaysOnMediaController(Context context) {
-      super(context);
-    }
+  @Override
+  public void onResume() {
+    super.onResume();
+    IntentFilter filter = new IntentFilter(
+        ConnectivityManager.CONNECTIVITY_ACTION);
+    getActivity().registerReceiver(mNetworkReceiver, filter);
+  }
 
-    @Override
-    public void hide() {
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-      return false;
-    }
+  @Override
+  public void onPause() {
+    super.onPause();
+    getActivity().unregisterReceiver(mNetworkReceiver);
   }
 
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
       Bundle savedInstanceState) {
     super.onCreateView(inflater, container, savedInstanceState);
-    // TODO(trung): create view programmatically
-    View view = new LinearLayout(getActivity());
-    LayoutParams layout = new LayoutParams(LayoutParams.FILL_PARENT,
-        LayoutParams.WRAP_CONTENT);
-    view.setLayoutParams(layout);
-    mMediaController.setAnchorView(view);
-    // View playerController = inflater.inflate(R.layout.fragment_podcast,
-    // container, false);
-    // mMediaController.setAnchorView(playerController
-    // .findViewById(R.id.podcast_player));
+    LinearLayout view = (LinearLayout) inflater.inflate(
+        R.layout.fragment_podcast, container, false);
+    view.addView(mMediaController);
     return view;
   }
 
   @Override
   public void onPlayClicked(String url) {
-    mUrl = url;
-    try {
-      MediaPlayer player = mPlayer.getMediaPlayer();
-      if (player != null) {
-        player.reset();
-        player.setDataSource(mUrl);
-        player.prepareAsync();
+    if (StaticMethods.checkConnection(getActivity())) {
+      mUrl = url;
+      try {
+        MediaPlayer player = mPlayer.getMediaPlayer();
+        if (player != null) {
+          player.reset();
+          player.setDataSource(mUrl);
+          mDialog = ProgressDialog.show(getActivity(), "", getActivity()
+              .getString(R.string.buffering), true);
+          player.prepareAsync();
+        }
+      } catch (IOException e) {
+        Log.e(TAG, "Could not open file " + mUrl + " for playback.", e);
+      } catch (IllegalArgumentException e) {
+        Log.e(TAG, "Could not open file " + mUrl + " for playback.", e);
       }
-    } catch (IOException e) {
-      Log.e(TAG, "Could not open file " + mUrl + " for playback.", e);
-    } catch (IllegalArgumentException e) {
-      Log.e(TAG, "Could not open file " + mUrl + " for playback.", e);
+
     }
   }
 
@@ -103,15 +109,15 @@ public class PodcastPlayerFragment extends Fragment implements
   }
 
   /**
-   * A media player control to associate with the MediaController
+   * A media player controller that controls this player.
    * 
    * @author trung nguyen
    * 
    */
-  public class PodcastPlayer implements MediaPlayerControl {
+  public class PlayerController implements MediaPlayerControl {
     private MediaPlayer mMediaPlayer;
 
-    public PodcastPlayer() {
+    public PlayerController() {
       mMediaPlayer = new MediaPlayer();
       mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
       mMediaPlayer.setOnPreparedListener(new OnPreparedListener() {
@@ -119,10 +125,11 @@ public class PodcastPlayerFragment extends Fragment implements
         public void onPrepared(MediaPlayer mp) {
           Log.i(TAG, "media prepared");
           int duration = getDuration(); // very stupid!!
-          // can only call show() once preparation is done (because it calls
-          // getDuration() which will be in invalid state)
-          mMediaController.show(0);
+          mMediaController.setVisibility(View.VISIBLE);
+          // should be startShowing() or sth like that
+          mMediaController.show();
           mMediaPlayer.start();
+          mDialog.dismiss();
         }
       });
       mMediaPlayer.setOnErrorListener(new OnErrorListener() {
@@ -132,6 +139,7 @@ public class PodcastPlayerFragment extends Fragment implements
           mp.reset();
           try {
             if (mUrl != null) {
+              mp.reset();
               mp.setDataSource(mUrl);
             }
           } catch (Exception e) {
@@ -180,7 +188,12 @@ public class PodcastPlayerFragment extends Fragment implements
 
     @Override
     public boolean isPlaying() {
-      return mMediaPlayer.isPlaying();
+      try {
+        return mMediaPlayer.isPlaying();
+      } catch (IllegalStateException e) {
+        e.printStackTrace();
+      }
+      return false;
     }
 
     @Override
@@ -197,18 +210,20 @@ public class PodcastPlayerFragment extends Fragment implements
 
     @Override
     public void start() {
-      mMediaPlayer.start();
+      try {
+        mMediaPlayer.start();
+      } catch (IllegalStateException e) {
+        e.printStackTrace();
+      }
     }
 
     public void stopAndRelease() {
-      mMediaPlayer.stop();
-      mMediaPlayer.release();
-    }
-
-    // TODO(trung): get the touch even from Activity
-    public boolean onTouchEvent(MotionEvent event) {
-      mMediaController.show(0);
-      return false;
+      try {
+        mMediaPlayer.stop();
+        mMediaPlayer.release();
+      } catch (IllegalStateException e) {
+        e.printStackTrace();
+      }
     }
   }
 }

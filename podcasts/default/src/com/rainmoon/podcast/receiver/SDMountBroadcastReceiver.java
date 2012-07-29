@@ -23,7 +23,7 @@
  *
  */
 
-package com.rainmoon.podcast;
+package com.rainmoon.podcast.receiver;
 
 import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
@@ -33,6 +33,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.preference.PreferenceManager;
 
 import com.rainmoon.podcast.service.RefreshService;
+import com.rainmoon.podcast.utils.Strings;
 
 public class SDMountBroadcastReceiver extends BroadcastReceiver {
 

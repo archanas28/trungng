@@ -50,6 +50,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.rainmoon.podcast.provider.FeedData;
+import com.rainmoon.podcast.utils.StaticMethods;
+import com.rainmoon.podcast.utils.Strings;
 
 /**
  * Activity for showing list of feed items for a singler subscription.

@@ -1,7 +1,7 @@
 /**
  * Sparse rss
  * 
- * Copyright (c) 2012 Stefan Handschuh
+ * Copyright (c) 2010, 2011 Stefan Handschuh
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,38 +23,29 @@
  *
  */
 
-package com.rainmoon.podcast;
+package com.rainmoon.podcast.receiver;
 
-import android.view.animation.Animation;
-import android.view.animation.TranslateAnimation;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.preference.PreferenceManager;
 
-public class Animations {
-  /** Slide in from right */
-  public static final TranslateAnimation SLIDE_IN_RIGHT = generateAnimation(1,
-      0);
+import com.rainmoon.podcast.service.RefreshService;
+import com.rainmoon.podcast.utils.Strings;
 
-  /** Slide in from left */
-  public static final TranslateAnimation SLIDE_IN_LEFT = generateAnimation(-1,
-      0);
-
-  /** Slide out to right */
-  public static final TranslateAnimation SLIDE_OUT_RIGHT = generateAnimation(0,
-      1);
-
-  /** Slide out to left */
-  public static final TranslateAnimation SLIDE_OUT_LEFT = generateAnimation(0,
-      -1);
-
-  /** Duration of one animation */
-  private static final long DURATION = 180;
-
-  private static TranslateAnimation generateAnimation(float fromX, float toX) {
-    TranslateAnimation transformAnimation = new TranslateAnimation(
-        Animation.RELATIVE_TO_SELF, fromX, Animation.RELATIVE_TO_SELF, toX, 0,
-        0, 0, 0);
-
-    transformAnimation.setDuration(DURATION);
-    return transformAnimation;
+public class BootCompletedBroadcastReceiver extends BroadcastReceiver {
+  @Override
+  public void onReceive(Context context, Intent intent) {
+    try {
+      if (PreferenceManager.getDefaultSharedPreferences(
+          context.createPackageContext(Strings.PACKAGE, 0)).getBoolean(
+          Strings.SETTINGS_REFRESHENABLED, false)) {
+        context.startService(new Intent(context, RefreshService.class));
+      }
+      context.sendBroadcast(new Intent(Strings.ACTION_UPDATEWIDGET));
+    } catch (NameNotFoundException e) {
+    }
   }
 
 }

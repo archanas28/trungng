@@ -24,7 +24,7 @@
  * (this is an excerpt from BASE64 class of jaolt, except for the license)
  */
 
-package com.rainmoon.podcast;
+package com.rainmoon.podcast.utils;
 
 public class BASE64 {
 	private static char[] TOCHAR = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',

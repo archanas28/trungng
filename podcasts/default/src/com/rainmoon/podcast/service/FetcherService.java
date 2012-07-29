@@ -52,10 +52,10 @@ import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
 import android.util.Xml;
 
-import com.rainmoon.podcast.BASE64;
-import com.rainmoon.podcast.Strings;
 import com.rainmoon.podcast.handler.RSSHandler;
 import com.rainmoon.podcast.provider.FeedData;
+import com.rainmoon.podcast.utils.BASE64;
+import com.rainmoon.podcast.utils.Strings;
 
 public class FetcherService extends IntentService {
   private static final int FETCHMODE_DIRECT = 1;

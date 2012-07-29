@@ -1,7 +1,7 @@
 /**
  * Sparse rss
  * 
- * Copyright (c) 2010 Stefan Handschuh
+ * Copyright (c) 2012 Stefan Handschuh
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,18 +23,57 @@
  *
  */
 
-package com.rainmoon.podcast;
+package com.rainmoon.podcast.utils;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
+public abstract class SimpleTask implements Runnable {
+  private boolean canceled = false;
 
-import com.rainmoon.podcast.service.FetcherService;
+  private int postCount = 0;
 
-public class RefreshBroadcastReceiver extends BroadcastReceiver {
-	@Override
-	public void onReceive(Context context, Intent intent) {
-		context.startService(new Intent(context, FetcherService.class).putExtras(intent)); // a thread would mark the process as inactive
-	}
-	
+  public abstract void runControlled();
+
+  public void cancel() {
+    canceled = true;
+  }
+
+  public boolean isCanceled() {
+    return canceled;
+  }
+
+  public void post() {
+    post(1);
+  }
+
+  public synchronized void post(int count) {
+    postCount += count;
+    canceled = false;
+  }
+
+  public boolean isPosted() {
+    return postCount > 0;
+  }
+
+  public int getPostCount() {
+    return postCount;
+  }
+
+  public final synchronized void run() {
+    if (!canceled) {
+      runControlled();
+    }
+    postRun();
+    postCount--;
+  }
+
+  /**
+   * Override to use
+   */
+  public void postRun() {
+
+  }
+
+  public void enable() {
+    canceled = false;
+  }
+
 }

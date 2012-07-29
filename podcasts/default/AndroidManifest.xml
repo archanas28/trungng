@@ -52,11 +52,11 @@
             android:launchMode="singleTask" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".PodcastPlayerActivity" />
+        <activity android:name=".PodcastPlayerActivity" />
         <activity
             android:name=".AllSubscriptionsActivity"
             android:launchMode="singleTask" />
@@ -119,12 +119,12 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/widgetinfo" />
         </receiver>
-        <receiver android:name="com.rainmoon.podcast.RefreshBroadcastReceiver" >
+        <receiver android:name=".receiver.RefreshBroadcastReceiver" >
             <intent-filter>
                 <action android:name="com.rainmoon.podcast.REFRESH" />
             </intent-filter>
         </receiver>
-        <receiver android:name="com.rainmoon.podcast.SDMountBroadcastReceiver" >
+        <receiver android:name=".receiver.SDMountBroadcastReceiver" >
             <intent-filter>
                 <action android:name="android.intent.action.MEDIA_MOUNTED" />
             </intent-filter>
@@ -132,7 +132,7 @@
                 <action android:name="com.rainmoon.podcast.RESTART" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".BootCompletedBroadcastReceiver" >
+        <receiver android:name=".receiver.BootCompletedBroadcastReceiver" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>

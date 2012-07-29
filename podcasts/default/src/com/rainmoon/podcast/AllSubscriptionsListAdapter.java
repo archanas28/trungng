@@ -40,6 +40,7 @@ import android.widget.ResourceCursorAdapter;
 import android.widget.TextView;
 
 import com.rainmoon.podcast.provider.FeedData;
+import com.rainmoon.podcast.utils.SimpleTask;
 
 /**
  * Adapter for {@link AllSubscriptionsFragment}.

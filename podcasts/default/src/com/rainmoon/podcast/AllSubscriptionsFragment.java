@@ -26,6 +26,7 @@ import android.widget.TextView;
 
 import com.rainmoon.podcast.provider.FeedData;
 import com.rainmoon.podcast.service.RefreshService;
+import com.rainmoon.podcast.utils.Strings;
 
 /**
  * Fragment showing the list of all subscriptions. TODO(trung): currently update

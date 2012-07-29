@@ -8,7 +8,7 @@
     <include
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        layout="@layout/edit_subscription_main" />
+        layout="@layout/dialog_edit_subscription" />
 
     <LinearLayout
         style="@style/ButtonBar"

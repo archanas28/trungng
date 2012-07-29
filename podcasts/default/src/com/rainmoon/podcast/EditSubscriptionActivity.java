@@ -38,6 +38,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.rainmoon.podcast.provider.FeedData;
+import com.rainmoon.podcast.utils.Strings;
 
 public class EditSubscriptionActivity extends Activity {
   private static final String WASACTIVE = "wasactive";

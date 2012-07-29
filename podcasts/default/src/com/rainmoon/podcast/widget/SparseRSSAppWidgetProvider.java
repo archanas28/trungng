@@ -40,8 +40,8 @@ import android.widget.RemoteViews;
 
 import com.rainmoon.podcast.HomeActivity;
 import com.rainmoon.podcast.R;
-import com.rainmoon.podcast.Strings;
 import com.rainmoon.podcast.provider.FeedData;
+import com.rainmoon.podcast.utils.Strings;
 
 public class SparseRSSAppWidgetProvider extends AppWidgetProvider {
   private static final String LIMIT = " limit ";

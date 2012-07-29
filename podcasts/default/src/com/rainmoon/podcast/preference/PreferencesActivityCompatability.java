@@ -32,8 +32,8 @@ import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceActivity;
 
 import com.rainmoon.podcast.R;
-import com.rainmoon.podcast.Strings;
 import com.rainmoon.podcast.service.RefreshService;
+import com.rainmoon.podcast.utils.Strings;
 
 public class PreferencesActivityCompatability extends PreferenceActivity {
 

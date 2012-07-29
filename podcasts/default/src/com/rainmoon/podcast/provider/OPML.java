@@ -45,7 +45,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
 import android.util.Xml;
 
-import com.rainmoon.podcast.Strings;
+import com.rainmoon.podcast.utils.Strings;
 
 public class OPML {
   private static final String START = "<?xml version=\"1.0\" encoding=\"utf-8\"?><opml version=\"1.1\"><head><title>Sparse RSS export</title><dateCreated>";

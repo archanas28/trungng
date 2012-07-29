@@ -15,9 +15,9 @@
         android:paddingTop="2dp"
         android:scrollHorizontally="true"
         android:singleLine="true"
-        android:textStyle="bold"
+        android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/color_blue"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:textStyle="bold" />
 
     <LinearLayout
         android:layout_width="fill_parent"
@@ -68,7 +68,6 @@
     </LinearLayout>
 
     <RelativeLayout
-        android:id="@+id/entry_content"
         android:layout_width="fill_parent"
         android:layout_height="0dp"
         android:layout_gravity="fill"
@@ -82,7 +81,7 @@
 
         <fragment
             android:id="@+id/frag_player"
-            android:name="com.rainmoon.podcast.PodcastPlayerFragment"
+            android:name="com.rainmoon.podcast.PlayerFragment"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true" />

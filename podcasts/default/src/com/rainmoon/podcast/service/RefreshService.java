@@ -25,7 +25,7 @@
 
 package com.rainmoon.podcast.service;
 
-import com.rainmoon.podcast.Strings;
+import com.rainmoon.podcast.utils.Strings;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;

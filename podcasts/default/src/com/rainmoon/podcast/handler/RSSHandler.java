@@ -43,10 +43,10 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import com.rainmoon.podcast.Strings;
 import com.rainmoon.podcast.provider.FeedData;
 import com.rainmoon.podcast.provider.FeedDataContentProvider;
 import com.rainmoon.podcast.service.FetcherService;
+import com.rainmoon.podcast.utils.Strings;
 
 import android.content.ContentValues;
 import android.content.Context;

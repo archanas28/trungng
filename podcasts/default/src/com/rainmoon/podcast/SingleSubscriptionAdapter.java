@@ -46,6 +46,7 @@ import android.widget.ResourceCursorAdapter;
 import android.widget.TextView;
 
 import com.rainmoon.podcast.provider.FeedData;
+import com.rainmoon.podcast.utils.Strings;
 
 /**
  * Adapter for {@link SingleSubscriptionActivity}.

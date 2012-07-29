@@ -23,73 +23,44 @@
  *
  */
 
-package com.rainmoon.podcast;
+package com.rainmoon.podcast.utils;
 
 import com.rainmoon.podcast.provider.FeedData;
 
 public final class Strings {
   public static final String PACKAGE = "com.rainmoon.podcast";
-
   public static final String SETTINGS_REFRESHINTERVAL = "refresh.interval";
-
   public static final String SETTINGS_NOTIFICATIONSENABLED = "notifications.enabled";
-
   public static final String SETTINGS_REFRESHENABLED = "refresh.enabled";
-
   public static final String SETTINGS_REFRESHONPENENABLED = "refreshonopen.enabled";
-
   public static final String SETTINGS_NOTIFICATIONSRINGTONE = "notifications.ringtone";
-
   public static final String SETTINGS_NOTIFICATIONSVIBRATE = "notifications.vibrate";
-
   public static final String SETTINGS_PRIORITIZE = "contentpresentation.prioritize";
-
-  public static final String SETTINGS_SHOWTABS = "tabs.show";
-
   public static final String SETTINGS_FETCHPICTURES = "pictures.fetch";
-
   public static final String SETTINGS_PROXYENABLED = "proxy.enabled";
-
   public static final String SETTINGS_PROXYPORT = "proxy.port";
-
   public static final String SETTINGS_PROXYHOST = "proxy.host";
-
   public static final String SETTINGS_PROXYWIFIONLY = "proxy.wifionly";
-
   public static final String SETTINGS_KEEPTIME = "keeptime";
-
   public static final String SETTINGS_BLACKTHEME = "blacktheme";
-
   public static final String SETTINGS_FONTSIZE = "fontsize";
-
   public static final String SETTINGS_STANDARDUSERAGENT = "standarduseragent";
 
   public static final String SETTINGS_DISABLEPICTURES = "pictures.disable";
-
   public static final String SETTINGS_HTTPHTTPSREDIRECTS = "httphttpsredirects";
-
   public static final String SETTINGS_OVERRIDEWIFIONLY = "overridewifionly";
-
   public static final String SETTINGS_GESTURESENABLED = "gestures.enabled";
-
   public static final String SETTINGS_ENCLOSUREWARNINGSENABLED = "enclosurewarnings.enabled";
-
   public static final String SETTINGS_EFFICIENTFEEDPARSING = "efficientfeedparsing";
 
   public static final String ACTION_REFRESHFEEDS = "com.rainmoon.podcast.REFRESH";
-
   public static final String ACTION_UPDATEWIDGET = "com.rainmoon.podcast.FEEDUPDATED";
-
   public static final String ACTION_RESTART = "com.rainmoon.podcast.RESTART";
 
   public static final String FEEDID = "feedid";
-
   public static final String DB_ISNULL = " IS NULL";
-
   public static final String DB_DESC = " DESC";
-
   public static final String DB_ARG = "=?";
-
   public static final String DB_AND = " AND ";
 
   public static final String DB_EXCUDEFAVORITE = new StringBuilder(
@@ -144,9 +115,9 @@ public final class Strings {
 
   public static final String GT = ">";
 
-  protected static final String TRUE = "true";
+  public static final String TRUE = "true";
 
-  protected static final String FALSE = "false";
+  public static final String FALSE = "false";
 
   public static final String READDATE_GREATERZERO = FeedData.ItemColumns.READDATE
       + ">0";
