@@ -44,6 +44,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.text.ClipboardManager;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -55,6 +56,8 @@ import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.rainmoon.podcast.PlayerFragment.OnPlayerFragmentListener;
+import com.rainmoon.podcast.PlayerFragment.PlayerController;
 import com.rainmoon.podcast.provider.FeedData;
 import com.rainmoon.podcast.utils.StaticMethods;
 import com.rainmoon.podcast.utils.Strings;
@@ -67,11 +70,12 @@ import com.rainmoon.podcast.utils.Strings;
  * @author trung nguyen
  * 
  */
-public class FeedItemActivity extends FragmentActivity {
+public class FeedItemActivity extends FragmentActivity implements
+    OnPlayerFragmentListener {
 
   /**
-   * The listener that is used to request a media player to play from an
-   * external button.
+   * The mPlayClickedListener that is used to request a media player to play
+   * from an external button.
    */
   public interface OnPlayButtonClickedListener {
 
@@ -82,6 +86,23 @@ public class FeedItemActivity extends FragmentActivity {
      *          the url of the audio in this feed item
      */
     public void onPlayClicked(String url);
+  }
+
+  /**
+   * The listenr that saves media player when the screen orientation changes.
+   */
+  public interface OnConfigurationChangedListener {
+
+    /**
+     * Returns an object that should be retained when the configuration changes.
+     * More specifically, this method can be used to return a value object
+     * (e.g., heavy resource or content downloaded from the internet). This
+     * allows the activity to use the object when for example, screen
+     * orientation changes, instead of creating a new one.
+     * 
+     * @return
+     */
+    public Object onRetainNonInstanceObject();
   }
 
   private static final String TEXT_HTML = "text/html";
@@ -96,6 +117,7 @@ public class FeedItemActivity extends FragmentActivity {
 
   private static final String IMAGE_ENCLOSURE = "[@]image/";
   private static final String TEXTPLAIN = "text/plain";
+  private static final String TAG = "FeedItemActivity";
 
   private int mTitleColumnIdx;
   private int mDateColumnIdx;
@@ -117,7 +139,10 @@ public class FeedItemActivity extends FragmentActivity {
   private WebView webView;
   private TextView urlButton;
   private TextView playButton;
-  private OnPlayButtonClickedListener listener;
+  private OnPlayButtonClickedListener mPlayClickedListener;
+  private OnConfigurationChangedListener mConfigChangeListener;
+  private PlayerController mPlayerController;
+  private Fragment mPlayerFragment;
 
   int scrollX;
   int scrollY;
@@ -128,6 +153,7 @@ public class FeedItemActivity extends FragmentActivity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    mPlayerController = (PlayerController) getLastCustomNonConfigurationInstance();
     setContentView(R.layout.activity_feeditem);
     uri = getIntent().getData();
     iconBytes = getIntent()
@@ -136,11 +162,14 @@ public class FeedItemActivity extends FragmentActivity {
     setupFeedColumnIndice();
 
     // set up play button
-    final Fragment playerFragment = getSupportFragmentManager()
-        .findFragmentById(R.id.frag_player);
+    mPlayerFragment = getSupportFragmentManager().findFragmentById(
+        R.id.frag_player);
+    mPlayClickedListener = (OnPlayButtonClickedListener) mPlayerFragment;
+    mConfigChangeListener = (OnConfigurationChangedListener) mPlayerFragment;
+
     playButton = (TextView) findViewById(R.id.btn_play);
     urlButton = (TextView) findViewById(R.id.btn_view);
-    listener = (OnPlayButtonClickedListener) playerFragment;
+
     webView = (WebView) findViewById(R.id.content);
     OnKeyListener onKeyEventListener = new OnKeyListener() {
       public boolean onKey(View v, int keyCode, KeyEvent event) {
@@ -180,6 +209,26 @@ public class FeedItemActivity extends FragmentActivity {
     super.onResume();
     uri = getIntent().getData();
     reload();
+  }
+
+  @Override
+  protected void onPause() {
+    super.onPause();
+    scrollX = webView.getScrollX();
+    scrollY = webView.getScrollY();
+  }
+
+  @Override
+  public Object onRetainCustomNonConfigurationInstance() {
+    super.onRetainCustomNonConfigurationInstance();
+    mPlayerController = (PlayerController) mConfigChangeListener
+        .onRetainNonInstanceObject();
+    return mPlayerController;
+  }
+
+  @Override
+  public PlayerController getLastMediaPlayerController() {
+    return mPlayerController;
   }
 
   @Override
@@ -310,7 +359,7 @@ public class FeedItemActivity extends FragmentActivity {
             builder.setPositiveButton(android.R.string.ok,
                 new DialogInterface.OnClickListener() {
                   public void onClick(DialogInterface dialog, int which) {
-                    listener.onPlayClicked(uri.toString());
+                    mPlayClickedListener.onPlayClicked(uri.toString());
                   }
                 });
             builder.setNeutralButton(R.string.button_alwaysokforall,
@@ -320,7 +369,7 @@ public class FeedItemActivity extends FragmentActivity {
                         .edit()
                         .putBoolean(Strings.SETTINGS_ENCLOSUREWARNINGSENABLED,
                             false).commit();
-                    listener.onPlayClicked(uri.toString());
+                    mPlayClickedListener.onPlayClicked(uri.toString());
                   }
                 });
             builder.setNegativeButton(android.R.string.cancel,
@@ -331,7 +380,7 @@ public class FeedItemActivity extends FragmentActivity {
                 });
             builder.show();
           } else {
-            listener.onPlayClicked(uri.toString());
+            mPlayClickedListener.onPlayClicked(uri.toString());
           }
         }
       });
@@ -391,13 +440,6 @@ public class FeedItemActivity extends FragmentActivity {
           new BitmapDrawable(getResources(), BitmapFactory.decodeByteArray(
               iconBytes, 0, iconBytes.length)));
     }
-  }
-
-  @Override
-  protected void onPause() {
-    super.onPause();
-    scrollX = webView.getScrollX();
-    scrollY = webView.getScrollY();
   }
 
   @Override
@@ -473,5 +515,4 @@ public class FeedItemActivity extends FragmentActivity {
       // do nothing
     }
   }
-
 }

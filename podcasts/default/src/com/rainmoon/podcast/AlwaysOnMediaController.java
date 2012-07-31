@@ -43,9 +43,8 @@ import android.widget.TextView;
  * MediaController will create a default set of controls and put them in a frame
  * as a regular view in your application.
  * <p>
- * TODO
- * 1. One instance when connection is lost while playing, there is no updating
- * of time and progress
+ * TODO 1. One instance when connection is lost while playing, there is no
+ * updating of time and progress
  */
 public class AlwaysOnMediaController extends FrameLayout {
 
@@ -57,7 +56,6 @@ public class AlwaysOnMediaController extends FrameLayout {
   private boolean mDragging;
   private static final int SHOW_PROGRESS = 2;
   private boolean mUseFastForward;
-  private boolean mFromXml;
   StringBuilder mFormatBuilder;
   Formatter mFormatter;
   private ImageButton mPauseButton;
@@ -77,7 +75,7 @@ public class AlwaysOnMediaController extends FrameLayout {
     setFocusable(true);
     setFocusableInTouchMode(true);
     setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
-    //requestFocus();
+    // requestFocus();
     View v = makeControllerView();
     FrameLayout.LayoutParams frameParams = new FrameLayout.LayoutParams(
         ViewGroup.LayoutParams.MATCH_PARENT,
@@ -100,26 +98,11 @@ public class AlwaysOnMediaController extends FrameLayout {
 
   private void initControllerView(View v) {
     mPauseButton = (ImageButton) v.findViewById(R.id.btn_play);
-    if (mPauseButton != null) {
-      mPauseButton.requestFocus();
-      mPauseButton.setOnClickListener(mPauseListener);
-    }
-
+    mPauseButton.setOnClickListener(mPauseListener);
     mFfwdButton = (ImageButton) v.findViewById(R.id.btn_fw);
-    if (mFfwdButton != null) {
-      mFfwdButton.setOnClickListener(mFfwdListener);
-      if (!mFromXml) {
-        mFfwdButton.setVisibility(mUseFastForward ? View.VISIBLE : View.GONE);
-      }
-    }
-
+    mFfwdButton.setOnClickListener(mFfwdListener);
     mRewButton = (ImageButton) v.findViewById(R.id.btn_rw);
-    if (mRewButton != null) {
-      mRewButton.setOnClickListener(mRewListener);
-      if (!mFromXml) {
-        mRewButton.setVisibility(mUseFastForward ? View.VISIBLE : View.GONE);
-      }
-    }
+    mRewButton.setOnClickListener(mRewListener);
 
     mProgress = (ProgressBar) v.findViewById(R.id.mc_progressbar);
     if (mProgress != null) {
@@ -145,6 +128,7 @@ public class AlwaysOnMediaController extends FrameLayout {
    */
   public void show() {
     updatePausePlay();
+    setProgress();
     mHandler.sendEmptyMessage(SHOW_PROGRESS);
   }
 
@@ -174,11 +158,15 @@ public class AlwaysOnMediaController extends FrameLayout {
   private Handler mHandler = new Handler() {
     @Override
     public void handleMessage(Message msg) {
-      if (!mDragging && mPlayer.isPlaying()) {
-        int pos = setProgress();
-        msg = obtainMessage(SHOW_PROGRESS);
-        // update progress bar every second
-        sendMessageDelayed(msg, 1000 - (pos % 1000));
+      try {
+        if (!mDragging && mPlayer.isPlaying()) {
+          int pos = setProgress();
+          msg = obtainMessage(SHOW_PROGRESS);
+          // update progress bar every second
+          sendMessageDelayed(msg, 1000 - (pos % 1000));
+        }
+      } catch (Exception e) {
+        e.printStackTrace();
       }
     }
   };
@@ -256,9 +244,6 @@ public class AlwaysOnMediaController extends FrameLayout {
         || keyCode == KeyEvent.KEYCODE_VOLUME_MUTE) {
       // don't show the controls for volume adjustment
       return super.dispatchKeyEvent(event);
-    } else if (keyCode == KeyEvent.KEYCODE_BACK
-        || keyCode == KeyEvent.KEYCODE_MENU) {
-      return true;
     }
 
     return super.dispatchKeyEvent(event);

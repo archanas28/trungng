@@ -52,7 +52,7 @@
             android:layout_weight="1"
             android:clickable="true"
             android:drawableLeft="@android:drawable/ic_menu_view"
-            android:text="View in browser"
+            android:text="@string/view_in_browser"
             android:textStyle="bold" />
 
         <TextView
@@ -63,7 +63,7 @@
             android:layout_weight="1"
             android:clickable="true"
             android:drawableLeft="@android:drawable/ic_media_play"
-            android:text="Listen now"
+            android:text="@string/listen_now"
             android:textStyle="bold" />
     </LinearLayout>
 

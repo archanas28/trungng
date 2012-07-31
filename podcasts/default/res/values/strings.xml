@@ -70,7 +70,10 @@
     <string name="contextmenu_resetupdatedate">Reset update-date</string>
     
     <!-- Text -->
+    <string name="listen_now">Listen now</string>
+    <string name="view_in_browser">View in browser</string>
     <string name="buffering">Buffering</string>
+    <string name="preparing">Content is being prepared. This may take some time, please wait.</string>
     <string name="no_connection">No connection available</string>
     <string name="norssfeeds">No RSS feeds</string>
     <string name="noentries">No entries</string>

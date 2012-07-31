@@ -1,12 +1,5 @@
 package com.rainmoon.podcast;
 
-import java.io.IOException;
-
-import com.rainmoon.podcast.FeedItemActivity.OnPlayButtonClickedListener;
-import com.rainmoon.podcast.receiver.NetworkReceiver;
-import com.rainmoon.podcast.utils.StaticMethods;
-
-import android.app.ProgressDialog;
 import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -14,13 +7,21 @@ import android.media.MediaPlayer.OnErrorListener;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.MediaController.MediaPlayerControl;
+import android.widget.Toast;
+
+import com.rainmoon.podcast.FeedItemActivity.OnConfigurationChangedListener;
+import com.rainmoon.podcast.FeedItemActivity.OnPlayButtonClickedListener;
+import com.rainmoon.podcast.receiver.NetworkReceiver;
+import com.rainmoon.podcast.utils.StaticMethods;
 
 /**
  * Fragment showing the Podcast player.
@@ -33,25 +34,49 @@ import android.widget.MediaController.MediaPlayerControl;
  * 
  */
 public class PlayerFragment extends Fragment implements
-    OnPlayButtonClickedListener {
+    OnPlayButtonClickedListener, OnConfigurationChangedListener {
+
+  /**
+   * Interface for communication with the activity to get the saved media player
+   * instance of this player (when screen orientation changed).
+   * 
+   * @author trung nguyen
+   */
+  public interface OnPlayerFragmentListener {
+    public PlayerController getLastMediaPlayerController();
+  }
 
   private static final String TAG = "PlayerFragment";
   private String mUrl = "";
 
   private AlwaysOnMediaController mMediaController;
   private PlayerController mPlayer;
-  private ProgressDialog mDialog;
   private NetworkReceiver mNetworkReceiver;
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    mPlayer = new PlayerController();
-    mMediaController = new AlwaysOnMediaController(getActivity());
-    mMediaController.setMediaPlayer(mPlayer);
-    mMediaController.setVisibility(View.GONE);
+    FragmentActivity holderActivity = getActivity();
+    mMediaController = new AlwaysOnMediaController(holderActivity);
+    mPlayer = ((OnPlayerFragmentListener) holderActivity)
+        .getLastMediaPlayerController();
+    if (mPlayer == null) {
+      mPlayer = new PlayerController();
+      mMediaController.setVisibility(View.GONE);
+      mMediaController.setMediaPlayer(mPlayer);
+    } else {
+      // this is due to screen orientation changed
+      mMediaController.setMediaPlayer(mPlayer);
+      if (mPlayer.isPlaying()) {
+        mMediaController.setVisibility(View.VISIBLE);
+        mMediaController.show();
+      } else {
+        mMediaController.setVisibility(View.GONE);
+      }
+    }
+    mPlayer.setController(mMediaController);
+    holderActivity.setVolumeControlStream(AudioManager.STREAM_MUSIC);
     mNetworkReceiver = new NetworkReceiver();
-    getActivity().setVolumeControlStream(AudioManager.STREAM_MUSIC);
   }
 
   @Override
@@ -87,23 +112,39 @@ public class PlayerFragment extends Fragment implements
         if (player != null) {
           player.reset();
           player.setDataSource(mUrl);
-          mDialog = ProgressDialog.show(getActivity(), "", getActivity()
-              .getString(R.string.buffering), true);
           player.prepareAsync();
+          Toast.makeText(getActivity(), R.string.preparing, Toast.LENGTH_LONG)
+              .show();
         }
       } catch (Exception e) {
+        // TODO(trung): display could not open message
         Log.e(TAG, "Could not open file " + mUrl + " for playback.", e);
       }
 
     }
   }
 
+  @Override
+  public void onStop() {
+    boolean isChangingConfiguration = getActivity().isChangingConfigurations();
+    Log.i(TAG, "mConfig=" + isChangingConfiguration);
+    if (!isChangingConfiguration) {
+      mPlayer.stopAndRelease();
+    }
+    super.onStop();
+  }
+
   // only release the player when the activity is destroyed
   @Override
   public void onDestroy() {
+    // mPlayer.stopAndRelease();
     super.onDestroy();
-    mPlayer.stopAndRelease();
-    mPlayer = null;
+  }
+
+  @Override
+  public Object onRetainNonInstanceObject() {
+    Log.i(TAG, "onRetainNonInstanceObject() called");
+    return mPlayer;
   }
 
   /**
@@ -114,20 +155,23 @@ public class PlayerFragment extends Fragment implements
    */
   public class PlayerController implements MediaPlayerControl {
     private MediaPlayer mMediaPlayer;
-
+    private AlwaysOnMediaController mController;
+    
     public PlayerController() {
       mMediaPlayer = new MediaPlayer();
       mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+      mMediaPlayer.setWakeMode(getActivity(), PowerManager.PARTIAL_WAKE_LOCK);
+
       mMediaPlayer.setOnPreparedListener(new OnPreparedListener() {
         @Override
         public void onPrepared(MediaPlayer mp) {
           Log.i(TAG, "media prepared");
           int duration = getDuration(); // very stupid!!
-          mMediaController.setVisibility(View.VISIBLE);
           // should be startShowing() or sth like that
-          mMediaController.show();
+          mController.setVisibility(View.VISIBLE);
+          Log.i(TAG, "onPrepared: should be visible: " + mMediaController);
+          mController.show();
           mMediaPlayer.start();
-          mDialog.dismiss();
         }
       });
       mMediaPlayer.setOnErrorListener(new OnErrorListener() {
@@ -148,6 +192,10 @@ public class PlayerFragment extends Fragment implements
       });
     }
 
+    public void setController(AlwaysOnMediaController controller) {
+      mController = controller;
+    }
+    
     /** Returns the internal media player */
     public MediaPlayer getMediaPlayer() {
       return mMediaPlayer;
@@ -190,6 +238,8 @@ public class PlayerFragment extends Fragment implements
         return mMediaPlayer.isPlaying();
       } catch (IllegalStateException e) {
         e.printStackTrace();
+      } catch (NullPointerException e) {
+        e.printStackTrace();
       }
       return false;
     }
@@ -216,9 +266,12 @@ public class PlayerFragment extends Fragment implements
     }
 
     public void stopAndRelease() {
+      Log.i(TAG, "stopAndRelease() called");
       try {
         mMediaPlayer.stop();
         mMediaPlayer.release();
+        mMediaPlayer = null;
+        Log.i(TAG, "mMediaPlayer set to null");
       } catch (IllegalStateException e) {
         e.printStackTrace();
       }

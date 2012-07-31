@@ -73,8 +73,10 @@ public class NavigationFragment extends ListFragment {
               intent = new Intent(Intent.ACTION_VIEW,
                   FeedData.ItemColumns.RECENTLY_VIEWED_CONTENT_URI);
             }
-            intent.putExtra(SingleSubscriptionActivity.EXTRA_SHOWFEEDINFO, true);
-            intent.putExtra(SingleSubscriptionActivity.EXTRA_AUTORELOAD, true);
+            if (intent != null) {
+              intent.putExtra(SingleSubscriptionActivity.EXTRA_SHOWFEEDINFO, true);
+              intent.putExtra(SingleSubscriptionActivity.EXTRA_AUTORELOAD, true);
+            }  
           }
           if (intent != null) {
             startActivity(intent);
