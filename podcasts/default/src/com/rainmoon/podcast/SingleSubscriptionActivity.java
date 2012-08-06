@@ -54,7 +54,7 @@ import com.rainmoon.podcast.utils.StaticMethods;
 import com.rainmoon.podcast.utils.Strings;
 
 /**
- * Activity for showing list of feed items for a singler subscription.
+ * Activity for showing list of feed items for a single subscription.
  * 
  * @author trung nguyen
  * 
@@ -105,7 +105,7 @@ public class SingleSubscriptionActivity extends ListActivity {
       }
     }
 
-    setContentView(R.layout.entries);
+    setContentView(R.layout.activity_items);
     uri = intent.getData();
     entriesListAdapter = new SingleSubscriptionAdapter(this, uri,
         intent.getBooleanExtra(EXTRA_SHOWFEEDINFO, false),
@@ -177,10 +177,10 @@ public class SingleSubscriptionActivity extends ListActivity {
     return true;
   }
 
-  @SuppressWarnings("deprecation")
-  public boolean onMenuItemSelected(int featureId, MenuItem item) {
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
     switch (item.getItemId()) {
-    case R.id.menu_markasread: {
+    case R.id.option_markasread: {
       new Thread() { // the update process takes some time
         public void run() {
           getContentResolver().update(uri,
@@ -190,7 +190,7 @@ public class SingleSubscriptionActivity extends ListActivity {
       entriesListAdapter.markAsRead();
       break;
     }
-    case R.id.menu_markasunread: {
+    case R.id.option_markasunread: {
       new Thread() { // the update process takes some time
         public void run() {
           getContentResolver().update(uri,
@@ -200,19 +200,19 @@ public class SingleSubscriptionActivity extends ListActivity {
       entriesListAdapter.markAsUnread();
       break;
     }
-    case R.id.menu_hideread: {
+    case R.id.option_hideread: {
       if (item.isChecked()) {
-        item.setChecked(false).setTitle(R.string.contextmenu_hideread)
+        item.setChecked(false).setTitle(R.string.option_hideread)
             .setIcon(android.R.drawable.ic_menu_close_clear_cancel);
         entriesListAdapter.showRead(true);
       } else {
-        item.setChecked(true).setTitle(R.string.contextmenu_showread)
+        item.setChecked(true).setTitle(R.string.option_showread)
             .setIcon(android.R.drawable.ic_menu_view);
         entriesListAdapter.showRead(false);
       }
       break;
     }
-    case R.id.menu_deleteread: {
+    case R.id.option_deleteread: {
       new Thread() { // the delete process takes some time
         public void run() {
           String selection = Strings.READDATE_GREATERZERO + Strings.DB_AND
@@ -230,11 +230,11 @@ public class SingleSubscriptionActivity extends ListActivity {
       }.start();
       break;
     }
-    case R.id.menu_deleteallentries: {
+    case R.id.option_deleteallentries: {
       Builder builder = new AlertDialog.Builder(this);
 
       builder.setIcon(android.R.drawable.ic_dialog_alert);
-      builder.setTitle(R.string.contextmenu_deleteallentries);
+      builder.setTitle(R.string.option_deleteallentries);
       builder.setMessage(R.string.question_areyousure);
       builder.setPositiveButton(android.R.string.yes,
           new DialogInterface.OnClickListener() {
@@ -256,25 +256,30 @@ public class SingleSubscriptionActivity extends ListActivity {
       builder.show();
       break;
     }
-    case CONTEXTMENU_MARKASREAD_ID: {
-      long id = ((AdapterView.AdapterContextMenuInfo) item.getMenuInfo()).id;
+    default:
+      break;
+    }
 
+    return true;
+  }
+
+  @Override
+  public boolean onContextItemSelected(MenuItem item) {
+    long id = ((AdapterView.AdapterContextMenuInfo) item.getMenuInfo()).id;
+    switch (item.getItemId()) {
+    case CONTEXTMENU_MARKASREAD_ID: {
       getContentResolver().update(ContentUris.withAppendedId(uri, id),
           StaticMethods.getReadContentValues(), null, null);
       entriesListAdapter.markAsRead(id);
       break;
     }
     case CONTEXTMENU_MARKASUNREAD_ID: {
-      long id = ((AdapterView.AdapterContextMenuInfo) item.getMenuInfo()).id;
-
       getContentResolver().update(ContentUris.withAppendedId(uri, id),
           StaticMethods.getUnreadContentValues(), null, null);
       entriesListAdapter.markAsUnread(id);
       break;
     }
     case CONTEXTMENU_DELETE_ID: {
-      long id = ((AdapterView.AdapterContextMenuInfo) item.getMenuInfo()).id;
-
       getContentResolver().delete(ContentUris.withAppendedId(uri, id), null,
           null);
       FeedData.deletePicturesOfEntry(Long.toString(id));
@@ -287,7 +292,8 @@ public class SingleSubscriptionActivity extends ListActivity {
               .getTag().toString());
       break;
     }
-
+    default:
+      break;
     }
     return true;
   }

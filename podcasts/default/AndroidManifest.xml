@@ -57,11 +57,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".PodcastPlayerActivity" />
         <activity
             android:name=".AllSubscriptionsActivity"
             android:launchMode="singleTask" />
-        <activity android:name=".EmptyActivity" />
         <activity
             android:name=".SingleSubscriptionActivity"
             android:launchMode="singleTask" >
@@ -75,6 +73,7 @@
         </activity>
         <activity
             android:name=".FeedItemActivity"
+            android:alwaysRetainTaskState="true"
             android:launchMode="singleTask" >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -91,8 +90,7 @@
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".EditSubscriptionActivity">
+        <activity android:name=".EditSubscriptionActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.EDIT" />
 

@@ -82,43 +82,4 @@
             android:title="@string/settings_fontsize" />
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="@string/settings_category_network" >
-
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="standarduseragent"
-            android:summary="@string/settings_standarduseragent_description"
-            android:title="@string/settings_standarduseragent" />
-
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="httphttpsredirects"
-            android:summary="@string/settings_httphttpsredirects_description"
-            android:title="@string/settings_httphttpsredirects" />
-
-        <PreferenceScreen android:title="Proxy" >
-
-            <CheckBoxPreference
-                android:key="proxy.enabled"
-                android:title="@string/settings_enabled" />
-
-            <CheckBoxPreference
-                android:dependency="proxy.enabled"
-                android:key="proxy.wifionly"
-                android:summary="@string/settings_proxy_wifionly_description"
-                android:title="@string/settings_proxy_wifionly" />
-
-            <EditTextPreference
-                android:dependency="proxy.enabled"
-                android:key="proxy.host"
-                android:title="@string/settings_proxy_host" />
-
-            <EditTextPreference
-                android:dependency="proxy.enabled"
-                android:inputType="number"
-                android:key="proxy.port"
-                android:title="@string/settings_proxy_port" />
-        </PreferenceScreen>
-    </PreferenceCategory>
-
 </PreferenceScreen>

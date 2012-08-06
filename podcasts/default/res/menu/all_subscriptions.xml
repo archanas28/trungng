@@ -4,12 +4,12 @@
     <item
         android:id="@+id/option_addfeed"
         android:icon="@android:drawable/ic_menu_add"
-        android:showAsAction="ifRoom|withText"
+        android:showAsAction="ifRoom"
         android:title="@string/option_addfeed"/>
     <item
         android:id="@+id/option_refresh"
         android:icon="@android:drawable/ic_menu_rotate"
-        android:showAsAction="withText"
+        android:showAsAction="ifRoom"
         android:title="@string/option_refresh"/>
     <item
         android:id="@+id/option_import"
@@ -17,10 +17,6 @@
     <item
         android:id="@+id/option_export"
         android:title="@string/option_export"/>
-    <item
-        android:id="@+id/option_about"
-        android:icon="@android:drawable/ic_menu_info_details"
-        android:title="@string/option_about"/>
     <item
         android:id="@+id/option_settings"
         android:icon="@android:drawable/ic_menu_preferences"

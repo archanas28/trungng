@@ -1,11 +1,18 @@
 package com.rainmoon.podcast;
 
+import java.util.Calendar;
+
+import android.content.Context;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnErrorListener;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.net.ConnectivityManager;
+import android.net.wifi.WifiManager;
+import android.net.wifi.WifiManager.WifiLock;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.support.v4.app.Fragment;
@@ -22,13 +29,13 @@ import com.rainmoon.podcast.FeedItemActivity.OnConfigurationChangedListener;
 import com.rainmoon.podcast.FeedItemActivity.OnPlayButtonClickedListener;
 import com.rainmoon.podcast.receiver.NetworkReceiver;
 import com.rainmoon.podcast.utils.StaticMethods;
+import com.rainmoon.podcast.utils.Strings;
 
 /**
  * Fragment showing the Podcast player.
  * 
- * TODO(TRUNG): handle media playback button; see
- * http://developer.android.com/training/managing-audio/volume-playback.html
- * TODO(trung): make this a service (play in background)
+ * TODO(trung): make this a service (play in background) in later release if
+ * neccessary
  * 
  * @author trung nguyen
  * 
@@ -52,11 +59,16 @@ public class PlayerFragment extends Fragment implements
   private AlwaysOnMediaController mMediaController;
   private PlayerController mPlayer;
   private NetworkReceiver mNetworkReceiver;
+  private WifiLock mWifiLock;
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     FragmentActivity holderActivity = getActivity();
+    mWifiLock = ((WifiManager) holderActivity
+        .getSystemService(Context.WIFI_SERVICE)).createWifiLock(
+        WifiManager.WIFI_MODE_FULL, "mylock");
+    mWifiLock.acquire();
     mMediaController = new AlwaysOnMediaController(holderActivity);
     mPlayer = ((OnPlayerFragmentListener) holderActivity)
         .getLastMediaPlayerController();
@@ -77,6 +89,52 @@ public class PlayerFragment extends Fragment implements
     mPlayer.setController(mMediaController);
     holderActivity.setVolumeControlStream(AudioManager.STREAM_MUSIC);
     mNetworkReceiver = new NetworkReceiver();
+  }
+
+  /**
+   * Updates the listen count.
+   * 
+   * @param duration
+   */
+  private void updateListenCount(int duration) {
+    SharedPreferences prefs = getActivity().getSharedPreferences(
+        HomeActivity.APPLICATION_SHARED_PREFERENCES, 0);
+    Editor prefEditor = prefs.edit();
+    long startTime = prefs.getLong(Strings.LISTEN_START_TIME, -1);
+    Calendar calendar = Calendar.getInstance();
+    long currentTime = calendar.getTimeInMillis();
+    if (startTime == -1) { // first time
+      prefEditor.putLong(Strings.LISTEN_START_TIME, currentTime);
+      prefEditor.putBoolean(Strings.WEEK_RESETED, true);
+      prefEditor.putBoolean(Strings.MONTH_RESETED, true);
+    }
+    // reset counter for the week and month as needed
+    if (calendar.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY
+        && !prefs.getBoolean(Strings.WEEK_RESETED, false)) {
+      prefEditor.putBoolean(Strings.WEEK_RESETED, true);
+      prefEditor.putLong(Strings.LISTEN_WEEK_ITEMS, 0);
+      prefEditor.putLong(Strings.LISTEN_WEEK_MILLIS, 0);
+    }
+    if (calendar.get(Calendar.DAY_OF_MONTH) == 1
+        && !prefs.getBoolean(Strings.MONTH_RESETED, false)) {
+      prefEditor.putBoolean(Strings.MONTH_RESETED, true);
+      prefEditor.putLong(Strings.LISTEN_MONTH_ITEMS, 0);
+      prefEditor.putLong(Strings.LISTEN_MONTH_MILLIS, 0);
+    }
+    
+    int totalItems = prefs.getInt(Strings.LISTEN_TOTAL_ITEMS, 0) + 1;
+    long totalMillis = prefs.getLong(Strings.LISTEN_TOTAL_MILLIS, 0) + duration;
+    int weekItems = prefs.getInt(Strings.LISTEN_WEEK_ITEMS, 0) + 1;
+    long weekMillis = prefs.getLong(Strings.LISTEN_WEEK_MILLIS, 0) + duration;
+    int monthItems = prefs.getInt(Strings.LISTEN_MONTH_ITEMS, 0) + 1;
+    long monthMillis = prefs.getLong(Strings.LISTEN_MONTH_MILLIS, 0) + duration;
+    prefEditor.putInt(Strings.LISTEN_TOTAL_ITEMS, totalItems);
+    prefEditor.putLong(Strings.LISTEN_TOTAL_MILLIS, totalMillis);
+    prefEditor.putInt(Strings.LISTEN_WEEK_ITEMS, weekItems);
+    prefEditor.putLong(Strings.LISTEN_WEEK_MILLIS, weekMillis);
+    prefEditor.putInt(Strings.LISTEN_MONTH_ITEMS, monthItems);
+    prefEditor.putLong(Strings.LISTEN_MONTH_MILLIS, monthMillis);
+    prefEditor.commit();
   }
 
   @Override
@@ -124,21 +182,23 @@ public class PlayerFragment extends Fragment implements
     }
   }
 
+  boolean mIsChangingConfiguration = false;
+
   @Override
   public void onStop() {
-    boolean isChangingConfiguration = getActivity().isChangingConfigurations();
-    Log.i(TAG, "mConfig=" + isChangingConfiguration);
-    if (!isChangingConfiguration) {
-      mPlayer.stopAndRelease();
-    }
+    mIsChangingConfiguration = getActivity().isChangingConfigurations();
+    Log.i(TAG, "mConfig=" + mIsChangingConfiguration);
     super.onStop();
   }
 
   // only release the player when the activity is destroyed
   @Override
   public void onDestroy() {
-    // mPlayer.stopAndRelease();
     super.onDestroy();
+    if (!mIsChangingConfiguration && mPlayer != null) {
+      mPlayer.stopAndRelease();
+      mWifiLock.release();
+    }
   }
 
   @Override
@@ -156,33 +216,34 @@ public class PlayerFragment extends Fragment implements
   public class PlayerController implements MediaPlayerControl {
     private MediaPlayer mMediaPlayer;
     private AlwaysOnMediaController mController;
-    
+
     public PlayerController() {
       mMediaPlayer = new MediaPlayer();
       mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-      mMediaPlayer.setWakeMode(getActivity(), PowerManager.PARTIAL_WAKE_LOCK);
-
+      Context context = getActivity().getApplicationContext();
+      mMediaPlayer.setWakeMode(context, PowerManager.PARTIAL_WAKE_LOCK);
       mMediaPlayer.setOnPreparedListener(new OnPreparedListener() {
         @Override
         public void onPrepared(MediaPlayer mp) {
           Log.i(TAG, "media prepared");
           int duration = getDuration(); // very stupid!!
+          Log.i(TAG, "duration = " + duration);
           // should be startShowing() or sth like that
           mController.setVisibility(View.VISIBLE);
-          Log.i(TAG, "onPrepared: should be visible: " + mMediaController);
           mController.show();
           mMediaPlayer.start();
+          updateListenCount(duration);
         }
       });
       mMediaPlayer.setOnErrorListener(new OnErrorListener() {
         @Override
         public boolean onError(MediaPlayer mp, int what, int extra) {
-          Log.e(TAG, "Listener error: " + what + " " + extra);
-          mp.reset();
+          Log.e(TAG, "Player error:" + what + " " + extra);
+          Toast.makeText(getActivity(), getText(R.string.player_error_msg),
+              Toast.LENGTH_SHORT).show();
           try {
             if (mUrl != null) {
-              mp.reset();
-              mp.setDataSource(mUrl);
+              onPlayClicked(mUrl);
             }
           } catch (Exception e) {
             e.printStackTrace();
@@ -195,7 +256,7 @@ public class PlayerFragment extends Fragment implements
     public void setController(AlwaysOnMediaController controller) {
       mController = controller;
     }
-    
+
     /** Returns the internal media player */
     public MediaPlayer getMediaPlayer() {
       return mMediaPlayer;

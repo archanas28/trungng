@@ -37,17 +37,11 @@ public final class Strings {
   public static final String SETTINGS_NOTIFICATIONSVIBRATE = "notifications.vibrate";
   public static final String SETTINGS_PRIORITIZE = "contentpresentation.prioritize";
   public static final String SETTINGS_FETCHPICTURES = "pictures.fetch";
-  public static final String SETTINGS_PROXYENABLED = "proxy.enabled";
-  public static final String SETTINGS_PROXYPORT = "proxy.port";
-  public static final String SETTINGS_PROXYHOST = "proxy.host";
-  public static final String SETTINGS_PROXYWIFIONLY = "proxy.wifionly";
   public static final String SETTINGS_KEEPTIME = "keeptime";
   public static final String SETTINGS_BLACKTHEME = "blacktheme";
   public static final String SETTINGS_FONTSIZE = "fontsize";
-  public static final String SETTINGS_STANDARDUSERAGENT = "standarduseragent";
 
   public static final String SETTINGS_DISABLEPICTURES = "pictures.disable";
-  public static final String SETTINGS_HTTPHTTPSREDIRECTS = "httphttpsredirects";
   public static final String SETTINGS_OVERRIDEWIFIONLY = "overridewifionly";
   public static final String SETTINGS_GESTURESENABLED = "gestures.enabled";
   public static final String SETTINGS_ENCLOSUREWARNINGSENABLED = "enclosurewarnings.enabled";
@@ -142,5 +136,14 @@ public final class Strings {
   public static final String AMP_SG = "&amp;";
 
   public static final String SLASH = "/";
+  public static final String LISTEN_START_TIME = "listen.start.time";
+  public static final String LISTEN_TOTAL_ITEMS = "listen.total.items";
+  public static final String LISTEN_TOTAL_MILLIS = "listen.total.millis";
+  public static final String LISTEN_MONTH_ITEMS = "listen.month.items";
+  public static final String LISTEN_MONTH_MILLIS = "listen.month.millis";
+  public static final String LISTEN_WEEK_ITEMS = "listen.week.items";
+  public static final String LISTEN_WEEK_MILLIS = "listen.week.millis";
+  public static final String WEEK_RESETED = "listen.week.reseted";
+  public static final String MONTH_RESETED = "listen.month.reseted";
 
 }

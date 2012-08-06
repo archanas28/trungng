@@ -55,7 +55,6 @@ public class AlwaysOnMediaController extends FrameLayout {
   private TextView mEndTime, mCurrentTime;
   private boolean mDragging;
   private static final int SHOW_PROGRESS = 2;
-  private boolean mUseFastForward;
   StringBuilder mFormatBuilder;
   Formatter mFormatter;
   private ImageButton mPauseButton;
@@ -71,7 +70,6 @@ public class AlwaysOnMediaController extends FrameLayout {
   public AlwaysOnMediaController(Context context) {
     super(context);
     mContext = context;
-    mUseFastForward = true;
     setFocusable(true);
     setFocusableInTouchMode(true);
     setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);

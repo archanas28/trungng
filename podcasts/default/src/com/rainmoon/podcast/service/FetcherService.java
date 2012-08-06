@@ -33,7 +33,6 @@ import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
-import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.URL;
 import java.security.KeyManagementException;
@@ -100,18 +99,6 @@ public class FetcherService extends IntentService {
     if (networkInfo != null
         && networkInfo.getState() == NetworkInfo.State.CONNECTED
         && intent != null) {
-      if (preferences.getBoolean(Strings.SETTINGS_PROXYENABLED, false)
-          && (networkInfo.getType() == ConnectivityManager.TYPE_WIFI || !preferences
-              .getBoolean(Strings.SETTINGS_PROXYWIFIONLY, false))) {
-        try {
-          proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(
-              preferences.getString(Strings.SETTINGS_PROXYHOST, Strings.EMPTY),
-              Integer.parseInt(preferences.getString(
-                  Strings.SETTINGS_PROXYPORT, Strings.DEFAULTPROXYPORT))));
-        } catch (Exception e) {
-          // ignore exception
-        }
-      }
       FetcherService.refreshFeedsStatic(FetcherService.this,
           intent.getStringExtra(Strings.FEEDID), networkInfo,
           intent.getBooleanExtra(Strings.SETTINGS_OVERRIDEWIFIONLY, false));
@@ -131,8 +118,8 @@ public class FetcherService extends IntentService {
 
     Cursor cursor = context.getContentResolver().query(
         feedId == null ? FeedData.SubscriptionColumns.CONTENT_URI
-            : FeedData.SubscriptionColumns.subscriptionContentUri(feedId), null, selection, null,
-        null); // no managed query here
+            : FeedData.SubscriptionColumns.subscriptionContentUri(feedId),
+        null, selection, null, null); // no managed query here
 
     int urlPosition = cursor.getColumnIndex(FeedData.SubscriptionColumns.URL);
 
@@ -141,18 +128,16 @@ public class FetcherService extends IntentService {
     int lastUpdatePosition = cursor
         .getColumnIndex(FeedData.SubscriptionColumns.REALLASTUPDATE);
 
-    int titlePosition = cursor.getColumnIndex(FeedData.SubscriptionColumns.NAME);
+    int titlePosition = cursor
+        .getColumnIndex(FeedData.SubscriptionColumns.NAME);
 
     int fetchmodePosition = cursor
         .getColumnIndex(FeedData.SubscriptionColumns.FETCHMODE);
 
     int iconPosition = cursor.getColumnIndex(FeedData.SubscriptionColumns.ICON);
 
-    boolean imposeUserAgent = !preferences.getBoolean(
-        Strings.SETTINGS_STANDARDUSERAGENT, false);
-
-    boolean followHttpHttpsRedirects = preferences.getBoolean(
-        Strings.SETTINGS_HTTPHTTPSREDIRECTS, false);
+    boolean imposeUserAgent = true;
+    boolean followHttpHttpsRedirects = true;
 
     int result = 0;
 
@@ -222,9 +207,12 @@ public class FetcherService extends IntentService {
                           .toString();
                     }
                     values.put(FeedData.SubscriptionColumns.URL, url);
-                    context.getContentResolver().update(
-                        FeedData.SubscriptionColumns.subscriptionContentUri(id), values, null,
-                        null);
+                    context
+                        .getContentResolver()
+                        .update(
+                            FeedData.SubscriptionColumns
+                                .subscriptionContentUri(id),
+                            values, null, null);
                     connection.disconnect();
                     connection = setupConnection(url, imposeUserAgent,
                         followHttpHttpsRedirects);
@@ -295,7 +283,8 @@ public class FetcherService extends IntentService {
 
           values.put(FeedData.SubscriptionColumns.FETCHMODE, fetchMode);
           context.getContentResolver().update(
-              FeedData.SubscriptionColumns.subscriptionContentUri(id), values, null, null);
+              FeedData.SubscriptionColumns.subscriptionContentUri(id), values,
+              null, null);
         }
 
         /* check and optionally find favicon */
@@ -315,14 +304,18 @@ public class FetcherService extends IntentService {
 
             values.put(FeedData.SubscriptionColumns.ICON, iconBytes);
             context.getContentResolver().update(
-                FeedData.SubscriptionColumns.subscriptionContentUri(id), values, null, null);
+                FeedData.SubscriptionColumns.subscriptionContentUri(id),
+                values, null, null);
           } catch (Exception e) {
             ContentValues values = new ContentValues();
 
-            values.put(FeedData.SubscriptionColumns.ICON, new byte[0]); // no icon found
-                                                                // or error
+            values.put(FeedData.SubscriptionColumns.ICON, new byte[0]); // no
+                                                                        // icon
+                                                                        // found
+            // or error
             context.getContentResolver().update(
-                FeedData.SubscriptionColumns.subscriptionContentUri(id), values, null, null);
+                FeedData.SubscriptionColumns.subscriptionContentUri(id),
+                values, null, null);
           } finally {
             iconURLConnection.disconnect();
           }
@@ -411,12 +404,14 @@ public class FetcherService extends IntentService {
       } catch (Throwable e) {
         if (!handler.isDone() && !handler.isCancelled()) {
           ContentValues values = new ContentValues();
-          values.put(FeedData.SubscriptionColumns.FETCHMODE, 0); // resets the fetchmode
-                                                         // to determine it
-                                                         // again later
+          values.put(FeedData.SubscriptionColumns.FETCHMODE, 0); // resets the
+                                                                 // fetchmode
+          // to determine it
+          // again later
           values.put(FeedData.SubscriptionColumns.ERROR, e.getMessage());
           context.getContentResolver().update(
-              FeedData.SubscriptionColumns.subscriptionContentUri(id), values, null, null);
+              FeedData.SubscriptionColumns.subscriptionContentUri(id), values,
+              null, null);
         }
       } finally {
         if (connection != null) {
