@@ -85,11 +85,6 @@
         </activity>
         <activity android:name=".preference.PreferencesActivityCompatability" />
         <activity android:name=".preference.PreferencesActivityV11" />
-        <activity android:name=".widget.WidgetConfigActivity" >
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
-            </intent-filter>
-        </activity>
         <activity android:name=".EditSubscriptionActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.EDIT" />
@@ -107,16 +102,6 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name="com.rainmoon.podcast.widget.SparseRSSAppWidgetProvider" >
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                <action android:name="com.rainmoon.podcast.FEEDUPDATED" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/widgetinfo" />
-        </receiver>
         <receiver android:name=".receiver.RefreshBroadcastReceiver" >
             <intent-filter>
                 <action android:name="com.rainmoon.podcast.REFRESH" />

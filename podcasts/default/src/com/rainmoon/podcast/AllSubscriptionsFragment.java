@@ -29,8 +29,7 @@ import com.rainmoon.podcast.service.RefreshService;
 import com.rainmoon.podcast.utils.Strings;
 
 /**
- * Fragment showing the list of all subscriptions. TODO(trung): currently update
- * of data is handled via broadcasting Intent...
+ * Fragment showing the list of all subscriptions.
  * 
  * @author trung nguyen
  * 
@@ -158,7 +157,6 @@ public class AllSubscriptionsFragment extends ListFragment {
    * 
    * @param id
    */
-  @SuppressWarnings("unused")
   private void refresh(String id) {
     ConnectivityManager connectivityManager = (ConnectivityManager) mContext
         .getSystemService(Context.CONNECTIVITY_SERVICE);

@@ -81,7 +81,6 @@ public class OPML {
     try {
       database.beginTransaction();
       Xml.parse(new InputStreamReader(inputStream), parser);
-
       /** This is ok since the database is empty */
       database.execSQL(new StringBuilder("UPDATE ")
           .append(FeedDataContentProvider.TABLE_SUBSCRIPTIONS).append(" SET ")
@@ -107,9 +106,10 @@ public class OPML {
       throws IOException {
     Cursor cursor = context.getContentResolver().query(
         FeedData.SubscriptionColumns.CONTENT_URI,
-        new String[] { FeedData.SubscriptionColumns._ID, FeedData.SubscriptionColumns.NAME,
-            FeedData.SubscriptionColumns.URL, FeedData.SubscriptionColumns.WIFIONLY }, null,
-        null, null);
+        new String[] { FeedData.SubscriptionColumns._ID,
+            FeedData.SubscriptionColumns.NAME,
+            FeedData.SubscriptionColumns.URL,
+            FeedData.SubscriptionColumns.WIFIONLY }, null, null, null);
 
     try {
       writeData(filename, cursor);
@@ -120,9 +120,11 @@ public class OPML {
 
   protected static void exportToFile(String filename, SQLiteDatabase database) {
     Cursor cursor = database.query(FeedDataContentProvider.TABLE_SUBSCRIPTIONS,
-        new String[] { FeedData.SubscriptionColumns._ID, FeedData.SubscriptionColumns.NAME,
-            FeedData.SubscriptionColumns.URL, FeedData.SubscriptionColumns.WIFIONLY }, null,
-        null, null, null, FeedData.FEED_DEFAULTSORTORDER);
+        new String[] { FeedData.SubscriptionColumns._ID,
+            FeedData.SubscriptionColumns.NAME,
+            FeedData.SubscriptionColumns.URL,
+            FeedData.SubscriptionColumns.WIFIONLY }, null, null, null, null,
+        FeedData.FEED_DEFAULTSORTORDER);
 
     try {
       writeData(filename, cursor);
@@ -161,21 +163,14 @@ public class OPML {
 
   private static class OPMLParser extends DefaultHandler {
     private static final String TAG_BODY = "body";
-
     private static final String TAG_OUTLINE = "outline";
-
     private static final String ATTRIBUTE_TITLE = "title";
-
     private static final String ATTRIBUTE_XMLURL = "xmlUrl";
-
     private static final String ATTRIBUTE_CATEGORY = "category";
 
     private boolean bodyTagEntered;
-
     private boolean probablyValidElement = false;
-
     private Context context;
-
     private SQLiteDatabase database;
 
     @Override
@@ -195,8 +190,8 @@ public class OPML {
           ContentValues values = new ContentValues();
 
           values.put(FeedData.SubscriptionColumns.URL, url);
-          values.put(FeedData.SubscriptionColumns.NAME, title != null
-              && title.length() > 0 ? title : null);
+          values.put(FeedData.SubscriptionColumns.NAME,
+              title != null && title.length() > 0 ? title : null);
           values.put(FeedData.SubscriptionColumns.WIFIONLY,
               ATTRIBUTE_CATEGORY_VALUE.equals(attributes.getValue(
                   Strings.EMPTY, ATTRIBUTE_CATEGORY)) ? 1 : 0);
@@ -214,7 +209,8 @@ public class OPML {
             }
             cursor.close();
           } else { // this happens only, if the db is new and therefore empty
-            database.insert(FeedDataContentProvider.TABLE_SUBSCRIPTIONS, null, values);
+            database.insert(FeedDataContentProvider.TABLE_SUBSCRIPTIONS, null,
+                values);
           }
         }
       }

@@ -56,50 +56,31 @@ import com.rainmoon.podcast.utils.Strings;
  */
 public class SingleSubscriptionAdapter extends ResourceCursorAdapter {
   private static final int STATE_NEUTRAL = 0;
-
   private static final int STATE_ALLREAD = 1;
-
   private static final int STATE_ALLUNREAD = 2;
-
   public static DateFormat DATEFORMAT = DateFormat.getDateTimeInstance(
       DateFormat.SHORT, DateFormat.SHORT);
-
   private int titleColumnPosition;
-
   private int dateColumn;
-
   private int readDateColumn;
-
   private int favoriteColumn;
-
   private int idColumn;
-
   private int feedIconColumn;
-
   private int feedNameColumn;
-
   private int linkColumn;
 
   private static final String SQLREAD = "length(readdate) ASC, ";
-
   public static final String READDATEISNULL = "readdate is null";
 
   private boolean showRead;
-
   private Activity context;
-
   private Uri uri;
-
   private boolean showFeedInfo;
-
   private int forcedState;
 
   private Vector<Long> markedAsRead;
-
   private Vector<Long> markedAsUnread;
-
   private Vector<Long> favorited;
-
   private Vector<Long> unfavorited;
 
   public SingleSubscriptionAdapter(Activity context, Uri uri,

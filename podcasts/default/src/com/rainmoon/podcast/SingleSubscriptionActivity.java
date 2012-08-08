@@ -168,7 +168,8 @@ public class SingleSubscriptionActivity extends ListActivity {
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
     getMenuInflater().inflate(R.menu.entrylist, menu);
-    return true;
+    return !uri.equals(FeedData.ItemColumns.RECENTLY_VIEWED_CONTENT_URI)
+        && !uri.equals(FeedData.ItemColumns.FAVORITES_CONTENT_URI);
   }
 
   @Override

@@ -34,7 +34,8 @@ import com.rainmoon.podcast.service.FetcherService;
 public class RefreshBroadcastReceiver extends BroadcastReceiver {
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		context.startService(new Intent(context, FetcherService.class).putExtras(intent)); // a thread would mark the process as inactive
+	  // a thread would mark the process as inactive
+		context.startService(new Intent(context, FetcherService.class).putExtras(intent));
 	}
 	
 }
