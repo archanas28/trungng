@@ -43,8 +43,6 @@ import android.widget.TextView;
  * MediaController will create a default set of controls and put them in a frame
  * as a regular view in your application.
  * <p>
- * TODO 1. One instance when connection is lost while playing, there is no
- * updating of time and progress
  */
 public class AlwaysOnMediaController extends FrameLayout {
 
@@ -128,29 +126,6 @@ public class AlwaysOnMediaController extends FrameLayout {
     updatePausePlay();
     setProgress();
     mHandler.sendEmptyMessage(SHOW_PROGRESS);
-  }
-
-  /**
-   * Disable pause or seek buttons if the stream cannot be paused or seeked.
-   * This requires the control interface to be a MediaPlayerControlExt
-   */
-  private void disableUnsupportedButtons() {
-    try {
-      if (mPauseButton != null && !mPlayer.canPause()) {
-        mPauseButton.setEnabled(false);
-      }
-      if (mRewButton != null && !mPlayer.canSeekBackward()) {
-        mRewButton.setEnabled(false);
-      }
-      if (mFfwdButton != null && !mPlayer.canSeekForward()) {
-        mFfwdButton.setEnabled(false);
-      }
-    } catch (IncompatibleClassChangeError ex) {
-      // We were given an old version of the interface, that doesn't have
-      // the canPause/canSeekXYZ methods. This is OK, it just means we
-      // assume the media can be paused and seeked, and so we don't disable
-      // the buttons.
-    }
   }
 
   private Handler mHandler = new Handler() {
@@ -337,7 +312,6 @@ public class AlwaysOnMediaController extends FrameLayout {
     if (mProgress != null) {
       mProgress.setEnabled(enabled);
     }
-    disableUnsupportedButtons();
     super.setEnabled(enabled);
   }
 

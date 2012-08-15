@@ -34,7 +34,6 @@ import android.content.ContentProvider;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.SQLException;
@@ -44,7 +43,6 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.os.Environment;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.rainmoon.podcast.R;
 import com.rainmoon.podcast.utils.Strings;
@@ -473,8 +471,6 @@ public class FeedDataContentProvider extends ContentProvider {
 
     public DatabaseHelper(Context context, String name, int version) {
       super(context, name, null, version);
-      mContext = context;
-      mContext.sendBroadcast(new Intent(Strings.ACTION_UPDATEWIDGET));
     }
 
     @Override

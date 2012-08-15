@@ -122,45 +122,29 @@ public class FetcherService extends IntentService {
         null, selection, null, null); // no managed query here
 
     int urlPosition = cursor.getColumnIndex(FeedData.SubscriptionColumns.URL);
-
     int idPosition = cursor.getColumnIndex(FeedData.SubscriptionColumns._ID);
-
     int lastUpdatePosition = cursor
         .getColumnIndex(FeedData.SubscriptionColumns.REALLASTUPDATE);
-
     int titlePosition = cursor
         .getColumnIndex(FeedData.SubscriptionColumns.NAME);
-
     int fetchmodePosition = cursor
         .getColumnIndex(FeedData.SubscriptionColumns.FETCHMODE);
-
     int iconPosition = cursor.getColumnIndex(FeedData.SubscriptionColumns.ICON);
-
     boolean imposeUserAgent = true;
     boolean followHttpHttpsRedirects = true;
-
     int result = 0;
-
     RSSHandler handler = new RSSHandler(context);
-
     handler.setFetchImages(preferences.getBoolean(
         Strings.SETTINGS_FETCHPICTURES, false));
-
     while (cursor.moveToNext()) {
       String id = cursor.getString(idPosition);
-
       HttpURLConnection connection = null;
-
       try {
         String feedUrl = cursor.getString(urlPosition);
-
         connection = setupConnection(feedUrl, imposeUserAgent,
             followHttpHttpsRedirects);
-
         String contentType = connection.getContentType();
-
         int fetchMode = cursor.getInt(fetchmodePosition);
-
         handler.init(new Date(cursor.getLong(lastUpdatePosition)), id,
             cursor.getString(titlePosition), feedUrl);
         if (fetchMode == 0) {
@@ -168,33 +152,25 @@ public class FetcherService extends IntentService {
               && contentType.startsWith(CONTENT_TYPE_TEXT_HTML)) {
             BufferedReader reader = new BufferedReader(new InputStreamReader(
                 connection.getInputStream()));
-
             String line = null;
-
             int pos = -1, posStart = -1;
-
             while ((line = reader.readLine()) != null) {
               if (line.indexOf(HTML_BODY) > -1) {
                 break;
               } else {
                 pos = line.indexOf(LINK_RSS);
-
                 if (pos == -1) {
                   pos = line.indexOf(LINK_RSS_SLOPPY);
                 }
                 if (pos > -1) {
                   posStart = line.indexOf(HREF, pos);
-
                   if (posStart > -1) {
                     String url = line.substring(posStart + 6,
                         line.indexOf('"', posStart + 10)).replace(
                         Strings.AMP_SG, Strings.AMP);
-
                     ContentValues values = new ContentValues();
-
                     if (url.startsWith(Strings.SLASH)) {
                       int index = feedUrl.indexOf('/', 8);
-
                       if (index > -1) {
                         url = feedUrl.substring(0, index) + url;
                       } else {
@@ -227,15 +203,12 @@ public class FetcherService extends IntentService {
                   followHttpHttpsRedirects);
               contentType = connection.getContentType();
             }
-
           }
 
           if (contentType != null) {
             int index = contentType.indexOf(CHARSET);
-
             if (index > -1) {
               int index2 = contentType.indexOf(';', index);
-
               try {
                 Xml.findEncodingByName(index2 > -1 ? contentType.substring(
                     index + 8, index2) : contentType.substring(index + 8));
@@ -250,20 +223,14 @@ public class FetcherService extends IntentService {
           } else {
             BufferedReader bufferedReader = new BufferedReader(
                 new InputStreamReader(connection.getInputStream()));
-
             char[] chars = new char[20];
-
             int length = bufferedReader.read(chars);
-
             String xmlDescription = new String(chars, 0, length);
-
             connection.disconnect();
             connection = setupConnection(connection.getURL(), imposeUserAgent,
                 followHttpHttpsRedirects);
-
             int start = xmlDescription != null ? xmlDescription
                 .indexOf(ENCODING) : -1;
-
             if (start > -1) {
               try {
                 Xml.findEncodingByName(xmlDescription.substring(start + 10,
@@ -273,13 +240,13 @@ public class FetcherService extends IntentService {
                 fetchMode = FETCHMODE_REENCODE;
               }
             } else {
-              fetchMode = FETCHMODE_DIRECT; // absolutely no encoding
-                                            // information found
+              // absolutely no encoding
+              // information found
+              fetchMode = FETCHMODE_DIRECT;
             }
           }
 
           ContentValues values = new ContentValues();
-
           values.put(FeedData.SubscriptionColumns.FETCHMODE, fetchMode);
           context.getContentResolver().update(
               FeedData.SubscriptionColumns.subscriptionContentUri(id), values,
@@ -288,7 +255,6 @@ public class FetcherService extends IntentService {
 
         /* check and optionally find favicon */
         byte[] iconBytes = cursor.getBlob(iconPosition);
-
         if (iconBytes == null) {
           HttpURLConnection iconURLConnection = setupConnection(
               new URL(new StringBuilder(connection.getURL().getProtocol())
@@ -307,11 +273,7 @@ public class FetcherService extends IntentService {
                 values, null, null);
           } catch (Exception e) {
             ContentValues values = new ContentValues();
-
-            values.put(FeedData.SubscriptionColumns.ICON, new byte[0]); // no
-                                                                        // icon
-                                                                        // found
-            // or error
+            values.put(FeedData.SubscriptionColumns.ICON, new byte[0]);
             context.getContentResolver().update(
                 FeedData.SubscriptionColumns.subscriptionContentUri(id),
                 values, null, null);
@@ -323,13 +285,10 @@ public class FetcherService extends IntentService {
         switch (fetchMode) {
         default:
         case FETCHMODE_DIRECT: {
-
           if (contentType != null) {
             int index = contentType.indexOf(CHARSET);
-
             int index2 = contentType.indexOf(';', index);
             InputStream inputStream = connection.getInputStream();
-
             handler.setInputStream(inputStream);
             Xml.parse(inputStream, Xml
                 .findEncodingByName(index2 > -1 ? contentType.substring(
@@ -338,7 +297,6 @@ public class FetcherService extends IntentService {
           } else {
             InputStreamReader reader = new InputStreamReader(
                 connection.getInputStream());
-
             handler.setReader(reader);
             Xml.parse(reader, handler);
           }
@@ -346,21 +304,14 @@ public class FetcherService extends IntentService {
         }
         case FETCHMODE_REENCODE: {
           ByteArrayOutputStream ouputStream = new ByteArrayOutputStream();
-
           InputStream inputStream = connection.getInputStream();
-
           byte[] byteBuffer = new byte[4096];
-
           int n;
-
           while ((n = inputStream.read(byteBuffer)) > 0) {
             ouputStream.write(byteBuffer, 0, n);
           }
-
           String xmlText = ouputStream.toString();
-
           int start = xmlText != null ? xmlText.indexOf(ENCODING) : -1;
-
           if (start > -1) {
             Xml.parse(
                 new StringReader(new String(ouputStream.toByteArray(), xmlText
@@ -369,30 +320,24 @@ public class FetcherService extends IntentService {
           } else {
             // use content type
             if (contentType != null) {
-
               int index = contentType.indexOf(CHARSET);
-
               if (index > -1) {
                 int index2 = contentType.indexOf(';', index);
-
                 try {
                   StringReader reader = new StringReader(new String(
                       ouputStream.toByteArray(),
                       index2 > -1 ? contentType.substring(index + 8, index2)
                           : contentType.substring(index + 8)));
-
                   handler.setReader(reader);
                   Xml.parse(reader, handler);
                 } catch (Exception e) {
-
+                  e.printStackTrace();
                 }
               } else {
                 StringReader reader = new StringReader(new String(
                     ouputStream.toByteArray()));
-
                 handler.setReader(reader);
                 Xml.parse(reader, handler);
-
               }
             }
           }
@@ -403,10 +348,8 @@ public class FetcherService extends IntentService {
       } catch (Throwable e) {
         if (!handler.isDone() && !handler.isCancelled()) {
           ContentValues values = new ContentValues();
-          values.put(FeedData.SubscriptionColumns.FETCHMODE, 0); // resets the
-                                                                 // fetchmode
-          // to determine it
-          // again later
+          // resets the fetchmode to determine it again later
+          values.put(FeedData.SubscriptionColumns.FETCHMODE, 0);
           values.put(FeedData.SubscriptionColumns.ERROR, e.getMessage());
           context.getContentResolver().update(
               FeedData.SubscriptionColumns.subscriptionContentUri(id), values,
@@ -421,10 +364,6 @@ public class FetcherService extends IntentService {
     }
     cursor.close();
 
-    if (result > 0) {
-      context.sendBroadcast(new Intent(Strings.ACTION_UPDATEWIDGET).putExtra(
-          Strings.COUNT, result));
-    }
     return result;
   }
 
@@ -446,16 +385,10 @@ public class FetcherService extends IntentService {
       throws IOException, NoSuchAlgorithmException, KeyManagementException {
     HttpURLConnection connection = proxy == null ? (HttpURLConnection) url
         .openConnection() : (HttpURLConnection) url.openConnection(proxy);
-
     connection.setDoInput(true);
     connection.setDoOutput(false);
     if (imposeUseragent) {
-      connection.setRequestProperty(KEY_USERAGENT, VALUE_USERAGENT); // some
-                                                                     // feeds
-                                                                     // need
-                                                                     // this to
-                                                                     // work
-                                                                     // properly
+      connection.setRequestProperty(KEY_USERAGENT, VALUE_USERAGENT);
     }
     connection.setConnectTimeout(30000);
     connection.setReadTimeout(30000);
@@ -468,9 +401,7 @@ public class FetcherService extends IntentService {
     connection.setRequestProperty("connection", "close"); // Workaround for
                                                           // android issue 7786
     connection.connect();
-
     String location = connection.getHeaderField("Location");
-
     if (location != null
         && (url.getProtocol().equals(Strings._HTTP)
             && location.startsWith(Strings.HTTPS) || url.getProtocol().equals(
@@ -480,7 +411,6 @@ public class FetcherService extends IntentService {
       // indicates a protocol change
       if (followHttpHttpsRedirects) {
         connection.disconnect();
-
         if (cycle < 5) {
           return setupConnection(new URL(location), imposeUseragent,
               followHttpHttpsRedirects, cycle + 1);
@@ -496,17 +426,12 @@ public class FetcherService extends IntentService {
 
   public static byte[] getBytes(InputStream inputStream) throws IOException {
     ByteArrayOutputStream output = new ByteArrayOutputStream();
-
     byte[] buffer = new byte[4096];
-
     int n;
-
     while ((n = inputStream.read(buffer)) > 0) {
       output.write(buffer, 0, n);
     }
-
     byte[] result = output.toByteArray();
-
     output.close();
     inputStream.close();
     return result;

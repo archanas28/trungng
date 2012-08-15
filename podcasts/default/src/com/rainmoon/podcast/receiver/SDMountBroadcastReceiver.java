@@ -51,7 +51,6 @@ public class SDMountBroadcastReceiver extends BroadcastReceiver {
 			} catch (NameNotFoundException e) {
 				
 			}
-			context.sendBroadcast(new Intent(Strings.ACTION_UPDATEWIDGET));
 		}
 	}
 

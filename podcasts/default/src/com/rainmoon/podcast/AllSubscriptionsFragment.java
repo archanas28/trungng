@@ -141,8 +141,6 @@ public class AllSubscriptionsFragment extends ListFragment {
                     FeedData.SubscriptionColumns.subscriptionContentUri(Long
                         .toString(((AdapterView.AdapterContextMenuInfo) item
                             .getMenuInfo()).id)), null, null);
-                getActivity().sendBroadcast(
-                    new Intent(Strings.ACTION_UPDATEWIDGET));
               }
             }.start();
           }
@@ -157,6 +155,7 @@ public class AllSubscriptionsFragment extends ListFragment {
    * 
    * @param id
    */
+  @SuppressWarnings("unused")
   private void refresh(String id) {
     ConnectivityManager connectivityManager = (ConnectivityManager) mContext
         .getSystemService(Context.CONNECTIVITY_SERVICE);

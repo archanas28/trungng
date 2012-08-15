@@ -44,21 +44,26 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:src="@android:drawable/ic_media_rew" />
+            android:src="@drawable/ic_media_rew" />
 
         <ImageButton
             android:id="@+id/btn_play"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:src="@android:drawable/ic_media_play" />
-
+            android:src="@drawable/ic_media_play" />
+        <ImageButton
+            android:id="@+id/btn_stop"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/ic_media_stop" />
         <ImageButton
             android:id="@+id/btn_fw"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:src="@android:drawable/ic_media_ff" />
+            android:src="@drawable/ic_media_ff" />
     </LinearLayout>
 
 </LinearLayout>

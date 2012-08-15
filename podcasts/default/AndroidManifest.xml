@@ -71,6 +71,7 @@
                 <data android:mimeType="vnd.android.cursor.dir/vnd.feeddata.entry" />
             </intent-filter>
         </activity>
+<!-- 
         <activity
             android:name=".FeedItemActivity"
             android:alwaysRetainTaskState="true"
@@ -83,6 +84,20 @@
                 <data android:mimeType="vnd.android.cursor.item/vnd.feeddata.entry" />
             </intent-filter>
         </activity>
+ -->        
+        <activity
+            android:name=".FeedItemActivity2"
+            android:alwaysRetainTaskState="true"
+            android:launchMode="singleTask" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="vnd.android.cursor.item/vnd.feeddata.entry" />
+            </intent-filter>
+        </activity>
+        
         <activity android:name=".preference.PreferencesActivityCompatability" />
         <activity android:name=".preference.PreferencesActivityV11" />
         <activity android:name=".EditSubscriptionActivity" >
@@ -102,6 +117,16 @@
             </intent-filter>
         </activity>
 
+        <service android:exported="false" android:name=".musicplayer.MusicService">
+            <intent-filter>
+                <action android:name="com.rainmoon.podcast.musicplayer.action.TOGGLE_PLAYBACK" />
+                <action android:name="com.rainmoon.podcast.musicplayer.action.PLAY" />
+                <action android:name="com.rainmoon.podcast.musicplayer.action.PAUSE" />
+                <action android:name="com.rainmoon.podcast.musicplayer.action.STOP" />
+                <action android:name="com.rainmoon.podcast.musicplayer.action.SEEK" />
+            </intent-filter>
+        </service>
+        
         <receiver android:name=".receiver.RefreshBroadcastReceiver" >
             <intent-filter>
                 <action android:name="com.rainmoon.podcast.REFRESH" />

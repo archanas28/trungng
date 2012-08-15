@@ -49,7 +49,7 @@
 
         <ListPreference
             android:name="@string/settings_keeptime"
-            android:defaultValue="4"
+            android:defaultValue="30"
             android:entries="@array/settings_keeptimes"
             android:entryValues="@array/settings_keeptimevalues"
             android:key="keeptime"

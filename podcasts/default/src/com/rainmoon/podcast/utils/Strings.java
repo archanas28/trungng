@@ -43,12 +43,9 @@ public final class Strings {
 
   public static final String SETTINGS_DISABLEPICTURES = "pictures.disable";
   public static final String SETTINGS_OVERRIDEWIFIONLY = "overridewifionly";
-  public static final String SETTINGS_GESTURESENABLED = "gestures.enabled";
   public static final String SETTINGS_ENCLOSUREWARNINGSENABLED = "enclosurewarnings.enabled";
-  public static final String SETTINGS_EFFICIENTFEEDPARSING = "efficientfeedparsing";
 
   public static final String ACTION_REFRESHFEEDS = "com.rainmoon.podcast.REFRESH";
-  public static final String ACTION_UPDATEWIDGET = "com.rainmoon.podcast.FEEDUPDATED";
   public static final String ACTION_RESTART = "com.rainmoon.podcast.RESTART";
 
   public static final String FEEDID = "feedid";

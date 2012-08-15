@@ -43,7 +43,6 @@ public class BootCompletedBroadcastReceiver extends BroadcastReceiver {
           Strings.SETTINGS_REFRESHENABLED, false)) {
         context.startService(new Intent(context, RefreshService.class));
       }
-      context.sendBroadcast(new Intent(Strings.ACTION_UPDATEWIDGET));
     } catch (NameNotFoundException e) {
     }
   }

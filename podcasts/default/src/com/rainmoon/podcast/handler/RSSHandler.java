@@ -53,63 +53,47 @@ import android.content.Context;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.text.Html;
+import android.text.format.DateUtils;
 
+/**
+ * The worker of this app: read feed content.
+ * 
+ * TODO(trung): allows retrieval of out-dated content (like in google)
+ * 
+ * @author trung nguyen
+ * 
+ */
 public class RSSHandler extends DefaultHandler {
   private static final String ANDRHOMBUS = "&#";
-
   private static final String TAG_RSS = "rss";
-
   private static final String TAG_RDF = "rdf";
-
   private static final String TAG_FEED = "feed";
-
   private static final String TAG_ENTRY = "entry";
-
   private static final String TAG_ITEM = "item";
-
   private static final String TAG_UPDATED = "updated";
-
   private static final String TAG_TITLE = "title";
-
   private static final String TAG_LINK = "link";
-
   private static final String TAG_DESCRIPTION = "description";
-
   private static final String TAG_MEDIA_DESCRIPTION = "media:description";
-
   private static final String TAG_CONTENT = "content";
-
   private static final String TAG_MEDIA_CONTENT = "media:content";
-
   private static final String TAG_ENCODEDCONTENT = "encoded";
-
   private static final String TAG_SUMMARY = "summary";
-
   private static final String TAG_PUBDATE = "pubDate";
-
   private static final String TAG_DATE = "date";
-
   private static final String TAG_LASTBUILDDATE = "lastBuildDate";
-
   private static final String TAG_ENCLOSURE = "enclosure";
-
   private static final String TAG_GUID = "guid";
 
   private static final String ATTRIBUTE_URL = "url";
-
   private static final String ATTRIBUTE_HREF = "href";
-
   private static final String ATTRIBUTE_TYPE = "type";
-
   private static final String ATTRIBUTE_LENGTH = "length";
-
   private static final String[] TIMEZONES = { "MEST", "EST", "PST" };
-
   private static final String[] TIMEZONES_REPLACE = { "+0200", "-0500", "-0800" };
 
   private static final int TIMEZONES_COUNT = 3;
-
-  private static long KEEP_TIME = 345600000l; // 4 days
+  private static long KEEP_TIME = 30 * DateUtils.DAY_IN_MILLIS; // 4 days
 
   private static final DateFormat[] PUBDATE_DATEFORMATS = {
       new SimpleDateFormat("EEE', 'd' 'MMM' 'yyyy' 'HH:mm:ss' 'Z", Locale.US),
@@ -173,7 +157,8 @@ public class RSSHandler extends DefaultHandler {
 
   public RSSHandler(Context context) {
     KEEP_TIME = Long.parseLong(PreferenceManager.getDefaultSharedPreferences(
-        context).getString(Strings.SETTINGS_KEEPTIME, "4")) * 86400000l;
+        context).getString(Strings.SETTINGS_KEEPTIME, "14"))
+        * DateUtils.DAY_IN_MILLIS;
     this.context = context;
   }
 
