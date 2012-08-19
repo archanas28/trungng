@@ -1,23 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <group android:id="@+id/menu_group_0">
-        <item android:id="@+id/option_markasread"
-            android:icon="@android:drawable/ic_menu_revert"
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <group android:id="@+id/menu_group_refresh" >
+        <item
+            android:id="@+id/option_refresh1"
+            android:icon="@drawable/ic_menu_refresh"
+            android:showAsAction="ifRoom"
+            android:title="@string/option_refresh"/>
+    </group>
+    <group android:id="@+id/menu_group_0" >
+        <item
+            android:id="@+id/option_markasread"
             android:title="@string/option_mark_all_as_read"/>
-        <item android:id="@+id/option_markasunread"
-            android:icon="@android:drawable/ic_menu_set_as"
+        <item
+            android:id="@+id/option_markasunread"
             android:title="@string/option_mark_all_as_unread"/>
     </group>
-    <group android:id="@+id/menu_group_1">
-        <item android:id="@+id/option_hideread"
-            android:icon="@android:drawable/ic_menu_close_clear_cancel"
-            android:title="@string/option_hideread"
-            android:checkable="true"/>
-        <item android:id="@+id/option_deleteread"
-            android:icon="@android:drawable/ic_menu_delete"
+    <group android:id="@+id/menu_group_1" >
+        <item
+            android:id="@+id/option_hideread"
+            android:checkable="true"
+            android:title="@string/option_hideread"/>
+        <item
+            android:id="@+id/option_deleteread"
             android:title="@string/option_deleteread"/>
-        <item android:id="@+id/option_deleteallentries"
-            android:icon="@android:drawable/ic_menu_delete"
+        <item
+            android:id="@+id/option_deleteallentries"
             android:title="@string/option_deleteallentries"/>
     </group>
+
 </menu>

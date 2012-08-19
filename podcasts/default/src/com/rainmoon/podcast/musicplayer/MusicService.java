@@ -38,6 +38,7 @@ import android.os.PowerManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.rainmoon.podcast.FeedItemActivity2;
 import com.rainmoon.podcast.HomeActivity;
 import com.rainmoon.podcast.R;
 import com.rainmoon.podcast.utils.Strings;
@@ -50,13 +51,11 @@ import com.rainmoon.podcast.utils.Strings;
  * signal the service to perform specific operations: Play, Pause, Rewind, Skip,
  * etc.
  * 
- *  TODO music service must register MusicIntentReceiver to handle
- * MediaButton and AudioNoisy
- * TODO keep uri to feeditemactivity so that we restore the instance from
- * notification
+ * TODO music service must register MusicIntentReceiver to handle MediaButton
+ * and AudioNoisy
  */
-public class MusicService extends Service implements OnPreparedListener,
-    OnErrorListener, MusicFocusable {
+public class MusicService extends Service implements OnPreparedListener, OnErrorListener,
+    MusicFocusable {
 
   // The tag we put on debug messages
   final static String TAG = "MusicService";
@@ -128,7 +127,7 @@ public class MusicService extends Service implements OnPreparedListener,
   }
 
   @Override
-  public IBinder onBind(Intent arg0) {
+  public IBinder onBind(Intent intent) {
     return mBinder;
   }
 
@@ -140,8 +139,7 @@ public class MusicService extends Service implements OnPreparedListener,
   void createMediaPlayerIfNeeded() {
     if (mPlayer == null) {
       mPlayer = new MediaPlayer();
-      mPlayer.setWakeMode(getApplicationContext(),
-          PowerManager.PARTIAL_WAKE_LOCK);
+      mPlayer.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
       mPlayer.setOnPreparedListener(this);
       mPlayer.setOnErrorListener(this);
     } else
@@ -161,8 +159,8 @@ public class MusicService extends Service implements OnPreparedListener,
   @Override
   public void onCreate() {
     Log.i(TAG, "debug: Creating service");
-    mWifiLock = ((WifiManager) getSystemService(Context.WIFI_SERVICE))
-        .createWifiLock(WifiManager.WIFI_MODE_FULL, "mylock");
+    mWifiLock = ((WifiManager) getSystemService(Context.WIFI_SERVICE)).createWifiLock(
+        WifiManager.WIFI_MODE_FULL, "mylock");
     mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
     mAudioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
     // create the Audio Focus Helper, if the Audio Focus feature is available
@@ -334,10 +332,9 @@ public class MusicService extends Service implements OnPreparedListener,
 
   /** Updates the notification. */
   void updateNotification(String text) {
-    PendingIntent pi = PendingIntent.getActivity(getApplicationContext(), 0,
-        new Intent(getApplicationContext(), CuteMediaPlayer.class),
-        PendingIntent.FLAG_UPDATE_CURRENT);
-    mNotification.setLatestEventInfo(getApplicationContext(), TAG, text, pi);
+    PendingIntent pi = PendingIntent.getActivity(getApplicationContext(), 0, new Intent(
+        getApplicationContext(), FeedItemActivity2.class), PendingIntent.FLAG_UPDATE_CURRENT);
+    mNotification.setLatestEventInfo(getApplicationContext(), getText(R.string.app_name), text, pi);
     mNotificationManager.notify(NOTIFICATION_ID, mNotification);
   }
 
@@ -348,14 +345,14 @@ public class MusicService extends Service implements OnPreparedListener,
    * we create the notification here.
    */
   void setUpAsForeground(String text) {
-    PendingIntent pi = PendingIntent.getActivity(getApplicationContext(), 0,
-        new Intent(getApplicationContext(), CuteMediaPlayer.class),
-        PendingIntent.FLAG_UPDATE_CURRENT);
+    PendingIntent pi = PendingIntent.getActivity(getApplicationContext(), 0, new Intent(
+        getApplicationContext(), CuteMediaPlayer.class), PendingIntent.FLAG_UPDATE_CURRENT);
     mNotification = new Notification();
     mNotification.tickerText = text;
     mNotification.icon = R.drawable.ic_stat_playing;
     mNotification.flags |= Notification.FLAG_ONGOING_EVENT;
-    mNotification.setLatestEventInfo(getApplicationContext(), TAG, text, pi);
+    mNotification.setLatestEventInfo(getApplicationContext(), getString(R.string.app_name), text,
+        pi);
     startForeground(NOTIFICATION_ID, mNotification);
   }
 
@@ -365,12 +362,9 @@ public class MusicService extends Service implements OnPreparedListener,
    * the media player.
    */
   public boolean onError(MediaPlayer mp, int what, int extra) {
-    Toast.makeText(getApplicationContext(), "Media player error! Resetting.",
-        Toast.LENGTH_SHORT).show();
-    Log.e(
-        TAG,
-        "Error: what=" + String.valueOf(what) + ", extra="
-            + String.valueOf(extra));
+    Toast.makeText(getApplicationContext(), "Media player error! Resetting.", Toast.LENGTH_SHORT)
+        .show();
+    Log.e(TAG, "Error: what=" + String.valueOf(what) + ", extra=" + String.valueOf(extra));
 
     mState = State.Stopped;
     relaxResources(true);
@@ -379,8 +373,7 @@ public class MusicService extends Service implements OnPreparedListener,
   }
 
   public void onGainedAudioFocus() {
-    Toast.makeText(getApplicationContext(), "gained audio focus.",
-        Toast.LENGTH_SHORT).show();
+    Toast.makeText(getApplicationContext(), "gained audio focus.", Toast.LENGTH_SHORT).show();
     mAudioFocus = AudioFocus.Focused;
 
     // restart media player with new focus settings
@@ -390,10 +383,8 @@ public class MusicService extends Service implements OnPreparedListener,
 
   public void onLostAudioFocus(boolean canDuck) {
     Toast.makeText(getApplicationContext(),
-        "lost audio focus." + (canDuck ? "can duck" : "no duck"),
-        Toast.LENGTH_SHORT).show();
-    mAudioFocus = canDuck ? AudioFocus.NoFocusCanDuck
-        : AudioFocus.NoFocusNoDuck;
+        "lost audio focus." + (canDuck ? "can duck" : "no duck"), Toast.LENGTH_SHORT).show();
+    mAudioFocus = canDuck ? AudioFocus.NoFocusCanDuck : AudioFocus.NoFocusNoDuck;
 
     // start/restart/pause media player with new focus settings
     if (mPlayer != null && mPlayer.isPlaying())
@@ -406,8 +397,7 @@ public class MusicService extends Service implements OnPreparedListener,
    * @param duration
    */
   private void updateListenCount(int duration) {
-    SharedPreferences prefs = getSharedPreferences(
-        HomeActivity.APPLICATION_SHARED_PREFERENCES, 0);
+    SharedPreferences prefs = getSharedPreferences(HomeActivity.APPLICATION_SHARED_PREFERENCES, 0);
     Editor prefEditor = prefs.edit();
     long startTime = prefs.getLong(Strings.LISTEN_START_TIME, -1);
     Calendar calendar = Calendar.getInstance();
@@ -424,8 +414,7 @@ public class MusicService extends Service implements OnPreparedListener,
       prefEditor.putLong(Strings.LISTEN_WEEK_ITEMS, 0);
       prefEditor.putLong(Strings.LISTEN_WEEK_MILLIS, 0);
     }
-    if (calendar.get(Calendar.DAY_OF_MONTH) == 1
-        && !prefs.getBoolean(Strings.MONTH_RESETED, false)) {
+    if (calendar.get(Calendar.DAY_OF_MONTH) == 1 && !prefs.getBoolean(Strings.MONTH_RESETED, false)) {
       prefEditor.putBoolean(Strings.MONTH_RESETED, true);
       prefEditor.putLong(Strings.LISTEN_MONTH_ITEMS, 0);
       prefEditor.putLong(Strings.LISTEN_MONTH_MILLIS, 0);

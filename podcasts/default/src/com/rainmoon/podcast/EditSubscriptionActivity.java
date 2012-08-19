@@ -38,6 +38,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.rainmoon.podcast.provider.FeedData;
+import com.rainmoon.podcast.provider.FeedDataContentProvider;
 import com.rainmoon.podcast.utils.Strings;
 
 /**
@@ -52,9 +53,8 @@ import com.rainmoon.podcast.utils.Strings;
 public class EditSubscriptionActivity extends Activity {
   private static final String WASACTIVE = "wasactive";
 
-  private static final String[] PROJECTION = new String[] {
-      FeedData.SubscriptionColumns.NAME, FeedData.SubscriptionColumns.URL,
-      FeedData.SubscriptionColumns.WIFIONLY };
+  private static final String[] PROJECTION = new String[] { FeedData.SubscriptionColumns.NAME,
+      FeedData.SubscriptionColumns.URL, FeedData.SubscriptionColumns.WIFIONLY };
 
   private EditText nameEditText;
   private EditText urlEditText;
@@ -78,12 +78,11 @@ public class EditSubscriptionActivity extends Activity {
     } else {
       createEditInstance(savedInstanceState, intent);
     }
-    ((Button) findViewById(R.id.button_cancel))
-        .setOnClickListener(new OnClickListener() {
-          public void onClick(View v) {
-            finish();
-          }
-        });
+    ((Button) findViewById(R.id.button_cancel)).setOnClickListener(new OnClickListener() {
+      public void onClick(View v) {
+        finish();
+      }
+    });
   }
 
   /**
@@ -92,40 +91,36 @@ public class EditSubscriptionActivity extends Activity {
   private void createNewInstance(Bundle savedInstanceState, Intent intent) {
     setTitle(R.string.title_newsubscription);
     restoreInstanceState(savedInstanceState);
-    ((Button) findViewById(R.id.button_ok))
-        .setOnClickListener(new OnClickListener() {
-          public void onClick(View v) {
-            String url = urlEditText.getText().toString();
-            if (!url.startsWith(Strings.HTTP) && !url.startsWith(Strings.HTTPS)) {
-              url = Strings.HTTP + url;
-            }
-            Cursor cursor = getContentResolver().query(
-                FeedData.SubscriptionColumns.CONTENT_URI,
-                null,
-                new StringBuilder(FeedData.SubscriptionColumns.URL).append(
-                    Strings.DB_ARG).toString(), new String[] { url }, null);
-            if (cursor.moveToFirst()) {
-              cursor.close();
-              Toast.makeText(EditSubscriptionActivity.this,
-                  R.string.error_feedurlexists, Toast.LENGTH_LONG).show();
-            } else {
-              cursor.close();
-              ContentValues values = new ContentValues();
-              values.put(FeedData.SubscriptionColumns.WIFIONLY,
-                  refreshOnlyWifiCheckBox.isChecked() ? 1 : 0);
-              values.put(FeedData.SubscriptionColumns.URL, url);
-              values.put(FeedData.SubscriptionColumns.ERROR, (String) null);
-              String name = nameEditText.getText().toString();
-              if (name.trim().length() > 0) {
-                values.put(FeedData.SubscriptionColumns.NAME, name);
-              }
-              getContentResolver().insert(
-                  FeedData.SubscriptionColumns.CONTENT_URI, values);
-              setResult(RESULT_OK);
-              finish();
-            }
+    ((Button) findViewById(R.id.button_ok)).setOnClickListener(new OnClickListener() {
+      public void onClick(View v) {
+        String url = urlEditText.getText().toString();
+        if (!url.startsWith(Strings.HTTP) && !url.startsWith(Strings.HTTPS)) {
+          url = Strings.HTTP + url;
+        }
+        Cursor cursor = getContentResolver().query(FeedData.SubscriptionColumns.CONTENT_URI, null,
+            new StringBuilder(FeedData.SubscriptionColumns.URL).append(Strings.DB_ARG).toString(),
+            new String[] { url }, null);
+        if (cursor.moveToFirst()) {
+          cursor.close();
+          Toast.makeText(EditSubscriptionActivity.this, R.string.error_feedurlexists,
+              Toast.LENGTH_LONG).show();
+        } else {
+          cursor.close();
+          ContentValues values = new ContentValues();
+          values.put(FeedData.SubscriptionColumns.WIFIONLY, refreshOnlyWifiCheckBox.isChecked() ? 1
+              : 0);
+          values.put(FeedData.SubscriptionColumns.URL, url);
+          values.put(FeedData.SubscriptionColumns.ERROR, (String) null);
+          String name = nameEditText.getText().toString();
+          if (name.trim().length() > 0) {
+            values.put(FeedData.SubscriptionColumns.NAME, name);
           }
-        });
+          getContentResolver().insert(FeedData.SubscriptionColumns.CONTENT_URI, values);
+          setResult(RESULT_OK);
+          finish();
+        }
+      }
+    });
   }
 
   /**
@@ -135,8 +130,7 @@ public class EditSubscriptionActivity extends Activity {
     setTitle(R.string.title_editsubscription);
 
     if (!restoreInstanceState(savedInstanceState)) {
-      Cursor cursor = getContentResolver().query(intent.getData(), PROJECTION,
-          null, null, null);
+      Cursor cursor = getContentResolver().query(intent.getData(), PROJECTION, null, null, null);
       if (cursor.moveToNext()) {
         nameEditText.setText(cursor.getString(0));
         urlEditText.setText(cursor.getString(1));
@@ -144,59 +138,44 @@ public class EditSubscriptionActivity extends Activity {
         cursor.close();
       } else {
         cursor.close();
-        Toast.makeText(EditSubscriptionActivity.this, R.string.error,
-            Toast.LENGTH_LONG).show();
+        Toast.makeText(EditSubscriptionActivity.this, R.string.error, Toast.LENGTH_LONG).show();
         finish();
       }
     }
-    ((Button) findViewById(R.id.button_ok))
-        .setOnClickListener(new OnClickListener() {
-          public void onClick(View v) {
-            String url = urlEditText.getText().toString();
-            Cursor cursor = getContentResolver().query(
-                FeedData.SubscriptionColumns.CONTENT_URI,
-                new String[] { FeedData.SubscriptionColumns._ID },
-                new StringBuilder(FeedData.SubscriptionColumns.URL).append(
-                    Strings.DB_ARG).toString(), new String[] { url }, null);
-            if (cursor.moveToFirst()
-                && !getIntent().getData().getLastPathSegment()
-                    .equals(cursor.getString(0))) {
-              cursor.close();
-              Toast.makeText(EditSubscriptionActivity.this,
-                  R.string.error_feedurlexists, Toast.LENGTH_LONG).show();
-            } else {
-              cursor.close();
-              ContentValues values = new ContentValues();
-              if (!url.startsWith(Strings.HTTP)
-                  && !url.startsWith(Strings.HTTPS)) {
-                url = Strings.HTTP + url;
-              }
-              String name = nameEditText.getText().toString();
-              values.put(FeedData.SubscriptionColumns.URL, url);
-              values.put(FeedData.SubscriptionColumns.NAME, name.trim()
-                  .length() > 0 ? name : null);
-              values.put(FeedData.SubscriptionColumns.FETCHMODE, 0);
-              values.put(FeedData.SubscriptionColumns.WIFIONLY,
-                  refreshOnlyWifiCheckBox.isChecked() ? 1 : 0);
-              values.put(FeedData.SubscriptionColumns.ERROR, (String) null);
-              getContentResolver().update(getIntent().getData(), values, null,
-                  null);
-              setResult(RESULT_OK);
-              finish();
-            }
+    ((Button) findViewById(R.id.button_ok)).setOnClickListener(new OnClickListener() {
+      public void onClick(View v) {
+        String url = urlEditText.getText().toString();
+        Cursor cursor = getContentResolver().query(FeedData.SubscriptionColumns.CONTENT_URI,
+            new String[] { FeedData.SubscriptionColumns._ID },
+            new StringBuilder(FeedData.SubscriptionColumns.URL).append(Strings.DB_ARG).toString(),
+            new String[] { url }, null);
+        if (cursor.moveToFirst()
+            && !getIntent().getData().getLastPathSegment().equals(cursor.getString(0))) {
+          cursor.close();
+          Toast.makeText(EditSubscriptionActivity.this, R.string.error_feedurlexists,
+              Toast.LENGTH_LONG).show();
+        } else {
+          cursor.close();
+          if (!url.startsWith(Strings.HTTP) && !url.startsWith(Strings.HTTPS)) {
+            url = Strings.HTTP + url;
           }
+          getContentResolver().update(
+              getIntent().getData(),
+              FeedDataContentProvider.createFeedWithDefaultOptions(url, nameEditText.getText()
+                  .toString(), refreshOnlyWifiCheckBox.isChecked() ? 1 : 0), null, null);
+          setResult(RESULT_OK);
+          finish();
+        }
+      }
 
-        });
+    });
 
   }
 
   private boolean restoreInstanceState(Bundle savedInstanceState) {
-    if (savedInstanceState != null
-        && savedInstanceState.getBoolean(WASACTIVE, false)) {
-      nameEditText.setText(savedInstanceState
-          .getCharSequence(FeedData.SubscriptionColumns.NAME));
-      urlEditText.setText(savedInstanceState
-          .getCharSequence(FeedData.SubscriptionColumns.URL));
+    if (savedInstanceState != null && savedInstanceState.getBoolean(WASACTIVE, false)) {
+      nameEditText.setText(savedInstanceState.getCharSequence(FeedData.SubscriptionColumns.NAME));
+      urlEditText.setText(savedInstanceState.getCharSequence(FeedData.SubscriptionColumns.URL));
       refreshOnlyWifiCheckBox.setChecked(savedInstanceState
           .getBoolean(FeedData.SubscriptionColumns.WIFIONLY));
       return true;
@@ -208,11 +187,8 @@ public class EditSubscriptionActivity extends Activity {
   @Override
   protected void onSaveInstanceState(Bundle outState) {
     outState.putBoolean(WASACTIVE, true);
-    outState.putCharSequence(FeedData.SubscriptionColumns.NAME,
-        nameEditText.getText());
-    outState.putCharSequence(FeedData.SubscriptionColumns.URL,
-        urlEditText.getText());
-    outState.putBoolean(FeedData.SubscriptionColumns.WIFIONLY,
-        refreshOnlyWifiCheckBox.isChecked());
+    outState.putCharSequence(FeedData.SubscriptionColumns.NAME, nameEditText.getText());
+    outState.putCharSequence(FeedData.SubscriptionColumns.URL, urlEditText.getText());
+    outState.putBoolean(FeedData.SubscriptionColumns.WIFIONLY, refreshOnlyWifiCheckBox.isChecked());
   }
 }

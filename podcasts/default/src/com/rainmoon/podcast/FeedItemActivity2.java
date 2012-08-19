@@ -56,8 +56,6 @@ import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.rainmoon.podcast.PlayerFragment.OnPlayerFragmentListener;
-import com.rainmoon.podcast.PlayerFragment.PlayerController;
 import com.rainmoon.podcast.provider.FeedData;
 import com.rainmoon.podcast.utils.StaticMethods;
 import com.rainmoon.podcast.utils.Strings;
@@ -110,7 +108,7 @@ public class FeedItemActivity2 extends FragmentActivity {
 
   private String _id;
   private String link;
-  private Uri uri;
+  private Uri mUri;
   private int feedId;
   boolean favorite;
   private boolean canShowIcon;
@@ -125,7 +123,7 @@ public class FeedItemActivity2 extends FragmentActivity {
   int scrollX;
   int scrollY;
 
-  private SharedPreferences preferences;
+  private SharedPreferences mPreferences;
   private boolean localPictures;
   private String mPlayUrl;
 
@@ -133,15 +131,14 @@ public class FeedItemActivity2 extends FragmentActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_feeditem);
-    uri = getIntent().getData();
-    iconBytes = getIntent()
-        .getByteArrayExtra(FeedData.SubscriptionColumns.ICON);
+    mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+    mUri = getAndSaveUri(getIntent());
+    iconBytes = getIntent().getByteArrayExtra(FeedData.SubscriptionColumns.ICON);
     feedId = 0;
     setupFeedColumnIndice();
 
     // set up play button
-    mPlayerFragment = getSupportFragmentManager().findFragmentById(
-        R.id.frag_player);
+    mPlayerFragment = getSupportFragmentManager().findFragmentById(R.id.frag_player);
     mPlayClickedListener = (OnPlayButtonClickedListener) mPlayerFragment;
 
     playButton = (TextView) findViewById(R.id.btn_play);
@@ -163,13 +160,23 @@ public class FeedItemActivity2 extends FragmentActivity {
       }
     };
     webView.setOnKeyListener(onKeyEventListener);
-    preferences = PreferenceManager.getDefaultSharedPreferences(this);
     scrollX = 0;
     scrollY = 0;
   }
 
+  private Uri getAndSaveUri(Intent intent) {
+    Uri uri = intent.getData();
+    if (uri == null) { // called from notification
+      uri = Uri.parse(mPreferences.getString(Strings.PREFERENCE_CURRENT_URI, ""));
+    } else { // save mUri to restore from notification later
+      mPreferences.edit().putString(Strings.PREFERENCE_CURRENT_URI, uri.toString()).commit();
+    }
+    Log.i(TAG, "loading content at " + uri);
+    return uri;
+  }
+
   private void setupFeedColumnIndice() {
-    Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+    Cursor cursor = getContentResolver().query(mUri, null, null, null, null);
     mTitleColumnIdx = cursor.getColumnIndex(FeedData.ItemColumns.TITLE);
     mDateColumnIdx = cursor.getColumnIndex(FeedData.ItemColumns.DATE);
     mAbstractColumnIdx = cursor.getColumnIndex(FeedData.ItemColumns.ABSTRACT);
@@ -184,7 +191,7 @@ public class FeedItemActivity2 extends FragmentActivity {
   @Override
   protected void onResume() {
     super.onResume();
-    uri = getIntent().getData();
+    mUri = getAndSaveUri(getIntent());
     reload();
   }
 
@@ -202,31 +209,22 @@ public class FeedItemActivity2 extends FragmentActivity {
   }
 
   private void reload() {
-    if (_id != null && _id.equals(uri.getLastPathSegment())) {
+    if (_id != null && _id.equals(mUri.getLastPathSegment())) {
       return;
     }
-    _id = uri.getLastPathSegment();
+    _id = mUri.getLastPathSegment();
     ContentValues values = new ContentValues();
     values.put(FeedData.ItemColumns.READDATE, System.currentTimeMillis());
-    Cursor entryCursor = getContentResolver()
-        .query(uri, null, null, null, null);
+    Cursor entryCursor = getContentResolver().query(mUri, null, null, null, null);
     if (entryCursor.moveToFirst()) {
       String abstractText = entryCursor.getString(mAbstractColumnIdx);
       if (entryCursor.isNull(mReadDateColumnIdx)) {
-        getContentResolver().update(
-            uri,
-            values,
-            new StringBuilder(FeedData.ItemColumns.READDATE).append(
-                Strings.DB_ISNULL).toString(), null);
+        getContentResolver().update(mUri, values,
+            new StringBuilder(FeedData.ItemColumns.READDATE).append(Strings.DB_ISNULL).toString(),
+            null);
       }
-      if (abstractText == null) {
-        String link = entryCursor.getString(mLinkColumnIdx);
-        entryCursor.close();
-        finish();
-        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(link)));
-      } else {
-        ((TextView) findViewById(R.id.item_title)).setText(entryCursor
-            .getString(mTitleColumnIdx));
+      if (abstractText != null) {
+        ((TextView) findViewById(R.id.item_title)).setText(entryCursor.getString(mTitleColumnIdx));
         int _feedId = entryCursor.getInt(mFeedIdColumnIdx);
         if (feedId != _feedId) {
           if (feedId != 0) {
@@ -237,8 +235,8 @@ public class FeedItemActivity2 extends FragmentActivity {
         drawIcon();
 
         long date = entryCursor.getLong(mDateColumnIdx);
-        ((TextView) findViewById(R.id.entry_date)).setText(DateFormat
-            .getDateTimeInstance().format(new Date(date)));
+        ((TextView) findViewById(R.id.entry_date)).setText(DateFormat.getDateTimeInstance().format(
+            new Date(date)));
         drawFavoriteButton(entryCursor);
 
         // loadData does not recognize the encoding without correct html-header
@@ -247,24 +245,23 @@ public class FeedItemActivity2 extends FragmentActivity {
           abstractText = abstractText.replace(Strings.IMAGEID_REPLACEMENT, _id
               + Strings.IMAGEFILE_IDSEPARATOR);
         }
-        if (preferences.getBoolean(Strings.SETTINGS_DISABLEPICTURES, false)) {
-          abstractText = abstractText.replaceAll(Strings.HTML_IMG_REGEX,
-              Strings.EMPTY);
+        if (mPreferences.getBoolean(Strings.SETTINGS_DISABLEPICTURES, false)) {
+          abstractText = abstractText.replaceAll(Strings.HTML_IMG_REGEX, Strings.EMPTY);
           webView.getSettings().setLoadsImagesAutomatically(false);
         } else {
           webView.getSettings().setLoadsImagesAutomatically(true);
         }
 
-        int fontsize = Integer.parseInt(preferences.getString(
-            Strings.SETTINGS_FONTSIZE, Strings.ONE));
+        int fontsize = Integer.parseInt(mPreferences.getString(Strings.SETTINGS_FONTSIZE,
+            Strings.ONE));
         if (fontsize > 0) {
-          webView.loadDataWithBaseURL(null, new StringBuilder(FONTSIZE_START)
-              .append(fontsize).append(FONTSIZE_MIDDLE).append(abstractText)
-              .append(FONTSIZE_END).toString(), TEXT_HTML, UTF8, null);
+          webView.loadDataWithBaseURL(null, new StringBuilder(FONTSIZE_START).append(fontsize)
+              .append(FONTSIZE_MIDDLE).append(abstractText).append(FONTSIZE_END).toString(),
+              TEXT_HTML, UTF8, null);
         } else {
           webView.loadDataWithBaseURL(null,
-              new StringBuilder(CSS).append(BODY_START).append(abstractText)
-                  .append(BODY_END).toString(), TEXT_HTML, UTF8, null);
+              new StringBuilder(CSS).append(BODY_START).append(abstractText).append(BODY_END)
+                  .toString(), TEXT_HTML, UTF8, null);
         }
         setupButtons(entryCursor);
         webView.scrollTo(scrollX, scrollY); // resets the scrolling
@@ -287,8 +284,7 @@ public class FeedItemActivity2 extends FragmentActivity {
       urlButton.setEnabled(true);
       urlButton.setOnClickListener(new OnClickListener() {
         public void onClick(View view) {
-          startActivityForResult(
-              new Intent(Intent.ACTION_VIEW, Uri.parse(link)), 0);
+          startActivityForResult(new Intent(Intent.ACTION_VIEW, Uri.parse(link)), 0);
         }
       });
     } else {
@@ -296,53 +292,45 @@ public class FeedItemActivity2 extends FragmentActivity {
     }
 
     final String enclosure = entryCursor.getString(mEnclosureColumnIdx);
-    if (enclosure != null && enclosure.length() > 6
-        && enclosure.indexOf(IMAGE_ENCLOSURE) == -1) {
-      setPlayUrl(Uri.parse(enclosure.substring(0,
-          enclosure.indexOf(Strings.ENCLOSURE_SEPARATOR))).toString());
+    if (enclosure != null && enclosure.length() > 6 && enclosure.indexOf(IMAGE_ENCLOSURE) == -1) {
+      setPlayUrl(Uri.parse(enclosure.substring(0, enclosure.indexOf(Strings.ENCLOSURE_SEPARATOR)))
+          .toString());
       playButton.setOnClickListener(new OnClickListener() {
         public void onClick(View v) {
-          if (preferences.getBoolean(Strings.SETTINGS_ENCLOSUREWARNINGSENABLED,
-              true)) {
-            final int position1 = enclosure
-                .indexOf(Strings.ENCLOSURE_SEPARATOR);
-            final int position2 = enclosure.indexOf(
-                Strings.ENCLOSURE_SEPARATOR, position1 + 3);
+          if (mPreferences.getBoolean(Strings.SETTINGS_ENCLOSUREWARNINGSENABLED, true)) {
+            final int position1 = enclosure.indexOf(Strings.ENCLOSURE_SEPARATOR);
+            final int position2 = enclosure.indexOf(Strings.ENCLOSURE_SEPARATOR, position1 + 3);
             final Uri uri = Uri.parse(enclosure.substring(0, position1));
             Builder builder = new AlertDialog.Builder(FeedItemActivity2.this);
             builder.setTitle(R.string.question_areyousure);
             builder.setIcon(android.R.drawable.ic_dialog_alert);
             if (position2 + 4 > enclosure.length()) {
-              builder.setMessage(getString(R.string.question_playenclosure,
+              builder.setMessage(getString(
+                  R.string.question_playenclosure,
                   uri,
-                  position2 + 4 > enclosure.length() ? Strings.QUESTIONMARKS
-                      : enclosure.substring(position2 + 3)));
+                  position2 + 4 > enclosure.length() ? Strings.QUESTIONMARKS : enclosure
+                      .substring(position2 + 3)));
             } else {
               try {
-                builder.setMessage(getString(
-                    R.string.question_playenclosure,
-                    uri,
+                builder.setMessage(getString(R.string.question_playenclosure, uri,
                     (Integer.parseInt(enclosure.substring(position2 + 3)) / 1024f)
                         + getString(R.string.kb)));
               } catch (Exception e) {
-                builder.setMessage(getString(R.string.question_playenclosure,
-                    uri, enclosure.substring(position2 + 3)));
+                builder.setMessage(getString(R.string.question_playenclosure, uri,
+                    enclosure.substring(position2 + 3)));
               }
             }
             builder.setCancelable(true);
-            builder.setPositiveButton(android.R.string.ok,
-                new DialogInterface.OnClickListener() {
-                  public void onClick(DialogInterface dialog, int which) {
-                    mPlayClickedListener.onPlayClicked(uri.toString());
-                  }
-                });
+            builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+              public void onClick(DialogInterface dialog, int which) {
+                mPlayClickedListener.onPlayClicked(uri.toString());
+              }
+            });
             builder.setNeutralButton(R.string.button_alwaysokforall,
                 new DialogInterface.OnClickListener() {
                   public void onClick(DialogInterface dialog, int which) {
-                    preferences
-                        .edit()
-                        .putBoolean(Strings.SETTINGS_ENCLOSUREWARNINGSENABLED,
-                            false).commit();
+                    mPreferences.edit()
+                        .putBoolean(Strings.SETTINGS_ENCLOSUREWARNINGSENABLED, false).commit();
                     mPlayClickedListener.onPlayClicked(uri.toString());
                   }
                 });
@@ -354,7 +342,7 @@ public class FeedItemActivity2 extends FragmentActivity {
                 });
             builder.show();
           } else {
-            mPlayClickedListener.onPlayClicked(uri.toString());
+            mPlayClickedListener.onPlayClicked(mUri.toString());
           }
         }
       });
@@ -367,8 +355,7 @@ public class FeedItemActivity2 extends FragmentActivity {
   private void drawFavoriteButton(Cursor cursor) {
     final ImageView imageView = (ImageView) findViewById(android.R.id.icon);
     favorite = cursor.getInt(mFavoriteColumnIdx) == 1;
-    imageView.setImageResource(favorite ? android.R.drawable.star_on
-        : android.R.drawable.star_off);
+    imageView.setImageResource(favorite ? android.R.drawable.star_on : android.R.drawable.star_off);
     imageView.setOnClickListener(new OnClickListener() {
       public void onClick(View view) {
         favorite = !favorite;
@@ -376,7 +363,7 @@ public class FeedItemActivity2 extends FragmentActivity {
             : android.R.drawable.star_off);
         ContentValues values = new ContentValues();
         values.put(FeedData.ItemColumns.FAVORITE, favorite ? 1 : 0);
-        getContentResolver().update(uri, values, null, null);
+        getContentResolver().update(mUri, values, null, null);
       }
     });
   }
@@ -387,10 +374,9 @@ public class FeedItemActivity2 extends FragmentActivity {
         drawIconBytes();
       } else {
         Cursor iconCursor = getContentResolver().query(
-            FeedData.SubscriptionColumns.subscriptionContentUri(Integer
-                .toString(feedId)),
-            new String[] { FeedData.SubscriptionColumns._ID,
-                FeedData.SubscriptionColumns.ICON }, null, null, null);
+            FeedData.SubscriptionColumns.subscriptionContentUri(Integer.toString(feedId)),
+            new String[] { FeedData.SubscriptionColumns._ID, FeedData.SubscriptionColumns.ICON },
+            null, null, null);
         if (iconCursor.moveToFirst()) {
           iconBytes = iconCursor.getBlob(1);
           if (iconBytes != null && iconBytes.length > 0) {
@@ -404,15 +390,13 @@ public class FeedItemActivity2 extends FragmentActivity {
 
   private void drawIconBytes() {
     if (StaticMethods.POSTGINGERBREAD) {
-      CompatibilityHelper.setActionBarDrawable(
-          this,
-          new BitmapDrawable(getResources(), BitmapFactory.decodeByteArray(
-              iconBytes, 0, iconBytes.length)));
+      CompatibilityHelper.setActionBarDrawable(this, new BitmapDrawable(getResources(),
+          BitmapFactory.decodeByteArray(iconBytes, 0, iconBytes.length)));
     } else {
       setFeatureDrawable(
           Window.FEATURE_LEFT_ICON,
-          new BitmapDrawable(getResources(), BitmapFactory.decodeByteArray(
-              iconBytes, 0, iconBytes.length)));
+          new BitmapDrawable(getResources(), BitmapFactory.decodeByteArray(iconBytes, 0,
+              iconBytes.length)));
     }
   }
 
@@ -433,7 +417,7 @@ public class FeedItemActivity2 extends FragmentActivity {
       break;
     }
     case R.id.menu_delete: {
-      getContentResolver().delete(uri, null, null);
+      getContentResolver().delete(mUri, null, null);
       if (localPictures) {
         FeedData.deletePicturesOfEntry(_id);
       }
@@ -442,8 +426,8 @@ public class FeedItemActivity2 extends FragmentActivity {
     }
     case R.id.menu_share: {
       if (link != null) {
-        startActivity(Intent.createChooser(new Intent(Intent.ACTION_SEND)
-            .putExtra(Intent.EXTRA_TEXT, link).setType(TEXTPLAIN),
+        startActivity(Intent.createChooser(
+            new Intent(Intent.ACTION_SEND).putExtra(Intent.EXTRA_TEXT, link).setType(TEXTPLAIN),
             getString(R.string.contextmenu_share)));
       }
       break;

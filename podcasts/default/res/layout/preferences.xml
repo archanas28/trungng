@@ -47,16 +47,6 @@
             android:summary="@string/settings_prioritize_description"
             android:title="@string/settings_prioritize" />
 
-        <ListPreference
-            android:name="@string/settings_keeptime"
-            android:defaultValue="30"
-            android:entries="@array/settings_keeptimes"
-            android:entryValues="@array/settings_keeptimevalues"
-            android:key="keeptime"
-            android:numeric="integer"
-            android:summary="@string/settings_keeptime_description"
-            android:title="@string/settings_keeptime" />
-
         <CheckBoxPreference
             android:defaultValue="false"
             android:disableDependentsState="true"

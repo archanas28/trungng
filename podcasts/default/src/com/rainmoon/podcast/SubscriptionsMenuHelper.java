@@ -90,7 +90,6 @@ public final class SubscriptionsMenuHelper {
                 }
               });
           builder.setItems(fileNames, new DialogInterface.OnClickListener() {
-            @SuppressWarnings("deprecation")
             public void onClick(DialogInterface dialog, int which) {
               try {
                 OPML.importFromFile(

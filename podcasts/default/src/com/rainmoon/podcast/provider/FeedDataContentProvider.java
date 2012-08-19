@@ -55,14 +55,13 @@ import com.rainmoon.podcast.utils.Strings;
  * 
  */
 public class FeedDataContentProvider extends ContentProvider {
-  private static final String FOLDER = Environment
-      .getExternalStorageDirectory() + "/podcast/";
-  public static final String IMAGEFOLDER = Environment
-      .getExternalStorageDirectory() + "/podcast/images/";
+  private static final String FOLDER = Environment.getExternalStorageDirectory() + "/podcast/";
+  public static final String IMAGEFOLDER = Environment.getExternalStorageDirectory()
+      + "/podcast/images/";
   public static final File IMAGEFOLDER_FILE = new File(IMAGEFOLDER);
 
-  private static final String BACKUPOPML = Environment
-      .getExternalStorageDirectory() + "/podcast/backup.opml";
+  private static final String BACKUPOPML = Environment.getExternalStorageDirectory()
+      + "/podcast/backup.opml";
 
   private static final String DATABASE_NAME = "podcast.db";
   private static final int DATABASE_VERSION = 1;
@@ -95,11 +94,9 @@ public class FeedDataContentProvider extends ContentProvider {
     /** a single subscription identified by id */
     uriMatcher.addURI(FeedData.AUTHORITY, "feeds/#", URI_SUBSCRIPTION);
     /** all items of a subscription */
-    uriMatcher.addURI(FeedData.AUTHORITY, "feeds/#/entries",
-        URI_SUBSCRIPTION_ITEMS);
+    uriMatcher.addURI(FeedData.AUTHORITY, "feeds/#/entries", URI_SUBSCRIPTION_ITEMS);
     /** an item of a subscription */
-    uriMatcher.addURI(FeedData.AUTHORITY, "feeds/#/entries/#",
-        URI_SUBSCRIPTION_ITEM);
+    uriMatcher.addURI(FeedData.AUTHORITY, "feeds/#/entries/#", URI_SUBSCRIPTION_ITEM);
     /** all items */
     // join table (not real physical table)
     uriMatcher.addURI(FeedData.AUTHORITY, "entries", URI_ALL_ITEMS);
@@ -116,8 +113,8 @@ public class FeedDataContentProvider extends ContentProvider {
 
   private DatabaseHelper mDatabaseHelper;
 
-  private String[] MAXPRIORITY = new String[] { "MAX("
-      + FeedData.SubscriptionColumns.PRIORITY + ")" };
+  private String[] MAXPRIORITY = new String[] { "MAX(" + FeedData.SubscriptionColumns.PRIORITY
+      + ")" };
 
   @Override
   // TODO(trung): this should only be applicable to some of the uris
@@ -133,21 +130,18 @@ public class FeedDataContentProvider extends ContentProvider {
       final String feedId = uri.getPathSegments().get(1);
       new Thread() {
         public void run() {
-          delete(FeedData.ItemColumns.subscriptionItemsContentUri(feedId),
-              null, null);
+          delete(FeedData.ItemColumns.subscriptionItemsContentUri(feedId), null, null);
         }
       }.start();
       where.append(FeedData.SubscriptionColumns._ID).append('=').append(feedId);
 
       /** Update the priorities */
-      Cursor priorityCursor = database.query(TABLE_SUBSCRIPTIONS,
-          PROJECTION_PRIORITY, FeedData.SubscriptionColumns._ID + "=" + feedId,
-          null, null, null, null);
+      Cursor priorityCursor = database.query(TABLE_SUBSCRIPTIONS, PROJECTION_PRIORITY,
+          FeedData.SubscriptionColumns._ID + "=" + feedId, null, null, null, null);
       if (priorityCursor.moveToNext()) {
         database.execSQL("UPDATE " + TABLE_SUBSCRIPTIONS + " SET "
-            + FeedData.SubscriptionColumns.PRIORITY + " = "
-            + FeedData.SubscriptionColumns.PRIORITY + "-1 WHERE "
-            + FeedData.SubscriptionColumns.PRIORITY + " > "
+            + FeedData.SubscriptionColumns.PRIORITY + " = " + FeedData.SubscriptionColumns.PRIORITY
+            + "-1 WHERE " + FeedData.SubscriptionColumns.PRIORITY + " > "
             + priorityCursor.getInt(0));
         priorityCursor.close();
       } else {
@@ -161,14 +155,12 @@ public class FeedDataContentProvider extends ContentProvider {
     }
     case URI_SUBSCRIPTION_ITEM: {
       table = TABLE_ITEMS;
-      where.append(FeedData.ItemColumns._ID).append('=')
-          .append(uri.getPathSegments().get(3));
+      where.append(FeedData.ItemColumns._ID).append('=').append(uri.getPathSegments().get(3));
       break;
     }
     case URI_SUBSCRIPTION_ITEMS: {
       table = TABLE_ITEMS;
-      where.append(FeedData.ItemColumns.FEED_ID).append('=')
-          .append(uri.getPathSegments().get(1));
+      where.append(FeedData.ItemColumns.FEED_ID).append('=').append(uri.getPathSegments().get(1));
       break;
     }
     case URI_ALL_ITEMS: {
@@ -179,8 +171,7 @@ public class FeedDataContentProvider extends ContentProvider {
     case URI_ITEM:
     case URI_RECENT_ITEM: {
       table = TABLE_ITEMS;
-      where.append(FeedData.ItemColumns._ID).append('=')
-          .append(uri.getPathSegments().get(1));
+      where.append(FeedData.ItemColumns._ID).append('=').append(uri.getPathSegments().get(1));
       break;
     }
     case URI_FAVORITES: {
@@ -239,8 +230,8 @@ public class FeedDataContentProvider extends ContentProvider {
     SQLiteDatabase database = mDatabaseHelper.getWritableDatabase();
     switch (option) {
     case URI_SUBSCRIPTIONS:
-      Cursor cursor = database.query(TABLE_SUBSCRIPTIONS, MAXPRIORITY, null,
-          null, null, null, null, null);
+      Cursor cursor = database.query(TABLE_SUBSCRIPTIONS, MAXPRIORITY, null, null, null, null,
+          null, null);
 
       if (cursor.moveToNext()) {
         values.put(FeedData.SubscriptionColumns.PRIORITY, cursor.getInt(0) + 1);
@@ -278,18 +269,16 @@ public class FeedDataContentProvider extends ContentProvider {
     } catch (Exception e) {
 
     }
-    mDatabaseHelper = new DatabaseHelper(getContext(), DATABASE_NAME,
-        DATABASE_VERSION);
+    mDatabaseHelper = new DatabaseHelper(getContext(), DATABASE_NAME, DATABASE_VERSION);
     return true;
   }
 
   @Override
-  public Cursor query(Uri uri, String[] projection, String selection,
-      String[] selectionArgs, String sortOrder) {
+  public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs,
+      String sortOrder) {
     SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
     int option = uriMatcher.match(uri);
-    if ((option == URI_SUBSCRIPTION || option == URI_SUBSCRIPTIONS)
-        && sortOrder == null) {
+    if ((option == URI_SUBSCRIPTION || option == URI_SUBSCRIPTIONS) && sortOrder == null) {
       sortOrder = FeedData.FEED_DEFAULTSORTORDER;
     }
     if (option == URI_RECENT_ITEMS) {
@@ -299,9 +288,8 @@ public class FeedDataContentProvider extends ContentProvider {
     switch (option) {
     case URI_SUBSCRIPTION: {
       queryBuilder.setTables(TABLE_SUBSCRIPTIONS);
-      queryBuilder.appendWhere(new StringBuilder(
-          FeedData.SubscriptionColumns._ID).append('=').append(
-          uri.getPathSegments().get(1)));
+      queryBuilder.appendWhere(new StringBuilder(FeedData.SubscriptionColumns._ID).append('=')
+          .append(uri.getPathSegments().get(1)));
       break;
     }
     case URI_SUBSCRIPTIONS: {
@@ -310,14 +298,14 @@ public class FeedDataContentProvider extends ContentProvider {
     }
     case URI_SUBSCRIPTION_ITEM: {
       queryBuilder.setTables(TABLE_ITEMS);
-      queryBuilder.appendWhere(new StringBuilder(FeedData.ItemColumns._ID)
-          .append('=').append(uri.getPathSegments().get(3)));
+      queryBuilder.appendWhere(new StringBuilder(FeedData.ItemColumns._ID).append('=').append(
+          uri.getPathSegments().get(3)));
       break;
     }
     case URI_SUBSCRIPTION_ITEMS: {
       queryBuilder.setTables(TABLE_ITEMS);
-      queryBuilder.appendWhere(new StringBuilder(FeedData.ItemColumns.FEED_ID)
-          .append('=').append(uri.getPathSegments().get(1)));
+      queryBuilder.appendWhere(new StringBuilder(FeedData.ItemColumns.FEED_ID).append('=').append(
+          uri.getPathSegments().get(1)));
       break;
     }
     case URI_ALL_ITEMS: {
@@ -328,37 +316,35 @@ public class FeedDataContentProvider extends ContentProvider {
     case URI_RECENT_ITEMS: {
       queryBuilder
           .setTables("entries join (select name, icon, _id as feed_id from feeds) as F on (entries.feedid = F.feed_id)");
-      queryBuilder.appendWhere(new StringBuilder(FeedData.ItemColumns.READDATE)
-          .append(" NOT NULL"));
+      queryBuilder
+          .appendWhere(new StringBuilder(FeedData.ItemColumns.READDATE).append(" NOT NULL"));
       break;
     }
     case URI_FAVORITE:
     case URI_ITEM:
     case URI_RECENT_ITEM: {
       queryBuilder.setTables(TABLE_ITEMS);
-      queryBuilder.appendWhere(new StringBuilder(FeedData.ItemColumns._ID)
-          .append('=').append(uri.getPathSegments().get(1)));
+      queryBuilder.appendWhere(new StringBuilder(FeedData.ItemColumns._ID).append('=').append(
+          uri.getPathSegments().get(1)));
       break;
     }
     case URI_FAVORITES: {
       queryBuilder
           .setTables("entries join (select name, icon, _id as feed_id from feeds) as F on (entries.feedid = F.feed_id)");
-      queryBuilder.appendWhere(new StringBuilder(FeedData.ItemColumns.FAVORITE)
-          .append(EQUALS_ONE));
+      queryBuilder.appendWhere(new StringBuilder(FeedData.ItemColumns.FAVORITE).append(EQUALS_ONE));
       break;
     }
     }
 
     SQLiteDatabase database = mDatabaseHelper.getReadableDatabase();
-    Cursor cursor = queryBuilder.query(database, projection, selection,
-        selectionArgs, null, null, sortOrder);
+    Cursor cursor = queryBuilder.query(database, projection, selection, selectionArgs, null, null,
+        sortOrder);
     cursor.setNotificationUri(getContext().getContentResolver(), uri);
     return cursor;
   }
 
   @Override
-  public int update(Uri uri, ContentValues values, String selection,
-      String[] selectionArgs) {
+  public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
     int option = uriMatcher.match(uri);
     String table = null;
     StringBuilder where = new StringBuilder();
@@ -369,13 +355,10 @@ public class FeedDataContentProvider extends ContentProvider {
       table = TABLE_SUBSCRIPTIONS;
       long feedId = Long.parseLong(uri.getPathSegments().get(1));
       where.append(FeedData.SubscriptionColumns._ID).append('=').append(feedId);
-      if (values != null
-          && values.containsKey(FeedData.SubscriptionColumns.PRIORITY)) {
-        int newPriority = values
-            .getAsInteger(FeedData.SubscriptionColumns.PRIORITY);
-        Cursor priorityCursor = database.query(TABLE_SUBSCRIPTIONS,
-            PROJECTION_PRIORITY, FeedData.SubscriptionColumns._ID + "="
-                + feedId, null, null, null, null);
+      if (values != null && values.containsKey(FeedData.SubscriptionColumns.PRIORITY)) {
+        int newPriority = values.getAsInteger(FeedData.SubscriptionColumns.PRIORITY);
+        Cursor priorityCursor = database.query(TABLE_SUBSCRIPTIONS, PROJECTION_PRIORITY,
+            FeedData.SubscriptionColumns._ID + "=" + feedId, null, null, null, null);
         if (priorityCursor.moveToNext()) {
           int oldPriority = priorityCursor.getInt(0);
           priorityCursor.close();
@@ -383,14 +366,14 @@ public class FeedDataContentProvider extends ContentProvider {
             database.execSQL("UPDATE " + TABLE_SUBSCRIPTIONS + " SET "
                 + FeedData.SubscriptionColumns.PRIORITY + " = "
                 + FeedData.SubscriptionColumns.PRIORITY + "-1 WHERE "
-                + FeedData.SubscriptionColumns.PRIORITY + " BETWEEN "
-                + (oldPriority + 1) + " AND " + newPriority);
+                + FeedData.SubscriptionColumns.PRIORITY + " BETWEEN " + (oldPriority + 1) + " AND "
+                + newPriority);
           } else if (newPriority < oldPriority) {
             database.execSQL("UPDATE " + TABLE_SUBSCRIPTIONS + " SET "
                 + FeedData.SubscriptionColumns.PRIORITY + " = "
                 + FeedData.SubscriptionColumns.PRIORITY + "+1 WHERE "
-                + FeedData.SubscriptionColumns.PRIORITY + " BETWEEN "
-                + newPriority + " AND " + (oldPriority - 1));
+                + FeedData.SubscriptionColumns.PRIORITY + " BETWEEN " + newPriority + " AND "
+                + (oldPriority - 1));
           }
         } else {
           priorityCursor.close();
@@ -405,14 +388,12 @@ public class FeedDataContentProvider extends ContentProvider {
     }
     case URI_SUBSCRIPTION_ITEM: {
       table = TABLE_ITEMS;
-      where.append(FeedData.ItemColumns._ID).append('=')
-          .append(uri.getPathSegments().get(3));
+      where.append(FeedData.ItemColumns._ID).append('=').append(uri.getPathSegments().get(3));
       break;
     }
     case URI_SUBSCRIPTION_ITEMS: {
       table = TABLE_ITEMS;
-      where.append(FeedData.ItemColumns.FEED_ID).append('=')
-          .append(uri.getPathSegments().get(1));
+      where.append(FeedData.ItemColumns.FEED_ID).append('=').append(uri.getPathSegments().get(1));
       break;
     }
     case URI_ALL_ITEMS: {
@@ -423,8 +404,7 @@ public class FeedDataContentProvider extends ContentProvider {
     case URI_ITEM:
     case URI_RECENT_ITEM: {
       table = TABLE_ITEMS;
-      where.append(FeedData.ItemColumns._ID).append('=')
-          .append(uri.getPathSegments().get(1));
+      where.append(FeedData.ItemColumns._ID).append('=').append(uri.getPathSegments().get(1));
       break;
     }
     case URI_FAVORITES: {
@@ -471,12 +451,12 @@ public class FeedDataContentProvider extends ContentProvider {
 
     public DatabaseHelper(Context context, String name, int version) {
       super(context, name, null, version);
+      mContext = context;
     }
 
     @Override
     public void onCreate(SQLiteDatabase database) {
-      database.execSQL(createTable(TABLE_SUBSCRIPTIONS,
-          FeedData.SubscriptionColumns.COLUMNS,
+      database.execSQL(createTable(TABLE_SUBSCRIPTIONS, FeedData.SubscriptionColumns.COLUMNS,
           FeedData.SubscriptionColumns.TYPES));
       database.execSQL(createTable(TABLE_ITEMS, FeedData.ItemColumns.COLUMNS,
           FeedData.ItemColumns.TYPES));
@@ -493,19 +473,12 @@ public class FeedDataContentProvider extends ContentProvider {
       new Thread(new Runnable() {
         public void run() {
           try {
-            InputStream inputStream = mContext.getResources().openRawResource(
-                R.raw.feeds);
-            BufferedReader in = new BufferedReader(new InputStreamReader(
-                inputStream));
+            InputStream inputStream = mContext.getResources().openRawResource(R.raw.feeds);
+            BufferedReader in = new BufferedReader(new InputStreamReader(inputStream));
             String url, title;
-            while ((url = in.readLine()) != null
-                && (title = in.readLine()) != null) {
-              ContentValues values = new ContentValues();
-              values.put(FeedData.SubscriptionColumns.WIFIONLY, 1);
-              values.put(FeedData.SubscriptionColumns.URL, url);
-              values.put(FeedData.SubscriptionColumns.ERROR, (String) null);
-              values.put(FeedData.SubscriptionColumns.NAME, title);
-              database.insert(TABLE_SUBSCRIPTIONS, null, values);
+            while ((url = in.readLine()) != null && (title = in.readLine()) != null) {
+              database.insert(TABLE_SUBSCRIPTIONS, null,
+                  createFeedWithDefaultOptions(url, title, 1));
             }
             in.close();
             // mContext.sendBroadcast(new Intent())
@@ -516,12 +489,10 @@ public class FeedDataContentProvider extends ContentProvider {
       }).start();
     }
 
-    private String createTable(String tableName, String[] columns,
-        String[] types) {
-      if (tableName == null || columns == null || types == null
-          || types.length != columns.length || types.length == 0) {
-        throw new IllegalArgumentException(
-            "Invalid parameters for creating table " + tableName);
+    private String createTable(String tableName, String[] columns, String[] types) {
+      if (tableName == null || columns == null || types == null || types.length != columns.length
+          || types.length == 0) {
+        throw new IllegalArgumentException("Invalid parameters for creating table " + tableName);
       } else {
         StringBuilder stringBuilder = new StringBuilder("CREATE TABLE ");
         stringBuilder.append(tableName);
@@ -542,4 +513,24 @@ public class FeedDataContentProvider extends ContentProvider {
     }
   }
 
+  /**
+   * Creates the content values for a new feed with default options.
+   * 
+   * @param url
+   * @param title
+   * @param wifiOnly
+   * @return
+   */
+  public static ContentValues createFeedWithDefaultOptions(String url, String title, int wifiOnly) {
+    ContentValues values = new ContentValues();
+    values.put(FeedData.SubscriptionColumns.URL, url);
+    values.put(FeedData.SubscriptionColumns.NAME, title.trim().length() > 0 ? title : null);
+    values.put(FeedData.SubscriptionColumns.WIFIONLY, 1);
+    values.put(FeedData.SubscriptionColumns.ERROR, (String) null);
+    values.put(FeedData.SubscriptionColumns.FETCHMODE, 0);
+    values.put(FeedData.SubscriptionColumns.REALLASTUPDATE, 0);
+    values.put(FeedData.SubscriptionColumns.LASTUPDATE, 0);
+    values.put(FeedData.SubscriptionColumns.WIFIONLY, wifiOnly);
+    return values;
+  }
 }

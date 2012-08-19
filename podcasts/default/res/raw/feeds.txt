@@ -1,8 +1,64 @@
-http://www.gocnhinalan.com/feed
-Goc nhin Alan
-http://feeds.feedburner.com/talktomeinkorean
-Talk to me in Korean
+http://downloads.bbc.co.uk/podcasts/worldservice/how2/rss.xml
+6 Minute English
+http://feed.voanews.com/f/KI6AEB/YKeYXDE3HsNJ
+American Stories
+http://feeds.feedburner.com/BetterAtEnglish/PodcastsOnly
+Better at English
+http://learnenglish.org.uk/itunes/bcsw/bcsw.xml
+Big City Small World
+http://downloads.bbc.co.uk/podcasts/worldservice/bizdaily/rss.xml
+Business Daily - BBC
+http://downloads.bbc.co.uk/podcasts/radio/cr/rss.xml
+CBeebies Radio
+http://downloads.bbc.co.uk/podcasts/worldservice/ht/rss.xml
+Hard Talk - BBC
+http://downloads.bbc.co.uk/podcasts/worldservice/eaw/rss.xml
+English At Work
 http://www.eslpod.com/feed.xml
 English as a Second Language Podcast
-http://podcasts.engaadget.com/rss.xml
-Engadget
+http://feeds.feedburner.com/ElementaryPodcastSeriesAll?format=xml
+Elementary Podcast - British Council
+http://feed.voanews.com/f/KI6AEB/JZ1UKEotS_bA
+Explorations
+http://feed.voanews.com/f/KI6AEB/ByeMvAAau5cg
+Health Report
+http://downloads.bbc.co.uk/podcasts/worldservice/forum/rss.xml
+Forum - A World of Ideas
+http://feeds.feedburner.com/JustVocabulary
+Just Vocabulary
+http://downloads.bbc.co.uk/podcasts/radio4/lastword/rss.xml
+Last Word
+http://www.abc.net.au/local/podcasts/nerdzilla.xml
+Nerdzilla
+http://feed.voanews.com/f/KI6AEB/ncSi_ToL3yi
+People in America
+http://downloads.bbc.co.uk/podcasts/scotland/poetry2012/rss.xml
+Poetry 2012- The Written World
+http://feeds.feedburner.com/podcastsinenglish
+Podcasts In English
+http://feed.voanews.com/f/KI6AEB/iWYQw_v8MLli
+Science in the News - VOA
+http://abc.net.au/science/podcast/starstuff.xml
+StarStuff - ABC
+http://www.stgeorges.co.uk/blog/podcasts/feed/
+St George International
+http://englishteacherjohn.com/rss/rss.xml
+The English Teacher John Show
+http://www.npr.org/rss/podcast.php?id=510298
+TED Radio Hour Podcast
+http://theenglishdesk.podbean.com/feed
+The English Desk
+http://feed.voanews.com/f/KI6AEB/6rN5mTvs_mv6
+The Making of a Nation
+http://abc.net.au/rn/podcast/feeds/science.xml
+The Science Show - ABC
+http://downloads.bbc.co.uk/podcasts/radio4/thought/rss.xml
+Thought for the day - BBC
+http://recordings.talkshoe.com/rss21274.xml
+Talk Shoe
+http://feed.voanews.com/f/KI6AEB/kACdAH98MMFg
+Technology report
+http://feed.voanews.com/f/KI6AEB/mB8BDgQW13LS
+This is America
+http://feed.voanews.com/f/KI6AEB/TAx6FSvAJOmT
+Words and Their Stories

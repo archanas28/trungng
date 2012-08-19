@@ -25,8 +25,6 @@
 
 package com.rainmoon.podcast.service;
 
-import com.rainmoon.podcast.utils.Strings;
-
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -36,26 +34,24 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
+import android.util.Log;
+
+import com.rainmoon.podcast.utils.Strings;
 
 public class RefreshService extends Service {
   private static final String SIXTYMINUTES = "3600000";
+  private Intent mRefreshBroadcastIntent;
+  private AlarmManager mAlarmManager;
+  private PendingIntent mTimerIntent;
+  private SharedPreferences mPreferences = null;
 
-  private OnSharedPreferenceChangeListener listener = new OnSharedPreferenceChangeListener() {
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
-        String key) {
+  private OnSharedPreferenceChangeListener mListener = new OnSharedPreferenceChangeListener() {
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
       if (Strings.SETTINGS_REFRESHINTERVAL.equals(key)) {
         restartTimer();
       }
     }
   };
-
-  private Intent refreshBroadcastIntent;
-
-  private AlarmManager alarmManager;
-
-  private PendingIntent timerIntent;
-
-  private SharedPreferences preferences = null;
 
   @Override
   public IBinder onBind(Intent intent) {
@@ -76,45 +72,37 @@ public class RefreshService extends Service {
   @Override
   public void onCreate() {
     super.onCreate();
+    Log.i("RefreshService", "creating refresh service");
     try {
-      preferences = PreferenceManager
-          .getDefaultSharedPreferences(createPackageContext(Strings.PACKAGE, 0));
+      mPreferences = PreferenceManager.getDefaultSharedPreferences(createPackageContext(
+          Strings.PACKAGE, 0));
     } catch (NameNotFoundException e) {
-      preferences = PreferenceManager.getDefaultSharedPreferences(this);
+      mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
     }
-
-    refreshBroadcastIntent = new Intent(Strings.ACTION_REFRESHFEEDS);
-    alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-    preferences.registerOnSharedPreferenceChangeListener(listener);
+    mRefreshBroadcastIntent = new Intent(Strings.ACTION_REFRESHFEEDS);
+    mAlarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+    mPreferences.registerOnSharedPreferenceChangeListener(mListener);
     restartTimer();
   }
 
   private void restartTimer() {
-    if (timerIntent == null) {
-      timerIntent = PendingIntent.getBroadcast(this, 0, refreshBroadcastIntent,
-          0);
+    if (mTimerIntent == null) {
+      mTimerIntent = PendingIntent.getBroadcast(this, 0, mRefreshBroadcastIntent, 0);
     } else {
-      alarmManager.cancel(timerIntent);
+      mAlarmManager.cancel(mTimerIntent);
     }
-
-    int time = 3600000;
-
-    try {
-      time = Math.max(60000, Integer.parseInt(preferences.getString(
-          Strings.SETTINGS_REFRESHINTERVAL, SIXTYMINUTES)));
-    } catch (Exception exception) {
-
-    }
-    alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
-        10000, time, timerIntent);
+    long time = Long.parseLong(mPreferences.getString(Strings.SETTINGS_REFRESHINTERVAL,
+        SIXTYMINUTES));
+    mAlarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, 10000, time,
+        mTimerIntent);
   }
 
   @Override
   public void onDestroy() {
-    if (timerIntent != null) {
-      alarmManager.cancel(timerIntent);
+    if (mTimerIntent != null) {
+      mAlarmManager.cancel(mTimerIntent);
     }
-    preferences.unregisterOnSharedPreferenceChangeListener(listener);
+    mPreferences.unregisterOnSharedPreferenceChangeListener(mListener);
     super.onDestroy();
   }
 }

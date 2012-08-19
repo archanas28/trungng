@@ -29,15 +29,20 @@ import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.ListActivity;
 import android.content.ContentUris;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.ClipboardManager;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
@@ -54,7 +59,7 @@ import com.rainmoon.podcast.utils.StaticMethods;
 import com.rainmoon.podcast.utils.Strings;
 
 /**
- * Activity for showing list of feed items for a single subscription.
+ * Activity for showing list of feed items.
  * 
  * @author trung nguyen
  * 
@@ -75,6 +80,7 @@ public class SingleSubscriptionActivity extends ListActivity {
       FeedData.SubscriptionColumns.ICON };
 
   private Uri uri;
+  private long mFeedId;
   private SingleSubscriptionAdapter entriesListAdapter;
   private byte[] iconBytes;
 
@@ -85,10 +91,10 @@ public class SingleSubscriptionActivity extends ListActivity {
     String title = null;
     iconBytes = null;
     Intent intent = getIntent();
-    long feedId = intent.getLongExtra(FeedData.SubscriptionColumns._ID, 0);
-    if (feedId > 0) {
+    mFeedId = intent.getLongExtra(FeedData.SubscriptionColumns._ID, 0);
+    if (mFeedId > 0) {
       Cursor cursor = getContentResolver().query(
-          FeedData.SubscriptionColumns.subscriptionContentUri(feedId),
+          FeedData.SubscriptionColumns.subscriptionContentUri(mFeedId),
           FEED_PROJECTION, null, null, null);
       if (cursor.moveToFirst()) {
         title = cursor.isNull(0) ? cursor.getString(1) : cursor.getString(0);
@@ -175,13 +181,20 @@ public class SingleSubscriptionActivity extends ListActivity {
   @Override
   public boolean onPrepareOptionsMenu(Menu menu) {
     menu.setGroupVisible(R.id.menu_group_0, entriesListAdapter.getCount() > 0);
+    menu.setGroupVisible(R.id.menu_group_1, entriesListAdapter.getCount() > 0);
+    menu.setGroupVisible(R.id.menu_group_refresh, mFeedId > 0);
     return true;
   }
 
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
     switch (item.getItemId()) {
-    case R.id.option_markasread: {
+    case R.id.option_refresh1:
+      if (mFeedId > 0) {
+        refresh(String.valueOf(mFeedId));
+      }
+      break;
+    case R.id.option_markasread:
       new Thread() { // the update process takes some time
         public void run() {
           getContentResolver().update(uri,
@@ -190,7 +203,6 @@ public class SingleSubscriptionActivity extends ListActivity {
       }.start();
       entriesListAdapter.markAsRead();
       break;
-    }
     case R.id.option_markasunread: {
       new Thread() { // the update process takes some time
         public void run() {
@@ -262,6 +274,76 @@ public class SingleSubscriptionActivity extends ListActivity {
     }
 
     return true;
+  }
+
+  /**
+   * Refresh the content when menu item Refresh is selected.
+   * 
+   * @param id
+   */
+  private void refresh(String id) {
+    Log.i("SingleSubscriptionActivity", "refresh: " + id);
+    ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+    final NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+    if (networkInfo != null
+        && networkInfo.getState() == NetworkInfo.State.CONNECTED) {
+      final Intent intent = new Intent(Strings.ACTION_REFRESHFEEDS).putExtra(
+          Strings.FEEDID, id);
+      final Thread thread = new Thread() {
+        public void run() {
+          Log.i("SingleSubscriptionAct",
+              "sendig intent " + intent.getStringExtra(Strings.FEEDID));
+          sendBroadcast(intent);
+        }
+      };
+
+      if (networkInfo.getType() == ConnectivityManager.TYPE_WIFI
+          || PreferenceManager.getDefaultSharedPreferences(this).getBoolean(
+              Strings.SETTINGS_OVERRIDEWIFIONLY, false)) {
+        intent.putExtra(Strings.SETTINGS_OVERRIDEWIFIONLY, true);
+        thread.start();
+      } else {
+        Cursor cursor = getContentResolver().query(
+            FeedData.SubscriptionColumns.subscriptionContentUri(id),
+            new String[] { FeedData.SubscriptionColumns.WIFIONLY }, null, null,
+            null);
+
+        cursor.moveToFirst();
+
+        if (cursor.isNull(0) || cursor.getInt(0) == 0) {
+          thread.start();
+        } else {
+          Builder builder = new AlertDialog.Builder(this);
+
+          builder.setIcon(android.R.drawable.ic_dialog_alert);
+          builder.setTitle(R.string.dialog_hint);
+          builder.setMessage(R.string.question_refreshwowifi);
+          builder.setPositiveButton(android.R.string.yes,
+              new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                  intent.putExtra(Strings.SETTINGS_OVERRIDEWIFIONLY, true);
+                  thread.start();
+                }
+              });
+          builder.setNeutralButton(R.string.button_alwaysokforall,
+              new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                  PreferenceManager
+                      .getDefaultSharedPreferences(
+                          SingleSubscriptionActivity.this).edit()
+                      .putBoolean(Strings.SETTINGS_OVERRIDEWIFIONLY, true)
+                      .commit();
+                  intent.putExtra(Strings.SETTINGS_OVERRIDEWIFIONLY, true);
+                  thread.start();
+                }
+              });
+          builder.setNegativeButton(android.R.string.no, null);
+          builder.show();
+        }
+        cursor.close();
+      }
+
+    }
   }
 
   @Override

@@ -41,14 +41,14 @@ public final class Strings {
   public static final String SETTINGS_BLACKTHEME = "blacktheme";
   public static final String SETTINGS_FONTSIZE = "fontsize";
 
-  public static final String SETTINGS_DISABLEPICTURES = "pictures.disable";
-  public static final String SETTINGS_OVERRIDEWIFIONLY = "overridewifionly";
-  public static final String SETTINGS_ENCLOSUREWARNINGSENABLED = "enclosurewarnings.enabled";
+  public static final String SETTINGS_DISABLEPICTURES = "com.rainmoon.podcast.pictures.disable";
+  public static final String SETTINGS_OVERRIDEWIFIONLY = "com.rainmoon.podcast.overridewifionly";
+  public static final String SETTINGS_ENCLOSUREWARNINGSENABLED = "com.rainmoon.podcast.enclosurewarnings.enabled";
 
   public static final String ACTION_REFRESHFEEDS = "com.rainmoon.podcast.REFRESH";
   public static final String ACTION_RESTART = "com.rainmoon.podcast.RESTART";
 
-  public static final String FEEDID = "feedid";
+  public static final String FEEDID = "com.rainmoon.podcast.feedid";
   public static final String DB_ISNULL = " IS NULL";
   public static final String DB_DESC = " DESC";
   public static final String DB_ARG = "=?";
@@ -142,5 +142,6 @@ public final class Strings {
   public static final String LISTEN_WEEK_MILLIS = "listen.week.millis";
   public static final String WEEK_RESETED = "listen.week.reseted";
   public static final String MONTH_RESETED = "listen.month.reseted";
+  public static final String PREFERENCE_CURRENT_URI = "com.rainmoon.podcast.pref.current_uri";
 
 }
