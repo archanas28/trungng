@@ -38,7 +38,6 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
@@ -48,16 +47,14 @@ import com.rainmoon.podcast.FeedItemActivity2;
 import com.rainmoon.podcast.FeedItemActivity2.OnPlayButtonClickedListener;
 import com.rainmoon.podcast.R;
 import com.rainmoon.podcast.utils.StaticMethods;
+import com.rainmoon.podcast.utils.Strings;
 
 /**
  * Main activity: shows media player buttons. This activity shows the media
  * player buttons and lets the user click them. No media handling is done here
  * -- everything is done by passing Intents to our {@link MusicService}.
  * */
-public class CuteMediaPlayer extends Fragment implements
-    OnPlayButtonClickedListener {
-  public static final String SEEK_CHANGE = "com.rainmoon.podcast.SEEK_CHANGE";
-  public static final String PLAY_URL = "com.rainmoon.podcast.PLAY_URL";
+public class CuteMediaPlayer extends Fragment implements OnPlayButtonClickedListener {
 
   private static final int SHOW_PROGRESS = 2;
 
@@ -67,7 +64,7 @@ public class CuteMediaPlayer extends Fragment implements
   private boolean mIsBound;
 
   private View mControlerLayout;
-  private ProgressBar mProgress;
+  private SeekBar mSeekBar;
   private TextView mEndTime, mCurrentTime;
   private boolean mDragging = false;
 
@@ -93,9 +90,8 @@ public class CuteMediaPlayer extends Fragment implements
   };
 
   void doBindService() {
-    mIsBound = getActivity().bindService(
-        new Intent(this.getActivity(), MusicService.class), mConnection,
-        Context.BIND_AUTO_CREATE);
+    mIsBound = getActivity().bindService(new Intent(this.getActivity(), MusicService.class),
+        mConnection, Context.BIND_AUTO_CREATE);
   }
 
   void doUnbindService() {
@@ -113,11 +109,10 @@ public class CuteMediaPlayer extends Fragment implements
   }
 
   @Override
-  public View onCreateView(LayoutInflater inflater, ViewGroup container,
-      Bundle savedInstanceState) {
+  public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     super.onCreateView(inflater, container, savedInstanceState);
-    LinearLayout view = (LinearLayout) inflater.inflate(
-        R.layout.fragment_podcast, container, false);
+    LinearLayout view = (LinearLayout) inflater
+        .inflate(R.layout.fragment_podcast, container, false);
     mMediaController = makeControllerView();
     view.addView(mMediaController);
     mMediaController.setVisibility(View.VISIBLE);
@@ -136,15 +131,14 @@ public class CuteMediaPlayer extends Fragment implements
   @Override
   public void onPlayClicked(String url) {
     if (StaticMethods.checkConnection(getActivity())) {
-      Intent intent = new Intent(MusicService.ACTION_PLAY);
-      intent.putExtra(CuteMediaPlayer.PLAY_URL, url);
+      Intent intent = new Intent(Strings.ACTION_PLAY);
+      intent.putExtra(Strings.PLAY_URL, url);
       getActivity().startService(intent);
       doBindService();
       if (mPauseButton != null)
         mPauseButton.setImageResource(android.R.drawable.ic_media_pause);
       updatePausePlay(null);
-      Toast.makeText(getActivity(), R.string.preparing, Toast.LENGTH_LONG)
-          .show();
+      Toast.makeText(getActivity(), R.string.preparing, Toast.LENGTH_LONG).show();
     }
   }
 
@@ -174,19 +168,13 @@ public class CuteMediaPlayer extends Fragment implements
     mStopButton.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
-        getActivity().startService(new Intent(MusicService.ACTION_STOP));
+        getActivity().startService(new Intent(Strings.ACTION_STOP));
         resetMediaController();
       }
     });
-    mProgress = (ProgressBar) mControlerLayout
-        .findViewById(R.id.mc_progressbar);
-    if (mProgress != null) {
-      if (mProgress instanceof SeekBar) {
-        SeekBar seeker = (SeekBar) mProgress;
-        seeker.setOnSeekBarChangeListener(mSeekListener);
-      }
-      mProgress.setMax(1000);
-    }
+    mSeekBar = (SeekBar) mControlerLayout.findViewById(R.id.mc_seekbar);
+    mSeekBar.setOnSeekBarChangeListener(mSeekListener);
+    mSeekBar.setMax(1000);
 
     mFormatBuilder = new StringBuilder();
     mFormatter = new Formatter(mFormatBuilder, Locale.getDefault());
@@ -222,8 +210,7 @@ public class CuteMediaPlayer extends Fragment implements
 
     mFormatBuilder.setLength(0);
     if (hours > 0) {
-      return mFormatter.format("%d:%02d:%02d", hours, minutes, seconds)
-          .toString();
+      return mFormatter.format("%d:%02d:%02d", hours, minutes, seconds).toString();
     } else {
       return mFormatter.format("%02d:%02d", minutes, seconds).toString();
     }
@@ -231,9 +218,9 @@ public class CuteMediaPlayer extends Fragment implements
 
   private void resetMediaController() {
     try {
-      if (mProgress != null) {
-        mProgress.setProgress(0);
-        mProgress.setSecondaryProgress(0);
+      if (mSeekBar != null) {
+        mSeekBar.setProgress(0);
+        mSeekBar.setSecondaryProgress(0);
       }
       mCurrentTime.setText(stringForTime(0));
       mEndTime.setText(stringForTime(0));
@@ -252,15 +239,14 @@ public class CuteMediaPlayer extends Fragment implements
     if (player != null && player.isPlaying()) {
       int position = player.getCurrentPosition();
       int duration = player.getDuration();
-      if (mProgress != null) {
+      if (mSeekBar != null) {
         if (duration > 0) {
           // use long to avoid overflow
           long pos = 1000L * position / duration;
-          mProgress.setProgress((int) pos);
+          mSeekBar.setProgress((int) pos);
         }
-        int percent = (player.getCurrentPosition() * 100)
-            / player.getDuration();
-        mProgress.setSecondaryProgress(percent * 10);
+        int percent = (player.getCurrentPosition() * 100) / player.getDuration();
+        mSeekBar.setSecondaryProgress(percent * 10);
       }
 
       if (mEndTime != null)
@@ -280,8 +266,7 @@ public class CuteMediaPlayer extends Fragment implements
     int keyCode = event.getKeyCode();
     final boolean uniqueDown = event.getRepeatCount() == 0
         && event.getAction() == KeyEvent.ACTION_DOWN;
-    if (keyCode == KeyEvent.KEYCODE_HEADSETHOOK
-        || keyCode == KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE
+    if (keyCode == KeyEvent.KEYCODE_HEADSETHOOK || keyCode == KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE
         || keyCode == KeyEvent.KEYCODE_SPACE) {
       if (uniqueDown) {
         doPauseResume();
@@ -296,15 +281,13 @@ public class CuteMediaPlayer extends Fragment implements
         updatePausePlay(player);
       }
       return true;
-    } else if (keyCode == KeyEvent.KEYCODE_MEDIA_STOP
-        || keyCode == KeyEvent.KEYCODE_MEDIA_PAUSE) {
+    } else if (keyCode == KeyEvent.KEYCODE_MEDIA_STOP || keyCode == KeyEvent.KEYCODE_MEDIA_PAUSE) {
       if (uniqueDown && player.isPlaying()) {
         // TODO start service for pause
         updatePausePlay(player);
       }
       return true;
-    } else if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN
-        || keyCode == KeyEvent.KEYCODE_VOLUME_UP
+    } else if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN || keyCode == KeyEvent.KEYCODE_VOLUME_UP
         || keyCode == KeyEvent.KEYCODE_VOLUME_MUTE) {
       // don't show the controls for volume adjustment
       return false;
@@ -338,12 +321,12 @@ public class CuteMediaPlayer extends Fragment implements
       if (player == null) {
         onPlayClicked(context.getPlayUrl());
       } else if (player.isPlaying()) {
-        context.startService(new Intent(MusicService.ACTION_PAUSE));
+        context.startService(new Intent(Strings.ACTION_PAUSE));
         mPauseButton.setImageResource(R.drawable.ic_media_play);
       } else {
-        Intent intent = new Intent(MusicService.ACTION_PLAY);
-        intent.putExtra(CuteMediaPlayer.PLAY_URL, context.getPlayUrl());
-        context.startService(new Intent(MusicService.ACTION_PLAY));
+        Intent intent = new Intent(Strings.ACTION_PLAY);
+        intent.putExtra(Strings.PLAY_URL, context.getPlayUrl());
+        context.startService(new Intent(Strings.ACTION_PLAY));
         mPauseButton.setImageResource(R.drawable.ic_media_pause);
       }
     } catch (Exception e) {
@@ -353,8 +336,8 @@ public class CuteMediaPlayer extends Fragment implements
   }
 
   private void doSeek(int change) {
-    Intent intent = new Intent(MusicService.ACTION_SEEK);
-    intent.putExtra(CuteMediaPlayer.SEEK_CHANGE, change);
+    Intent intent = new Intent(Strings.ACTION_SEEK);
+    intent.putExtra(Strings.SEEK_CHANGE, change);
     getActivity().startService(intent);
     setProgress(null);
   }

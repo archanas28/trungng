@@ -100,7 +100,7 @@ public class AlwaysOnMediaController extends FrameLayout {
     mRewButton = (ImageButton) v.findViewById(R.id.btn_rw);
     mRewButton.setOnClickListener(mRewListener);
 
-    mProgress = (ProgressBar) v.findViewById(R.id.mc_progressbar);
+    mProgress = (ProgressBar) v.findViewById(R.id.mc_seekbar);
     if (mProgress != null) {
       if (mProgress instanceof SeekBar) {
         SeekBar seeker = (SeekBar) mProgress;

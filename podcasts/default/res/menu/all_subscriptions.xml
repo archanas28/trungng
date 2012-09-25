@@ -12,14 +12,14 @@
         android:showAsAction="ifRoom"
         android:title="@string/option_refresh"/>
     <item
+        android:id="@+id/option_settings"
+        android:icon="@drawable/ic_menu_preferences"
+        android:title="@string/option_settings"/>
+    <item
         android:id="@+id/option_import"
         android:title="@string/option_import"/>
     <item
         android:id="@+id/option_export"
         android:title="@string/option_export"/>
-    <item
-        android:id="@+id/option_settings"
-        android:icon="@drawable/ic_menu_preferences"
-        android:title="@string/option_settings"/>
 
 </menu>

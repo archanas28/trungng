@@ -14,8 +14,6 @@ import android.view.MenuItem;
  */
 public class HomeActivity extends FragmentActivity {
 
-  public static final String APPLICATION_SHARED_PREFERENCES = "com.rainmoon.podcast.SHARED_PREFERENCES";
-
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);

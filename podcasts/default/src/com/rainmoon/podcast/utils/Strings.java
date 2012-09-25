@@ -29,6 +29,11 @@ import com.rainmoon.podcast.provider.FeedData;
 
 public final class Strings {
   public static final String PACKAGE = "com.rainmoon.podcast";
+  public static final String APPLICATION_SHARED_PREFERENCES = "com.rainmoon.podcast.SHARED_PREFERENCES";
+  public static final String PREFERENCE_DATABASE_READY = "com.rainmoon.podcast.pref.database_ready";
+
+  public static final String INTENT_DATABASE_READY = "database.ready";
+
   public static final String SETTINGS_REFRESHINTERVAL = "refresh.interval";
   public static final String SETTINGS_NOTIFICATIONSENABLED = "notifications.enabled";
   public static final String SETTINGS_REFRESHENABLED = "refresh.enabled";
@@ -49,14 +54,27 @@ public final class Strings {
   public static final String ACTION_RESTART = "com.rainmoon.podcast.RESTART";
 
   public static final String FEEDID = "com.rainmoon.podcast.feedid";
+
+  public static final String SEEK_CHANGE = "com.rainmoon.podcast.SEEK_CHANGE";
+  public static final String PLAY_URL = "com.rainmoon.podcast.PLAY_URL";
+  public static final String ACTION_TOGGLE_PLAYBACK = "com.rainmoon.podcast.musicplayer.action.TOGGLE_PLAYBACK";
+  public static final String ACTION_PLAY = "com.rainmoon.podcast.musicplayer.action.PLAY";
+  public static final String ACTION_PAUSE = "com.rainmoon.podcast.musicplayer.action.PAUSE";
+  public static final String ACTION_STOP = "com.rainmoon.podcast.musicplayer.action.STOP";
+  public static final String ACTION_SEEK = "com.rainmoon.podcast.musicplayer.action.SEEK";
+
+  public static final String EXTRA_SHOWREAD = "com.rainmoon.podcast.show_read";
+  public static final String EXTRA_SHOWFEEDINFO = "com.rainmoon.podcast.show_feedinfo";
+  public static final String EXTRA_AUTORELOAD = "com.rainmoon.podcast.autoreload";
+
   public static final String DB_ISNULL = " IS NULL";
   public static final String DB_DESC = " DESC";
   public static final String DB_ARG = "=?";
   public static final String DB_AND = " AND ";
 
-  public static final String DB_EXCUDEFAVORITE = new StringBuilder(
-      FeedData.ItemColumns.FAVORITE).append(Strings.DB_ISNULL).append(" OR ")
-      .append(FeedData.ItemColumns.FAVORITE).append("=0").toString();
+  public static final String DB_EXCUDEFAVORITE = new StringBuilder(FeedData.ItemColumns.FAVORITE)
+      .append(Strings.DB_ISNULL).append(" OR ").append(FeedData.ItemColumns.FAVORITE).append("=0")
+      .toString();
 
   public static final String EMPTY = "";
 
@@ -110,8 +128,7 @@ public final class Strings {
 
   public static final String FALSE = "false";
 
-  public static final String READDATE_GREATERZERO = FeedData.ItemColumns.READDATE
-      + ">0";
+  public static final String READDATE_GREATERZERO = FeedData.ItemColumns.READDATE + ">0";
 
   public static final String COUNT = "count";
 

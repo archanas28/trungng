@@ -11,7 +11,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.text.format.DateUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,13 +32,11 @@ import com.rainmoon.podcast.utils.Strings;
 public class NavigationFragment extends ListFragment {
 
   private SharedPreferences mPrefs;
-  private static final int LOW_ACTIVITY = 10;
   private static final int MEDIUM_ACTIVITY = 50;
   private static final int HIGH_ACTIVITY = 100;
 
   @Override
-  public View onCreateView(LayoutInflater inflater, ViewGroup container,
-      Bundle savedInstanceState) {
+  public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     super.onCreateView(inflater, container, savedInstanceState);
     // we don't want the default onCreateView that returns only a ListView
     // as we want to supply the empty text
@@ -50,66 +47,48 @@ public class NavigationFragment extends ListFragment {
   public void onActivityCreated(Bundle savedInstanceState) {
     // onCreateView() calls this method so the view and activity is ready
     super.onActivityCreated(savedInstanceState);
-    TextView header = (TextView) getActivity().getLayoutInflater().inflate(
-        R.layout.header, null);
+    TextView header = (TextView) getActivity().getLayoutInflater().inflate(R.layout.header, null);
     header.setText(R.string.home);
     getListView().addHeaderView(header);
 
     List<String> navigation = new ArrayList<String>();
     final String all = getResources().getString(R.string.all_items);
     final String favorites = getResources().getString(R.string.favorites);
-    final String recentlyViewed = getResources().getString(
-        R.string.recently_viewed);
-    final String subscriptions = getResources().getString(
-        R.string.subscriptions);
+    final String recentlyViewed = getResources().getString(R.string.recently_viewed);
+    final String subscriptions = getResources().getString(R.string.subscriptions);
     final String summary = getResources().getString(R.string.listen_summary);
 
     // TODO: add explore for 2nd release
+    navigation.add(subscriptions);
     navigation.add(all);
     navigation.add(favorites);
     navigation.add(recentlyViewed);
-    navigation.add(subscriptions);
     navigation.add(summary);
     // have to setListAdapter() here
-    setListAdapter(new ArrayAdapter<String>(getActivity(),
-        R.layout.navigation_item, navigation));
+    setListAdapter(new ArrayAdapter<String>(getActivity(), R.layout.navigation_item, navigation));
 
     getListView().setOnItemClickListener(new OnItemClickListener() {
-      public void onItemClick(AdapterView<?> list, View view, int arg2,
-          long arg3) {
-        try {
-          TextView item = (TextView) view;
-          Intent intent = null;
-          String text = item.getText().toString();
-          if (text.equals(subscriptions)) {
-            intent = new Intent(getActivity(), AllSubscriptionsActivity.class);
-          } else if (text.equals(summary)) {
-            showSummaryDialog();
-          } else {
-            if (text.equals(all)) {
-              // this intent starts the ItemsListActivity with all items
-              intent = new Intent(Intent.ACTION_VIEW,
-                  FeedData.ItemColumns.ALL_ITEMS_CONTENT_URI);
-            } else if (text.equals(favorites)) {
-              // this intent starts the ItemsListAcitivty with favorite items
-              intent = new Intent(Intent.ACTION_VIEW,
-                  FeedData.ItemColumns.FAVORITES_CONTENT_URI);
-            } else if (text.equals(recentlyViewed)) {
-              intent = new Intent(Intent.ACTION_VIEW,
-                  FeedData.ItemColumns.RECENTLY_VIEWED_CONTENT_URI);
-            }
-            if (intent != null) {
-              intent.putExtra(SingleSubscriptionActivity.EXTRA_SHOWFEEDINFO,
-                  true);
-              intent
-                  .putExtra(SingleSubscriptionActivity.EXTRA_AUTORELOAD, true);
-            }
+      public void onItemClick(AdapterView<?> list, View view, int arg2, long arg3) {
+        TextView item = (TextView) view;
+        Intent intent = null;
+        String text = item.getText().toString();
+        if (text.equals(subscriptions)) {
+          intent = new Intent(getActivity(), AllSubscriptionsActivity.class);
+        } else if (text.equals(summary)) {
+          showSummaryDialog();
+        } else {
+          intent = new Intent(getActivity().getApplicationContext(),
+              SingleSubscriptionActivity.class);
+          if (text.equals(all)) {
+            intent.setData(FeedData.ItemColumns.ALL_ITEMS_CONTENT_URI);
+          } else if (text.equals(favorites)) {
+            intent.setData(FeedData.ItemColumns.FAVORITES_CONTENT_URI);
+          } else if (text.equals(recentlyViewed)) {
+            intent.setData(FeedData.ItemColumns.RECENTLY_VIEWED_CONTENT_URI);
           }
-          if (intent != null) {
-            startActivity(intent);
-          }
-        } catch (ClassCastException e) {
-          Log.w("NavigationFragment", "List item is not text view");
+        }
+        if (intent != null) {
+          startActivity(intent);
         }
       }
     });
@@ -117,22 +96,17 @@ public class NavigationFragment extends ListFragment {
 
   private void showSummaryDialog() {
     Context context = getActivity();
-    mPrefs = context.getSharedPreferences(
-        HomeActivity.APPLICATION_SHARED_PREFERENCES, 0);
+    mPrefs = context.getSharedPreferences(Strings.APPLICATION_SHARED_PREFERENCES, 0);
     Dialog dialog = new Dialog(context);
     dialog.setTitle(R.string.title_summary);
     dialog.setContentView(R.layout.dialog_summary);
-    setWeekSummary(context,
-        (TextView) dialog.findViewById(R.id.cnt_week_items),
+    setWeekSummary(context, (TextView) dialog.findViewById(R.id.cnt_week_items),
         (TextView) dialog.findViewById(R.id.cnt_week_hours));
-    setMonthSummary(context,
-        (TextView) dialog.findViewById(R.id.cnt_month_items),
+    setMonthSummary(context, (TextView) dialog.findViewById(R.id.cnt_month_items),
         (TextView) dialog.findViewById(R.id.cnt_month_hours));
-    setTotalSummary(context,
-        (TextView) dialog.findViewById(R.id.cnt_total_items),
+    setTotalSummary(context, (TextView) dialog.findViewById(R.id.cnt_total_items),
         (TextView) dialog.findViewById(R.id.cnt_total_hours));
-    setAverageSummary(context,
-        (TextView) dialog.findViewById(R.id.cnt_average_items),
+    setAverageSummary(context, (TextView) dialog.findViewById(R.id.cnt_average_items),
         (TextView) dialog.findViewById(R.id.cnt_average_hours));
     dialog.setCanceledOnTouchOutside(true);
 
@@ -142,12 +116,10 @@ public class NavigationFragment extends ListFragment {
   /**
    * Average items and hours listened daily
    */
-  private void setAverageSummary(Context context, TextView itemview,
-      TextView hourview) {
+  private void setAverageSummary(Context context, TextView itemview, TextView hourview) {
     long currentTime = new Date().getTime();
     long startTime = mPrefs.getLong(Strings.LISTEN_START_TIME, currentTime);
-    float elapsedDays = ((float) currentTime - startTime)
-        / DateUtils.DAY_IN_MILLIS + 1;
+    float elapsedDays = ((float) currentTime - startTime) / DateUtils.DAY_IN_MILLIS + 1;
     int totalItems = mPrefs.getInt(Strings.LISTEN_TOTAL_ITEMS, 0);
     float itemsPerDay = totalItems / elapsedDays;
     long totalMillis = mPrefs.getLong(Strings.LISTEN_TOTAL_MILLIS, 0);
@@ -159,8 +131,7 @@ public class NavigationFragment extends ListFragment {
     hourview.setTextColor(getColorView(context, hoursPerDay * 2));
   }
 
-  private void setMonthSummary(Context context, TextView itemview,
-      TextView hourview) {
+  private void setMonthSummary(Context context, TextView itemview, TextView hourview) {
     int totalItems = mPrefs.getInt(Strings.LISTEN_MONTH_ITEMS, 0);
     long totalMillis = mPrefs.getLong(Strings.LISTEN_MONTH_MILLIS, 0);
     float totalHours = ((float) totalMillis) / DateUtils.HOUR_IN_MILLIS;
@@ -173,8 +144,7 @@ public class NavigationFragment extends ListFragment {
   /**
    * Total items and hours listened so far.
    */
-  private void setTotalSummary(Context context, TextView itemview,
-      TextView hourview) {
+  private void setTotalSummary(Context context, TextView itemview, TextView hourview) {
     int totalItems = mPrefs.getInt(Strings.LISTEN_TOTAL_ITEMS, 0);
     long totalMillis = mPrefs.getLong(Strings.LISTEN_TOTAL_MILLIS, 0);
     float totalHours = ((float) totalMillis) / DateUtils.HOUR_IN_MILLIS;
@@ -184,8 +154,7 @@ public class NavigationFragment extends ListFragment {
     hourview.setTextColor(getColorView(context, totalHours * 2));
   }
 
-  private void setWeekSummary(Context context, TextView itemview,
-      TextView hourview) {
+  private void setWeekSummary(Context context, TextView itemview, TextView hourview) {
     int totalItems = mPrefs.getInt(Strings.LISTEN_WEEK_ITEMS, 0);
     long totalMillis = mPrefs.getLong(Strings.LISTEN_WEEK_MILLIS, 0);
     float totalHours = ((float) totalMillis) / DateUtils.HOUR_IN_MILLIS;
@@ -201,7 +170,7 @@ public class NavigationFragment extends ListFragment {
     } else if (value >= MEDIUM_ACTIVITY) {
       return context.getResources().getColor(R.color.color_blue);
     } else {
-      return context.getResources().getColor(R.color.color_black); 
+      return context.getResources().getColor(R.color.color_black);
     }
   }
 }

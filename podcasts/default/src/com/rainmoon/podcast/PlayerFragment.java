@@ -26,16 +26,13 @@ import android.widget.MediaController.MediaPlayerControl;
 import android.widget.Toast;
 
 import com.rainmoon.podcast.FeedItemActivity.OnConfigurationChangedListener;
-import com.rainmoon.podcast.FeedItemActivity.OnPlayButtonClickedListener;
+import com.rainmoon.podcast.FeedItemActivity2.OnPlayButtonClickedListener;
 import com.rainmoon.podcast.receiver.NetworkReceiver;
 import com.rainmoon.podcast.utils.StaticMethods;
 import com.rainmoon.podcast.utils.Strings;
 
 /**
  * Fragment showing the Podcast player.
- * 
- * TODO(trung): make this a service (play in background) in later release if
- * neccessary
  * 
  * @author trung nguyen
  * 
@@ -98,7 +95,7 @@ public class PlayerFragment extends Fragment implements
    */
   private void updateListenCount(int duration) {
     SharedPreferences prefs = getActivity().getSharedPreferences(
-        HomeActivity.APPLICATION_SHARED_PREFERENCES, 0);
+        Strings.APPLICATION_SHARED_PREFERENCES, 0);
     Editor prefEditor = prefs.edit();
     long startTime = prefs.getLong(Strings.LISTEN_START_TIME, -1);
     Calendar calendar = Calendar.getInstance();

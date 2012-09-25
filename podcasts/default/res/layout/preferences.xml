@@ -31,12 +31,6 @@
             android:key="overridewifionly"
             android:summary="@string/settings_overridewifionly_description"
             android:title="@string/settings_overridewifionly" />
-
-        <CheckBoxPreference
-            android:defaultValue="true"
-            android:key="enclosurewarnings.enabled"
-            android:summary="@string/settings_enclosuredownloadwarning_description"
-            android:title="@string/settings_enclosuredownloadwarning" />
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/settings_category_contentpresentation" >
@@ -46,6 +40,19 @@
             android:key="contentpresentation.prioritize"
             android:summary="@string/settings_prioritize_description"
             android:title="@string/settings_prioritize" />
+
+        <ListPreference
+            android:name="@string/settings_fontsize"
+            android:defaultValue="0"
+            android:entries="@array/settings_fontsizes"
+            android:entryValues="@array/settings_fontsizevalues"
+            android:key="fontsize"
+            android:numeric="integer"
+            android:summary="@string/settings_fontsize_description"
+            android:title="@string/settings_fontsize" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/settings_category_download" >
 
         <CheckBoxPreference
             android:defaultValue="false"
@@ -61,15 +68,11 @@
             android:summary="@string/settings_fetchpictures_description"
             android:title="@string/settings_fetchpictures" />
 
-        <ListPreference
-            android:name="@string/settings_fontsize"
-            android:defaultValue="0"
-            android:entries="@array/settings_fontsizes"
-            android:entryValues="@array/settings_fontsizevalues"
-            android:key="fontsize"
-            android:numeric="integer"
-            android:summary="@string/settings_fontsize_description"
-            android:title="@string/settings_fontsize" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="enclosurewarnings.enabled"
+            android:summary="@string/settings_enclosuredownloadwarning_description"
+            android:title="@string/settings_enclosuredownloadwarning" />
     </PreferenceCategory>
 
 </PreferenceScreen>

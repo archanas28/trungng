@@ -30,8 +30,6 @@ http://downloads.bbc.co.uk/podcasts/radio4/lastword/rss.xml
 Last Word
 http://www.abc.net.au/local/podcasts/nerdzilla.xml
 Nerdzilla
-http://feed.voanews.com/f/KI6AEB/ncSi_ToL3yi
-People in America
 http://downloads.bbc.co.uk/podcasts/scotland/poetry2012/rss.xml
 Poetry 2012- The Written World
 http://feeds.feedburner.com/podcastsinenglish

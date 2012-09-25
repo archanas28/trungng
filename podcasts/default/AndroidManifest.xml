@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.rainmoon.podcast"
     android:installLocation="auto"
-    android:versionCode="1"
-    android:versionName="1.0" >
+    android:versionCode="2"
+    android:versionName="1.0.1" >
 
     <uses-sdk
         android:minSdkVersion="8"
@@ -60,58 +60,15 @@
         <activity
             android:name=".SingleSubscriptionActivity"
             android:launchMode="singleTask" >
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-
-                <data android:mimeType="vnd.android.cursor.dir/vnd.feeddata.entry" />
-            </intent-filter>
         </activity>
-        <!--
-        <activity
-            android:name=".FeedItemActivity"
-            android:alwaysRetainTaskState="true"
-            android:launchMode="singleTask" >
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-
-                <data android:mimeType="vnd.android.cursor.item/vnd.feeddata.entry" />
-            </intent-filter>
-        </activity>
-        -->
         <activity
             android:name=".FeedItemActivity2"
             android:alwaysRetainTaskState="true"
             android:launchMode="singleTask" >
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-
-                <data android:mimeType="vnd.android.cursor.item/vnd.feeddata.entry" />
-            </intent-filter>
         </activity>
         <activity android:name=".preference.PreferencesActivityCompatability" />
         <activity android:name=".preference.PreferencesActivityV11" />
-        <activity android:name=".EditSubscriptionActivity" >
-            <intent-filter>
-                <action android:name="android.intent.action.EDIT" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-
-                <data android:mimeType="vnd.android.cursor.item/vnd.feeddata.feed" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.INSERT" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-
-                <data android:mimeType="vnd.android.cursor.dir/vnd.feeddata.feed" />
-            </intent-filter>
-        </activity>
+        <activity android:name=".EditSubscriptionActivity" />
 
         <service
             android:name=".musicplayer.MusicService"
@@ -126,13 +83,17 @@
         </service>
         <service android:name=".service.RefreshService" >
         </service>
-        <service android:name=".service.FetcherService" >
+        <service
+            android:name=".service.FetcherService"
+            android:exported="false" >
             <intent-filter>
                 <action android:name="com.rainmoon.podcast.REFRESH" />
             </intent-filter>
         </service>
 
-        <receiver android:name=".receiver.RefreshBroadcastReceiver" >
+        <receiver
+            android:name=".receiver.RefreshBroadcastReceiver"
+            android:exported="false" >
             <intent-filter>
                 <action android:name="com.rainmoon.podcast.REFRESH" />
             </intent-filter>

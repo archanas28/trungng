@@ -44,7 +44,6 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.text.ClipboardManager;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -70,6 +69,7 @@ import com.rainmoon.podcast.utils.Strings;
  * @author trung nguyen
  * 
  */
+@Deprecated
 public class FeedItemActivity extends FragmentActivity implements
     OnPlayerFragmentListener {
 

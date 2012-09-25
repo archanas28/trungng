@@ -34,6 +34,7 @@ import android.content.ContentProvider;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.SQLException;
@@ -42,6 +43,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.os.Environment;
+import android.preference.PreferenceManager;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 
 import com.rainmoon.podcast.R;
@@ -49,21 +52,21 @@ import com.rainmoon.podcast.utils.Strings;
 
 /**
  * Implementation of the internal database that stores the data and also
- * providing externel access via the interface of content provider.
+ * providing external access via the interface of content provider.
  * 
  * @author trung nguyen
  * 
  */
 public class FeedDataContentProvider extends ContentProvider {
-  private static final String FOLDER = Environment.getExternalStorageDirectory() + "/podcast/";
+  private static final String FOLDER = Environment.getExternalStorageDirectory() + "/frpodcast/";
   public static final String IMAGEFOLDER = Environment.getExternalStorageDirectory()
-      + "/podcast/images/";
+      + "/frpodcast/images/";
   public static final File IMAGEFOLDER_FILE = new File(IMAGEFOLDER);
 
   private static final String BACKUPOPML = Environment.getExternalStorageDirectory()
-      + "/podcast/backup.opml";
+      + "/frpodcast/backup.opml";
 
-  private static final String DATABASE_NAME = "podcast.db";
+  private static final String DATABASE_NAME = "frpodcast.db";
   private static final int DATABASE_VERSION = 1;
   // store Subscriptions
   protected static final String TABLE_SUBSCRIPTIONS = "feeds";
@@ -117,7 +120,6 @@ public class FeedDataContentProvider extends ContentProvider {
       + ")" };
 
   @Override
-  // TODO(trung): this should only be applicable to some of the uris
   public int delete(Uri uri, String selection, String[] selectionArgs) {
     int option = uriMatcher.match(uri);
     String table = null;
@@ -428,7 +430,7 @@ public class FeedDataContentProvider extends ContentProvider {
       if (table == TABLE_SUBSCRIPTIONS
           && (values.containsKey(FeedData.SubscriptionColumns.NAME)
               || values.containsKey(FeedData.SubscriptionColumns.URL) || values
-              .containsKey(FeedData.SubscriptionColumns.PRIORITY))) {
+                .containsKey(FeedData.SubscriptionColumns.PRIORITY))) {
         OPML.exportToFile(BACKUPOPML, database);
       }
       if (count > 0) {
@@ -474,14 +476,17 @@ public class FeedDataContentProvider extends ContentProvider {
         public void run() {
           try {
             InputStream inputStream = mContext.getResources().openRawResource(R.raw.feeds);
-            BufferedReader in = new BufferedReader(new InputStreamReader(inputStream));
+            BufferedReader in = new BufferedReader(new InputStreamReader(inputStream, "utf-8"));
             String url, title;
             while ((url = in.readLine()) != null && (title = in.readLine()) != null) {
               database.insert(TABLE_SUBSCRIPTIONS, null,
                   createFeedWithDefaultOptions(url, title, 1));
             }
             in.close();
-            // mContext.sendBroadcast(new Intent())
+            PreferenceManager.getDefaultSharedPreferences(mContext).edit()
+                .putBoolean(Strings.PREFERENCE_DATABASE_READY, true).commit();
+            LocalBroadcastManager.getInstance(mContext).sendBroadcast(
+                new Intent(Strings.INTENT_DATABASE_READY));
           } catch (Exception e) {
             e.printStackTrace();
           }

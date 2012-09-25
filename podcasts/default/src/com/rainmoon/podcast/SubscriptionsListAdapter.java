@@ -34,76 +34,59 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
-import android.os.Handler;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.view.View;
-import android.widget.ResourceCursorAdapter;
 import android.widget.TextView;
 
 import com.rainmoon.podcast.provider.FeedData;
-import com.rainmoon.podcast.utils.SimpleTask;
 
 /**
  * Adapter for {@link AllSubscriptionsFragment}.
  * 
- * This adapter is deprecated. Use {@link SubscriptionsListAdapter} which do the loading of 
- * content asynchronously.
- * 
  * @author trung nguyen
  * 
  */
-@Deprecated
-public class AllSubscriptionsListAdapter extends ResourceCursorAdapter {
+public class SubscriptionsListAdapter extends SimpleCursorAdapter {
+  public static final String[] FROM = new String[] { FeedData.SubscriptionColumns._ID,
+      FeedData.SubscriptionColumns.NAME, FeedData.SubscriptionColumns.LASTUPDATE,
+      FeedData.SubscriptionColumns.URL, FeedData.SubscriptionColumns.ERROR,
+      FeedData.SubscriptionColumns.ICON };
   private static final String COUNT_UNREAD = "COUNT(*) - COUNT(readdate)";
 
   private static final String COUNT = "COUNT(*)";
-
   private String COLON;
-
   private static final String COMMA = ", ";
-
   private int nameColumnPosition;
-
   private int lastUpdateColumn;
-
   private int idPosition;
-
   private int linkPosition;
-
   private int errorPosition;
-
   private int iconPosition;
 
-  private Handler handler;
-  //TODO(trung): use AsyncTask or AsyncTaskLoader
-  private SimpleTask updateTask;
+  public SubscriptionsListAdapter(Activity activity) {
+    // important to use FROM here as it is used by the internal Android code
+    // (even though the documentation says it can be null!)
+    super(activity, R.layout.feedlistitem, null, FROM, null, 0);
+    onContentChanged();
+  }
 
-  @SuppressWarnings("deprecation")
-  public AllSubscriptionsListAdapter(Activity activity) {
-    super(activity, R.layout.feedlistitem, activity.managedQuery(
-        FeedData.SubscriptionColumns.CONTENT_URI, null, null, null, null));
-    nameColumnPosition = getCursor().getColumnIndex(FeedData.SubscriptionColumns.NAME);
-    lastUpdateColumn = getCursor().getColumnIndex(FeedData.SubscriptionColumns.LASTUPDATE);
-    idPosition = getCursor().getColumnIndex(FeedData.SubscriptionColumns._ID);
-    linkPosition = getCursor().getColumnIndex(FeedData.SubscriptionColumns.URL);
-    errorPosition = getCursor().getColumnIndex(FeedData.SubscriptionColumns.ERROR);
-    iconPosition = getCursor().getColumnIndex(FeedData.SubscriptionColumns.ICON);
+  /**
+   * Init the column index to be used by this adapter. Should only be called
+   * after the cursor is loaded.
+   * 
+   * @param activity
+   */
+  public void initColumnIdx(Activity activity) {
+    Cursor cursor = getCursor();
+    if (cursor != null) {
+      nameColumnPosition = cursor.getColumnIndex(FeedData.SubscriptionColumns.NAME);
+      lastUpdateColumn = cursor.getColumnIndex(FeedData.SubscriptionColumns.LASTUPDATE);
+      idPosition = cursor.getColumnIndex(FeedData.SubscriptionColumns._ID);
+      linkPosition = cursor.getColumnIndex(FeedData.SubscriptionColumns.URL);
+      errorPosition = cursor.getColumnIndex(FeedData.SubscriptionColumns.ERROR);
+      iconPosition = cursor.getColumnIndex(FeedData.SubscriptionColumns.ICON);
+    }
     COLON = activity.getString(R.string.colon);
-    handler = new Handler();
-    updateTask = new SimpleTask() {
-      @Override
-      public void runControlled() {
-        AllSubscriptionsListAdapter.super.onContentChanged();
-        cancel(); // cancel the task such that it does not run more than once
-                  // without explicit intention
-      }
-
-      @Override
-      public void postRun() {
-        if (getPostCount() > 1) { // enforce second run even if task is canceled
-          handler.postDelayed(updateTask, 1500);
-        }
-      }
-    };
   }
 
   @Override
@@ -154,36 +137,13 @@ public class AllSubscriptionsListAdapter extends ResourceCursorAdapter {
         textView.setText(cursor.isNull(nameColumnPosition) ? cursor.getString(linkPosition)
             : cursor.getString(nameColumnPosition));
       }
-      textView
-          .setCompoundDrawablesWithIntrinsicBounds(new BitmapDrawable(bitmap), null, null, null);
+      textView.setCompoundDrawablesWithIntrinsicBounds(new BitmapDrawable(context.getResources(),
+          bitmap), null, null, null);
     } else {
       view.setTag(null);
       textView.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
       textView.setText(cursor.isNull(nameColumnPosition) ? cursor.getString(linkPosition) : cursor
           .getString(nameColumnPosition));
-    }
-  }
-
-  @Override
-  protected synchronized void onContentChanged() {
-    /*
-     * we delay the second(!) content change by 1.5 second such that it gets
-     * called at most once per 1.5 seconds to take stress away from the UI and
-     * avoid not needed updates
-     */
-    if (!updateTask.isPosted()) {
-      super.onContentChanged();
-      updateTask.post(2); // we post 2 tasks
-      // waits one second until the task gets unposted
-      handler.postDelayed(updateTask, 1500);
-      // put the canceled task in the queue to enable it again optionally
-      updateTask.cancel();
-    } else {
-      if (updateTask.getPostCount() < 2) {
-        updateTask.post(); // enables the task and adds a new one
-      } else {
-        updateTask.enable();
-      }
     }
   }
 }

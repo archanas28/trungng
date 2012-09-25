@@ -38,6 +38,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -46,10 +47,13 @@ import android.widget.ResourceCursorAdapter;
 import android.widget.TextView;
 
 import com.rainmoon.podcast.provider.FeedData;
+import com.rainmoon.podcast.utils.SimpleTask;
 import com.rainmoon.podcast.utils.Strings;
 
 /**
  * Adapter for {@link SingleSubscriptionActivity}.
+ * 
+ * TODO(trung): switch to CursorLoader as in SubscriptionListAdapter
  * 
  * @author trung nguyen
  * 
@@ -83,31 +87,43 @@ public class SingleSubscriptionAdapter extends ResourceCursorAdapter {
   private Vector<Long> favorited;
   private Vector<Long> unfavorited;
 
-  public SingleSubscriptionAdapter(Activity context, Uri uri, boolean showFeedInfo,
-      boolean autoreload) {
-    super(context, R.layout.entrylistitem, createManagedCursor(context, uri, true), autoreload);
+  private Handler handler;
+  private SimpleTask updateTask;
+
+  public SingleSubscriptionAdapter(Activity context, Uri uri) {
+    super(context, R.layout.entrylistitem, createManagedCursor(context, uri, true), true);
     showRead = true;
     this.context = context;
     this.uri = uri;
-
     Cursor cursor = getCursor();
-
     titleColumnPosition = cursor.getColumnIndex(FeedData.ItemColumns.TITLE);
     dateColumn = cursor.getColumnIndex(FeedData.ItemColumns.DATE);
     readDateColumn = cursor.getColumnIndex(FeedData.ItemColumns.READDATE);
     favoriteColumn = cursor.getColumnIndex(FeedData.ItemColumns.FAVORITE);
     idColumn = cursor.getColumnIndex(FeedData.ItemColumns._ID);
     linkColumn = cursor.getColumnIndex(FeedData.ItemColumns.LINK);
-    this.showFeedInfo = showFeedInfo;
-    if (showFeedInfo) {
-      feedIconColumn = cursor.getColumnIndex(FeedData.SubscriptionColumns.ICON);
-      feedNameColumn = cursor.getColumnIndex(FeedData.SubscriptionColumns.NAME);
-    }
+    feedIconColumn = cursor.getColumnIndex(FeedData.SubscriptionColumns.ICON);
+    feedNameColumn = cursor.getColumnIndex(FeedData.SubscriptionColumns.NAME);
     forcedState = STATE_NEUTRAL;
     markedAsRead = new Vector<Long>();
     markedAsUnread = new Vector<Long>();
     favorited = new Vector<Long>();
     unfavorited = new Vector<Long>();
+    handler = new Handler();
+    updateTask = new SimpleTask() {
+      @Override
+      public void runControlled() {
+        SingleSubscriptionAdapter.super.onContentChanged();
+        cancel();
+      }
+
+      @Override
+      public void postRun() {
+        if (getPostCount() > 1) { // enforce second run even if task is canceled
+          handler.postDelayed(updateTask, 1500);
+        }
+      }
+    };
   }
 
   @Override
@@ -189,6 +205,29 @@ public class SingleSubscriptionAdapter extends ResourceCursorAdapter {
     }
   }
 
+  @Override
+  protected synchronized void onContentChanged() {
+    /*
+     * we delay the second(!) content change by 1.5 second such that it gets
+     * called at most once per 1.5 seconds to take stress away from the UI and
+     * avoid not needed updates
+     */
+    if (!updateTask.isPosted()) {
+      super.onContentChanged();
+      updateTask.post(2); // we post 2 tasks
+      // waits one second until the task gets unposted
+      handler.postDelayed(updateTask, 1500);
+      // put the canceled task in the queue to enable it again optionally
+      updateTask.cancel();
+    } else {
+      if (updateTask.getPostCount() < 2) {
+        updateTask.post(); // enables the task and adds a new one
+      } else {
+        updateTask.enable();
+      }
+    }
+  }
+
   public void showRead(boolean showRead) {
     if (showRead != this.showRead) {
       changeCursor(createManagedCursor(context, uri, showRead));
@@ -200,6 +239,7 @@ public class SingleSubscriptionAdapter extends ResourceCursorAdapter {
     return showRead;
   }
 
+  @SuppressWarnings("deprecation")
   private static Cursor createManagedCursor(Activity context, Uri uri, boolean showRead) {
     return context.managedQuery(
         uri,

@@ -104,8 +104,6 @@ public final class FetcherService extends IntentService {
 
   int refreshFeedsStatic(Context context, String feedId, NetworkInfo networkInfo,
       boolean overrideWifiOnly) {
-    //TODO(trung): feed == null & not wifi
-    // display message that only feeds with override-wifi only setting will be refreshed
     String selection = null;
     if (!overrideWifiOnly && networkInfo.getType() != ConnectivityManager.TYPE_WIFI) {
       // "IS NOT 1" does not work on 2.1

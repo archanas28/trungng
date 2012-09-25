@@ -76,8 +76,8 @@
         <WebView
             android:id="@+id/content"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:gravity="fill" />
+            android:layout_height="fill_parent"
+            android:layout_above="@+id/frag_player" />
 
         <fragment
             android:id="@+id/frag_player"

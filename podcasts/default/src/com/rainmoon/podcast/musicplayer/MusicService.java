@@ -57,18 +57,7 @@ import com.rainmoon.podcast.utils.Strings;
 public class MusicService extends Service implements OnPreparedListener, OnErrorListener,
     MusicFocusable {
 
-  // The tag we put on debug messages
   final static String TAG = "MusicService";
-
-  // These are the Intent actions that we are prepared to handle. Notice that
-  // the fact these constants exist in our class is a mere convenience:
-  // what really defines the actions our service can handle are the <action>
-  // tags in the <intent-filters> tag for our service in AndroidManifest.xml.
-  public static final String ACTION_TOGGLE_PLAYBACK = "com.rainmoon.podcast.musicplayer.action.TOGGLE_PLAYBACK";
-  public static final String ACTION_PLAY = "com.rainmoon.podcast.musicplayer.action.PLAY";
-  public static final String ACTION_PAUSE = "com.rainmoon.podcast.musicplayer.action.PAUSE";
-  public static final String ACTION_STOP = "com.rainmoon.podcast.musicplayer.action.STOP";
-  public static final String ACTION_SEEK = "com.rainmoon.podcast.musicplayer.action.SEEK";
 
   // The volume we set the media player to when we lose audio focus, but are
   // allowed to reduce the volume instead of stopping playback.
@@ -180,16 +169,16 @@ public class MusicService extends Service implements OnPreparedListener, OnError
   @Override
   public int onStartCommand(Intent intent, int flags, int startId) {
     String action = intent.getAction();
-    mUrl = intent.getStringExtra(CuteMediaPlayer.PLAY_URL);
-    if (action.equals(ACTION_TOGGLE_PLAYBACK))
+    mUrl = intent.getStringExtra(Strings.PLAY_URL);
+    if (action.equals(Strings.ACTION_TOGGLE_PLAYBACK))
       processTogglePlaybackRequest(intent);
-    else if (action.equals(ACTION_PLAY))
+    else if (action.equals(Strings.ACTION_PLAY))
       processPlayRequest(intent);
-    else if (action.equals(ACTION_PAUSE))
+    else if (action.equals(Strings.ACTION_PAUSE))
       processPauseRequest();
-    else if (action.equals(ACTION_STOP))
+    else if (action.equals(Strings.ACTION_STOP))
       processStopRequest();
-    else if (action.equals(ACTION_SEEK))
+    else if (action.equals(Strings.ACTION_SEEK))
       processSeekRequest(intent);
 
     return START_NOT_STICKY; // Means we started the service, but don't want it
@@ -247,7 +236,7 @@ public class MusicService extends Service implements OnPreparedListener, OnError
 
   void processSeekRequest(Intent intent) {
     if (mState == State.Playing || mState == State.Paused) {
-      int change = intent.getIntExtra(CuteMediaPlayer.SEEK_CHANGE, 0);
+      int change = intent.getIntExtra(Strings.SEEK_CHANGE, 0);
       int newposition = mPlayer.getCurrentPosition() + change;
       mPlayer.seekTo(newposition);
     }
@@ -397,7 +386,7 @@ public class MusicService extends Service implements OnPreparedListener, OnError
    * @param duration
    */
   private void updateListenCount(int duration) {
-    SharedPreferences prefs = getSharedPreferences(HomeActivity.APPLICATION_SHARED_PREFERENCES, 0);
+    SharedPreferences prefs = getSharedPreferences(Strings.APPLICATION_SHARED_PREFERENCES, 0);
     Editor prefEditor = prefs.edit();
     long startTime = prefs.getLong(Strings.LISTEN_START_TIME, -1);
     Calendar calendar = Calendar.getInstance();

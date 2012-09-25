@@ -307,16 +307,15 @@ public class FeedItemActivity2 extends FragmentActivity {
             if (position2 + 4 > enclosure.length()) {
               builder.setMessage(getString(
                   R.string.question_playenclosure,
-                  uri,
                   position2 + 4 > enclosure.length() ? Strings.QUESTIONMARKS : enclosure
                       .substring(position2 + 3)));
             } else {
               try {
-                builder.setMessage(getString(R.string.question_playenclosure, uri,
+                builder.setMessage(getString(R.string.question_playenclosure,
                     (Integer.parseInt(enclosure.substring(position2 + 3)) / 1024f)
                         + getString(R.string.kb)));
               } catch (Exception e) {
-                builder.setMessage(getString(R.string.question_playenclosure, uri,
+                builder.setMessage(getString(R.string.question_playenclosure,
                     enclosure.substring(position2 + 3)));
               }
             }
