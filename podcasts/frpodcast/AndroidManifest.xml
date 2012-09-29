@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.lingp.frpodcast"
+    android:installLocation="auto"
+    android:versionCode="2"
+    android:versionName="Vanilla" >
+
+    <uses-sdk
+        android:minSdkVersion="8"
+        android:targetSdkVersion="16" />
+
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <application
+        android:allowBackup="true"
+        android:allowClearUserData="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:testOnly="false"
+        android:theme="@style/Theme.Light" >
+        <provider
+            android:name="com.lingp.frpodcast.provider.FeedDataContentProvider"
+            android:authorities="com.lingp.frpodcast.provider.FeedData"
+            android:readPermission="com.lingp.frpodcast.READFEEDS"
+            android:writePermission="com.lingp.frpodcast.WRITEFEEDS" />
+
+        <activity
+            android:name=".HomeActivity"
+            android:label="@string/app_name"
+            android:launchMode="singleTask" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".AllSubscriptionsActivity"
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".SingleSubscriptionActivity"
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".FeedItemActivity2"
+            android:alwaysRetainTaskState="true"
+            android:launchMode="singleTask" />
+        <activity android:name=".preference.PreferencesActivityCompatability" />
+        <activity android:name=".preference.PreferencesActivityV11" />
+        <activity android:name=".EditSubscriptionActivity" />
+
+        <service
+            android:name=".musicplayer.MusicService"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="com.lingp.frpodcast.musicplayer.action.TOGGLE_PLAYBACK" />
+                <action android:name="com.lingp.frpodcast.musicplayer.action.PLAY" />
+                <action android:name="com.lingp.frpodcast.musicplayer.action.PAUSE" />
+                <action android:name="com.lingp.frpodcast.musicplayer.action.STOP" />
+                <action android:name="com.lingp.frpodcast.musicplayer.action.SEEK" />
+            </intent-filter>
+        </service>
+        <service
+            android:name=".service.RefreshService"
+            android:exported="false" />
+        <service
+            android:name=".service.FetcherService"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="com.lingp.frpodcast.REFRESH" />
+            </intent-filter>
+        </service>
+
+        <receiver
+            android:name=".receiver.RefreshBroadcastReceiver"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="com.lingp.frpodcast.REFRESH" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name=".receiver.SDMountBroadcastReceiver"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="android.intent.action.MEDIA_MOUNTED" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.lingp.frpodcast.RESTART" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".receiver.BootCompletedBroadcastReceiver" >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+    </application>
+
+</manifest>

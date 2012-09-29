@@ -1,0 +1,7 @@
+<!-- Themes for devices b.w api 11 - 13 -->
+<resources>
+    <style name="Theme.Light" parent="@android:style/Theme.Holo.Light"/>
+    <style name="ButtonBar" parent="android:Holo.ButtonBar.AlertDialog"/>
+    <style name="Theme.Dialog" parent="android:Theme.Holo.Dialog"/>
+    <style name="Widget.Button.Dialog" parent="@android:style/Widget.Holo.Button.Borderless"/>
+</resources>
