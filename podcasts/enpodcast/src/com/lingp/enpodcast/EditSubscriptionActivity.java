@@ -41,7 +41,6 @@ import android.widget.Toast;
 import com.lingp.enpodcast.provider.FeedData;
 import com.lingp.enpodcast.provider.FeedDataContentProvider;
 import com.lingp.enpodcast.utils.Strings;
-import com.lingp.enpodcast.R;
 
 /**
  * Activity for showing the edit subscription dialog. It is invoked by the

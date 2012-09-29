@@ -28,6 +28,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaPlayer.OnErrorListener;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.net.wifi.WifiManager;
@@ -39,8 +40,8 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.lingp.enpodcast.FeedItemActivity2;
-import com.lingp.enpodcast.utils.Strings;
 import com.lingp.enpodcast.R;
+import com.lingp.enpodcast.utils.Strings;
 
 /**
  * Service that handles media playback. This is the Service through which we
@@ -54,7 +55,7 @@ import com.lingp.enpodcast.R;
  * and AudioNoisy
  */
 public class MusicService extends Service implements OnPreparedListener, OnErrorListener,
-    MusicFocusable {
+    OnCompletionListener, MusicFocusable {
 
   final static String TAG = "MusicService";
 
@@ -241,12 +242,14 @@ public class MusicService extends Service implements OnPreparedListener, OnError
     }
   }
 
-  void processStopRequest() {
-    processStopRequest(false);
+  @Override
+  public void onCompletion(MediaPlayer mp) {
+    if (mNotificationManager != null)
+      mNotificationManager.cancel(NOTIFICATION_ID);
   }
 
-  void processStopRequest(boolean force) {
-    if (mState == State.Playing || mState == State.Paused || force) {
+  void processStopRequest() {
+    if (mState == State.Playing || mState == State.Paused) {
       mState = State.Stopped;
       // let go of all resources...
       relaxResources(true);
@@ -431,4 +434,5 @@ public class MusicService extends Service implements OnPreparedListener, OnError
     giveUpAudioFocus();
     Log.i(TAG, "is being desotryed");
   }
+
 }

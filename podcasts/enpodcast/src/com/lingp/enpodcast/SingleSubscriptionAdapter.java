@@ -49,7 +49,6 @@ import android.widget.TextView;
 import com.lingp.enpodcast.provider.FeedData;
 import com.lingp.enpodcast.utils.SimpleTask;
 import com.lingp.enpodcast.utils.Strings;
-import com.lingp.enpodcast.R;
 
 /**
  * Adapter for {@link SingleSubscriptionActivity}.

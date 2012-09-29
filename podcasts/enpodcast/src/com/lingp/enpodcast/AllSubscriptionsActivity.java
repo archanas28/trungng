@@ -1,7 +1,5 @@
 package com.lingp.enpodcast;
 
-import com.lingp.enpodcast.R;
-
 import android.app.Dialog;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -12,6 +10,7 @@ import android.view.MenuItem;
  * Activity for showing list of all subscriptions. Note that we must extend
  * FragmentActivity instead of Activity.
  * 
+ * @author trung nguyen
  */
 public class AllSubscriptionsActivity extends FragmentActivity {
 

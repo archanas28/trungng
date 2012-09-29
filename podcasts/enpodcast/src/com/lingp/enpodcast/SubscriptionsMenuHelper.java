@@ -26,7 +26,6 @@ import com.lingp.enpodcast.provider.FeedData;
 import com.lingp.enpodcast.provider.OPML;
 import com.lingp.enpodcast.utils.StaticMethods;
 import com.lingp.enpodcast.utils.Strings;
-import com.lingp.enpodcast.R;
 
 /**
  * Common class to handle menu options for activities that show a list of

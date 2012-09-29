@@ -30,7 +30,6 @@ import com.lingp.enpodcast.FeedItemActivity2.OnPlayButtonClickedListener;
 import com.lingp.enpodcast.receiver.NetworkReceiver;
 import com.lingp.enpodcast.utils.StaticMethods;
 import com.lingp.enpodcast.utils.Strings;
-import com.lingp.enpodcast.R;
 
 /**
  * Fragment showing the Podcast player.

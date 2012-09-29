@@ -58,7 +58,6 @@ import android.widget.Toast;
 import com.lingp.enpodcast.provider.FeedData;
 import com.lingp.enpodcast.utils.StaticMethods;
 import com.lingp.enpodcast.utils.Strings;
-import com.lingp.enpodcast.R;
 
 /**
  * Activity for showing list of feed items.

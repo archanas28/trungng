@@ -31,7 +31,7 @@
 
     <string name="app_name">Learn English</string>
     <string name="home">Home</string>
-    <string name="subscriptions">Subscriptions</string>
+    <string name="subscriptions">Podcasts</string>
     <string name="all_items">All items</string>
     <string name="explore">Explore</string>
     <string name="favorites">Favorites</string>
@@ -78,7 +78,8 @@
     <string name="daily_average">Daily Average</string>
     <string name="items"> items</string>
     <string name="hours"> hours</string>
-    
+    <string name="not_updated">Not updated</string>
+    <string name="just_now">Just now</string>
     <string name="refresh_error">Some connection error occurred. Please try again later.</string>
     <string name="refreshing">Content is being refreshed. This may take some time, please wait.</string>
     <string name="player_error_msg">There seems to be an error with your connection.\nI\'m trying my best to play again :-)</string>

@@ -19,8 +19,6 @@ package com.lingp.enpodcast;
 import java.util.Formatter;
 import java.util.Locale;
 
-import com.lingp.enpodcast.R;
-
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;

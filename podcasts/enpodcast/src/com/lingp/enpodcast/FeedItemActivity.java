@@ -60,7 +60,6 @@ import com.lingp.enpodcast.PlayerFragment.PlayerController;
 import com.lingp.enpodcast.provider.FeedData;
 import com.lingp.enpodcast.utils.StaticMethods;
 import com.lingp.enpodcast.utils.Strings;
-import com.lingp.enpodcast.R;
 
 /**
  * Activity for showing a single feed item.

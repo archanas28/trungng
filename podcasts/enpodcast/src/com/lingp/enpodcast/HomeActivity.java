@@ -1,7 +1,5 @@
 package com.lingp.enpodcast;
 
-import com.lingp.enpodcast.R;
-
 import android.app.Dialog;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
