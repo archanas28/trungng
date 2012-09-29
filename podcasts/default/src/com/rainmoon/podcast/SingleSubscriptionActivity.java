@@ -107,6 +107,10 @@ public class SingleSubscriptionActivity extends ListActivity {
     }
 
     setContentView(R.layout.activity_items);
+    TextView emptyView = (TextView) findViewById(android.R.id.empty);
+    if (emptyView != null) {
+      emptyView.setText(intent.getStringExtra(Strings.NO_CONTENT_MSG));
+    }
     uri = intent.getData();
     entriesListAdapter = new SingleSubscriptionAdapter(this, uri);
     setListAdapter(entriesListAdapter);

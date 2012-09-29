@@ -81,10 +81,13 @@ public class NavigationFragment extends ListFragment {
               SingleSubscriptionActivity.class);
           if (text.equals(all)) {
             intent.setData(FeedData.ItemColumns.ALL_ITEMS_CONTENT_URI);
+            intent.putExtra(Strings.NO_CONTENT_MSG, getString(R.string.no_content_all_items));
           } else if (text.equals(favorites)) {
             intent.setData(FeedData.ItemColumns.FAVORITES_CONTENT_URI);
+            intent.putExtra(Strings.NO_CONTENT_MSG,  getString(R.string.no_content_favorites));
           } else if (text.equals(recentlyViewed)) {
             intent.setData(FeedData.ItemColumns.RECENTLY_VIEWED_CONTENT_URI);
+            intent.putExtra(Strings.NO_CONTENT_MSG, getString(R.string.no_content_recent));
           }
         }
         if (intent != null) {

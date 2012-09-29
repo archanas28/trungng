@@ -29,7 +29,7 @@
 -->
 <resources>
 
-    <string name="app_name">LearnEnglish Podcasts</string>
+    <string name="app_name">Learn English</string>
     <string name="home">Home</string>
     <string name="subscriptions">Subscriptions</string>
     <string name="all_items">All items</string>
@@ -86,8 +86,11 @@
     <string name="view_in_browser">View in browser</string>
     <string name="preparing">Content is being prepared. This may take some time, please wait.</string>
     <string name="no_connection">No connection available</string>
-    <string name="norssfeeds">No RSS feeds</string>
-    <string name="noentries">No entries</string>
+    <string name="norssfeeds">Subscriptions are being loaded</string>
+    <string name="noentries">This podcast is not updated. Tap refresh for new content.</string>
+    <string name="no_content_all_items">Content not updated. Go to Subscriptions and tap Refresh to get content.</string>
+    <string name="no_content_favorites">You do not have any favorite items currently.</string>
+    <string name="no_content_recent">No recent items. Really?</string>
     <string name="never">never</string>
     <string name="update">Update</string>
     <string name="colon">:\u00A0</string>
@@ -144,7 +147,7 @@
     <string name="question_deletefeed">Do you really want to delete this feed and all of its entries?</string>
     <string name="question_refreshwowifi">Do you really want to refresh this feed while not being on wifi?</string>
     <string name="question_areyousure">Are you sure?</string>
-    <string name="question_playenclosure">Do you want to download and play the file %1$s of alleged size of %2$s?\nThis may cause a lot of traffic!</string>
+    <string name="question_playenclosure">Downloading this file (of alleged size of %1$s) may cause a lot of traffic. Do you want to proceed?</string>
     <string name="message_exportedto">Exported into %s.</string>
     <string name="dialog_hint">Hint</string>
 
@@ -164,10 +167,4 @@
         <item>+2</item>
         <item>+3</item>
     </string-array>
-
-    <string name="permission_readfeeds">Read feed data</string>
-    <string name="permission_readfeeds_description">Allows the application to read Sparse RSS feeds and entries.</string>
-    <string name="permission_writefeeds">Write feed data</string>
-    <string name="permission_writefeeds_description">Allows the application to write Sparse RSS feeds and entries.</string>
-
 </resources>

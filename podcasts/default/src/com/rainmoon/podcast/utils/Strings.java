@@ -159,6 +159,8 @@ public final class Strings {
   public static final String LISTEN_WEEK_MILLIS = "listen.week.millis";
   public static final String WEEK_RESETED = "listen.week.reseted";
   public static final String MONTH_RESETED = "listen.month.reseted";
+  public static final String NO_CONTENT_MSG = "no.content.msg";
+
   public static final String PREFERENCE_CURRENT_URI = "com.rainmoon.podcast.pref.current_uri";
 
 }

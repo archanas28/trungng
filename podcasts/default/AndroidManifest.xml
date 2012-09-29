@@ -16,21 +16,6 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
-    <!-- Android 1.5 requires this -->
-    <uses-permission android:name="com.rainmoon.podcast.READFEEDS" />
-    <uses-permission android:name="com.rainmoon.podcast.WRITEFEEDS" />
-
-    <permission
-        android:name="com.rainmoon.podcast.READFEEDS"
-        android:description="@string/permission_readfeeds_description"
-        android:label="@string/permission_readfeeds"
-        android:protectionLevel="normal" />
-    <permission
-        android:name="com.rainmoon.podcast.WRITEFEEDS"
-        android:description="@string/permission_writefeeds_description"
-        android:label="@string/permission_writefeeds"
-        android:protectionLevel="normal" />
-
     <application
         android:allowBackup="true"
         android:allowClearUserData="true"
