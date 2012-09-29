@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <PreferenceCategory android:title="@string/settings_category_refresh" >
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="refresh.enabled"
+            android:summary="@string/settings_refreshenabled_description"
+            android:title="@string/settings_enabled" />
+
+        <ListPreference
+            android:name="@string/settings_refreshinterval"
+            android:defaultValue="1800000"
+            android:dependency="refresh.enabled"
+            android:entries="@array/settings_intervals"
+            android:entryValues="@array/settings_intervalvalues"
+            android:key="refresh.interval"
+            android:numeric="integer"
+            android:summary="@string/settings_refreshinterval_description"
+            android:title="@string/settings_refreshinterval" />
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="refreshonopen.enabled"
+            android:summary="@string/settings_refreshonopen_description"
+            android:title="@string/settings_refreshonopen" />
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="overridewifionly"
+            android:summary="@string/settings_overridewifionly_description"
+            android:title="@string/settings_overridewifionly" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/settings_category_contentpresentation" >
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="contentpresentation.prioritize"
+            android:summary="@string/settings_prioritize_description"
+            android:title="@string/settings_prioritize" />
+
+        <ListPreference
+            android:name="@string/settings_fontsize"
+            android:defaultValue="0"
+            android:entries="@array/settings_fontsizes"
+            android:entryValues="@array/settings_fontsizevalues"
+            android:key="fontsize"
+            android:numeric="integer"
+            android:summary="@string/settings_fontsize_description"
+            android:title="@string/settings_fontsize" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/settings_category_download" >
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:disableDependentsState="true"
+            android:key="pictures.disable"
+            android:summary="@string/settings_disablepictures_description"
+            android:title="@string/settings_disablepictures" />
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:dependency="pictures.disable"
+            android:key="pictures.fetch"
+            android:summary="@string/settings_fetchpictures_description"
+            android:title="@string/settings_fetchpictures" />
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="enclosurewarnings.enabled"
+            android:summary="@string/settings_enclosuredownloadwarning_description"
+            android:title="@string/settings_enclosuredownloadwarning" />
+    </PreferenceCategory>
+
+</PreferenceScreen>
