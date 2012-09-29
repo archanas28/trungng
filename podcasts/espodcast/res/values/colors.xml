@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <color name="holo_color1">#33B5E5</color>
+    <color name="holo_color2">#AA66CC</color>
+    <color name="holo_color3">#99CC00</color>
+    <color name="holo_color4">#FFBB33</color>
+    <color name="holo_color5">#FF4444</color>
+    <color name="holo_color6">#0099CC</color>
+    <color name="holo_color7">#9933CC</color>
+    <color name="holo_color8">#669900</color>
+    <color name="holo_color9">#FF8800</color>
+    <color name="holo_color10">#CC0000</color>
+    
     <color name="color_black">#000000</color>
     <color name="color_red">#FF0000</color>
     <color name="color_green">#00FF00</color>
@@ -10,7 +21,6 @@
     <color name="color_magenta">#FF00FF</color>
     <color name="color_gray">#C0C0C0</color>
     <color name="color_white">#FFFFFF</color>
-
     <color name="color1">#ff4800</color>
     <color name="color2">#baaa57</color>
     <color name="color3">#e58631</color>

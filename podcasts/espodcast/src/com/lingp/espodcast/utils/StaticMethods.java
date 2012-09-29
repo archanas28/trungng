@@ -15,6 +15,7 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
+import android.text.format.DateUtils;
 import android.widget.Toast;
 
 import com.lingp.espodcast.R;
@@ -94,4 +95,21 @@ public class StaticMethods {
     return response;
   }
 
+  /**
+   * Returns our custom format for relative time span.
+   * 
+   * @param context
+   * @param time
+   * 
+   * @return
+   */
+  public static String getRelativeTimeSpan(Context context, long time) {
+    String relativeTime = DateUtils.getRelativeDateTimeString(context, time,
+        DateUtils.MINUTE_IN_MILLIS, DateUtils.WEEK_IN_MILLIS,
+        DateUtils.FORMAT_ABBREV_RELATIVE | DateUtils.FORMAT_ABBREV_MONTH).toString();
+    if (relativeTime.startsWith("0 mins ago"))
+      return context.getString(R.string.just_now);
+    int pos = relativeTime.indexOf(",");
+    return relativeTime.substring(0, pos);
+  }
 }

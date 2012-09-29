@@ -84,9 +84,6 @@ public class AllSubscriptionsFragment extends ListFragment implements LoaderCall
     super.onActivityCreated(savedInstanceState);
     ListView lv = getListView();
     lv.setOnCreateContextMenuListener(new MyContextMenuListener());
-    TextView header = (TextView) getActivity().getLayoutInflater().inflate(R.layout.header, null);
-    header.setText(R.string.subscriptions);
-    getListView().addHeaderView(header);
 
     // Create an empty adapter we will use to display the loaded data.
     mAdapter = new SubscriptionsListAdapter((Activity) mContext);

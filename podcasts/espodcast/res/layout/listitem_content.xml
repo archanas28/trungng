@@ -2,21 +2,25 @@
 
     <TextView
         android:id="@android:id/text1"
+        android:textColor="@android:color/primary_text_light"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="6dip"
         android:layout_marginRight="2dip"
         android:gravity="top"
+        android:marqueeRepeatLimit="1"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
         android:id="@android:id/text2"
+        android:textColor="@android:color/secondary_text_light"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@android:id/text1"
         android:layout_marginLeft="6dip"
         android:layout_marginRight="19dip"
         android:singleLine="true"
+        android:enabled="false"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <ImageView

@@ -91,13 +91,13 @@
     <string name="no_content_all_items">Content not updated. Go to Subscriptions and tap Refresh to get content.</string>
     <string name="no_content_favorites">You do not have any favorite items currently.</string>
     <string name="no_content_recent">No recent items. Really?</string>
-    <string name="never">never</string>
+    <string name="not_updated">Not updated</string>
     <string name="update">Update</string>
     <string name="colon">:\u00A0</string>
     <string name="unread">unread</string>
     <string name="error">Error</string>
     <string name="kb">kb</string>
-    
+    <string name="just_now">Just now</string>
     <!-- Preferences -->
     <string name="settings_category_refresh">Refresh</string>
     <string name="settings_enabled">Enabled</string>
