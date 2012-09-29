@@ -39,7 +39,6 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.rainmoon.podcast.FeedItemActivity2;
-import com.rainmoon.podcast.HomeActivity;
 import com.rainmoon.podcast.R;
 import com.rainmoon.podcast.utils.Strings;
 
