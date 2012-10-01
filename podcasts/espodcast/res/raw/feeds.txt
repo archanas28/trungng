@@ -16,10 +16,6 @@ http://intnotesinspanish.libsyn.com/rss
 Intermediate Podcast - Notes in Spanish
 http://learnrealspanish.libsyn.com/rss
 Inspired Beginner's Podcast - Notes in Spanish
-http://www.spanish.ms/podcasts/podcast.xml
-Insta Spanish Lessons
-http://feeds.studyspanish.com/podcasts.xml
-Learn Spanish with Comentarios
 http://spanishpod.com/lessons/feed
 Lessons in Spanishpod Podcasts
 http://feeds.feedburner.com/LearnSpanishWithSpanishlingq
@@ -32,17 +28,11 @@ http://feeds.feedburner.com/oneminutespanish/
 One Minute Spanish
 http://feeds.feedburner.com/oneminutelamspanish/
 One Minute Spanish for Latin America
-http://feeds.feedburner.com/spanish
-SBS News in Spanish
 http://feeds.feedburner.com/showtimespanish
 Show Time Spanish
 http://www.spanishpodcast.org/podcasts/index.xml
 Spanish Podcast
 http://www.switchpod.com/users/david_spencer/feed.xml
 Spanish Survival Guide
-http://feeds.feedburner.com/SpanishCoursePodcast
-Spanish Course
-http://feeds.feedburner.com/LingoSuccess
-Spanish Success with Sr. Professor Podcast
 http://feeds.feedburner.com/vocespodcast
 Voices en Espanol 

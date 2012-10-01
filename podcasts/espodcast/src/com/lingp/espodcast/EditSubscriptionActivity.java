@@ -29,6 +29,7 @@ import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
+import android.drm.DrmStore.Action;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -37,7 +38,6 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.lingp.espodcast.R;
 import com.lingp.espodcast.provider.FeedData;
 import com.lingp.espodcast.provider.FeedDataContentProvider;
 import com.lingp.espodcast.utils.Strings;
@@ -57,6 +57,8 @@ public class EditSubscriptionActivity extends Activity {
   private static final String[] PROJECTION = new String[] { FeedData.SubscriptionColumns.NAME,
       FeedData.SubscriptionColumns.URL, FeedData.SubscriptionColumns.WIFIONLY };
 
+  public static final String ADD_FEED = "add.feed";
+
   private EditText nameEditText;
   private EditText urlEditText;
   private CheckBox refreshOnlyWifiCheckBox;
@@ -69,12 +71,12 @@ public class EditSubscriptionActivity extends Activity {
     setResult(RESULT_CANCELED);
 
     Intent intent = getIntent();
-
+    boolean isAddingFeed = intent.getBooleanExtra(ADD_FEED, true);
     nameEditText = (EditText) findViewById(R.id.feed_title);
     urlEditText = (EditText) findViewById(R.id.feed_url);
     refreshOnlyWifiCheckBox = (CheckBox) findViewById(R.id.wifionlycheckbox);
 
-    if (intent.getAction().equals(Intent.ACTION_INSERT)) {
+    if (isAddingFeed) {
       createNewInstance(savedInstanceState, intent);
     } else {
       createEditInstance(savedInstanceState, intent);

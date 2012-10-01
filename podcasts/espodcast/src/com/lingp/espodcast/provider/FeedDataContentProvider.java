@@ -58,15 +58,15 @@ import com.lingp.espodcast.utils.Strings;
  * 
  */
 public class FeedDataContentProvider extends ContentProvider {
-  private static final String FOLDER = Environment.getExternalStorageDirectory() + "/frpodcast/";
+  private static final String FOLDER = Environment.getExternalStorageDirectory() + "/espodcast/";
   public static final String IMAGEFOLDER = Environment.getExternalStorageDirectory()
-      + "/frpodcast/images/";
+      + "/espodcast/images/";
   public static final File IMAGEFOLDER_FILE = new File(IMAGEFOLDER);
 
   private static final String BACKUPOPML = Environment.getExternalStorageDirectory()
-      + "/frpodcast/backup.opml";
+      + "/espodcast/backup.opml";
 
-  private static final String DATABASE_NAME = "frpodcast.db";
+  private static final String DATABASE_NAME = "espodcast.db";
   private static final int DATABASE_VERSION = 1;
   // store Subscriptions
   protected static final String TABLE_SUBSCRIPTIONS = "feeds";
