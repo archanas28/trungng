@@ -47,9 +47,6 @@ public class NavigationFragment extends ListFragment {
   public void onActivityCreated(Bundle savedInstanceState) {
     // onCreateView() calls this method so the view and activity is ready
     super.onActivityCreated(savedInstanceState);
-    TextView header = (TextView) getActivity().getLayoutInflater().inflate(R.layout.header, null);
-    header.setText(R.string.home);
-    getListView().addHeaderView(header);
 
     List<String> navigation = new ArrayList<String>();
     final String all = getResources().getString(R.string.all_items);

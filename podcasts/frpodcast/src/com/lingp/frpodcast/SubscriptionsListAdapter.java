@@ -25,8 +25,6 @@
 
 package com.lingp.frpodcast;
 
-import java.util.Date;
-
 import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
@@ -39,6 +37,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.lingp.frpodcast.provider.FeedData;
+import com.lingp.frpodcast.utils.StaticMethods;
 
 /**
  * Adapter for {@link AllSubscriptionsFragment}.
@@ -55,7 +54,6 @@ public class SubscriptionsListAdapter extends SimpleCursorAdapter {
 
   private static final String COUNT = "COUNT(*)";
   private String COLON;
-  private static final String COMMA = ", ";
   private int nameColumnPosition;
   private int lastUpdateColumn;
   private int idPosition;
@@ -67,7 +65,6 @@ public class SubscriptionsListAdapter extends SimpleCursorAdapter {
     // important to use FROM here as it is used by the internal Android code
     // (even though the documentation says it can be null!)
     super(activity, R.layout.feedlistitem, null, FROM, null, 0);
-    onContentChanged();
   }
 
   /**
@@ -98,28 +95,18 @@ public class SubscriptionsListAdapter extends SimpleCursorAdapter {
         new String[] { COUNT_UNREAD, COUNT }, null, null, null);
     countCursor.moveToFirst();
     int unreadCount = countCursor.getInt(0);
-    int count = countCursor.getInt(1);
     countCursor.close();
     long date = cursor.getLong(lastUpdateColumn);
     TextView updateTextView = ((TextView) view.findViewById(android.R.id.text2));
-    if (cursor.isNull(errorPosition)) {
-      updateTextView.setText(new StringBuilder(context.getString(R.string.update)).append(COLON)
-          .append(
-              date == 0 ? context.getString(R.string.never) : new StringBuilder(
-                  SingleSubscriptionAdapter.DATEFORMAT.format(new Date(date))).append(COMMA)
-                  .append(unreadCount).append('/').append(count).append(' ')
-                  .append(context.getString(R.string.unread))));
-    } else {
-      updateTextView.setText(new StringBuilder(context.getString(R.string.error)).append(COLON)
-          .append(cursor.getString(errorPosition)));
-    }
+    String relativeTime = StaticMethods.getRelativeTimeSpan(context, date);
+    updateTextView.setText(String.format("%s, %d %s",
+        date == 0 ? context.getString(R.string.not_updated) : relativeTime, unreadCount,
+        context.getString(R.string.unread)));
     if (unreadCount > 0) {
       textView.setTypeface(Typeface.DEFAULT_BOLD);
-      textView.setEnabled(true);
       updateTextView.setEnabled(true);
     } else {
       textView.setTypeface(Typeface.DEFAULT);
-      textView.setEnabled(false);
       updateTextView.setEnabled(false);
     }
 

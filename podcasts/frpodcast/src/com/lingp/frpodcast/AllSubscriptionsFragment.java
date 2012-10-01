@@ -83,9 +83,6 @@ public class AllSubscriptionsFragment extends ListFragment implements LoaderCall
     super.onActivityCreated(savedInstanceState);
     ListView lv = getListView();
     lv.setOnCreateContextMenuListener(new MyContextMenuListener());
-    TextView header = (TextView) getActivity().getLayoutInflater().inflate(R.layout.header, null);
-    header.setText(R.string.subscriptions);
-    getListView().addHeaderView(header);
 
     // Create an empty adapter we will use to display the loaded data.
     mAdapter = new SubscriptionsListAdapter((Activity) mContext);
@@ -145,8 +142,11 @@ public class AllSubscriptionsFragment extends ListFragment implements LoaderCall
 
     switch (item.getItemId()) {
     case CONTEXTMENU_EDIT_ID: {
-      startActivity(new Intent(Intent.ACTION_EDIT).setData(FeedData.SubscriptionColumns
-          .subscriptionContentUri(((AdapterView.AdapterContextMenuInfo) item.getMenuInfo()).id)));
+      Intent intent = new Intent(getActivity(), EditSubscriptionActivity.class);
+      intent.setData(FeedData.SubscriptionColumns
+          .subscriptionContentUri(((AdapterView.AdapterContextMenuInfo) item.getMenuInfo()).id));
+      intent.putExtra(EditSubscriptionActivity.ADD_FEED, false);
+      startActivity(intent);
       break;
     }
     case CONTEXTMENU_UNSUBSCRIBE: {
@@ -199,6 +199,7 @@ public class AllSubscriptionsFragment extends ListFragment implements LoaderCall
         SingleSubscriptionActivity.class);
     intent.setData(FeedData.ItemColumns.subscriptionItemsContentUri(Long.toString(id))).putExtra(
         FeedData.SubscriptionColumns._ID, id);
+    intent.putExtra(Strings.NO_CONTENT_MSG, getString(R.string.noentries));
     startActivity(intent);
   }
 

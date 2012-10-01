@@ -29,9 +29,9 @@
 -->
 <resources>
 
-    <string name="app_name">LearnFrench</string>
+    <string name="app_name">Learn French</string>
     <string name="home">Home</string>
-    <string name="subscriptions">Subscriptions</string>
+    <string name="subscriptions">Podcasts</string>
     <string name="all_items">All items</string>
     <string name="explore">Explore</string>
     <string name="favorites">Favorites</string>
@@ -78,7 +78,8 @@
     <string name="daily_average">Daily Average</string>
     <string name="items"> items</string>
     <string name="hours"> hours</string>
-    
+    <string name="not_updated">Not updated</string>
+    <string name="just_now">Just now</string>
     <string name="refresh_error">Some connection error occurred. Please try again later.</string>
     <string name="refreshing">Content is being refreshed. This may take some time, please wait.</string>
     <string name="player_error_msg">There seems to be an error with your connection.\nI\'m trying my best to play again :-)</string>
@@ -88,8 +89,8 @@
     <string name="no_connection">No connection available</string>
     <string name="norssfeeds">Subscriptions are being loaded</string>
     <string name="noentries">This podcast is not updated. Tap refresh for new content.</string>
-    <string name="no_content_all_items">Content not updated. Go to Subscriptions and tap Refresh to get content.</string>
-    <string name="no_content_favorites">You do not have any favorite items currently.</string>
+    <string name="no_content_all_items">Content not updated. Go to Podcasts and tap Refresh to get content.</string>
+    <string name="no_content_favorites">No favorite items. Go star some!</string>
     <string name="no_content_recent">No recent items. Really?</string>
     <string name="never">never</string>
     <string name="update">Update</string>
@@ -167,5 +168,4 @@
         <item>+2</item>
         <item>+3</item>
     </string-array>
-
 </resources>

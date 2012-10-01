@@ -28,6 +28,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaPlayer.OnErrorListener;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.net.wifi.WifiManager;
@@ -54,7 +55,7 @@ import com.lingp.frpodcast.utils.Strings;
  * and AudioNoisy
  */
 public class MusicService extends Service implements OnPreparedListener, OnErrorListener,
-    MusicFocusable {
+    OnCompletionListener, MusicFocusable {
 
   final static String TAG = "MusicService";
 
@@ -146,6 +147,7 @@ public class MusicService extends Service implements OnPreparedListener, OnError
 
   @Override
   public void onCreate() {
+    Log.i(TAG, "debug: Creating service");
     mWifiLock = ((WifiManager) getSystemService(Context.WIFI_SERVICE)).createWifiLock(
         WifiManager.WIFI_MODE_FULL, "mylock");
     mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
@@ -208,6 +210,7 @@ public class MusicService extends Service implements OnPreparedListener, OnError
         mPlayer.prepareAsync();
         mWifiLock.acquire();
       } catch (Exception ex) {
+        Log.e(TAG, "IOException playing song: " + ex.getMessage());
         ex.printStackTrace();
       }
     }
@@ -239,12 +242,14 @@ public class MusicService extends Service implements OnPreparedListener, OnError
     }
   }
 
-  void processStopRequest() {
-    processStopRequest(false);
+  @Override
+  public void onCompletion(MediaPlayer mp) {
+    if (mNotificationManager != null)
+      mNotificationManager.cancel(NOTIFICATION_ID);
   }
 
-  void processStopRequest(boolean force) {
-    if (mState == State.Playing || mState == State.Paused || force) {
+  void processStopRequest() {
+    if (mState == State.Playing || mState == State.Paused) {
       mState = State.Stopped;
       // let go of all resources...
       relaxResources(true);
@@ -350,6 +355,7 @@ public class MusicService extends Service implements OnPreparedListener, OnError
   public boolean onError(MediaPlayer mp, int what, int extra) {
     Toast.makeText(getApplicationContext(), "Media player error! Resetting.", Toast.LENGTH_SHORT)
         .show();
+    Log.e(TAG, "Error: what=" + String.valueOf(what) + ", extra=" + String.valueOf(extra));
 
     mState = State.Stopped;
     relaxResources(true);
@@ -358,6 +364,7 @@ public class MusicService extends Service implements OnPreparedListener, OnError
   }
 
   public void onGainedAudioFocus() {
+    Toast.makeText(getApplicationContext(), "gained audio focus.", Toast.LENGTH_SHORT).show();
     mAudioFocus = AudioFocus.Focused;
 
     // restart media player with new focus settings
@@ -366,6 +373,8 @@ public class MusicService extends Service implements OnPreparedListener, OnError
   }
 
   public void onLostAudioFocus(boolean canDuck) {
+    Toast.makeText(getApplicationContext(),
+        "lost audio focus." + (canDuck ? "can duck" : "no duck"), Toast.LENGTH_SHORT).show();
     mAudioFocus = canDuck ? AudioFocus.NoFocusCanDuck : AudioFocus.NoFocusNoDuck;
 
     // start/restart/pause media player with new focus settings
@@ -425,4 +434,5 @@ public class MusicService extends Service implements OnPreparedListener, OnError
     giveUpAudioFocus();
     Log.i(TAG, "is being desotryed");
   }
+
 }
