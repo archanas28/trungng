@@ -89,8 +89,8 @@
     <string name="no_connection">No connection available</string>
     <string name="norssfeeds">Subscriptions are being loaded</string>
     <string name="noentries">This podcast is not updated. Tap refresh for new content.</string>
-    <string name="no_content_all_items">Content not updated. Go to Subscriptions and tap Refresh to get content.</string>
-    <string name="no_content_favorites">You do not have any favorite items currently.</string>
+    <string name="no_content_all_items">Content not updated. Go to Podcasts and tap Refresh to get content.</string>
+    <string name="no_content_favorites">No favorite items. Go star some!</string>
     <string name="no_content_recent">No recent items. Really?</string>
     <string name="never">never</string>
     <string name="update">Update</string>

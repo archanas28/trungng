@@ -43,8 +43,10 @@ public final class SubscriptionsMenuHelper {
   static boolean onOptionsItemSelected(final Context context, final MenuItem item) {
     switch (item.getItemId()) {
     case R.id.option_addfeed: {
-      context.startActivity(new Intent(Intent.ACTION_INSERT)
-          .setData(FeedData.SubscriptionColumns.CONTENT_URI));
+      Intent intent = new Intent(context, EditSubscriptionActivity.class);
+      intent.setData(FeedData.SubscriptionColumns.CONTENT_URI);
+      intent.putExtra(EditSubscriptionActivity.ADD_FEED, true);
+      context.startActivity(intent);
       break;
     }
     case R.id.option_refresh:
@@ -53,7 +55,6 @@ public final class SubscriptionsMenuHelper {
             .getSystemService(Context.CONNECTIVITY_SERVICE);
         final NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
         if (networkInfo.getType() == ConnectivityManager.TYPE_WIFI) {
-          //TODO(trung): make this Thread static (see recently bookmarked article) and not run on UI thread
           new Thread() {
             public void run() {
               context.sendBroadcast(new Intent(Strings.ACTION_REFRESHFEEDS).putExtra(
