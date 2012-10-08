@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/option_addfeed"
+        android:icon="@drawable/ic_menu_add"
+        android:showAsAction="ifRoom"
+        android:title="@string/option_addfeed"/>
+    <item
+        android:id="@+id/option_refresh"
+        android:icon="@drawable/ic_menu_refresh"
+        android:showAsAction="ifRoom"
+        android:title="@string/option_refresh"/>
+    <item
+        android:id="@+id/option_settings"
+        android:icon="@drawable/ic_menu_preferences"
+        android:title="@string/option_settings"/>
+    <item
+        android:id="@+id/option_import"
+        android:title="@string/option_import"/>
+    <item
+        android:id="@+id/option_export"
+        android:title="@string/option_export"/>
+
+</menu>
