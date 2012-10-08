@@ -9,9 +9,9 @@ import android.os.Bundle;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 
+import com.lingp.frpodcast.R;
 import com.lingp.frpodcast.service.RefreshService;
 import com.lingp.frpodcast.utils.Strings;
-import com.lingp.frpodcast.R;
 
 @TargetApi(11)
 public class PrefsFragment extends PreferenceFragment {
@@ -39,8 +39,8 @@ public class PrefsFragment extends PreferenceFragment {
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
         String key) {
-      boolean newValue = sharedPreferences.getBoolean(key, false);
       if (key.equals(Strings.SETTINGS_REFRESHENABLED)) {
+        boolean newValue = sharedPreferences.getBoolean(key, false);
         if (newValue) {
           new Thread() {
             public void run() {

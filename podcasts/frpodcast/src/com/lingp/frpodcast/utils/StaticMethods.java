@@ -110,6 +110,9 @@ public class StaticMethods {
     if (relativeTime.startsWith("0 mins ago"))
       return context.getString(R.string.just_now);
     int pos = relativeTime.indexOf(",");
-    return relativeTime.substring(0, pos);
+    if (pos > 0)
+      return relativeTime.substring(0, pos);
+    else
+      return relativeTime;
   }
 }
