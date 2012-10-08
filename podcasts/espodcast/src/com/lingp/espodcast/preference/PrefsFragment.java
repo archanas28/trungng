@@ -15,17 +15,15 @@ import com.lingp.espodcast.utils.Strings;
 
 @TargetApi(11)
 public class PrefsFragment extends PreferenceFragment {
-  
+
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
     addPreferencesFromResource(R.layout.preferences);
 
-    SharedPreferences prefs = PreferenceManager
-        .getDefaultSharedPreferences(getActivity());
-    prefs.registerOnSharedPreferenceChangeListener(new PrefsChangeListener(
-        getActivity()));
+    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+    prefs.registerOnSharedPreferenceChangeListener(new PrefsChangeListener(getActivity()));
   }
 
   final class PrefsChangeListener implements OnSharedPreferenceChangeListener {
@@ -37,10 +35,9 @@ public class PrefsFragment extends PreferenceFragment {
     }
 
     @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
-        String key) {
-      boolean newValue = sharedPreferences.getBoolean(key, false);
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
       if (key.equals(Strings.SETTINGS_REFRESHENABLED)) {
+        boolean newValue = sharedPreferences.getBoolean(key, false);
         if (newValue) {
           new Thread() {
             public void run() {
@@ -53,5 +50,5 @@ public class PrefsFragment extends PreferenceFragment {
       }
     }
   }
-  
+
 }
