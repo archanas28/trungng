@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+ Copyright (c) 2012 - The Language Podcasting Company - Lingp
+ 
+ Sparse rss is copyrighted by 2010-2012 Stefan Handschuh
+
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+
+ The above copyright notice and this permission notice shall be included in
+ all copies or substantial portions of the Software.
+
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ THE SOFTWARE.
+ 
+ 
+ Note for translators: only include the strings that differ from the 
+ English version. Translations will only be included in the Sparse RSS 
+ program, if they are licensed under the MIT license.
+-->
+<resources>
+
+    <string name="app_name">Learn Italian</string>
+    <string name="home">Home</string>
+    <string name="subscriptions">Podcasts</string>
+    <string name="all_items">All items</string>
+    <string name="explore">Explore</string>
+    <string name="favorites">Favorites</string>
+    <string name="recently_viewed">Recent</string>
+    <string name="listen_summary">Summary</string>
+    <string name="select_file">Select file (SD-root)</string>
+    
+    <!-- Titles -->
+    <string name="title_editsubscription">Edit subscription</string>
+    <string name="title_newsubscription">New subscription</string>
+    <string name="title_feed">Title</string>
+    <string name="title_summary">Summary of your listen activity</string>
+    <string name="title_tip">Tips</string>
+    
+    <string name="button_alwaysokforall">Always OK for all</string>
+    
+    <!-- Option menus -->
+    <string name="option_addfeed">Add feed</string>
+    <string name="option_refresh">Refresh</string>
+    <string name="option_settings">Settings</string>
+    <string name="option_import">Import from OPML</string>
+    <string name="option_export">Export to OPML</string>
+    <string name="option_mark_all_as_read">Mark all as read</string>
+    <string name="option_mark_all_as_unread">Mark all as unread</string>
+    <string name="option_hideread">Hide read entries</string>
+    <string name="option_showread">Show read entries</string>
+    <string name="option_deleteread">Delete read entries</string>
+    <string name="option_deleteallentries">Delete all entries</string>
+    <!-- Context menu -->
+    <string name="contextmenu_share">Share</string>
+    <string name="contextmenu_delete">Delete</string>
+    <string name="contextmenu_edit">Edit subscription</string>
+    <string name="contextmenu_unsubscribe">Unsubscribe</string>
+    <string name="contextmenu_markasread">Mark as read</string>
+    <string name="contextmenu_markasunread">Mark as unread</string>
+    <string name="contextmenu_copyurl">Copy link into clipboard</string>
+    
+    <!-- Text -->
+    <string name="tip_msg1">To help you avoid any additional charges, this operation is only supported in Wifi mode. If you wish to continue, either turn on your Wifi or refresh a single feed only.</string>
+    <string name="no_media">No media to play for this feed</string>
+    <string name="this_week">This week</string>
+    <string name="this_month">This month</string>
+    <string name="total">Total</string>
+    <string name="daily_average">Daily Average</string>
+    <string name="items"> items</string>
+    <string name="hours"> hours</string>
+    
+    <string name="refresh_error">Some connection error occurred. Please try again later.</string>
+    <string name="refreshing">Content is being refreshed. This may take some time, please wait.</string>
+    <string name="player_error_msg">There seems to be an error with your connection.\nI\'m trying my best to play again :-)</string>
+    <string name="listen_now">Listen now</string>
+    <string name="view_in_browser">View in browser</string>
+    <string name="preparing">Content is being prepared. This may take some time, please wait.</string>
+    <string name="no_connection">No connection available</string>
+    <string name="norssfeeds">Subscriptions are being loaded</string>
+    <string name="noentries">This podcast is not updated. Tap refresh for new content.</string>
+    <string name="no_content_all_items">Content not updated. Go to Subscriptions and tap Refresh to get content.</string>
+    <string name="no_content_favorites">You do not have any favorite items currently.</string>
+    <string name="no_content_recent">No recent items. Really?</string>
+    <string name="not_updated">Not updated</string>
+    <string name="update">Update</string>
+    <string name="colon">:\u00A0</string>
+    <string name="unread">unread</string>
+    <string name="error">Error</string>
+    <string name="kb">kb</string>
+    <string name="just_now">Just now</string>
+    <!-- Preferences -->
+    <string name="settings_category_refresh">Refresh</string>
+    <string name="settings_enabled">Enabled</string>
+    <string name="settings_refreshenabled_description">Refresh all feeds automatically</string>
+    <string name="settings_refreshinterval">Refresh interval</string>
+    <string name="settings_refreshinterval_description">Interval between two automated refresh</string>
+    <string name="settings_refreshonopen">Refresh feeds on open</string>
+    <string name="settings_refreshonopen_description">Refresh all feeds after opening the application</string>
+    <string name="settings_overridewifionly">Override \"refresh on wifi only\"</string>
+    <string name="settings_overridewifionly_description">Allow manual refreshing of single \"wifi-only\" feeds</string>
+    
+    <string name="settings_category_download">Download options</string>
+    <string name="settings_disablepictures">Disable pictures</string>
+    <string name="settings_disablepictures_description">Do not show and load any pictures</string>
+    <string name="settings_fetchpictures">Download pictures</string>
+    <string name="settings_fetchpictures_description">Download and store pictures locally</string>
+    <string name="settings_enclosuredownloadwarning">Enclosure download warning</string>
+    <string name="settings_enclosuredownloadwarning_description">Show warning before opening opening/downloading attached files</string>
+    
+    <string name="settings_category_contentpresentation">Presentation</string>
+    <string name="settings_prioritize">Prioritize unread content</string>
+    <string name="settings_prioritize_description">Show unread feed entries above read entries</string>
+    <string name="settings_fontsize">Text size</string>
+    <string name="settings_fontsize_description">Adjust size of article text</string>
+    
+    <string name="settings_visiblefeeds">Visible feeds</string>
+    <string name="settings_widgetentrycount">Entry count</string>
+    <string name="settings_widgetentrycount_description">Number of entries that are shown in the widget</string>
+    <string name="settings_widgetbackground">Background</string>
+    <string name="settings_widgetbackground_description">Color and transparency of the widget background</string>
+
+    <!-- Errors -->
+    <string name="error_feedurlexists">You have already subscribed to this podcast.</string>
+    <string name="error_feedimport">The selected file could not be imported.</string>
+    <string name="error_feedexport">Failed to export. Make sure you have a writable SD-card mounted.</string>
+    <string name="error_invalidimportfile">The selected file is not valid for import.</string>
+    <string name="error_externalstoragenotavailable">The external storage (e.g. SD-card)  is not available.</string>
+    
+    <string name="feed_url">URL</string>
+    <string name="optional">(optional)</string>
+    <string name="websiteorfeed">(website or feed)</string>
+    <string name="refreshonwifionly">Refresh only over Wifi</string>
+    <string name="red">Red</string>
+    <string name="green">Green</string>
+    <string name="blue">Blue</string>
+    <string name="transparency">Transparency</string>
+    <string name="question_deletefeed">Do you really want to delete this feed and all of its entries?</string>
+    <string name="question_refreshwowifi">Do you really want to refresh this feed while not being on wifi?</string>
+    <string name="question_areyousure">Are you sure?</string>
+    <string name="question_playenclosure">Downloading this file (of alleged size of %1$s) may cause a lot of traffic. Do you want to proceed?</string>
+    <string name="message_exportedto">Exported into %s.</string>
+    <string name="dialog_hint">Hint</string>
+
+    <string-array name="settings_intervals">
+        <item>1 minute</item>
+        <item>5 minutes</item>
+        <item>15 minutes</item>
+        <item>30 minutes</item>
+        <item>1 hour</item>
+        <item>2 hours</item>
+        <item>6 hours</item>
+        <item>1 day</item>
+    </string-array>
+    <string-array name="settings_fontsizes">
+        <item>Standard</item>
+        <item>+1</item>
+        <item>+2</item>
+        <item>+3</item>
+    </string-array>
+
+</resources>

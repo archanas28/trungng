@@ -1,0 +1,7 @@
+<!-- for devices after api 14 -->
+<resources>
+    <style name="Theme.Light" parent="@android:style/Theme.DeviceDefault.Light"/>
+    <style name="ButtonBar" parent="@android:style/DeviceDefault.ButtonBar.AlertDialog"/>
+    <style name="Theme.Dialog" parent="android:Theme.DeviceDefault.Dialog"/>
+    <style name="Widget.Button.Dialog" parent="@android:style/Widget.DeviceDefault.Button.Borderless"/>
+</resources>
