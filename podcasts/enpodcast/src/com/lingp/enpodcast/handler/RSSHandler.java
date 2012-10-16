@@ -346,25 +346,28 @@ public class RSSHandler extends DefaultHandler {
         values.put(FeedData.ItemColumns.TITLE, unescapeTitle(title.toString().trim()));
 
         Vector<String> images = null;
+        String descriptionString = "";
         if (description != null) {
-          String descriptionString = description.toString().trim()
+          descriptionString = description.toString().trim()
               .replaceAll(Strings.HTML_SPAN_REGEX, Strings.EMPTY);
-          if (descriptionString.length() > 0) {
-            if (fetchImages) {
-              images = new Vector<String>(4);
-              Matcher matcher = imgPattern.matcher(description);
-              while (matcher.find()) {
-                String match = matcher.group(1).replace(Strings.SPACE, Strings.URL_SPACE);
-                images.add(match);
-                descriptionString = descriptionString.replace(
-                    match,
-                    new StringBuilder(Strings.FILEURL).append(FeedDataContentProvider.IMAGEFOLDER)
-                        .append(Strings.IMAGEID_REPLACEMENT)
-                        .append(match.substring(match.lastIndexOf('/') + 1)).toString());
-              }
+        }
+        if (descriptionString.length() == 0 || description == null)
+          descriptionString = title.toString();
+        if (descriptionString.length() > 0) {
+          if (fetchImages) {
+            images = new Vector<String>(4);
+            Matcher matcher = imgPattern.matcher(description);
+            while (matcher.find()) {
+              String match = matcher.group(1).replace(Strings.SPACE, Strings.URL_SPACE);
+              images.add(match);
+              descriptionString = descriptionString.replace(
+                  match,
+                  new StringBuilder(Strings.FILEURL).append(FeedDataContentProvider.IMAGEFOLDER)
+                      .append(Strings.IMAGEID_REPLACEMENT)
+                      .append(match.substring(match.lastIndexOf('/') + 1)).toString());
             }
-            values.put(FeedData.ItemColumns.ABSTRACT, descriptionString);
           }
+          values.put(FeedData.ItemColumns.ABSTRACT, descriptionString);
         }
 
         String enclosureString = null;
