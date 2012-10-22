@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.lingp.krpodcast"
     android:installLocation="auto"
-    android:versionCode="4"
-    android:versionName="Vanilla" >
+    android:versionCode="1"
+    android:versionName="Kimbab" >
 
     <uses-sdk
         android:minSdkVersion="8"

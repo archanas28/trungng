@@ -2,26 +2,22 @@ http://enjoyenglish.libsyn.com/rss
 5분 패턴영어 - 5 Minutes Idiomatic English
 http://englishinkorean.com/feed/rss/
 English in Korean
-http://121.189.59.238:8080/itunes11/ebs.xml
-English Bible Story [error]
-http://www.voakorea.com/rss/?zone=english-with-yoo
-English with Yoo - VOA [error]
+http://www.voakorea.com/podcast/?count=50&zoneId=3263
+English with Yoo - VOA
 http://www.koreanclass101.com/feed
 Korean Class 101
 http://survivalphrases.com/korean/feed/
 Korean Survival Phrases
 http://tune.kbs.co.kr/rss/1.xml
-이근철의 굿모닝 팝스 - Good Morning Pops [error]
+이근철의 굿모닝 팝스 - Good Morning Pops
 http://tune.kbs.co.kr/rss/33.xml 
-노래의 날개위에 - KBS [error]
+노래의 날개위에 - KBS
 http://www.weeklykorean.com/category/podcast/feed
 Weekly Korean Podcast
 http://tune.kbs.co.kr/rss/109.xml
-라디오 119 - KBS Radio 119 [error]
+라디오 119 - KBS Radio 119
 http://streamer1.rfa.org/archive/KOR/Korean_podcast.php
 RFA Korean Daily Show
-http://feeds.feedburner.com/sbskorean
-SBS Korean [error]
 http://feeds.feedburner.com/blogspot/OtQT
 Sparkling Korean Podcast - Beyond Learning korean
 http://feeds.feedburner.com/TalkToMeInKorean
