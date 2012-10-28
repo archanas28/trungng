@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Layout to view an entry -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/item_title"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:ellipsize="marquee"
+        android:marqueeRepeatLimit="1"
+        android:paddingLeft="4dp"
+        android:paddingTop="2dp"
+        android:scrollHorizontally="true"
+        android:singleLine="true"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/color_blue"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="4dp" >
+
+        <TextView
+            android:id="@+id/entry_date"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="fill"
+            android:layout_weight="1"
+            android:paddingTop="2dp" />
+
+        <ImageView
+            android:id="@android:id/icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="4dp"
+        android:paddingTop="2dp" >
+
+        <TextView
+            android:id="@+id/btn_view"
+            style="@android:style/TextAppearance.DeviceDefault.Widget.Button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:drawableLeft="@android:drawable/ic_menu_view"
+            android:text="@string/view_in_browser"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/btn_play"
+            style="@android:style/TextAppearance.DeviceDefault.Widget.Button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:drawableLeft="@android:drawable/ic_media_play"
+            android:text="@string/listen_now"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_gravity="fill"
+        android:layout_weight="1" >
+
+        <WebView
+            android:id="@+id/content"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_above="@+id/frag_player" />
+
+        <fragment
+            android:id="@+id/frag_player"
+            android:name="com.lingp.jppodcast.musicplayer.CuteMediaPlayer"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true" />
+    </RelativeLayout>
+
+</LinearLayout>
