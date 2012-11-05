@@ -280,11 +280,12 @@ public class FeedDataContentProvider extends ContentProvider {
       String sortOrder) {
     SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
     int option = uriMatcher.match(uri);
-    if ((option == URI_SUBSCRIPTION || option == URI_SUBSCRIPTIONS) && sortOrder == null) {
+    if (option == URI_SUBSCRIPTION && sortOrder == null) {
       sortOrder = FeedData.FEED_DEFAULTSORTORDER;
-    }
-    if (option == URI_RECENT_ITEMS) {
+    } else if (option == URI_RECENT_ITEMS) {
       sortOrder = FeedData.ItemColumns.READDATE + " DESC";
+    } else if (option == URI_SUBSCRIPTIONS) {
+      sortOrder = FeedData.SubscriptionColumns.NAME;
     }
 
     switch (option) {
@@ -514,7 +515,7 @@ public class FeedDataContentProvider extends ContentProvider {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-      // nothing to upgrade yet
+      insertDefaultSubscriptions(db);
     }
   }
 

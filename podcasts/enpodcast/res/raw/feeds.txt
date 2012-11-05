@@ -1,5 +1,7 @@
 http://downloads.bbc.co.uk/podcasts/worldservice/how2/rss.xml
 6 Minute English
+http://pronuncian.com/Materials/Podcasts/rss.xml
+American English Pronunciation Podcasts
 http://feed.voanews.com/f/KI6AEB/YKeYXDE3HsNJ
 American Stories
 http://feeds.feedburner.com/BetterAtEnglish/PodcastsOnly
@@ -8,55 +10,73 @@ http://learnenglish.org.uk/itunes/bcsw/bcsw.xml
 Big City Small World
 http://downloads.bbc.co.uk/podcasts/worldservice/bizdaily/rss.xml
 Business Daily - BBC
+http://feeds2.feedburner.com/BusinessEnglishPod
+Business English Pod
 http://downloads.bbc.co.uk/podcasts/radio/cr/rss.xml
 CBeebies Radio
-http://downloads.bbc.co.uk/podcasts/worldservice/ht/rss.xml
-Hard Talk - BBC
+http://esl.culips.com/?feed=podcast
+Culips ESL podcast
+http://downloads.bbc.co.uk/podcasts/radio4/cc/rss.xml
+Crossing Continent - BBC Radio4
+http://feeds.feedburner.com/ElementaryPodcastSeriesAll?format=xml
+Elementary Podcast - British Council
 http://downloads.bbc.co.uk/podcasts/worldservice/eaw/rss.xml
 English At Work
 http://www.eslpod.com/feed.xml
 English as a Second Language Podcast
-http://feeds.feedburner.com/ElementaryPodcastSeriesAll?format=xml
-Elementary Podcast - British Council
 http://feed.voanews.com/f/KI6AEB/JZ1UKEotS_bA
 Explorations
-http://feed.voanews.com/f/KI6AEB/ByeMvAAau5cg
-Health Report
 http://downloads.bbc.co.uk/podcasts/worldservice/forum/rss.xml
 Forum - A World of Ideas
+http://downloads.bbc.co.uk/podcasts/worldservice/ht/rss.xml
+Hard Talk - BBC
+http://feed.voanews.com/f/KI6AEB/ByeMvAAau5cg
+Health Report
 http://feeds.feedburner.com/JustVocabulary
 Just Vocabulary
 http://downloads.bbc.co.uk/podcasts/radio4/lastword/rss.xml
 Last Word
+http://feeds.feedburner.com/englishpod/qCRQ
+Learn English on your terms
+http://feeds2.feedburner.com/ListenToEnglish-LearnEnglish
+Listen to English
+http://teacherluke.podomatic.com/rss2.xml
+Luke's English Podcast
+http://info40650.podomatic.com/rss2.xml
+My American Friend
+http://feeds.nature.com/nature/podcast/current
+Nature Podcast
 http://www.abc.net.au/local/podcasts/nerdzilla.xml
 Nerdzilla
-http://downloads.bbc.co.uk/podcasts/scotland/poetry2012/rss.xml
-Poetry 2012- The Written World
 http://feeds.feedburner.com/podcastsinenglish
 Podcasts In English
+http://downloads.bbc.co.uk/podcasts/scotland/poetry2012/rss.xml
+Poetry 2012- The Written World
 http://feed.voanews.com/f/KI6AEB/iWYQw_v8MLli
 Science in the News - VOA
-http://abc.net.au/science/podcast/starstuff.xml
-StarStuff - ABC
+http://splendidspeaking.podomatic.com/rss2.xml
+Splendid Speaking
 http://www.stgeorges.co.uk/blog/podcasts/feed/
 St George International
-http://englishteacherjohn.com/rss/rss.xml
-The English Teacher John Show
+http://abc.net.au/science/podcast/starstuff.xml
+StarStuff - ABC
 http://www.npr.org/rss/podcast.php?id=510298
 TED Radio Hour Podcast
-http://theenglishdesk.podbean.com/feed
-The English Desk
-http://feed.voanews.com/f/KI6AEB/6rN5mTvs_mv6
-The Making of a Nation
-http://abc.net.au/rn/podcast/feeds/science.xml
-The Science Show - ABC
-http://downloads.bbc.co.uk/podcasts/radio4/thought/rss.xml
-Thought for the day - BBC
 http://recordings.talkshoe.com/rss21274.xml
 Talk Shoe
 http://feed.voanews.com/f/KI6AEB/kACdAH98MMFg
 Technology report
+http://theenglishdesk.podbean.com/feed
+The English Desk
+http://englishteacherjohn.com/rss/rss.xml
+The English Teacher John Show
+http://feed.voanews.com/f/KI6AEB/6rN5mTvs_mv6
+The Making of a Nation
+http://abc.net.au/rn/podcast/feeds/science.xml
+The Science Show - ABC
 http://feed.voanews.com/f/KI6AEB/mB8BDgQW13LS
 This is America
+http://downloads.bbc.co.uk/podcasts/radio4/thought/rss.xml
+Thought for the day - BBC
 http://feed.voanews.com/f/KI6AEB/TAx6FSvAJOmT
 Words and Their Stories

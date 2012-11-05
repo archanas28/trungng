@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.lingp.enpodcast"
     android:installLocation="auto"
-    android:versionCode="4"
-    android:versionName="Soldier" >
+    android:versionCode="5"
+    android:versionName="Cheese" >
 
     <uses-sdk
         android:minSdkVersion="8"
