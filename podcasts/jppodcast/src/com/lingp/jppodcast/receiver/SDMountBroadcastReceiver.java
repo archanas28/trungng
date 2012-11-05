@@ -37,21 +37,24 @@ import com.lingp.jppodcast.utils.Strings;
 
 public class SDMountBroadcastReceiver extends BroadcastReceiver {
 
-	@Override
-	public void onReceive(Context context, Intent intent) {
-		if (!intent.getBooleanExtra("read-only", false)) {
-			ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-			
-			manager.restartPackage(Strings.PACKAGE);
-			
-			try {
-				if (PreferenceManager.getDefaultSharedPreferences(context.createPackageContext(Strings.PACKAGE, 0)).getBoolean(Strings.SETTINGS_REFRESHENABLED, false)) {
-					context.startService(new Intent(context, RefreshService.class));
-				}
-			} catch (NameNotFoundException e) {
-				
-			}
-		}
-	}
+  @Override
+  public void onReceive(Context context, Intent intent) {
+    if (!intent.getBooleanExtra("read-only", false)) {
+      ActivityManager manager = (ActivityManager) context
+          .getSystemService(Context.ACTIVITY_SERVICE);
+
+      manager.restartPackage(context.getPackageName());
+
+      try {
+        if (PreferenceManager.getDefaultSharedPreferences(
+            context.createPackageContext(context.getPackageName(), 0)).getBoolean(
+            Strings.SETTINGS_REFRESHENABLED, false)) {
+          context.startService(new Intent(context, RefreshService.class));
+        }
+      } catch (NameNotFoundException e) {
+
+      }
+    }
+  }
 
 }

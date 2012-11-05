@@ -83,6 +83,10 @@ public class FeedItemActivity2 extends FragmentActivity {
      */
     public void onPlayClicked(String url);
   }
+  
+  public interface OnConfigurationChangedListener {
+    public Object onRetainNonInstanceObject();
+  }
 
   private static final String TEXT_HTML = "text/html";
   private static final String UTF8 = "utf-8";

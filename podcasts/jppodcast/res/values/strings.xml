@@ -38,16 +38,15 @@
     <string name="recently_viewed">Recent</string>
     <string name="listen_summary">Summary</string>
     <string name="select_file">Select file (SD-root)</string>
-    
+
     <!-- Titles -->
     <string name="title_editsubscription">Edit subscription</string>
     <string name="title_newsubscription">New subscription</string>
     <string name="title_feed">Title</string>
     <string name="title_summary">Summary of your listen activity</string>
     <string name="title_tip">Tips</string>
-    
     <string name="button_alwaysokforall">Always OK for all</string>
-    
+
     <!-- Option menus -->
     <string name="option_addfeed">Add feed</string>
     <string name="option_refresh">Refresh</string>
@@ -68,7 +67,7 @@
     <string name="contextmenu_markasread">Mark as read</string>
     <string name="contextmenu_markasunread">Mark as unread</string>
     <string name="contextmenu_copyurl">Copy link into clipboard</string>
-    
+
     <!-- Text -->
     <string name="tip_msg1">To help you avoid any additional charges, this operation is only supported in Wifi mode. If you wish to continue, either turn on your Wifi or refresh a single feed only.</string>
     <string name="no_media">No media to play for this feed</string>
@@ -78,7 +77,6 @@
     <string name="daily_average">Daily Average</string>
     <string name="items"> items</string>
     <string name="hours"> hours</string>
-    
     <string name="refresh_error">Some connection error occurred. Please try again later.</string>
     <string name="refreshing">Content is being refreshed. This may take some time, please wait.</string>
     <string name="player_error_msg">There seems to be an error with your connection.\nI\'m trying my best to play again :-)</string>
@@ -108,7 +106,6 @@
     <string name="settings_refreshonopen_description">Refresh all feeds after opening the application</string>
     <string name="settings_overridewifionly">Override \"refresh on wifi only\"</string>
     <string name="settings_overridewifionly_description">Allow manual refreshing of single \"wifi-only\" feeds</string>
-    
     <string name="settings_category_download">Download options</string>
     <string name="settings_disablepictures">Disable pictures</string>
     <string name="settings_disablepictures_description">Do not show and load any pictures</string>
@@ -116,13 +113,11 @@
     <string name="settings_fetchpictures_description">Download and store pictures locally</string>
     <string name="settings_enclosuredownloadwarning">Enclosure download warning</string>
     <string name="settings_enclosuredownloadwarning_description">Show warning before opening opening/downloading attached files</string>
-    
     <string name="settings_category_contentpresentation">Presentation</string>
     <string name="settings_prioritize">Prioritize unread content</string>
     <string name="settings_prioritize_description">Show unread feed entries above read entries</string>
     <string name="settings_fontsize">Text size</string>
     <string name="settings_fontsize_description">Adjust size of article text</string>
-    
     <string name="settings_visiblefeeds">Visible feeds</string>
     <string name="settings_widgetentrycount">Entry count</string>
     <string name="settings_widgetentrycount_description">Number of entries that are shown in the widget</string>
@@ -135,7 +130,6 @@
     <string name="error_feedexport">Failed to export. Make sure you have a writable SD-card mounted.</string>
     <string name="error_invalidimportfile">The selected file is not valid for import.</string>
     <string name="error_externalstoragenotavailable">The external storage (e.g. SD-card)  is not available.</string>
-    
     <string name="feed_url">URL</string>
     <string name="optional">(optional)</string>
     <string name="websiteorfeed">(website or feed)</string>
@@ -167,5 +161,13 @@
         <item>+2</item>
         <item>+3</item>
     </string-array>
+
+    <!-- Unlicensed dialog messages -->
+    <string name="unlicensed_dialog_title">Application not licensed</string>
+    <string name="unlicensed_dialog_body">This application is not licensed. Please purchase it from Android Market.</string>
+    <string name="unlicensed_dialog_retry_body">Unable to validate license. Check to see if a network connection is available.</string>
+    <string name="buy_button">Buy app</string>
+    <string name="retry_button">Retry</string>
+    <string name="quit_button">Exit</string>
 
 </resources>

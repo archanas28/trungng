@@ -39,7 +39,7 @@ public class BootCompletedBroadcastReceiver extends BroadcastReceiver {
   public void onReceive(Context context, Intent intent) {
     try {
       if (PreferenceManager.getDefaultSharedPreferences(
-          context.createPackageContext(Strings.PACKAGE, 0)).getBoolean(
+          context.createPackageContext(context.getPackageName(), 0)).getBoolean(
           Strings.SETTINGS_REFRESHENABLED, false)) {
         context.startService(new Intent(context, RefreshService.class));
       }

@@ -28,9 +28,18 @@ package com.lingp.jppodcast.utils;
 import com.lingp.jppodcast.provider.FeedData;
 
 public final class Strings {
-  public static final String PACKAGE = "com.lingp.jppodcast";
-  public static final String APPLICATION_SHARED_PREFERENCES = "com.lingp.jppodcast.SHARED_PREFERENCES";
+  //public static final String PACKAGE = "com.lingp.jppodcast";
+  public static final String SEEK_CHANGE = "com.lingp.basepodcast.SEEK_CHANGE";
+  public static final String PLAY_URL = "com.lingp.basepodcast.PLAY_URL";
+  public static final String ACTION_TOGGLE_PLAYBACK = "com.lingp.basepodcast.musicplayer.action.TOGGLE_PLAYBACK";
+  public static final String ACTION_PLAY = "com.lingp.basepodcast.musicplayer.action.PLAY";
+  public static final String ACTION_PAUSE = "com.lingp.basepodcast.musicplayer.action.PAUSE";
+  public static final String ACTION_STOP = "com.lingp.basepodcast.musicplayer.action.STOP";
+  public static final String ACTION_SEEK = "com.lingp.basepodcast.musicplayer.action.SEEK";
+  public static final String ACTION_REFRESHFEEDS = "com.lingp.basepodcast.REFRESH";
+  public static final String ACTION_RESTART = "com.lingp.basepodcast.RESTART";
 
+  public static final String APPLICATION_SHARED_PREFERENCES = "SHARED_PREFERENCES";
   public static final String INTENT_DATABASE_READY = "database.ready";
   public static final String SETTINGS_REFRESHINTERVAL = "refresh.interval";
   public static final String SETTINGS_NOTIFICATIONSENABLED = "notifications.enabled";
@@ -44,28 +53,18 @@ public final class Strings {
   public static final String SETTINGS_BLACKTHEME = "blacktheme";
   public static final String SETTINGS_FONTSIZE = "fontsize";
 
-  public static final String SETTINGS_DISABLEPICTURES = "com.lingp.jppodcast.pictures.disable";
-  public static final String SETTINGS_OVERRIDEWIFIONLY = "com.lingp.jppodcast.overridewifionly";
-  public static final String SETTINGS_ENCLOSUREWARNINGSENABLED = "com.lingp.jppodcast.enclosurewarnings.enabled";
+  public static final String SETTINGS_DISABLEPICTURES = "pictures.disable";
+  public static final String SETTINGS_OVERRIDEWIFIONLY = "overridewifionly";
+  public static final String SETTINGS_ENCLOSUREWARNINGSENABLED = "enclosurewarnings.enabled";
 
-  public static final String ACTION_REFRESHFEEDS = "com.lingp.jppodcast.REFRESH";
-  public static final String ACTION_RESTART = "com.lingp.jppodcast.RESTART";
-  public static final String PREFERENCE_CURRENT_URI = "com.lingp.jppodcast.pref.current_uri";
-  public static final String PREFERENCE_DATABASE_READY = "com.lingp.jppodcast.pref.database_ready";
+  public static final String PREFERENCE_CURRENT_URI = "pref.current_uri";
+  public static final String PREFERENCE_DATABASE_READY = "pref.database_ready";
 
-  public static final String FEEDID = "com.lingp.jppodcast.feedid";
+  public static final String FEEDID = "feedid";
 
-  public static final String SEEK_CHANGE = "com.lingp.jppodcast.SEEK_CHANGE";
-  public static final String PLAY_URL = "com.lingp.jppodcast.PLAY_URL";
-  public static final String ACTION_TOGGLE_PLAYBACK = "com.lingp.jppodcast.musicplayer.action.TOGGLE_PLAYBACK";
-  public static final String ACTION_PLAY = "com.lingp.jppodcast.musicplayer.action.PLAY";
-  public static final String ACTION_PAUSE = "com.lingp.jppodcast.musicplayer.action.PAUSE";
-  public static final String ACTION_STOP = "com.lingp.jppodcast.musicplayer.action.STOP";
-  public static final String ACTION_SEEK = "com.lingp.jppodcast.musicplayer.action.SEEK";
-
-  public static final String EXTRA_SHOWREAD = "com.lingp.jppodcast.show_read";
-  public static final String EXTRA_SHOWFEEDINFO = "com.lingp.jppodcast.show_feedinfo";
-  public static final String EXTRA_AUTORELOAD = "com.lingp.jppodcast.autoreload";
+  public static final String EXTRA_SHOWREAD = "show_read";
+  public static final String EXTRA_SHOWFEEDINFO = "show_feedinfo";
+  public static final String EXTRA_AUTORELOAD = "autoreload";
 
   public static final String DB_ISNULL = " IS NULL";
   public static final String DB_DESC = " DESC";

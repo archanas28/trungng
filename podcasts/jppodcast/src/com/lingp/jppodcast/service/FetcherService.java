@@ -92,7 +92,7 @@ public final class FetcherService extends IntentService {
     if (preferences == null) {
       try {
         preferences = PreferenceManager.getDefaultSharedPreferences(createPackageContext(
-            Strings.PACKAGE, 0));
+            getPackageName(), 0));
       } catch (NameNotFoundException e) {
         preferences = PreferenceManager.getDefaultSharedPreferences(FetcherService.this);
       }

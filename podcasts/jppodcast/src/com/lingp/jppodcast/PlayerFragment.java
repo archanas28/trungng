@@ -25,8 +25,7 @@ import android.widget.LinearLayout;
 import android.widget.MediaController.MediaPlayerControl;
 import android.widget.Toast;
 
-import com.lingp.jppodcast.R;
-import com.lingp.jppodcast.FeedItemActivity.OnConfigurationChangedListener;
+import com.lingp.jppodcast.FeedItemActivity2.OnConfigurationChangedListener;
 import com.lingp.jppodcast.FeedItemActivity2.OnPlayButtonClickedListener;
 import com.lingp.jppodcast.receiver.NetworkReceiver;
 import com.lingp.jppodcast.utils.StaticMethods;

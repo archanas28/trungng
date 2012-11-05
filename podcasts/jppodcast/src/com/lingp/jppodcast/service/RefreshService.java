@@ -75,7 +75,7 @@ public class RefreshService extends Service {
     Log.i("RefreshService", "creating refresh service");
     try {
       mPreferences = PreferenceManager.getDefaultSharedPreferences(createPackageContext(
-          Strings.PACKAGE, 0));
+          getPackageName(), 0));
     } catch (NameNotFoundException e) {
       mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
     }
