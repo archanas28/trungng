@@ -1,7 +1,5 @@
 http://frug.podbean.com/feed
 A Short History of Japan
-http://feeds.feedburner.com/ayearinjapan-mp3version
-A Year in Japan
 http://blog.fmokinawa.co.jp/happy/podcast/podcast.xml
 FM Okinawa Happy Podcast
 http://feeds.feedburner.com/findingjapan
@@ -18,10 +16,6 @@ http://feeds2.feedburner.com/JapaneseClassicalLiteratureAtBedtime
 Japanese Classical Literature at Bedtime
 http://www.nhk.or.jp/lesson/common/rss/lesson/english.xml
 Japanese Lessons in English
-http://www.voiceblog.jp/japaneselistening/rss2.0.xml
-Japanese Listening (Advanced)
-http://www.naruhodojapan.com/?feed=rss2
-Japanese Language and Culture
 http://feeds.feedburner.com/Japaneselingq
 Japanese LingQ Podcast
 http://feeds.feedburner.com/learnjapanesepod

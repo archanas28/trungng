@@ -58,15 +58,14 @@ import com.lingp.jppodcast.utils.Strings;
  * 
  */
 public class FeedDataContentProvider extends ContentProvider {
-  private static final String FOLDER = Environment.getExternalStorageDirectory() + "/jppodcast/";
-  public static final String IMAGEFOLDER = Environment.getExternalStorageDirectory()
-      + "/jppodcast/images/";
+  private static final String DATABASE = "jppodcast";
+  private static final String FOLDER = Environment.getExternalStorageDirectory() + "/" + DATABASE
+      + "/";
+  public static final String IMAGEFOLDER = FOLDER + "images";
   public static final File IMAGEFOLDER_FILE = new File(IMAGEFOLDER);
+  private static final String BACKUPOPML = FOLDER + "backup.opml";
 
-  private static final String BACKUPOPML = Environment.getExternalStorageDirectory()
-      + "/jppodcast/backup.opml";
-
-  private static final String DATABASE_NAME = "jppodcast.db";
+  private static final String DATABASE_NAME = DATABASE + ".db";
   private static final int DATABASE_VERSION = 1;
   // store Subscriptions
   protected static final String TABLE_SUBSCRIPTIONS = "feeds";
@@ -113,12 +112,11 @@ public class FeedDataContentProvider extends ContentProvider {
     uriMatcher.addURI(FeedData.AUTHORITY, "recent", URI_RECENT_ITEMS);
     uriMatcher.addURI(FeedData.AUTHORITY, "recent/#", URI_RECENT_ITEM);
   }
-
-  private DatabaseHelper mDatabaseHelper;
-
   private String[] MAXPRIORITY = new String[] { "MAX(" + FeedData.SubscriptionColumns.PRIORITY
       + ")" };
 
+  private DatabaseHelper mDatabaseHelper;
+  
   @Override
   public int delete(Uri uri, String selection, String[] selectionArgs) {
     int option = uriMatcher.match(uri);
@@ -266,7 +264,6 @@ public class FeedDataContentProvider extends ContentProvider {
   public boolean onCreate() {
     try {
       File folder = new File(FOLDER);
-
       folder.mkdir(); // maybe we use the boolean return value later
     } catch (Exception e) {
 

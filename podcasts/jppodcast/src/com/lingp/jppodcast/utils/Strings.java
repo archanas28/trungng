@@ -28,16 +28,16 @@ package com.lingp.jppodcast.utils;
 import com.lingp.jppodcast.provider.FeedData;
 
 public final class Strings {
-  //public static final String PACKAGE = "com.lingp.jppodcast";
-  public static final String SEEK_CHANGE = "com.lingp.basepodcast.SEEK_CHANGE";
-  public static final String PLAY_URL = "com.lingp.basepodcast.PLAY_URL";
-  public static final String ACTION_TOGGLE_PLAYBACK = "com.lingp.basepodcast.musicplayer.action.TOGGLE_PLAYBACK";
-  public static final String ACTION_PLAY = "com.lingp.basepodcast.musicplayer.action.PLAY";
-  public static final String ACTION_PAUSE = "com.lingp.basepodcast.musicplayer.action.PAUSE";
-  public static final String ACTION_STOP = "com.lingp.basepodcast.musicplayer.action.STOP";
-  public static final String ACTION_SEEK = "com.lingp.basepodcast.musicplayer.action.SEEK";
-  public static final String ACTION_REFRESHFEEDS = "com.lingp.basepodcast.REFRESH";
-  public static final String ACTION_RESTART = "com.lingp.basepodcast.RESTART";
+  public static final String PACKAGE = "com.lingp.jppodcast";
+  public static final String SEEK_CHANGE = "com.lingp.jppodcast.SEEK_CHANGE";
+  public static final String PLAY_URL = "com.lingp.jppodcast.PLAY_URL";
+  public static final String ACTION_TOGGLE_PLAYBACK = "com.lingp.jppodcast.musicplayer.action.TOGGLE_PLAYBACK";
+  public static final String ACTION_PLAY = "com.lingp.jppodcast.musicplayer.action.PLAY";
+  public static final String ACTION_PAUSE = "com.lingp.jppodcast.musicplayer.action.PAUSE";
+  public static final String ACTION_STOP = "com.lingp.jppodcast.musicplayer.action.STOP";
+  public static final String ACTION_SEEK = "com.lingp.jppodcast.musicplayer.action.SEEK";
+  public static final String ACTION_REFRESHFEEDS = "com.lingp.jppodcast.REFRESH";
+  public static final String ACTION_RESTART = "com.lingp.jppodcast.RESTART";
 
   public static final String APPLICATION_SHARED_PREFERENCES = "SHARED_PREFERENCES";
   public static final String INTENT_DATABASE_READY = "database.ready";
