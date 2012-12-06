@@ -1,43 +1,43 @@
 http://www.frenchetc.org/homecategory/advanced_podcasts/feed/
-Advanced French by Frenchetc
+Advanced French (updated)
 http://radiolingua.com/feed/cbf-podcast/
 Coffee Break French
 http://www.frenchetc.org/homecategory/telquel/feed/
-French As It Is – Le Français Tel Quel
+French As It Is – Le Français Tel Quel (updated)
+http://www.frenchetc.org/homecategory/beginners_podcasts/feed/
+French E-traveler's course (updated)
+http://www.frenchetc.org/homecategory/dictee/feed/
+French dictation - Listen and write (updated)
 http://www.frenchpod101.com/wp-feed-audio-video.php
 French pod 101
+http://www.frenchetc.org/homecategory/verbs/feed/
+French verbs (updated)
+http://www.frenchetc.org/homecategory/vocabulary/feed/
+French vocabulary (updated)
 http://frenchpod.com/lessons/feed
 Frenchecole
-http://www.frenchetc.org/homecategory/verbs/feed/
-French verbs by Frenchetc
-http://www.frenchetc.org/homecategory/vocabulary/feed/
-French vocabulary by Frenchetc
-http://www.frenchetc.org/homecategory/beginners_podcasts/feed/
-French E-traveler's course by Frenchetc
-http://www.frenchetc.org/homecategory/dictee/feed/
-French dictation - Listen and write
 http://radiofrance-podcast.net/podcast09/rss_10009.xml
 Géopolitique - Current Events
-http://frenchecole.libsyn.com/rss
-Learn French with Alexa - French for Beginners
-http://www.french-podcasts.com/?feed=podcast
-Learning with French podcasts
 http://ftew.libsyn.com/rss
 Learn French by podcast
-http://feeds.feedburner.com/LearnFrenchWithDailyfrenchpod
-Learn French with daily French podcast
+http://frenchecole.libsyn.com/rss
+Learn French with Alexa - French for Beginners
 http://feeds.feedburner.com/Frenchlingq
 Learn French with LingQ
+http://feeds.feedburner.com/LearnFrenchWithDailyfrenchpod
+Learn French with daily French podcast
+http://www.french-podcasts.com/?feed=podcast
+Learning with French podcasts
 http://www.frenchetc.org/homecategory/chansonsfrancaises/feed/
-Les chansons françaises – French songs
+Les chansons françaises – French songs (updated)
 http://mflsunderland-primary.podomatic.com/rss2.xml
 MFL Sunderland Primary French 
+http://radiolingua.com/feed/onlocation-french/
+On location French
 http://feeds.feedburner.com/oneminutefrench
 One minute French
 http://onethinginafrenchday.podbean.com/feed/
 One thing in a French day
-http://radiolingua.com/feed/onlocation-french/
-On location French
 http://feeds.feedburner.com/podcastfrancaisfacile/xml
 Podcast francais pour débutant
 http://feeds.feedburner.com/schoolrunfrench

@@ -46,6 +46,7 @@ import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.lingp.frpodcast.R;
 import com.lingp.frpodcast.utils.Strings;
@@ -58,6 +59,8 @@ import com.lingp.frpodcast.utils.Strings;
  * 
  */
 public class FeedDataContentProvider extends ContentProvider {
+  private static final String TAG = "FeedDataContentProvider";
+
   private static final String FOLDER = Environment.getExternalStorageDirectory() + "/frpodcast/";
   public static final String IMAGEFOLDER = Environment.getExternalStorageDirectory()
       + "/frpodcast/images/";
@@ -67,7 +70,7 @@ public class FeedDataContentProvider extends ContentProvider {
       + "/frpodcast/backup.opml";
 
   private static final String DATABASE_NAME = "frpodcast.db";
-  private static final int DATABASE_VERSION = 1;
+  private static final int DATABASE_VERSION = 2;
   // store Subscriptions
   protected static final String TABLE_SUBSCRIPTIONS = "feeds";
   // store Feed items
@@ -266,10 +269,9 @@ public class FeedDataContentProvider extends ContentProvider {
   public boolean onCreate() {
     try {
       File folder = new File(FOLDER);
-
       folder.mkdir(); // maybe we use the boolean return value later
     } catch (Exception e) {
-
+      Log.i("FeedDataContentProvider", e.getMessage());
     }
     mDatabaseHelper = new DatabaseHelper(getContext(), DATABASE_NAME, DATABASE_VERSION);
     return true;
@@ -515,6 +517,7 @@ public class FeedDataContentProvider extends ContentProvider {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+      Log.i(TAG, "upgrading database");
       insertDefaultSubscriptions(db);
     }
   }
