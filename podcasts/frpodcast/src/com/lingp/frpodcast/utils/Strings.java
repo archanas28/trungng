@@ -28,6 +28,8 @@ package com.lingp.frpodcast.utils;
 import com.lingp.frpodcast.provider.FeedData;
 
 public final class Strings {
+  public static final String INTENT_PUBLISHER_GOOGLE_PLAY = "https://play.google.com/store/apps/developer?id=Lingp+-+the+Language+Podcasting+company";
+
   public static final String PACKAGE = "com.lingp.frpodcast";
   public static final String APPLICATION_SHARED_PREFERENCES = "com.lingp.frpodcast.SHARED_PREFERENCES";
 
@@ -52,6 +54,7 @@ public final class Strings {
   public static final String ACTION_RESTART = "com.lingp.frpodcast.RESTART";
   public static final String PREFERENCE_CURRENT_URI = "com.lingp.frpodcast.pref.current_uri";
   public static final String PREFERENCE_DATABASE_READY = "com.lingp.frpodcast.pref.database_ready";
+  public static final String PREFERENCE_FIRST_USE = "com.lingp.frpodcast.pref.first_use";
 
   public static final String FEEDID = "com.lingp.frpodcast.feedid";
 
@@ -72,9 +75,9 @@ public final class Strings {
   public static final String DB_ARG = "=?";
   public static final String DB_AND = " AND ";
 
-  public static final String DB_EXCUDEFAVORITE = new StringBuilder(FeedData.ItemColumns.FAVORITE)
-      .append(Strings.DB_ISNULL).append(" OR ").append(FeedData.ItemColumns.FAVORITE).append("=0")
-      .toString();
+  public static final String DB_EXCUDEFAVORITE = new StringBuilder(
+      FeedData.ItemColumns.FAVORITE).append(Strings.DB_ISNULL).append(" OR ")
+      .append(FeedData.ItemColumns.FAVORITE).append("=0").toString();
 
   public static final String EMPTY = "";
 
@@ -128,7 +131,8 @@ public final class Strings {
 
   public static final String FALSE = "false";
 
-  public static final String READDATE_GREATERZERO = FeedData.ItemColumns.READDATE + ">0";
+  public static final String READDATE_GREATERZERO = FeedData.ItemColumns.READDATE
+      + ">0";
 
   public static final String COUNT = "count";
 
