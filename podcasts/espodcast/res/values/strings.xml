@@ -39,16 +39,18 @@
     <string name="random">Randomize</string>
     <string name="select_file">Select file (SD-root)</string>
     <string name="explore">Explore</string>
-    
+    <string name="welcome">Welcome</string>
+    <string name="btn_see_more">See our apps</string>
+    <string name="dismiss">Dismiss</string>
+
     <!-- Titles -->
     <string name="title_editsubscription">Edit subscription</string>
     <string name="title_newsubscription">New subscription</string>
     <string name="title_feed">Title</string>
     <string name="title_summary">Summary of your listen activity</string>
     <string name="title_tip">Tips</string>
-    
     <string name="button_alwaysokforall">Always OK for all</string>
-    
+
     <!-- Option menus -->
     <string name="option_addfeed">Add feed</string>
     <string name="option_refresh">Refresh</string>
@@ -61,6 +63,7 @@
     <string name="option_showread">Show read entries</string>
     <string name="option_deleteread">Delete read entries</string>
     <string name="option_deleteallentries">Delete all entries</string>
+    <string name="option_about">About</string>
     <!-- Context menu -->
     <string name="contextmenu_share">Share</string>
     <string name="contextmenu_delete">Delete</string>
@@ -69,7 +72,7 @@
     <string name="contextmenu_markasread">Mark as read</string>
     <string name="contextmenu_markasunread">Mark as unread</string>
     <string name="contextmenu_copyurl">Copy link into clipboard</string>
-    
+
     <!-- Text -->
     <string name="randomize_no_item">No item to play.</string>
     <string name="tip_msg1">To help you avoid any additional charges, this operation is only supported in Wifi mode. If you wish to continue, either turn on your Wifi or refresh a single feed only.</string>
@@ -100,7 +103,7 @@
     <string name="unread">unread</string>
     <string name="error">Error</string>
     <string name="kb">kb</string>
-    
+
     <!-- Preferences -->
     <string name="settings_category_refresh">Refresh</string>
     <string name="settings_enabled">Enabled</string>
@@ -111,7 +114,6 @@
     <string name="settings_refreshonopen_description">Refresh all feeds after opening the application</string>
     <string name="settings_overridewifionly">Override \"refresh on wifi only\"</string>
     <string name="settings_overridewifionly_description">Allow manual refreshing of single \"wifi-only\" feeds</string>
-    
     <string name="settings_category_download">Download options</string>
     <string name="settings_disablepictures">Disable pictures</string>
     <string name="settings_disablepictures_description">Do not show and load any pictures</string>
@@ -119,13 +121,11 @@
     <string name="settings_fetchpictures_description">Download and store pictures locally</string>
     <string name="settings_enclosuredownloadwarning">Enclosure download warning</string>
     <string name="settings_enclosuredownloadwarning_description">Show warning before opening opening/downloading attached files</string>
-    
     <string name="settings_category_contentpresentation">Presentation</string>
     <string name="settings_prioritize">Prioritize unread content</string>
     <string name="settings_prioritize_description">Show unread feed entries above read entries</string>
     <string name="settings_fontsize">Text size</string>
     <string name="settings_fontsize_description">Adjust size of article text</string>
-    
     <string name="settings_visiblefeeds">Visible feeds</string>
     <string name="settings_widgetentrycount">Entry count</string>
     <string name="settings_widgetentrycount_description">Number of entries that are shown in the widget</string>
@@ -138,7 +138,6 @@
     <string name="error_feedexport">Failed to export. Make sure you have a writable SD-card mounted.</string>
     <string name="error_invalidimportfile">The selected file is not valid for import.</string>
     <string name="error_externalstoragenotavailable">The external storage (e.g. SD-card)  is not available.</string>
-    
     <string name="feed_url">URL</string>
     <string name="optional">(optional)</string>
     <string name="websiteorfeed">(website or feed)</string>
@@ -170,4 +169,5 @@
         <item>+2</item>
         <item>+3</item>
     </string-array>
+
 </resources>

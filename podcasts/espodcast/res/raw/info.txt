@@ -1,0 +1,32 @@
+<h3>User Guide</h3>
+The application's home interface has 5 main activities. 
+<p>
+<a href="">Podcasts:</a> list of all podcasts that you subscribe to <br> 
+<a href="">All Items:</a> all lessons from all podcasts you subscribed to <br>
+<a href="">Favorites:</a> all lessons that you add to favourite by tapping on its favourite (Star) icon <br>
+<a href="">Recent:</a> recent lessons that you listened to <br> 
+<a href="">Randomize:</a> choose and play one lesson randomly (a really time saver) <br>
+<a href="">Summary:</a> statistics of how many hours and lessons have you listened to <br>
+</p>
+
+<h3>Related Apps</h3>
+If you are learning other languages, feel free to consider our other podcasting apps which are available for all major languages: <br>
+<a href="">English</a>, 
+<a href="">French</a>,
+<a href="">Spanish</a>,
+<a href="">Chinese</a>,
+<a href="">Korean</a>,
+<a href="">Italian</a>,
+<a href="">Japanese</a>.
+
+<h3>Latest Released apps</h3>
+<a href="">French for Kids</a>: interactive French picture vocabulary (including alphabet, numbers, colors, shapes, etc) for kids and beginners</br>
+
+<h3>Privacy Policy</h3>
+We respect your privacy and do not collect any part of your information. You're safe with us :)
+
+<h3>About Lingp</h3>
+Lingp - the Language Podcasting Company (C), develops educational Android apps with a particular focus on apps for language learners. Our company is based in Canberra, Australia and can be contacted at lingpdev@gmail.com
+
+<h3>Acknowledgement</h3>
+A small part of this app uses the Sparse RSS open source project.
