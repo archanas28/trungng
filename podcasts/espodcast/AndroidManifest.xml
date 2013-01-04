@@ -2,12 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.lingp.espodcast"
     android:installLocation="auto"
-    android:versionCode="5"
+    android:versionCode="6"
     android:versionName="Vanilla" >
 
     <uses-sdk
         android:minSdkVersion="8"
-        android:targetSdkVersion="16" />
+        android:targetSdkVersion="17" />
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -26,7 +26,6 @@
         <provider
             android:name="com.lingp.espodcast.provider.FeedDataContentProvider"
             android:authorities="com.lingp.espodcast.provider.FeedData"
-            android:readPermission="com.lingp.espodcast.READFEEDS"
             android:writePermission="com.lingp.espodcast.WRITEFEEDS" />
 
         <activity
