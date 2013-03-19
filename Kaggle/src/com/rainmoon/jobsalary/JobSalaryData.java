@@ -46,39 +46,24 @@ public class JobSalaryData {
    * @param ad
    * @return
    */
-  public static JobSalaryData getInstance(String ad, boolean validation) {
+  public static JobSalaryData getInstance(String[] tokens, boolean validation) {
     JobSalaryData data = new JobSalaryData();
     data.validation = validation;
-    // remove comma inside quotes
-    String normalizedAd = ad;
-    int firstQuote = -1, secondQuote = -1;
-    while ((firstQuote = normalizedAd.indexOf("\"")) > 0) {
-      secondQuote = normalizedAd.indexOf("\"", firstQuote + 1);
-      String oldString = normalizedAd.substring(firstQuote + 1, secondQuote);
-      String newString = oldString.replaceAll(",", " ");
-      normalizedAd = normalizedAd.replace("\"" + oldString + "\"", newString);
-    }
-    normalizedAd = normalizedAd.replaceAll(",,", ", ,");
-    normalizedAd = normalizedAd.replaceAll(",,", ", ,");
-    if (normalizedAd.endsWith(", ,")) {
-      normalizedAd = normalizedAd.substring(0, normalizedAd.length() - 2);
-    }
-    StringTokenizer tokenizer = new StringTokenizer(normalizedAd, ",");
-    System.out.println(normalizedAd);
-    data.id = tokenizer.nextToken();
-    data.jobTitle = tokenizer.nextToken();
-    data.fullDescription = tokenizer.nextToken();
-    tokenizer.nextToken(); // skip locationRaw
-    data.locationNormalized = tokenizer.nextToken();
-    tokenizer.nextToken(); // skip contract type
-    tokenizer.nextToken(); // skip contract time
-    data.company = tokenizer.nextToken();
-    data.category = tokenizer.nextToken();
+    data.id = tokens[0];
+    data.jobTitle = tokens[1].replaceAll(",", " ").toLowerCase().trim();
+    data.fullDescription = tokens[2].replaceAll(",", " ").toLowerCase().trim();
+    // skip locationRaw tokens[3]
+    data.locationNormalized = tokens[4].replaceAll(",", " ").toLowerCase().trim();
+    // skip contract type and time tokens[5] [6]
+    data.company = tokens[7].replaceAll(",", " ").toLowerCase().trim();
+    data.category = tokens[8].replaceAll(",", " ").toLowerCase().trim();
     if (!validation) {
-      tokenizer.nextToken(); // skip salary raw
-      data.salaryNormalized = Double.parseDouble(tokenizer.nextToken());
+      // skip salary raw tokens[9]
+      data.salaryNormalized = Double.parseDouble(tokens[10]);
+      data.sourceName = tokens[11];
+    } else {
+      data.sourceName = tokens[9];
     }
-    data.sourceName = tokenizer.nextToken();
     return data;
   }
 
@@ -97,15 +82,5 @@ public class JobSalaryData {
     return id + "," + jobTitle + "," + fullDescription + ","
         + locationNormalized + "," + company + "," + category + ","
         + sourceName;
-  }
-
-  /**
-   * Returns the feature vector for this instance. Features are separated by
-   * comma.
-   * 
-   * @return
-   */
-  public String toFeatureVector() {
-    return "";
   }
 }

@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectOutputStream;
@@ -18,6 +19,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.StringTokenizer;
+
+import au.com.bytecode.opencsv.CSVReader;
 
 import com.aliasi.symbol.MapSymbolTable;
 import com.aliasi.symbol.SymbolTable;
@@ -189,38 +192,47 @@ public class FeatureExtractor {
     HashMap<String, Integer> companyMap = new HashMap<String, Integer>();
     HashMap<String, Integer> categoryMap = new HashMap<String, Integer>();
     HashMap<String, Integer> sourceMap = new HashMap<String, Integer>();
-    BufferedReader reader = new BufferedReader(new InputStreamReader(
-        new FileInputStream(directory + "/" + file), "utf-8"));
-    String line;
-    while ((line = reader.readLine()) != null) {
-      System.out.println(line);
-      try {
-        StringTokenizer tokenizer = new StringTokenizer(line, ",");
-        // skip id, job title and description
-        tokenizer.nextToken();
-        tokenizer.nextToken();
-        tokenizer.nextToken();
-        getOrAdd(locationMap, tokenizer.nextToken().toLowerCase().trim());
-        getOrAdd(companyMap, tokenizer.nextToken().toLowerCase().trim());
-        getOrAdd(categoryMap, tokenizer.nextToken().toLowerCase().trim());
-        getOrAdd(sourceMap, tokenizer.nextToken().toLowerCase().trim());
-      } catch (Exception e) {
-        System.out.println(e.getMessage());
-      }
+    CSVReader reader = new CSVReader(new FileReader(directory + "/" + file));
+    String[] tokens;
+//    id + "," + jobTitle + "," + fullDescription + ","
+//    + locationNormalized + "," + company + "," + category + ","
+//    + salaryNormalized + "," + sourceName;
+    int cnt = 0;
+    while ((tokens = reader.readNext()) != null) {
+      // try {
+      System.out.println(cnt++);
+      // skip id, job title,description,salary tokens[0,1,2,6]
+      getOrAdd(locationMap, tokens[3].toLowerCase().trim());
+      getOrAdd(companyMap, tokens[4].toLowerCase().trim());
+      getOrAdd(categoryMap, tokens[5].toLowerCase().trim());
+      getOrAdd(sourceMap, tokens[7].toLowerCase().trim());
+      // } catch (Exception e) {
+      // System.err.println("Errooor " + e.getMessage());
+      // }
     }
     reader.close();
+    System.out.println("Writing map to files");
     TextFiles.writeMap(locationMap, directory + "/processed/locationMap.csv");
     TextFiles.writeMap(companyMap, directory + "/processed/companyMap.csv");
     TextFiles.writeMap(categoryMap, directory + "/processed/categoryMap.csv");
     TextFiles.writeMap(sourceMap, directory + "/processed/sourceMap.csv");
+    
   }
 
-  static ArrayList<String> readDescriptions(String directory, String file)
-      throws IOException {
+  /**
+   * Reads normalized file and write to ad description files.
+   * 
+   * @param normalizedFile
+   * @param descFilefile
+   * @return
+   * @throws IOException
+   */
+  static ArrayList<String> readDescriptions(String normalizedFile,
+      String descFilefile) throws IOException {
     int defaultSize = 100000;
     ArrayList<String> fullDescs = new ArrayList<String>(defaultSize);
     BufferedReader reader = new BufferedReader(new InputStreamReader(
-        new FileInputStream(directory + "/" + file), "utf-8"));
+        new FileInputStream(normalizedFile), "utf-8"));
     String line;
     StringTokenizer tokenizer;
     while ((line = reader.readLine()) != null) {
@@ -231,13 +243,11 @@ public class FeatureExtractor {
         // concatenate job title and description
         fullDescs.add(tokenizer.nextToken() + " " + tokenizer.nextToken());
       } catch (Exception e) {
-        System.out.println(line);
-        System.out.println(e.getMessage());
+        System.err.println("Erroooooor" + line);
       }
     }
     reader.close();
-    TextFiles.writeCollection(fullDescs, directory
-        + "/processed/Train_fullDescriptions.txt");
+    TextFiles.writeCollection(fullDescs, descFilefile);
     return fullDescs;
   }
 
@@ -255,10 +265,10 @@ public class FeatureExtractor {
    */
   public static void createAndWriteFeatures() throws IOException {
     String directory = "/Users/trung/Kaggle/jobsalary/data";
-    String trainFile = directory + "/processed/Train_normalized.csv1";
-    String validFile = directory + "/processed/Valid_normalized.csv1";
-    String trainDescFile = directory + "/processed/Train_fullDescriptions.txt1";
-    String validDescFile = directory + "/processed/Valid_fullDescriptions.txt1";
+    String trainFile = directory + "/processed/Train_normalized.csv";
+    String validFile = directory + "/processed/Valid_normalized.csv";
+    String trainDescFile = directory + "/processed/Train_fullDescriptions.txt";
+    String validDescFile = directory + "/processed/Valid_fullDescriptions.txt";
     String trainFeatures = directory + "/processed/train_features.csv";
     String validFeatures = directory + "/processed/valid_features.csv";
 
@@ -294,9 +304,6 @@ public class FeatureExtractor {
     System.out.println("writing valid features");
     writeFeatures(validFile, validFeatures, validMatrix, locationMap,
         companyMap, categoryMap, sourceMap, true);
-
-    // writeObject(tokenCounter, directory + "/tokenCounter.obj");
-    // writeObject(symbolTable, directory + "/symbolTable.obj");
   }
 
   static void writeFeatures(String csvFile, String featuresFile,
@@ -375,46 +382,52 @@ public class FeatureExtractor {
     return id;
   }
 
-  static void preprocessData() throws Exception {
-    String directory = "/Users/trung/Kaggle/jobsalary/data";
-    String file = directory + "/Valid_rev1.csv";
-    ArrayList<JobSalaryData> list = readData(file, 100000, true);
-    TextFiles.writeCollection(list, directory
-        + "/processed/Valid_normalized.csv");
-  }
-
   /**
    * Reads data and convert into instances of job salary.
    * 
    * @param file
    * @return
    */
-  public static ArrayList<JobSalaryData> readData(String file, int lines,
+  public static void normalizeData(String file, String normalizedFile,
       boolean validation) throws IOException {
-    ArrayList<JobSalaryData> list = new ArrayList<JobSalaryData>(lines);
-    BufferedReader reader = new BufferedReader(new InputStreamReader(
-        new FileInputStream(file), "utf-8"));
-    reader.readLine(); // skip header
-    String line;
+    CSVReader reader = new CSVReader(new BufferedReader(new InputStreamReader(
+        new FileInputStream(file), "utf-8")));
+    PrintWriter writer = new PrintWriter(normalizedFile);
+    reader.readNext(); // skip header
+    String[] tokens;
     JobSalaryData item = null;
     int errorCnt = 0;
-    while ((line = reader.readLine()) != null) {
+    while ((tokens = reader.readNext()) != null) {
       try {
-        item = JobSalaryData.getInstance(line, validation);
-        list.add(item);
+        item = JobSalaryData.getInstance(tokens, validation);
+        writer.println(item);
       } catch (Exception e) {
+        System.err.println(e.getMessage());
         errorCnt++;
       }
     }
     reader.close();
-    System.out.printf("Valid items: %d\n error items: %d", list.size(),
-        errorCnt);
-    return list;
+    writer.close();
+    System.out.printf("error items: %d\n", errorCnt);
   }
 
   public static void main(String args[]) throws Exception {
-    String directory = "/Users/trung/Kaggle/jobsalary/data";
-    // createMaps(directory, "processed/Train_normalized.csv");
+    String directory = "/home/trung/projects/Kaggle/data";
+    // Step 1: remove some unnecessary fields
+    // System.out.println("reading train");
+    // normalizeData(directory + "/Train_rev1.csv", directory +
+    // "/processed/Train_normalized.csv",
+    // false);
+    // System.out.println("reading validation");
+    // normalizeData(directory + "/Valid_rev1.csv", directory
+    // + "/processed/Valid_normalized.csv", true);
+
+    // Step 2 : create maps from string <-> category
+    createMaps(directory, "processed/Train_normalized.csv");
+//    readDescriptions(directory + "/processed/Train_normalized.csv", directory
+//        + "/processed/Train_fullDescriptions.txt");
+//    readDescriptions(directory + "/processed/Valid_normalized.csv", directory
+//        + "/processed/Valid_fullDescriptions.txt");
     // createAndWriteFeatures();
 
     TokenizerFactory factory = JobSalaryTokenizerFactory.getInstance();
