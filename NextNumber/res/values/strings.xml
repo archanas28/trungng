@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Numbers Killer</string>
+    <string name="menu_settings">Settings</string>
+    <string name="ok">OK</string>
+    <string name="correct_answer">Correct answer </string>
+    <string name="no_hint">Hint not allowed for the last number.</string>
+    <string name="level">Level </string>
+    <string name="lives">Lives </string>
+</resources>
